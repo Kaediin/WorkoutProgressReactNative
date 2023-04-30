@@ -1,0 +1,19 @@
+schema: "http://localhost:5000/graphql"
+documents: src/app/graphql/**/*.gql
+generates:
+  src/app/graphql/schema.d.ts:
+    plugins:
+      - typescript
+  src/app/graphql/operations.ts:
+    config:
+      documentMode: documentNode
+      withHooks: true
+      namingConvention:
+        enumValues: keep
+    plugins:
+      - typescript
+      - typescript-operations
+      - typescript-react-apollo
+  src/app/graphql/schema.graphql:
+    plugins:
+      - schema-ast
