@@ -6,18 +6,21 @@
  */
 
 import React from 'react';
-import LoginScreen from './components/auth/LoginScreen';
-import {SafeAreaView} from 'react-native';
-import AuthProvider from './context/AuthProvider';
+import AppRoute from './route/AppRoute';
+import AuthProvider from './providers/AuthProvider';
+import GradientBackground from './components/GradientBackground';
+import ApolloClientProvider from './providers/ApolloClientProvider';
 
-function App(): JSX.Element {
+const App: React.FC = () => {
   return (
-    <AuthProvider>
-      <SafeAreaView>
-        <LoginScreen />
-      </SafeAreaView>
-    </AuthProvider>
+    <ApolloClientProvider>
+      <AuthProvider>
+        <GradientBackground>
+          <AppRoute />
+        </GradientBackground>
+      </AuthProvider>
+    </ApolloClientProvider>
   );
-}
+};
 
 export default App;

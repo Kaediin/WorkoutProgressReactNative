@@ -1,0 +1,31 @@
+type Mutation {
+  createUser(userInput: UserInput!): User
+}
+
+type Query {
+  userByEmail(email: String!): User
+  userById(id: String!): User
+  users: [User]
+  workouts: [Workout]
+}
+
+type User {
+  email: String!
+  firstName: String!
+  id: ID!
+  lastName: String!
+  middleName: String!
+}
+
+input UserInput {
+  email: String!
+  firstName: String!
+  lastName: String!
+  middleName: String!
+  password: String!
+}
+
+type Workout {
+  id: ID!
+  name: String!
+}
