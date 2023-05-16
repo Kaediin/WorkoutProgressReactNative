@@ -1,19 +1,29 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {MainStackParamList} from '../AppRoute';
-import GradientBackground from '../../components/GradientBackground';
-import GradientButton from '../../components/GradientButton';
-import useAuth from '../../hooks/useAuth';
-import {StyleSheet, View} from 'react-native';
-import Constants from '../../utils/Constants';
-import {useWorkoutsQuery} from '../../graphql/operations';
+import GradientBackground from '../../components/common/GradientBackground';
+import {MuscleGroup, useWorkoutsLazyQuery} from '../../graphql/operations';
+import FloatingButton from '../../components/common/FloatingButton';
+import {BottomSheetModal, BottomSheetModalProvider} from '@gorhom/bottom-sheet';
+import {CustomBottomSheet} from '../../components/bottomSheet/CustomBottomSheet';
+import SelectMuscleGroups from '../../components/workouts/SelectMuscleGroups';
+import {StyleSheet, Text} from 'react-native';
+import {enumToReadableString} from '../../utils/String';
 
 type Props = NativeStackScreenProps<MainStackParamList, 'WorkoutsOverview'>;
 
 const WorkoutsOverviewScreen: React.FC<Props> = () => {
-  const {signOut} = useAuth();
+  const [newWorkoutMuscleGroups, setNewWorkoutMuscleGroups] = useState<
+    MuscleGroup[]
+  >([]);
 
-  const {error} = useWorkoutsQuery({
+  const bottomSheetModalRef = useRef<BottomSheetModal>(null);
+  const onSelectWorkoutMuscleGroups = (groups: MuscleGroup[]): void => {
+    setNewWorkoutMuscleGroups(groups);
+    bottomSheetModalRef.current?.dismiss();
+  };
+
+  const [getWorkouts, {error}] = useWorkoutsLazyQuery({
     fetchPolicy: 'no-cache',
   });
 
@@ -25,26 +35,32 @@ const WorkoutsOverviewScreen: React.FC<Props> = () => {
 
   return (
     <GradientBackground>
-      <View>
-        {/*<View></View>*/}
-        <View style={styles.container}>
-          <GradientButton
-            gradients={Constants.ERROR_GRADIENT}
-            title={'Signout'}
-            onClick={signOut}
-          />
-        </View>
-      </View>
+      <BottomSheetModalProvider>
+        {newWorkoutMuscleGroups &&
+          newWorkoutMuscleGroups.map(group => (
+            <Text>{enumToReadableString(group)}</Text>
+          ))}
+        <CustomBottomSheet ref={bottomSheetModalRef}>
+          <Text style={styles.heading1}>Start new Workout</Text>
+          <SelectMuscleGroups onConfirm={onSelectWorkoutMuscleGroups} />
+        </CustomBottomSheet>
+        <FloatingButton
+          onClick={() => {
+            // getWorkouts();
+            bottomSheetModalRef.current?.present();
+          }}
+        />
+      </BottomSheetModalProvider>
     </GradientBackground>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    // position: 'absolute',
-    // bottom: 0,
-    // paddingHorizontal: 20,
-    // width: '100%',
+  heading1: {
+    fontSize: 20,
+    margin: 10,
+    textAlign: 'center',
+    fontWeight: 'bold',
   },
 });
 

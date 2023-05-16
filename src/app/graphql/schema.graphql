@@ -1,5 +1,30 @@
+enum MuscleGroup {
+  ABDUCTOR
+  ABS
+  ADDUCTOR
+  BACK_SHOULDERS
+  BICEPS
+  CALVES
+  CHEST
+  FOREARMS
+  FRONT_SHOULDERS
+  GLUTES
+  HAMSTRINGS
+  HANDS
+  LATS
+  LOWER_BACK
+  NECK
+  OBLIQUES
+  QUADS
+  SHINS
+  TRICEPS
+  UPPER_BACK
+}
+
 type Mutation {
   createUser(userInput: UserInput!): User
+  meStartWorkout: Boolean
+  runFetchWorkoutsTask: Boolean
 }
 
 type Query {
@@ -27,5 +52,6 @@ input UserInput {
 
 type Workout {
   id: ID!
+  muscleGroups: [MuscleGroup!]!
   name: String!
 }

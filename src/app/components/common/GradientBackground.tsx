@@ -1,6 +1,6 @@
 import React, {ReactNode} from 'react';
 import LinearGradient from 'react-native-linear-gradient';
-import Constants from '../utils/Constants';
+import Constants from '../../utils/Constants';
 import {StyleSheet} from 'react-native';
 
 interface GradientBackgroundProps {

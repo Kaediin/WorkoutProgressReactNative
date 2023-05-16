@@ -2,7 +2,7 @@ import React from 'react';
 import {TextInputProps} from 'react-native/Libraries/Components/TextInput/TextInput';
 import LinearGradient from 'react-native-linear-gradient';
 import {TextInput} from 'react-native';
-import Constants from '../utils/Constants';
+import Constants from '../../utils/Constants';
 
 type GradientTextInputProps = TextInputProps & {
   placeholder: string;
