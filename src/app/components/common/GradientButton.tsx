@@ -1,6 +1,6 @@
 import React from 'react';
 import {StyleSheet, Text, TouchableOpacity} from 'react-native';
-import Constants from '../utils/Constants';
+import Constants from '../../utils/Constants';
 import LinearGradient from 'react-native-linear-gradient';
 
 interface GradientButtonProps {

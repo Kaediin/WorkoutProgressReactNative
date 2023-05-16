@@ -1,10 +1,10 @@
 import React, {useEffect, useState} from 'react';
-import GradientBackground from '../../components/GradientBackground';
+import GradientBackground from '../../components/common/GradientBackground';
 import {StyleSheet, Text, TextInput, View} from 'react-native';
-import GradientButton from '../../components/GradientButton';
+import GradientButton from '../../components/common/GradientButton';
 import Constants from '../../utils/Constants';
 import useAuth from '../../hooks/useAuth';
-import Loader from '../../components/Loader';
+import Loader from '../../components/common/Loader';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {AuthStackParamList} from '../AppRoute';
 import useAuthStore, {AuthState} from '../../stores/authStore';

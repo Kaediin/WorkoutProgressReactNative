@@ -1,13 +1,13 @@
 import React, {useEffect, useMemo, useState} from 'react';
 import Constants from '../../utils/Constants';
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import GradientButton from '../../components/GradientButton';
+import GradientButton from '../../components/common/GradientButton';
 import LinearGradient from 'react-native-linear-gradient';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {AuthStackParamList} from '../AppRoute';
 import {Gender} from '../../types/Type';
 import Modal from 'react-native-modal';
-import GradientTextInput from '../../components/GradientTextInput';
+import GradientTextInput from '../../components/common/GradientTextInput';
 import {isValidEmail} from '../../utils/String';
 import useAuth from '../../hooks/useAuth';
 import useAuthStore, {AuthState} from '../../stores/authStore';

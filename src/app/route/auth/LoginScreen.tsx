@@ -1,12 +1,12 @@
 import React, {useEffect, useState} from 'react';
 import {StyleSheet, TextInput, View} from 'react-native';
-import GradientButton from '../../components/GradientButton';
+import GradientButton from '../../components/common/GradientButton';
 import useAuth from '../../hooks/useAuth';
 import {CognitoUser} from 'amazon-cognito-identity-js';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {AuthStackParamList} from '../AppRoute';
-import Loader from '../../components/Loader';
-import GradientBackground from '../../components/GradientBackground';
+import Loader from '../../components/common/Loader';
+import GradientBackground from '../../components/common/GradientBackground';
 import Constants from '../../utils/Constants';
 import useAuthStore, {AuthState} from '../../stores/authStore';
 

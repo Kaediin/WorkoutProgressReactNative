@@ -1,5 +1,8 @@
 export const enumToReadableString = (str: string): string => {
-  return str.charAt(0).toUpperCase() + str.slice(1);
+  return (str.charAt(0).toUpperCase() + str.slice(1).toLowerCase()).replace(
+    '_',
+    ' ',
+  );
 };
 
 export const isValidEmail = (email: string): boolean => {

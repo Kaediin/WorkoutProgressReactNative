@@ -42,12 +42,38 @@ export type User = {
 export type Workout = {
   __typename?: 'Workout';
   id: Scalars['ID'];
+  muscleGroups: Array<MuscleGroup>;
   name: Scalars['String'];
 };
+
+export enum MuscleGroup {
+  Abductor = 'ABDUCTOR',
+  Abs = 'ABS',
+  Adductor = 'ADDUCTOR',
+  BackShoulders = 'BACK_SHOULDERS',
+  Biceps = 'BICEPS',
+  Calves = 'CALVES',
+  Chest = 'CHEST',
+  Forearms = 'FOREARMS',
+  FrontShoulders = 'FRONT_SHOULDERS',
+  Glutes = 'GLUTES',
+  Hamstrings = 'HAMSTRINGS',
+  Hands = 'HANDS',
+  Lats = 'LATS',
+  LowerBack = 'LOWER_BACK',
+  Neck = 'NECK',
+  Obliques = 'OBLIQUES',
+  Quads = 'QUADS',
+  Shins = 'SHINS',
+  Triceps = 'TRICEPS',
+  UpperBack = 'UPPER_BACK'
+}
 
 export type Mutation = {
   __typename?: 'Mutation';
   createUser?: Maybe<User>;
+  meStartWorkout?: Maybe<Scalars['Boolean']>;
+  runFetchWorkoutsTask?: Maybe<Scalars['Boolean']>;
 };
 
 
