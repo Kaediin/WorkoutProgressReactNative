@@ -41,6 +41,7 @@ export const AuthProvider: React.FC<PropsWithChildren> = props => {
       case 'signIn':
         console.log('[AuthProvider] User signed in');
         setState(AuthState.AUTHENTICATED);
+        // getAndUpdateAuthToken();
         break;
       case 'signUp':
         console.log('[AuthProvider] User signed up');
@@ -59,8 +60,8 @@ export const AuthProvider: React.FC<PropsWithChildren> = props => {
         break;
       }
       case 'configured':
-        getAndUpdateAuthToken();
         console.log('[AuthProvider] The Auth module is configured');
+        getAndUpdateAuthToken();
         break;
       case 'autoSignIn_failure':
         console.log('[AuthProvider] Auto sign in failed');
