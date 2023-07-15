@@ -10,19 +10,18 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
+  LocalDateTime: any;
 };
 
 export type Query = {
   __typename?: 'Query';
-  userByEmail?: Maybe<User>;
+  me?: Maybe<User>;
+  meHasActiveWorkout: Scalars['Boolean'];
+  myExercises?: Maybe<Array<Exercise>>;
+  myWorkouts?: Maybe<Array<Workout>>;
   userById?: Maybe<User>;
   users?: Maybe<Array<Maybe<User>>>;
-  workouts?: Maybe<Array<Maybe<Workout>>>;
-};
-
-
-export type QueryUserByEmailArgs = {
-  email: Scalars['String'];
+  workoutById?: Maybe<Workout>;
 };
 
 
@@ -30,20 +29,37 @@ export type QueryUserByIdArgs = {
   id: Scalars['String'];
 };
 
-export type User = {
-  __typename?: 'User';
-  email: Scalars['String'];
-  firstName: Scalars['String'];
+
+export type QueryWorkoutByIdArgs = {
   id: Scalars['ID'];
-  lastName: Scalars['String'];
-  middleName: Scalars['String'];
 };
 
-export type Workout = {
-  __typename?: 'Workout';
+export type User = {
+  __typename?: 'User';
+  cognitoUser: CognitoUser;
+  fid: Scalars['String'];
   id: Scalars['ID'];
-  muscleGroups: Array<MuscleGroup>;
+};
+
+export type CognitoUser = {
+  __typename?: 'CognitoUser';
+  email: Scalars['String'];
+  family_name: Scalars['String'];
+  gender: Scalars['String'];
+  given_name: Scalars['String'];
+  locale: Scalars['String'];
   name: Scalars['String'];
+  nickname: Scalars['String'];
+  zoneinfo: Scalars['String'];
+};
+
+export type Exercise = {
+  __typename?: 'Exercise';
+  id: Scalars['ID'];
+  name: Scalars['String'];
+  primaryMuscles?: Maybe<Array<Maybe<MuscleGroup>>>;
+  secondaryMuscles?: Maybe<Array<Maybe<MuscleGroup>>>;
+  user?: Maybe<User>;
 };
 
 export enum MuscleGroup {
@@ -69,16 +85,97 @@ export enum MuscleGroup {
   UpperBack = 'UPPER_BACK'
 }
 
+export type Workout = {
+  __typename?: 'Workout';
+  active?: Maybe<Scalars['Boolean']>;
+  endDateTime?: Maybe<Scalars['LocalDateTime']>;
+  exerciseLogs: Array<ExerciseLog>;
+  groupedExerciseLogs: Array<GroupedExerciseLog>;
+  id: Scalars['ID'];
+  muscleGroups: Array<MuscleGroup>;
+  name: Scalars['String'];
+  startDateTime?: Maybe<Scalars['LocalDateTime']>;
+};
+
+export type ExerciseLog = {
+  __typename?: 'ExerciseLog';
+  exercise: Exercise;
+  id: Scalars['ID'];
+  logDateTime: Scalars['LocalDateTime'];
+  repetitions: Scalars['Float'];
+  unit: WeightUnit;
+  user: User;
+  weightLeft: Scalars['Float'];
+  weightRight: Scalars['Float'];
+};
+
+export enum WeightUnit {
+  Kg = 'KG',
+  Lbs = 'LBS'
+}
+
+export type GroupedExerciseLog = {
+  __typename?: 'GroupedExerciseLog';
+  exercise: Exercise;
+  logs: Array<ExerciseLog>;
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
+  addExerciseLogToWorkout?: Maybe<Workout>;
+  createExercise?: Maybe<Exercise>;
   createUser?: Maybe<User>;
-  meStartWorkout?: Maybe<Scalars['Boolean']>;
+  endWorkout?: Maybe<Workout>;
+  meStartWorkout?: Maybe<Workout>;
+  removeExerciseLog: Scalars['Boolean'];
   runFetchWorkoutsTask?: Maybe<Scalars['Boolean']>;
+};
+
+
+export type MutationAddExerciseLogToWorkoutArgs = {
+  input?: InputMaybe<ExerciseLogInput>;
+  workoutId: Scalars['ID'];
+};
+
+
+export type MutationCreateExerciseArgs = {
+  input?: InputMaybe<ExerciseInput>;
 };
 
 
 export type MutationCreateUserArgs = {
   userInput: UserInput;
+};
+
+
+export type MutationEndWorkoutArgs = {
+  workoutId: Scalars['ID'];
+  zonedDateTimeString: Scalars['String'];
+};
+
+
+export type MutationMeStartWorkoutArgs = {
+  input: WorkoutInput;
+};
+
+
+export type MutationRemoveExerciseLogArgs = {
+  exerciseLogId: Scalars['String'];
+};
+
+export type ExerciseLogInput = {
+  exerciseId: Scalars['String'];
+  repetitions: Scalars['Float'];
+  unit: WeightUnit;
+  weightLeft: Scalars['Float'];
+  weightRight: Scalars['Float'];
+  zonedDateTimeString: Scalars['String'];
+};
+
+export type ExerciseInput = {
+  name: Scalars['String'];
+  primaryMuscles?: InputMaybe<Array<InputMaybe<MuscleGroup>>>;
+  secondaryMuscles?: InputMaybe<Array<InputMaybe<MuscleGroup>>>;
 };
 
 export type UserInput = {
@@ -87,4 +184,10 @@ export type UserInput = {
   lastName: Scalars['String'];
   middleName: Scalars['String'];
   password: Scalars['String'];
+};
+
+export type WorkoutInput = {
+  muscleGroups: Array<MuscleGroup>;
+  name: Scalars['String'];
+  zonedDateTime: Scalars['String'];
 };

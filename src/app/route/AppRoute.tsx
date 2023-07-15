@@ -4,8 +4,8 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import LoginScreen from './auth/LoginScreen';
 import SignupScreen from './auth/SignupScreen';
 import useAuthStore, {AuthState} from '../stores/authStore';
-import WorkoutsOverviewScreen from './workouts/WorkoutsOverviewScreen';
 import ConfirmUserScreen from './auth/ConfirmUserScreen';
+import TabNavigator from '../components/nav/TabNavigator';
 
 export type AuthStackParamList = {
   Login: undefined;
@@ -13,12 +13,7 @@ export type AuthStackParamList = {
   ConfirmUser: {email: string};
 };
 
-export type MainStackParamList = {
-  WorkoutsOverview: undefined;
-};
-
 const AuthStackNavigator = createNativeStackNavigator<AuthStackParamList>();
-const MainStackNavigator = createNativeStackNavigator<MainStackParamList>();
 
 const AppRoute: React.FC = () => {
   const authState: AuthState = useAuthStore(state => state.state);
@@ -26,13 +21,7 @@ const AppRoute: React.FC = () => {
   return (
     <NavigationContainer>
       {authState === AuthState.AUTHENTICATED ? (
-        <MainStackNavigator.Navigator initialRouteName="WorkoutsOverview">
-          <MainStackNavigator.Screen
-            name={'WorkoutsOverview'}
-            component={WorkoutsOverviewScreen}
-            options={{headerTitle: 'Workouts'}}
-          />
-        </MainStackNavigator.Navigator>
+        <TabNavigator />
       ) : (
         <AuthStackNavigator.Navigator initialRouteName="Login">
           <AuthStackNavigator.Screen

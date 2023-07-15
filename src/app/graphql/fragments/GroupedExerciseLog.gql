@@ -1,0 +1,8 @@
+fragment GroupedExerciseLog on GroupedExerciseLog {
+    exercise {
+        ...Exercise
+    }
+    logs {
+        ...ExerciseLog
+    }
+}

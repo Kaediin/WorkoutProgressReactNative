@@ -1,0 +1,5 @@
+query workoutById($id: ID!) {
+    workoutById(id: $id) {
+        ...WorkoutLong
+    }
+}

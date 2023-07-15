@@ -4,7 +4,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import Constants from '../../utils/Constants';
 
 interface FloatingButtonProps {
-  onClick: () => void;
+  onClick?: () => void;
 }
 
 const FloatingButton: React.FC<FloatingButtonProps> = ({onClick}) => {

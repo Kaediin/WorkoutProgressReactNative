@@ -1,22 +1,34 @@
 import React from 'react';
-import {StyleSheet, Text, TouchableOpacity} from 'react-native';
+import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import Constants from '../../utils/Constants';
 import LinearGradient from 'react-native-linear-gradient';
+import {StyleProp} from 'react-native/Libraries/StyleSheet/StyleSheet';
+import {ViewStyle} from 'react-native/Libraries/StyleSheet/StyleSheetTypes';
 
 interface GradientButtonProps {
   title: string;
   onClick: () => void;
   disabled?: boolean;
   gradients?: string[];
+  outlineBackgroundColor?: string;
+  styles?: StyleProp<ViewStyle>;
 }
 
 const stylesGrad = StyleSheet.create({
-  linearGradient: {
-    height: 44,
-    width: '100%',
+  outlineContainer: {
     justifyContent: 'center',
     alignSelf: 'center',
-    borderRadius: 25,
+    height: 38,
+    width: 244,
+    borderRadius: Constants.BORDER_RADIUS_LARGE,
+    color: 'black',
+  },
+  linearGradient: {
+    height: 44,
+    width: 250,
+    justifyContent: 'center',
+    alignSelf: 'center',
+    borderRadius: Constants.BORDER_RADIUS_LARGE,
   },
   title: {
     fontWeight: '500',
@@ -25,6 +37,10 @@ const stylesGrad = StyleSheet.create({
     textAlign: 'center',
     alignSelf: 'center',
   },
+  titleOutline: {
+    color: 'black',
+  },
+  opacity: {opacity: 0.2},
 });
 
 const GradientButton: React.FC<GradientButtonProps> = props => {
@@ -32,16 +48,31 @@ const GradientButton: React.FC<GradientButtonProps> = props => {
     <LinearGradient
       colors={props.gradients ?? Constants.SECONDARY_GRADIENT}
       locations={[0, 1]}
-      style={[{opacity: 0.2}, stylesGrad.linearGradient]}>
+      style={[props.styles, stylesGrad.opacity, stylesGrad.linearGradient]}>
       <Text style={stylesGrad.title}>{props.title}</Text>
     </LinearGradient>
   ) : (
-    <TouchableOpacity onPress={props.onClick} activeOpacity={0.6}>
+    <TouchableOpacity
+      style={props.styles}
+      onPress={props.onClick}
+      activeOpacity={0.6}>
       <LinearGradient
         colors={props.gradients ?? Constants.SECONDARY_GRADIENT}
         locations={[0, 1]}
         style={stylesGrad.linearGradient}>
-        <Text style={stylesGrad.title}>{props.title}</Text>
+        {props.outlineBackgroundColor ? (
+          <View
+            style={[
+              stylesGrad.outlineContainer,
+              {backgroundColor: props.outlineBackgroundColor},
+            ]}>
+            <Text style={[stylesGrad.title, stylesGrad.titleOutline]}>
+              {props.title}
+            </Text>
+          </View>
+        ) : (
+          <Text style={stylesGrad.title}>{props.title}</Text>
+        )}
       </LinearGradient>
     </TouchableOpacity>
   );

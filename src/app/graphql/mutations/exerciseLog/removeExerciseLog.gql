@@ -1,0 +1,3 @@
+mutation removeExerciseLog($exerciseLogId: String!) {
+    removeExerciseLog(exerciseLogId: $exerciseLogId)
+}

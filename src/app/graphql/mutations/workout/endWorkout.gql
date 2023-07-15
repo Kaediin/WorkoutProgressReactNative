@@ -1,0 +1,5 @@
+mutation endWorkout($workoutId: ID!, $zonedDateTimeString: String!) {
+    endWorkout(workoutId: $workoutId, zonedDateTimeString: $zonedDateTimeString) {
+        ...WorkoutShort
+    }
+}

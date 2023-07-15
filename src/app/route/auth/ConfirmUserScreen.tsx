@@ -24,6 +24,7 @@ const ConfirmUserScreen: React.FC<Props> = props => {
 
   useEffect(() => {
     let interval = setInterval(() => {
+      // @ts-ignore
       setTimer(lastTimerCount => {
         if (lastTimerCount === 0) {
           // nothing to do here
@@ -140,7 +141,7 @@ const styles = StyleSheet.create({
   },
   input: {
     margin: 5,
-    padding: 10,
+    padding: Constants.CONTAINER_PADDING,
     backgroundColor: 'white',
     borderRadius: Constants.BORDER_RADIUS_SMALL,
   },

@@ -12,21 +12,48 @@ import GradientBackground from './components/common/GradientBackground';
 import ApolloClientProvider from './providers/ApolloClientProvider';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
+import UserProvider from './providers/UserProvider';
+import * as Sentry from '@sentry/react-native';
+import Config from 'react-native-config';
+import {StyleSheet} from 'react-native';
+
+export const routingInstrumentation =
+  new Sentry.ReactNavigationInstrumentation();
 
 const App: React.FC = () => {
+  Sentry.init({
+    dsn: Config.SENTRY_DSN,
+    // Set tracesSampleRate to 1.0 to capture 100% of transactions for performance monitoring.
+    // We recommend adjusting this value in production.
+    tracesSampleRate: 1.0,
+    environment: Config.SENTRY_ENV,
+    enableNative: true,
+    integrations: [
+      new Sentry.ReactNativeTracing({
+        routingInstrumentation,
+      }),
+    ],
+  });
+
   return (
     <ApolloClientProvider>
-      <GestureHandlerRootView style={{flex: 1}}>
+      <GestureHandlerRootView style={styles.flex}>
         <AuthProvider>
-          <SafeAreaProvider>
-            <GradientBackground>
-              <AppRoute />
-            </GradientBackground>
-          </SafeAreaProvider>
+          <UserProvider>
+            <SafeAreaProvider>
+              <GradientBackground>
+                <AppRoute />
+              </GradientBackground>
+            </SafeAreaProvider>
+          </UserProvider>
         </AuthProvider>
       </GestureHandlerRootView>
     </ApolloClientProvider>
   );
 };
 
-export default App;
+const styles = StyleSheet.create({
+  flex: {flex: 1},
+});
+
+export default Sentry.wrap(App);

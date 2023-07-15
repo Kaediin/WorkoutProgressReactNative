@@ -1,0 +1,11 @@
+fragment ExerciseLog on ExerciseLog {
+    id
+    exercise {
+        ...Exercise
+    }
+    logDateTime
+    repetitions
+    weightLeft
+    weightRight
+    unit
+}

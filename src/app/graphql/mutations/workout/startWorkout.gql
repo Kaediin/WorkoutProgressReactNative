@@ -1,0 +1,5 @@
+mutation startWorkout($input: WorkoutInput!) {
+    meStartWorkout(input: $input) {
+        ...WorkoutShort
+    }
+}

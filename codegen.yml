@@ -1,4 +1,4 @@
-schema: "http://localhost:5000/graphql"
+schema: "http://workout-progress.eu-central-1.elasticbeanstalk.com/graphql"
 documents: src/app/graphql/**/*.gql
 generates:
   src/app/graphql/schema.d.ts:

@@ -1,6 +1,5 @@
 query workouts {
-    workouts {
-        id
-        name
+    myWorkouts {
+        ...WorkoutShort
     }
 }

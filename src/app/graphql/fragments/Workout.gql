@@ -1,0 +1,23 @@
+fragment WorkoutShort on Workout {
+    id
+    name
+    muscleGroups
+    startDateTime
+    endDateTime
+    active
+}
+
+fragment WorkoutLong on Workout {
+    id
+    name
+    muscleGroups
+    startDateTime
+    endDateTime
+    active
+    groupedExerciseLogs {
+        ...GroupedExerciseLog
+    }
+    #    exerciseLogs {
+    #        ...ExerciseLog
+    #    }
+}

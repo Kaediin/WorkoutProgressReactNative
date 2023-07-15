@@ -1,0 +1,6 @@
+fragment Exercise on Exercise {
+    id
+    name
+    primaryMuscles
+    secondaryMuscles
+}
