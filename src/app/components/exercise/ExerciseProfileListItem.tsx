@@ -51,6 +51,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     textAlign: 'center',
     marginBottom: Constants.CONTAINER_PADDING,
+    color: 'white',
   },
   textAlignCenter: {
     textAlign: 'center',
