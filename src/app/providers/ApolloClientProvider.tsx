@@ -100,7 +100,7 @@ const withToken = setContext(async () => {
     return {token};
   } else {
     console.log(
-      'ApolloClientProvider: token is expired before request, refreshing token...',
+      '[ApolloClientProvider] Token is expired before request, refreshing token...',
     );
     const authSession = await Auth.currentSession();
     if (authSession.isValid()) {
@@ -109,7 +109,7 @@ const withToken = setContext(async () => {
       return {token: newToken};
     } else {
       console.log(
-        'ApolloClientProvider: session is expired. Cannot create new token',
+        '[ApolloClientProvider] Session is expired. Cannot create new token',
       );
     }
   }
@@ -155,6 +155,7 @@ const ApolloClientProvider: React.FC<React.PropsWithChildren> = props => {
         authMiddleware.concat(httpLink),
       ]),
     );
+    console.log(`[ApolloClientProvider] Connecting to API: ${graphqlUri}`);
   }, []);
 
   return (

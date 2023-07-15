@@ -1,16 +1,23 @@
 import React, {useEffect, useMemo, useState} from 'react';
 import Constants from '../../utils/Constants';
-import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {
+  KeyboardAvoidingView,
+  Platform,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+} from 'react-native';
 import GradientButton from '../../components/common/GradientButton';
 import LinearGradient from 'react-native-linear-gradient';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {AuthStackParamList} from '../AppRoute';
 import {Gender} from '../../types/Type';
-import Modal from 'react-native-modal';
-import GradientTextInput from '../../components/common/GradientTextInput';
-import {isValidEmail} from '../../utils/String';
+import {isValidEmail, isValidPassword} from '../../utils/String';
 import useAuth from '../../hooks/useAuth';
 import useAuthStore, {AuthState} from '../../stores/authStore';
+import DropDownPicker from 'react-native-dropdown-picker';
+import {defaultStyles} from '../../utils/DefaultStyles';
 
 type Props = NativeStackScreenProps<AuthStackParamList, 'Signup'>;
 
@@ -24,20 +31,20 @@ const SignupScreen: React.FC<Props> = props => {
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [gender, setGender] = useState<Gender>();
-  const [modalVisible, setModalVisible] = useState(false);
+  const [password, setPassword] = useState<string>('');
+  const [passwordConfirmation, setPasswordConfirmation] = useState<string>('');
+  const [genderPickerOpen, setGenderPickerOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const buttonEnabled = useMemo<boolean>(
     () =>
       firstName.length > 0 &&
       lastName.length > 0 &&
       isValidEmail(email) &&
-      gender !== undefined,
-    [firstName, lastName, email, gender],
+      gender !== undefined &&
+      isValidPassword(password) &&
+      password === passwordConfirmation,
+    [firstName, lastName, email, gender, password, passwordConfirmation],
   );
-
-  useEffect(() => {
-    setModalVisible(false);
-  }, [gender]);
 
   useEffect(() => {
     if (authState === AuthState.USER_NOT_CONFIRMED && email) {
@@ -48,106 +55,150 @@ const SignupScreen: React.FC<Props> = props => {
   return (
     <LinearGradient colors={Constants.PRIMARY_GRADIENT}>
       <View style={styles.signupContainer}>
-        <View style={styles.signupForm}>
-          <View style={styles.signupInputContainer}>
-            <GradientTextInput
-              // gradient={
-              //   firstName.length < 1 ? Constants.ERROR_GRADIENT : undefined
-              // }
-              borderRadius={Constants.BORDER_RADIUS_SMALL}
-              style={styles.input}
-              onChangeText={setFirstName}
-              value={firstName}
-              placeholder="First name"
-              textContentType="givenName"
-              autoComplete="name"
-              placeholderTextColor="darkgrey"
-            />
+        <Text
+          style={[
+            defaultStyles.h1,
+            defaultStyles.whiteTextColor,
+            defaultStyles.textAlignCenter,
+            defaultStyles.container,
+          ]}>
+          Signup
+        </Text>
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          keyboardVerticalOffset={100}>
+          <View style={styles.signupForm}>
+            <View style={styles.signupInputContainer}>
+              <TextInput
+                style={styles.input}
+                onChangeText={setFirstName}
+                value={firstName}
+                placeholder="First name"
+                textContentType="givenName"
+                autoComplete="name"
+                placeholderTextColor="darkgrey"
+              />
+            </View>
+            <View style={styles.signupInputContainer}>
+              <TextInput
+                style={styles.input}
+                onChangeText={setMiddleName}
+                value={middleName}
+                placeholder="Middle name (optional)"
+                textContentType="middleName"
+                autoComplete="name"
+                placeholderTextColor="darkgrey"
+              />
+            </View>
+            <View style={styles.signupInputContainer}>
+              <TextInput
+                style={styles.input}
+                onChangeText={setLastName}
+                value={lastName}
+                placeholder="Last name"
+                textContentType="familyName"
+                autoComplete="name"
+                placeholderTextColor="darkgrey"
+              />
+            </View>
+            <View style={styles.signupInputContainer}>
+              <TextInput
+                style={styles.input}
+                onChangeText={setEmail}
+                value={email}
+                placeholder="Email"
+                textContentType="emailAddress"
+                autoComplete="email"
+                placeholderTextColor="darkgrey"
+                keyboardType="email-address"
+                inputMode="email"
+              />
+            </View>
+            <View style={[styles.signupInputContainer, styles.zIndex]}>
+              <Text style={[defaultStyles.footnote, styles.footnote]}>
+                Biological gender is only used for personalised content based on
+                your tracked workouts
+              </Text>
+              <DropDownPicker
+                setValue={setGender}
+                value={gender || ''}
+                placeholder={'Biological gender'}
+                items={[
+                  {
+                    label: Gender.Male,
+                    value: Gender.Male,
+                  },
+                  {
+                    label: Gender.Female,
+                    value: Gender.Female,
+                  },
+                ]}
+                open={genderPickerOpen}
+                setOpen={setGenderPickerOpen}
+                style={styles.dropdownPicker}
+                dropDownContainerStyle={styles.dropdownPicker}
+              />
+            </View>
+            <View style={styles.signupInputContainer}>
+              <TextInput
+                style={styles.input}
+                onChangeText={setPassword}
+                value={password}
+                placeholder="Password"
+                textContentType="newPassword"
+                autoComplete="password-new"
+                placeholderTextColor="darkgrey"
+                secureTextEntry
+              />
+            </View>
+            <View style={styles.signupInputContainer}>
+              <TextInput
+                style={styles.input}
+                onChangeText={setPasswordConfirmation}
+                value={passwordConfirmation}
+                placeholder="Confirm password"
+                textContentType="newPassword"
+                autoComplete="password-new"
+                placeholderTextColor="darkgrey"
+                secureTextEntry
+              />
+            </View>
+            <Text style={[defaultStyles.footnote, styles.footnote]}>
+              Your password should contain at least eight characters: one digit,
+              one upper case, one lower case, and one special character.
+            </Text>
+            <View>
+              <Text style={styles.errorMessage}>{errorMessage}</Text>
+            </View>
           </View>
-          <View style={styles.signupInputContainer}>
-            <GradientTextInput
-              borderRadius={Constants.BORDER_RADIUS_SMALL}
-              style={styles.input}
-              onChangeText={setMiddleName}
-              value={middleName}
-              placeholder="Middle name"
-              textContentType="middleName"
-              autoComplete="name"
-              placeholderTextColor="darkgrey"
-            />
-          </View>
-          <View style={styles.signupInputContainer}>
-            <GradientTextInput
-              // gradient={
-              //   lastName.length < 1 ? Constants.ERROR_GRADIENT : undefined
-              // }
-              borderRadius={Constants.BORDER_RADIUS_SMALL}
-              style={styles.input}
-              onChangeText={setLastName}
-              value={lastName}
-              placeholder="Last name"
-              textContentType="familyName"
-              autoComplete="name"
-              placeholderTextColor="darkgrey"
-            />
-          </View>
-          <View style={styles.signupInputContainer}>
-            <GradientTextInput
-              // gradient={
-              //   isValidEmail(email) ? undefined : Constants.ERROR_GRADIENT
-              // }
-              borderRadius={Constants.BORDER_RADIUS_SMALL}
-              style={styles.input}
-              onChangeText={setEmail}
-              value={email}
-              placeholder="Email"
-              textContentType="emailAddress"
-              autoComplete="email"
-              placeholderTextColor="darkgrey"
-              keyboardType="email-address"
-              inputMode="email"
-            />
-          </View>
-          <View style={styles.signupInputContainer}>
-            <LinearGradient
-              style={{borderRadius: Constants.BORDER_RADIUS_SMALL}}
-              colors={Constants.SECONDARY_GRADIENT}
-              // colors={
-              // gender ? Constants.SECONDARY_GRADIENT : Constants.ERROR_GRADIENT
-            >
-              <TouchableOpacity onPress={() => setModalVisible(true)}>
-                <View style={[styles.signupButton, styles.input]}>
-                  {/* eslint-disable-next-line react-native/no-inline-styles */}
-                  <Text style={{color: gender ? '#000000' : '#a9a9a9'}}>
-                    {gender ? gender : 'Gender'}
-                  </Text>
-                </View>
-              </TouchableOpacity>
-            </LinearGradient>
-          </View>
-          <View>
-            <Text style={styles.errorMessage}>{errorMessage}</Text>
-          </View>
+        </KeyboardAvoidingView>
+
+        <View style={styles.backButton}>
           <View style={styles.continueButton}>
             <GradientButton
-              title={'Continue'}
+              title={'Create'}
               onClick={async () => {
-                const {error} = await signUp(
+                if (!gender) {
+                  return;
+                }
+                const {cognitoUser, error} = await signUp(
                   firstName,
                   middleName,
                   lastName,
                   email,
-                  gender!,
+                  gender,
+                  password,
                 );
                 if (error) {
                   setErrorMessage(error);
+                }
+                if (cognitoUser) {
+                  props.navigation.navigate('ConfirmUser', {email: email});
                 }
               }}
               disabled={!buttonEnabled}
             />
           </View>
-        </View>
-        <View style={styles.backButton}>
           <GradientButton
             title={'Go back'}
             onClick={() => {
@@ -156,34 +207,6 @@ const SignupScreen: React.FC<Props> = props => {
           />
         </View>
       </View>
-      <Modal
-        isVisible={modalVisible}
-        onDismiss={() => setModalVisible(false)}
-        onBackdropPress={() => setModalVisible(false)}
-        style={styles.modalStyle}>
-        <LinearGradient colors={Constants.PRIMARY_GRADIENT}>
-          <View style={styles.modalInnerContainer}>
-            <View style={styles.modalButton}>
-              <GradientButton
-                title={'Male'}
-                onClick={() => setGender(Gender.Male)}
-              />
-            </View>
-            <View style={styles.modalButton}>
-              <GradientButton
-                title={'Female'}
-                onClick={() => setGender(Gender.Female)}
-              />
-            </View>
-            <View>
-              <GradientButton
-                title={'Other'}
-                onClick={() => setGender(Gender.Other)}
-              />
-            </View>
-          </View>
-        </LinearGradient>
-      </Modal>
     </LinearGradient>
   );
 };
@@ -196,21 +219,11 @@ const styles = StyleSheet.create({
   },
   signupForm: {},
   input: {
-    margin: 5,
     padding: Constants.CONTAINER_PADDING,
     backgroundColor: 'white',
-  },
-  linearGradient: {
-    marginVertical: 5,
     borderRadius: Constants.BORDER_RADIUS_SMALL,
   },
-  modalStyle: {
-    justifyContent: 'center',
-  },
-  modalInnerContainer: {
-    padding: 20,
-  },
-  modalButton: {
+  continueButton: {
     marginBottom: 20,
   },
   backButton: {
@@ -219,17 +232,30 @@ const styles = StyleSheet.create({
     left: 20,
     bottom: 100,
   },
-  continueButton: {
-    marginTop: 20,
-  },
   signupInputContainer: {
     marginBottom: 5,
+    zIndex: 1,
   },
   errorMessage: {
     color: 'red',
   },
   signupButton: {
     borderRadius: Constants.BORDER_RADIUS_SMALL,
+  },
+  genderLinearGradient: {
+    borderRadius: Constants.BORDER_RADIUS_SMALL,
+    padding: 5,
+  },
+  footnote: {
+    marginBottom: 5,
+  },
+  dropdownPicker: {
+    borderWidth: 0,
+    margin: 0,
+    padding: 0,
+  },
+  zIndex: {
+    zIndex: 10,
   },
 });
 export default SignupScreen;

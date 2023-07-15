@@ -8,6 +8,7 @@ import Loader from '../../components/common/Loader';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {AuthStackParamList} from '../AppRoute';
 import useAuthStore, {AuthState} from '../../stores/authStore';
+import {defaultStyles} from '../../utils/DefaultStyles';
 
 type Props = NativeStackScreenProps<AuthStackParamList, 'ConfirmUser'>;
 
@@ -60,6 +61,15 @@ const ConfirmUserScreen: React.FC<Props> = props => {
       ) : (
         <View style={styles.loginView}>
           <View>
+            <Text
+              style={[
+                defaultStyles.h4,
+                defaultStyles.whiteTextColor,
+                defaultStyles.textAlignCenter,
+                defaultStyles.container,
+              ]}>
+              An email has been sent to you containing a confirmation code
+            </Text>
             <TextInput
               style={styles.input}
               onChangeText={setConfirmationCode}
@@ -112,7 +122,7 @@ const ConfirmUserScreen: React.FC<Props> = props => {
               />
             </View>
           </View>
-          <View style={styles.loginSignupButton}>
+          <View style={styles.footer}>
             <GradientButton
               title={'Signup'}
               onClick={() => props.navigation.navigate('Signup')}
@@ -132,7 +142,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     padding: 20,
   },
-  loginSignupButton: {
+  footer: {
     position: 'absolute',
     width: '100%',
     bottom: 100,

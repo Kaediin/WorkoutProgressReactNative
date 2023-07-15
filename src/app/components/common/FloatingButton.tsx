@@ -10,7 +10,7 @@ interface FloatingButtonProps {
 const FloatingButton: React.FC<FloatingButtonProps> = ({onClick}) => {
   return (
     <LinearGradient
-      colors={Constants.POSITIVE_GRADIENT}
+      colors={Constants.SECONDARY_GRADIENT}
       style={styles.container}>
       <TouchableOpacity onPress={onClick} style={styles.touchableOpacity}>
         <Text style={styles.textColor}>+</Text>
