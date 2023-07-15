@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {StyleSheet, TextInput, View} from 'react-native';
+import {Image, StyleSheet, Text, TextInput, View} from 'react-native';
 import GradientButton from '../../components/common/GradientButton';
 import useAuth from '../../hooks/useAuth';
 import {CognitoUser} from 'amazon-cognito-identity-js';
@@ -41,45 +41,59 @@ const LoginScreen: React.FC<Props> = props => {
         <Loader />
       ) : !cognitoUser ? (
         <View style={styles.loginView}>
-          <View>
-            <TextInput
-              style={styles.input}
-              onChangeText={setEmail}
-              value={email}
-              placeholder="Email"
-              textContentType="emailAddress"
-              autoComplete="email"
-              placeholderTextColor="darkgrey"
-              keyboardType="email-address"
-              inputMode="email"
+          <View style={styles.header}>
+            <Image
+              source={require('../../icons/logo_no_bg.png')}
+              alt=""
+              style={styles.logo}
             />
-            <TextInput
-              style={styles.input}
-              onChangeText={setPassword}
-              value={password}
-              textContentType="password"
-              placeholder="Password"
-              inputMode="text"
-              placeholderTextColor="darkgrey"
-              autoComplete="password-new"
-              secureTextEntry
-            />
-            <View style={styles.loginButton}>
-              <GradientButton
-                title={'Login'}
-                onClick={async () => {
-                  setLoading(true);
-                  setCognitoUser(await signIn(email, password));
-                  setLoading(false);
-                }}
+          </View>
+          <View style={styles.body}>
+            <View>
+              <TextInput
+                style={styles.input}
+                onChangeText={setEmail}
+                value={email}
+                placeholder="Email"
+                textContentType="emailAddress"
+                autoComplete="email"
+                placeholderTextColor="darkgrey"
+                keyboardType="email-address"
+                inputMode="email"
               />
+              <TextInput
+                style={styles.input}
+                onChangeText={setPassword}
+                value={password}
+                textContentType="password"
+                placeholder="Password"
+                inputMode="text"
+                placeholderTextColor="darkgrey"
+                autoComplete="password-new"
+                secureTextEntry
+              />
+              <View style={styles.loginButton}>
+                <GradientButton
+                  title={'Login'}
+                  onClick={async () => {
+                    setLoading(true);
+                    setCognitoUser(await signIn(email, password));
+                    setLoading(false);
+                  }}
+                />
+              </View>
             </View>
           </View>
-          <View style={styles.loginSignupButton}>
-            <GradientButton
-              title={'Signup'}
-              onClick={() => props.navigation.navigate('Signup')}
-            />
+          <View style={styles.footer}>
+            <Text style={styles.noAccountText}>
+              No account yet? Click here to sign up!
+            </Text>
+            <View style={styles.opacity}>
+              <GradientButton
+                title={'Signup'}
+                onClick={() => props.navigation.navigate('Signup')}
+              />
+            </View>
           </View>
         </View>
       ) : (
@@ -92,17 +106,27 @@ const LoginScreen: React.FC<Props> = props => {
 const styles = StyleSheet.create({
   loginView: {
     flexDirection: 'column',
-    width: '100%',
+    justifyContent: 'space-between',
     height: '100%',
-    justifyContent: 'center',
-    padding: 20,
+    paddingVertical: 50,
+    paddingHorizontal: 20,
   },
-  loginSignupButton: {
-    position: 'absolute',
-    width: '100%',
-    bottom: 100,
-    left: 20,
-    opacity: 0.7,
+  header: {
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    flex: 1,
+  },
+  body: {
+    flex: 1,
+    justifyContent: 'flex-end',
+  },
+  footer: {
+    flex: 1,
+    justifyContent: 'flex-end',
+  },
+  logo: {
+    width: 200,
+    height: 200,
   },
   input: {
     margin: 5,
@@ -115,6 +139,14 @@ const styles = StyleSheet.create({
   },
   errorMessage: {
     color: 'red',
+  },
+  noAccountText: {
+    textAlign: 'center',
+    color: 'white',
+    marginBottom: Constants.CONTAINER_PADDING,
+  },
+  opacity: {
+    opacity: 0.9,
   },
 });
 

@@ -40,7 +40,7 @@ const stylesGrad = StyleSheet.create({
   titleOutline: {
     color: 'black',
   },
-  opacity: {opacity: 0.2},
+  opacity: {opacity: 0.4},
 });
 
 const GradientButton: React.FC<GradientButtonProps> = props => {

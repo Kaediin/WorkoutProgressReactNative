@@ -4,6 +4,7 @@ import {Gender} from '../types/Type';
 import * as Keychain from 'react-native-keychain';
 import useAuthStore, {AuthState} from '../stores/authStore';
 import {useApolloClient} from '@apollo/client';
+import {NativeModules, Platform} from 'react-native';
 
 export enum CognitoResponse {
   USERNAME_EXISTS = 'UsernameExistsException',
@@ -26,8 +27,12 @@ const useAuth = (): {
     lastName: string,
     email: string,
     gender: Gender,
+    password: string,
   ) => Promise<{cognitoUser: CognitoUser | null | undefined; error?: string}>;
-  confirmSignUp: (username: string, code: string) => Promise<{error?: string}>;
+  confirmSignUp: (
+    username: string,
+    code: string,
+  ) => Promise<{error?: string; success?: boolean}>;
   signOut: () => void;
   requestNewCode: (email: string) => Promise<{error?: string}>;
 } => {
@@ -115,11 +120,12 @@ const useAuth = (): {
     lastName: string,
     email: string,
     gender: Gender,
+    password: string,
   ): Promise<{cognitoUser: CognitoUser | null | undefined; error?: string}> => {
     try {
       const {user} = await Auth.signUp({
         username: email,
-        password: 'Welkom01!',
+        password: password,
         attributes: {
           name: `${firstName} ${middleName + ' '}${lastName}`,
           given_name: firstName,
@@ -127,9 +133,13 @@ const useAuth = (): {
           middle_name: middleName,
           nickname: `${firstName} ${middleName + ' '}${lastName}`,
           email,
-          gender: gender,
-          zoneinfo: 'Amsterdam',
-          locale: 'nl_NL',
+          gender,
+          zoneinfo: Intl.DateTimeFormat().resolvedOptions().timeZone || '',
+          locale:
+            Platform.OS === 'ios'
+              ? NativeModules.SettingsManager.settings.AppleLocale ||
+                NativeModules.SettingsManager.settings.AppleLanguages[0] // iOS 13
+              : NativeModules.I18nManager.localeIdentifier,
         },
         autoSignIn: {
           // optional - enables auto sign in after user is confirmed
@@ -147,11 +157,11 @@ const useAuth = (): {
   const confirmSignUp = async (
     username: string,
     code: string,
-  ): Promise<{error?: string}> => {
+  ): Promise<{error?: string; success?: boolean}> => {
     try {
       await Auth.confirmSignUp(username, code);
       setState(AuthState.USER_CONFIRMED);
-      return {error: undefined};
+      return {success: true};
     } catch (error) {
       console.log('error confirming sign up', error);
       // @ts-ignore

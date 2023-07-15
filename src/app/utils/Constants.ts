@@ -1,6 +1,6 @@
 const Constants = {
   PRIMARY_GRADIENT: ['#006666', '#00C5ED'],
-  SECONDARY_GRADIENT: ['#7ceece', '#d7f7d4'],
+  SECONDARY_GRADIENT: ['#41E1B4', '#9DE297'],
   TERTIARY_GRADIENT: ['#00b7fc', '#57b1ff'],
   ERROR_GRADIENT: ['#F20D0D', '#f20d0dbf'],
   POSITIVE_GRADIENT: ['#006666', '#003300'],
