@@ -116,7 +116,8 @@ const SignupScreen: React.FC<Props> = props => {
               // gender ? Constants.SECONDARY_GRADIENT : Constants.ERROR_GRADIENT
             >
               <TouchableOpacity onPress={() => setModalVisible(true)}>
-                <View style={[{borderRadius: 5}, styles.input]}>
+                <View style={[styles.signupButton, styles.input]}>
+                  {/* eslint-disable-next-line react-native/no-inline-styles */}
                   <Text style={{color: gender ? '#000000' : '#a9a9a9'}}>
                     {gender ? gender : 'Gender'}
                   </Text>
@@ -196,7 +197,7 @@ const styles = StyleSheet.create({
   signupForm: {},
   input: {
     margin: 5,
-    padding: 10,
+    padding: Constants.CONTAINER_PADDING,
     backgroundColor: 'white',
   },
   linearGradient: {
@@ -226,6 +227,9 @@ const styles = StyleSheet.create({
   },
   errorMessage: {
     color: 'red',
+  },
+  signupButton: {
+    borderRadius: Constants.BORDER_RADIUS_SMALL,
   },
 });
 export default SignupScreen;

@@ -9,6 +9,7 @@ import GradientButton from '../common/GradientButton';
 interface SelectMuscleGroupsProps {
   onConfirm: (groups: MuscleGroup[]) => void;
   preselected?: MuscleGroup[];
+  buttonText?: string;
 }
 
 const SelectMuscleGroups: React.FC<SelectMuscleGroupsProps> = props => {
@@ -50,7 +51,7 @@ const SelectMuscleGroups: React.FC<SelectMuscleGroupsProps> = props => {
       </View>
       <View style={styles.buttonContainer}>
         <GradientButton
-          title={'Confirm'}
+          title={props.buttonText || 'Confirm'}
           gradients={Constants.POSITIVE_GRADIENT}
           onClick={() => props.onConfirm(selected)}
         />
@@ -76,7 +77,7 @@ const styles = StyleSheet.create({
     color: 'white',
   },
   buttonContainer: {
-    marginTop: 100,
+    marginVertical: 50,
   },
 });
 

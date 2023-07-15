@@ -10,12 +10,13 @@ import {
 type CustomBottomSheetProps = {
   children: React.ReactNode;
   index?: number;
+  onDismiss?: () => void;
 };
 
 export const CustomBottomSheet = React.forwardRef<
   BottomSheetModal,
   CustomBottomSheetProps
->(({children, index}, ref) => {
+>(({children, index, onDismiss}, ref) => {
   const modalRef = useMemo(
     () => ref as React.RefObject<BottomSheetModal>,
     [ref],
@@ -40,7 +41,8 @@ export const CustomBottomSheet = React.forwardRef<
       ref={modalRef}
       index={index || 98}
       snapPoints={Constants.BOTTOM_SHEET_SNAPPOINTS}
-      backdropComponent={renderBackdrop}>
+      backdropComponent={renderBackdrop}
+      onDismiss={onDismiss}>
       <BottomSheetScrollView>
         <View style={styles.bottomSheetContainer}>{children}</View>
       </BottomSheetScrollView>
@@ -50,6 +52,6 @@ export const CustomBottomSheet = React.forwardRef<
 
 const styles = StyleSheet.create({
   bottomSheetContainer: {
-    padding: 10,
+    padding: Constants.CONTAINER_PADDING,
   },
 });

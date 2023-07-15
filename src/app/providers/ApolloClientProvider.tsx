@@ -14,8 +14,15 @@ import jwt_decode from 'jwt-decode';
 import moment from 'moment';
 import {Auth} from 'aws-amplify';
 import {onError} from '@apollo/client/link/error';
+import QueueLink from 'apollo-link-queue';
+import {RetryLink} from '@apollo/client/link/retry';
+import {useNetInfo} from '@react-native-community/netinfo';
+import * as Sentry from '@sentry/react-native';
+import Config from 'react-native-config';
 
-const graphqlUri = 'http://192.168.178.15:5000/graphql';
+const queueLink = new QueueLink();
+const retryLink = new RetryLink();
+const graphqlUri = Config.API_URI;
 
 export const apolloClient = new ApolloClient({
   link: from([]),
@@ -37,12 +44,43 @@ export const apolloClient = new ApolloClient({
 const errorLink: ApolloLink = onError(
   ({graphQLErrors, networkError, operation, forward}) => {
     if (graphQLErrors) {
-      console.log('Graphql Error');
-      console.error(graphQLErrors);
+      graphQLErrors.forEach(graphQLError => {
+        Sentry.withScope(scope => {
+          scope.setTag('Component', 'ApolloClientProvider');
+          scope.setTag('errorClass', 'graphQLError');
+
+          scope.setExtra('graphQLError', graphQLError);
+
+          Sentry.captureException(
+            new Error(`Network request failed: ${graphQLError.message}`),
+            {
+              extra: {
+                networkError,
+                requestURL: operation.getContext().uri,
+              },
+            },
+          );
+        });
+      });
     }
+
     if (networkError) {
-      console.log('Network Error');
-      console.error(networkError);
+      Sentry.withScope(scope => {
+        scope.setTag('Component', 'ApolloClientProvider');
+        scope.setTag('errorClass', 'networkError');
+
+        scope.setExtra('networkError', networkError);
+
+        Sentry.captureException(
+          new Error(`Network request failed: ${networkError.message}`),
+          {
+            extra: {
+              networkError,
+              requestURL: operation.getContext().uri,
+            },
+          },
+        );
+      });
     }
 
     return forward(operation);
@@ -80,6 +118,18 @@ const withToken = setContext(async () => {
 });
 
 const ApolloClientProvider: React.FC<React.PropsWithChildren> = props => {
+  const networkInfo = useNetInfo();
+
+  useEffect(() => {
+    if (networkInfo.isConnected === false) {
+      // Start queueing requests
+      queueLink.close();
+    } else if (networkInfo.isConnected === true) {
+      // Let requests pass (and execute all queued requests)
+      queueLink.open();
+    }
+  }, [networkInfo]);
+
   useEffect(() => {
     const httpLink = createHttpLink({
       uri: graphqlUri,
@@ -97,7 +147,13 @@ const ApolloClientProvider: React.FC<React.PropsWithChildren> = props => {
     });
 
     apolloClient.setLink(
-      from([withToken, errorLink, authMiddleware.concat(httpLink)]),
+      from([
+        retryLink,
+        queueLink,
+        withToken,
+        errorLink,
+        authMiddleware.concat(httpLink),
+      ]),
     );
   }, []);
 

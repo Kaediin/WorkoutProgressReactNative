@@ -88,6 +88,14 @@ def reactNativeArchitectures() {
     return value ? value.split(",") : ["armeabi-v7a", "x86", "x86_64", "arm64-v8a"]
 }
 
+project.ext.envConfigFiles = [
+    debug: ".env.development",
+    release: ".env.production",
+]
+
+apply from: project(':react-native-config').projectDir.getPath() + "/dotenv.gradle"
+apply from: "../../node_modules/@sentry/react-native/sentry.gradle"
+
 android {
     ndkVersion rootProject.ext.ndkVersion
 

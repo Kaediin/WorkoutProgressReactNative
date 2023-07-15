@@ -1,3 +1,55 @@
+type CognitoUser {
+  email: String!
+  family_name: String!
+  gender: String!
+  given_name: String!
+  locale: String!
+  name: String!
+  nickname: String!
+  zoneinfo: String!
+}
+
+type Exercise {
+  id: ID!
+  name: String!
+  primaryMuscles: [MuscleGroup]
+  secondaryMuscles: [MuscleGroup]
+  user: User
+}
+
+input ExerciseInput {
+  name: String!
+  primaryMuscles: [MuscleGroup]
+  secondaryMuscles: [MuscleGroup]
+}
+
+type ExerciseLog {
+  exercise: Exercise!
+  id: ID!
+  logDateTime: LocalDateTime!
+  repetitions: Float!
+  unit: WeightUnit!
+  user: User!
+  weightLeft: Float!
+  weightRight: Float!
+}
+
+input ExerciseLogInput {
+  exerciseId: String!
+  repetitions: Float!
+  unit: WeightUnit!
+  weightLeft: Float!
+  weightRight: Float!
+  zonedDateTimeString: String!
+}
+
+type GroupedExerciseLog {
+  exercise: Exercise!
+  logs: [ExerciseLog!]!
+}
+
+scalar LocalDateTime
+
 enum MuscleGroup {
   ABDUCTOR
   ABS
@@ -22,24 +74,29 @@ enum MuscleGroup {
 }
 
 type Mutation {
+  addExerciseLogToWorkout(input: ExerciseLogInput, workoutId: ID!): Workout
+  createExercise(input: ExerciseInput): Exercise
   createUser(userInput: UserInput!): User
-  meStartWorkout: Boolean
+  endWorkout(workoutId: ID!, zonedDateTimeString: String!): Workout
+  meStartWorkout(input: WorkoutInput!): Workout
+  removeExerciseLog(exerciseLogId: String!): Boolean!
   runFetchWorkoutsTask: Boolean
 }
 
 type Query {
-  userByEmail(email: String!): User
+  me: User
+  meHasActiveWorkout: Boolean!
+  myExercises: [Exercise!]
+  myWorkouts: [Workout!]
   userById(id: String!): User
   users: [User]
-  workouts: [Workout]
+  workoutById(id: ID!): Workout
 }
 
 type User {
-  email: String!
-  firstName: String!
+  cognitoUser: CognitoUser!
+  fid: String!
   id: ID!
-  lastName: String!
-  middleName: String!
 }
 
 input UserInput {
@@ -50,8 +107,24 @@ input UserInput {
   password: String!
 }
 
+enum WeightUnit {
+  KG
+  LBS
+}
+
 type Workout {
+  active: Boolean
+  endDateTime: LocalDateTime
+  exerciseLogs: [ExerciseLog!]!
+  groupedExerciseLogs: [GroupedExerciseLog!]!
   id: ID!
   muscleGroups: [MuscleGroup!]!
   name: String!
+  startDateTime: LocalDateTime
+}
+
+input WorkoutInput {
+  muscleGroups: [MuscleGroup!]!
+  name: String!
+  zonedDateTime: String!
 }

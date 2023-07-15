@@ -1,0 +1,3 @@
+fragment CognitoUser on CognitoUser {
+    name
+}
