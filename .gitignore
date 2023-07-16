@@ -63,3 +63,5 @@ yarn-error.log
 
 .env.development
 .env.production
+
+/ios/tmp.xcconfig

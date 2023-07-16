@@ -50,6 +50,11 @@ target 'WorkoutProgress' do
     # Pods for testing
   end
 
+  ENVFILES = {
+    'Debug' => '$(PODS_ROOT)/../../.env.development',
+    'Release' => '$(PODS_ROOT)/../../.env.production',
+  }
+
   post_install do |installer|
     flipper_post_install(installer)
     react_native_post_install(

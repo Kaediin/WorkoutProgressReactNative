@@ -1,10 +1,11 @@
 {
   "name": "workoutprogress",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "private": true,
   "scripts": {
     "android": "ENVFILE=.env.development react-native run-android",
     "ios": "ENVFILE=.env.development react-native run-ios --simulator=\"iPhone 14 Pro Max\"",
+    "ios-dev": "react-native run-ios --scheme \"WorkoutProgressDev\"",
     "lint": "eslint .",
     "start": "react-native start",
     "test": "jest",
