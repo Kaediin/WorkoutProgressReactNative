@@ -13,6 +13,7 @@
     "generate:gql": "graphql-codegen -c codegen.yml",
     "codegen": "graphql-codegen",
     "build:ios": "react-native bundle --entry-file='index.js' --bundle-output='./ios/main.jsbundle' --dev=false --platform='ios'",
+    "postinstall": "npm run bundle:ios",
     "check-dependencies": "rnx-dep-check",
     "fix-dependencies": "rnx-dep-check --write"
   },
