@@ -56,6 +56,13 @@ target 'WorkoutProgress' do
   }
 
   post_install do |installer|
+    installer.pods_project.targets.each do |target|
+        target.build_configurations.each do |config|
+          if target.name == 'react-native-config'
+            config.build_settings['ENVFILE'] = ENVFILES[config.name]
+          end
+        end
+    end
     flipper_post_install(installer)
     react_native_post_install(
       installer,
