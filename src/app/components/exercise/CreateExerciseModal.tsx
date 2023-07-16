@@ -67,6 +67,7 @@ const CreateExerciseModal: React.FC<CreateExerciseModalProps> = props => {
           style={styles.nameInput}
           placeholder={'Name'}
           onChangeText={setExerciseName}
+          maxLength={Constants.TEXT_INPUT_MAX_LENGTH}
         />
         <View style={styles.spaceBetween}>
           <Text>Primary muscle groups:</Text>
