@@ -77,6 +77,7 @@ const SignupScreen: React.FC<Props> = props => {
                 textContentType="givenName"
                 autoComplete="name"
                 placeholderTextColor="darkgrey"
+                maxLength={Constants.TEXT_INPUT_MAX_LENGTH}
               />
             </View>
             <View style={styles.signupInputContainer}>
@@ -88,6 +89,7 @@ const SignupScreen: React.FC<Props> = props => {
                 textContentType="middleName"
                 autoComplete="name"
                 placeholderTextColor="darkgrey"
+                maxLength={Constants.TEXT_INPUT_MAX_LENGTH}
               />
             </View>
             <View style={styles.signupInputContainer}>
@@ -99,6 +101,7 @@ const SignupScreen: React.FC<Props> = props => {
                 textContentType="familyName"
                 autoComplete="name"
                 placeholderTextColor="darkgrey"
+                maxLength={Constants.TEXT_INPUT_MAX_LENGTH}
               />
             </View>
             <View style={styles.signupInputContainer}>
@@ -112,6 +115,7 @@ const SignupScreen: React.FC<Props> = props => {
                 placeholderTextColor="darkgrey"
                 keyboardType="email-address"
                 inputMode="email"
+                maxLength={60}
               />
             </View>
             <View style={[styles.signupInputContainer, styles.zIndex]}>
@@ -149,6 +153,7 @@ const SignupScreen: React.FC<Props> = props => {
                 autoComplete="password-new"
                 placeholderTextColor="darkgrey"
                 secureTextEntry
+                maxLength={Constants.TEXT_INPUT_MAX_LENGTH}
               />
             </View>
             <View style={styles.signupInputContainer}>
@@ -161,6 +166,7 @@ const SignupScreen: React.FC<Props> = props => {
                 autoComplete="password-new"
                 placeholderTextColor="darkgrey"
                 secureTextEntry
+                maxLength={Constants.TEXT_INPUT_MAX_LENGTH}
               />
             </View>
             <Text style={[defaultStyles.footnote, styles.footnote]}>
