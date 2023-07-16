@@ -5,6 +5,7 @@ import useAuth from '../hooks/useAuth';
 import {CognitoJWTPayload} from '../types/Auth';
 import jwt_decode from 'jwt-decode';
 import moment from 'moment';
+import Config from 'react-native-config';
 
 export const AuthProvider: React.FC<PropsWithChildren> = props => {
   const setState = useAuthStore(state => state.setState);
@@ -76,11 +77,11 @@ export const AuthProvider: React.FC<PropsWithChildren> = props => {
   useEffect(() => {
     Amplify.configure({
       Auth: {
-        identityPoolId: 'eu-central-1:51986b93-84df-4c36-bcb3-aa0a57fd8cee',
-        identityPoolRegion: 'eu-central-1',
-        region: 'eu-central-1',
-        userPoolId: 'eu-central-1_Yg3KBaHrW',
-        userPoolWebClientId: '70ng66u9ipg69j6fcscpe8vmsm',
+        identityPoolId: Config.IDENTITY_POOL_ID,
+        identityPoolRegion: Config.IDENTITY_POOL_REGION,
+        region: Config.REGION,
+        userPoolId: Config.USER_POOL_ID,
+        userPoolWebClientId: Config.USER_POOL_WEB_CLIENT_ID,
       },
     });
     console.log('[AuthProvider] Configured Amplify');
