@@ -27,6 +27,7 @@ const GradientTextInput: React.FC<GradientTextInputProps> = props => {
         placeholderTextColor={props.placeholderTextColor}
         keyboardType={props.keyboardType}
         inputMode={props.inputMode}
+        maxLength={Constants.TEXT_INPUT_MAX_LENGTH}
       />
     </LinearGradient>
   );

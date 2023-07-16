@@ -149,6 +149,7 @@ const WorkoutsOverviewScreen: React.FC<Props> = ({route, navigation}) => {
               onChangeText={name =>
                 setNewWorkout(prevState => ({...prevState, name}))
               }
+              maxLength={Constants.TEXT_INPUT_MAX_LENGTH}
             />
             <Button
               title={'Use current date'}
