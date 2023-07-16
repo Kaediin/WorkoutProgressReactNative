@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {
-  ExerciseLog,
+  ExerciseLogFragment,
   GroupedExerciseLogFragment,
 } from '../../graphql/operations';
 import GradientBackground from '../common/GradientBackground';
@@ -10,12 +10,12 @@ import moment from 'moment';
 import {defaultStyles} from '../../utils/DefaultStyles';
 import LinearGradient from 'react-native-linear-gradient';
 import ContextMenu from 'react-native-context-menu-view';
-import {DATE_FORMAT} from '../../utils/Date';
+import {getRelativeTimeIfToday} from '../../utils/Date';
 import {ContextMenuActions} from '../../types/ContextMenuActions';
 
 interface ExerciseLogListItemProps {
   groupedExercise: GroupedExerciseLogFragment;
-  onEditLog: (log: ExerciseLog) => void;
+  onEditLog: (log: ExerciseLogFragment) => void;
   onRemoveLog: (id: string) => void;
 }
 
@@ -32,10 +32,15 @@ const ExerciseLogListItem: React.FC<ExerciseLogListItemProps> = ({
       styles={styles.container}>
       {lastLoggedDate && (
         <Text style={defaultStyles.footnote}>
-          {moment.utc(lastLoggedDate).format(DATE_FORMAT)}
+          {getRelativeTimeIfToday(lastLoggedDate)}
         </Text>
       )}
-      <Text style={[defaultStyles.textAlignCenter, defaultStyles.h2]}>
+      <Text
+        style={[
+          defaultStyles.textAlignCenter,
+          defaultStyles.h3,
+          defaultStyles.whiteTextColor,
+        ]}>
         {groupedExercise.exercise.name}
       </Text>
       <FlatList
@@ -56,7 +61,7 @@ const ExerciseLogListItem: React.FC<ExerciseLogListItemProps> = ({
               ]}
               onPress={e =>
                 e.nativeEvent.name === ContextMenuActions.EDIT
-                  ? onEditLog(item)
+                  ? onEditLog(item as ExerciseLogFragment)
                   : onRemoveLog(item.id)
               }>
               <LinearGradient
@@ -67,7 +72,7 @@ const ExerciseLogListItem: React.FC<ExerciseLogListItemProps> = ({
                   {item.unit}
                 </Text>
                 <Text style={defaultStyles.footnote}>
-                  {moment.utc(loggedDate).format(DATE_FORMAT)}
+                  {getRelativeTimeIfToday(loggedDate)}
                 </Text>
               </LinearGradient>
             </ContextMenu>
