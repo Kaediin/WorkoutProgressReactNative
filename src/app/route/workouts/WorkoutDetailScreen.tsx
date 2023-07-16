@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import GradientBackground from '../../components/common/GradientBackground';
 import {
+  ExerciseLogFragment,
   ExerciseLogInput,
   useAddExerciseLogToWorkoutMutation,
   useEndWorkoutMutation,
@@ -39,9 +40,8 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
   const bottomSheetRef = useRef<BottomSheetModal>(null);
 
   const [createExerciseModal, setCreateExerciseModal] = useState(false);
-  const [selectedWeight, setSelectedWeight] = useState<number>(1);
-  const [selectedFraction, setSelectedFraction] = useState<number>(0);
   const [workout, setWorkout] = useState<WorkoutLongFragment>();
+  const [editExistingExercise, setEditExistingExercise] = useState(false);
 
   const {
     data: myExercisesData,
@@ -82,12 +82,23 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
       props.navigation.setOptions({
         headerTitle: workoutData?.workoutById?.name,
       });
+      if (workoutData?.workoutById?.active) {
+        props.navigation.setOptions({
+          headerRight: () => (
+            <EndWorkout
+              label={'End Workout'}
+              color={'red'}
+              onPress={doEndWorkout}
+            />
+          ),
+        });
+      }
     }
   }, [workoutData?.workoutById]);
 
   useEffect(() => {
     if (logExeciseData?.addExerciseLogToWorkout) {
-      bottomSheetRef?.current?.dismiss();
+      toggleBottomSheetRef(false);
       setWorkout(logExeciseData?.addExerciseLogToWorkout);
     }
   }, [logExeciseData?.addExerciseLogToWorkout]);
@@ -122,9 +133,7 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
     ) {
       return;
     }
-    const weight: number = parseFloat(
-      `${selectedWeight}.${selectedFraction.toString().slice(2) ?? 0}`,
-    );
+
     logExecise({
       variables: {
         workoutId: workout.id,
@@ -132,8 +141,8 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
           exerciseId: exerciseLog.exerciseId,
           repetitions: exerciseLog.repetitions,
           zonedDateTimeString: exerciseLog.zonedDateTimeString,
-          weightLeft: weight,
-          weightRight: weight,
+          weightLeft: exerciseLog.weightLeft,
+          weightRight: exerciseLog.weightLeft,
           unit: exerciseLog.unit,
         },
       },
@@ -151,17 +160,33 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
         zonedDateTimeString: moment().toISOString(true),
       },
     }).finally(() =>
+      // @ts-ignore
       props.navigation.navigate('WorkoutsOverview', {
         cameFrom: moment().toISOString(true),
       }),
     );
   };
 
-  props.navigation.setOptions({
-    headerRight: () => (
-      <EndWorkout label={'End Workout'} color={'red'} onPress={doEndWorkout} />
-    ),
-  });
+  const getLatestLogByExerciseId = (
+    id: string,
+  ): ExerciseLogFragment | undefined => {
+    if (!workout) {
+      return;
+    }
+    const logs = workout.groupedExerciseLogs.find(
+      x => x.exercise.id === id,
+    )?.logs;
+    return logs ? logs[logs.length - 1] : undefined;
+  };
+
+  const toggleBottomSheetRef = (show: boolean): void => {
+    if (show) {
+      bottomSheetRef.current?.present();
+    } else {
+      bottomSheetRef.current?.dismiss();
+      setEditExistingExercise(false);
+    }
+  };
 
   return (
     <GradientBackground>
@@ -184,10 +209,7 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
                   groupedExercise={item}
                   key={item.exercise.id}
                   onEditLog={log => {
-                    setSelectedWeight(Math.floor(log.weightLeft));
-                    setSelectedFraction(
-                      log.weightLeft - Math.floor(log.weightLeft),
-                    );
+                    setEditExistingExercise(true);
                     setExerciseLog({
                       zonedDateTimeString: log.logDateTime,
                       exerciseId: log.exercise.id,
@@ -196,7 +218,7 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
                       weightLeft: log.weightLeft,
                       unit: log.unit,
                     });
-                    bottomSheetRef?.current?.present();
+                    toggleBottomSheetRef(true);
                   }}
                   onRemoveLog={id =>
                     removeExerciseLog({
@@ -213,7 +235,7 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
       ) : (
         <></>
       )}
-      {workout && <FloatingButton onClick={bottomSheetRef?.current?.present} />}
+      {workout && <FloatingButton onClick={() => toggleBottomSheetRef(true)} />}
       <BottomSheetModalProvider>
         <CreateExerciseModal
           active={createExerciseModal}
@@ -226,108 +248,160 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
         />
         <CustomBottomSheet
           ref={bottomSheetRef}
-          onDismiss={bottomSheetRef?.current?.dismiss}
+          onDismiss={() => toggleBottomSheetRef(false)}
           index={70}>
           {myExercisesLoading || logExeciseLoading ? (
             <ActivityIndicator />
           ) : (
             <>
-              <SelectExercises
-                onSelect={exercise => {
-                  setExerciseLog(prevState => ({
-                    ...prevState,
-                    exerciseId: exercise.id,
-                  }));
-                }}
-                selectedId={exerciseLog.exerciseId}
-                exercises={myExercisesData?.myExercises || []}
-                onCreateExerciseClick={() => setCreateExerciseModal(true)}
-              />
-              <View style={styles.pickerContainer}>
-                <View style={styles.pickerStyles}>
-                  <Text style={[defaultStyles.footnote, styles.pickerLabel]}>
-                    Repetition
-                  </Text>
-                  <Picker
-                    selectedValue={exerciseLog.repetitions}
-                    onValueChange={value =>
+              {!editExistingExercise && (
+                <SelectExercises
+                  onSelect={exercise => {
+                    setExerciseLog(prevState => ({
+                      ...prevState,
+                      exerciseId: exercise.id,
+                    }));
+                    const latestLogged = getLatestLogByExerciseId(exercise.id);
+                    if (latestLogged) {
                       setExerciseLog(prevState => ({
                         ...prevState,
-                        repetitions: value,
-                      }))
-                    }>
-                    {Object.keys(Constants.BOTTOM_SHEET_SNAPPOINTS)
-                      .splice(1, 100)
-                      .map(repetition => (
-                        <Picker.Item
-                          label={repetition}
-                          value={repetition}
-                          key={`rep_${repetition}`}
-                        />
-                      ))}
-                  </Picker>
-                </View>
-                <View style={styles.pickerStyles}>
-                  <Text style={[defaultStyles.footnote, styles.pickerLabel]}>
-                    Weight
-                  </Text>
-                  <Picker
-                    selectedValue={selectedWeight}
-                    onValueChange={setSelectedWeight}>
-                    {Constants.WEIGHT_POINTS.map(weight => (
-                      <Picker.Item
-                        label={weight}
-                        value={weight}
-                        key={`weight_${weight}`}
-                      />
-                    ))}
-                  </Picker>
-                </View>
-                <View style={styles.pickerStyles}>
-                  <Text style={[defaultStyles.footnote, styles.pickerLabel]}>
-                    Fraction
-                  </Text>
-                  <Picker
-                    selectedValue={selectedFraction}
-                    onValueChange={setSelectedFraction}>
-                    {Constants.WEIGHT_FRACTION_POINTS.map(fraction => (
-                      <Picker.Item
-                        label={fraction.toString()}
-                        value={fraction}
-                        key={`fraction_${fraction}`}
-                      />
-                    ))}
-                  </Picker>
-                </View>
-                <View style={styles.pickerStyles}>
-                  <Text style={[defaultStyles.footnote, styles.pickerLabel]}>
-                    Unit
-                  </Text>
-                  <Picker
-                    selectedValue={exerciseLog.unit}
-                    onValueChange={unit =>
+                        unit: latestLogged.unit,
+                        weightLeft: latestLogged.weightLeft,
+                        weightRight: latestLogged.weightRight,
+                        repetitions: latestLogged.repetitions,
+                      }));
+                    } else {
                       setExerciseLog(prevState => ({
                         ...prevState,
-                        unit: unit,
-                      }))
-                    }>
-                    {Object.keys(WeightUnit).map(unit => (
-                      <Picker.Item
-                        label={unit}
-                        value={unit}
-                        key={`unit_${unit}`}
-                      />
-                    ))}
-                  </Picker>
-                </View>
-              </View>
-              <Text style={styles.selectedWeightLabel}>
-                {exerciseLog.repetitions} x {selectedWeight}
-                {selectedFraction
-                  ? '.' + selectedFraction.toString().slice(2)
-                  : ''}{' '}
-                {exerciseLog.unit}
-              </Text>
+                        unit: WeightUnit.KG,
+                        weightLeft: 1,
+                        weightRight: 1,
+                        repetitions: 12,
+                      }));
+                    }
+                  }}
+                  selectedId={exerciseLog.exerciseId}
+                  exercises={myExercisesData?.myExercises || []}
+                  onCreateExerciseClick={() => setCreateExerciseModal(true)}
+                  sortByMuscleGroups={workout?.muscleGroups}
+                />
+              )}
+              {exerciseLog?.exerciseId && (
+                <>
+                  <View style={styles.pickerContainer}>
+                    <View style={styles.pickerStyles}>
+                      <Text
+                        style={[defaultStyles.footnote, styles.pickerLabel]}>
+                        Repetition
+                      </Text>
+                      <Picker
+                        selectedValue={exerciseLog.repetitions}
+                        onValueChange={value =>
+                          setExerciseLog(prevState => ({
+                            ...prevState,
+                            repetitions: value,
+                          }))
+                        }>
+                        {Object.keys(Constants.BOTTOM_SHEET_SNAPPOINTS)
+                          .splice(1, 100)
+                          .map(repetition => (
+                            <Picker.Item
+                              label={repetition}
+                              value={+repetition}
+                              key={`rep_${repetition}`}
+                            />
+                          ))}
+                      </Picker>
+                    </View>
+                    <View style={styles.pickerStyles}>
+                      <Text
+                        style={[defaultStyles.footnote, styles.pickerLabel]}>
+                        Weight
+                      </Text>
+                      <Picker
+                        selectedValue={
+                          +(
+                            exerciseLog.weightLeft.toString().split('.')[0] ?? 0
+                          )
+                        }
+                        onValueChange={value =>
+                          setExerciseLog(prevState => ({
+                            ...prevState,
+                            weightLeft: parseFloat(
+                              `${value}.${
+                                prevState.weightLeft.toString().split('.')[1]
+                              }`,
+                            ),
+                          }))
+                        }>
+                        {Constants.WEIGHT_POINTS.map(weight => (
+                          <Picker.Item
+                            label={weight}
+                            value={+weight}
+                            key={`weight_${weight}`}
+                          />
+                        ))}
+                      </Picker>
+                    </View>
+                    <View style={styles.pickerStyles}>
+                      <Text
+                        style={[defaultStyles.footnote, styles.pickerLabel]}>
+                        Fraction
+                      </Text>
+                      <Picker
+                        selectedValue={parseFloat(
+                          `0.${
+                            exerciseLog.weightLeft.toString().split('.')[1] ?? 0
+                          }`,
+                        )}
+                        onValueChange={value =>
+                          setExerciseLog(prevState => ({
+                            ...prevState,
+                            weightLeft: parseFloat(
+                              `${
+                                prevState.weightLeft.toString().split('.')[0]
+                              }.${value.toString().split('.')[1]}`,
+                            ),
+                          }))
+                        }>
+                        {Constants.WEIGHT_FRACTION_POINTS.map(fraction => (
+                          <Picker.Item
+                            label={fraction.toString()}
+                            value={+fraction}
+                            key={`fraction_${fraction}`}
+                          />
+                        ))}
+                      </Picker>
+                    </View>
+                    <View style={styles.pickerStyles}>
+                      <Text
+                        style={[defaultStyles.footnote, styles.pickerLabel]}>
+                        Unit
+                      </Text>
+                      <Picker
+                        selectedValue={exerciseLog.unit}
+                        onValueChange={unit =>
+                          setExerciseLog(prevState => ({
+                            ...prevState,
+                            unit: unit,
+                          }))
+                        }>
+                        {Object.keys(WeightUnit).map(unit => (
+                          <Picker.Item
+                            label={unit}
+                            value={unit}
+                            key={`unit_${unit}`}
+                          />
+                        ))}
+                      </Picker>
+                    </View>
+                  </View>
+                  <Text style={styles.selectedWeightLabel}>
+                    {exerciseLog.repetitions} x {exerciseLog.weightLeft}{' '}
+                    {exerciseLog.unit}
+                  </Text>
+                </>
+              )}
               <GradientButton
                 disabled={
                   !workout?.id ||
@@ -338,7 +412,7 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
                   !exerciseLog.unit
                 }
                 styles={styles.button}
-                title={'Log'}
+                title={editExistingExercise ? 'Adjust' : 'Log'}
                 onClick={logExercise}
               />
             </>

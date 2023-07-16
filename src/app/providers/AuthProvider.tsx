@@ -84,6 +84,7 @@ export const AuthProvider: React.FC<PropsWithChildren> = props => {
       },
     });
     console.log('[AuthProvider] Configured Amplify');
+    getAndUpdateAuthToken();
   }, []);
   return <>{props.children}</>;
 };
