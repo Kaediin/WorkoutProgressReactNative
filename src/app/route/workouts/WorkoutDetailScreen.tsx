@@ -31,7 +31,7 @@ import Constants from '../../utils/Constants';
 import GradientButton from '../../components/common/GradientButton';
 import moment from 'moment';
 import GroupedExerciseLogListItem from '../../components/exercise/ExerciseLogListItem';
-import CreateExerciseModal from '../../components/exercise/CreateExerciseModal';
+import CreateExerciseModalContent from '../../components/bottomSheet/CreateExerciseModalContent';
 import EndWorkout from '../../components/nav/headerComponents/EndWorkout';
 import usePreferenceStore from '../../stores/preferenceStore';
 
@@ -246,7 +246,7 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
       )}
       {workout && <FloatingButton onClick={() => toggleBottomSheetRef(true)} />}
       <BottomSheetModalProvider>
-        <CreateExerciseModal
+        <CreateExerciseModalContent
           active={createExerciseModal}
           onDismiss={added => {
             if (added) {

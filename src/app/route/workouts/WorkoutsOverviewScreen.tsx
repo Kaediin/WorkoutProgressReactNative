@@ -3,10 +3,12 @@ import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import GradientBackground from '../../components/common/GradientBackground';
 import {
   MuscleGroup,
+  useDeleteWorkoutMutation,
   useHasActiveWorkoutLazyQuery,
   useStartWorkoutMutation,
   useWorkoutsQuery,
   WorkoutInput,
+  WorkoutShortFragment,
 } from '../../graphql/operations';
 import FloatingButton from '../../components/common/FloatingButton';
 import {BottomSheetModal, BottomSheetModalProvider} from '@gorhom/bottom-sheet';
@@ -28,6 +30,8 @@ import ErrorMessage from '../../components/common/ErrorMessage';
 import WorkoutListItem from '../../components/workouts/WorkoutListItem';
 import PopupModal from '../../components/common/PopupModal';
 import {WorkoutStackParamList} from '../../stacks/WorkoutStack';
+import {ContextMenuActions} from '../../types/ContextMenuActions';
+import ContextMenu from 'react-native-context-menu-view';
 
 type Props = NativeStackScreenProps<WorkoutStackParamList, 'WorkoutsOverview'>;
 
@@ -65,6 +69,8 @@ const WorkoutsOverviewScreen: React.FC<Props> = ({route, navigation}) => {
   } = useWorkoutsQuery({
     fetchPolicy: 'no-cache',
   });
+
+  const [deleteWorkout] = useDeleteWorkoutMutation({fetchPolicy: 'no-cache'});
 
   const [startWorkout, {data: startWorkoutData, loading: startWorkoutLoading}] =
     useStartWorkoutMutation({
@@ -104,13 +110,23 @@ const WorkoutsOverviewScreen: React.FC<Props> = ({route, navigation}) => {
   }, [hasActiveWorkoutData]);
 
   useEffect(() => {
+    // @ts-ignore
     if (route.params?.cameFrom) {
       refetchWorkouts();
     }
+    // @ts-ignore
   }, [route.params?.cameFrom]);
 
   const navigateToWorkout = (id: string): void => {
     navigation.navigate('WorkoutDetail', {workoutId: id});
+  };
+
+  const removeWorkout = (workout: WorkoutShortFragment): void => {
+    deleteWorkout({
+      variables: {
+        id: workout.id,
+      },
+    }).finally(() => refetchWorkouts());
   };
 
   return (
@@ -126,15 +142,17 @@ const WorkoutsOverviewScreen: React.FC<Props> = ({route, navigation}) => {
       ) : (
         <FlatList
           data={existingWorkouts}
-          renderItem={({item}) => {
-            return (
+          renderItem={({item}) => (
+            <ContextMenu
+              actions={[{title: ContextMenuActions.REMOVE}]}
+              onPress={() => removeWorkout(item)}>
               <WorkoutListItem
                 key={item.id}
                 workout={item}
                 onWorkoutPressed={navigateToWorkout}
               />
-            );
-          }}
+            </ContextMenu>
+          )}
         />
       )}
 
