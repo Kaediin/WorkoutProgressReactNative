@@ -1,3 +1,20 @@
+## v0.0.4
+
+### Added
+
+- #8: Preferences to the profile screen
+- #9: Added responsiveness to signup page
+- #9: Prevented first letter being capital for middle name
+- #11: Delete option to Workouts
+- #11: Delete option to Exercises
+- #11: Edit option to Exercises
+
+### Fixed
+
+- #12: Logged exercises in workouts now logs the zoned date time on log
+- #13: Scroll on log workout exercises
+- #15: Fixed end workout button not working
+
 ## v0.0.3
 
 ### Added
