@@ -17,6 +17,8 @@ const Constants = {
   CONTAINER_PADDING: 10,
 
   TEXT_INPUT_MAX_LENGTH: 46,
+
+  DEFAULT_REPETITIONS: 10,
 };
 
 export default Constants;

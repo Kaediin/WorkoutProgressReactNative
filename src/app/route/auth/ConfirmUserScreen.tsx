@@ -61,13 +61,7 @@ const ConfirmUserScreen: React.FC<Props> = props => {
       ) : (
         <View style={styles.loginView}>
           <View>
-            <Text
-              style={[
-                defaultStyles.h4,
-                defaultStyles.whiteTextColor,
-                defaultStyles.textAlignCenter,
-                defaultStyles.container,
-              ]}>
+            <Text style={[defaultStyles.h4, defaultStyles.container]}>
               An email has been sent to you containing a confirmation code
             </Text>
             <TextInput

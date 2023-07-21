@@ -1,7 +1,6 @@
 import React from 'react';
 import {ExerciseFragment, MuscleGroup} from '../../graphql/operations';
 import {
-  Button,
   ScrollView,
   StyleSheet,
   Text,
@@ -10,6 +9,8 @@ import {
 } from 'react-native';
 import Constants from '../../utils/Constants';
 import LinearGradient from 'react-native-linear-gradient';
+import ClickableText from '../common/ClickableText';
+import {defaultStyles} from '../../utils/DefaultStyles';
 
 interface SelectExerciseProps {
   onSelect: (exercise: ExerciseFragment) => void;
@@ -23,9 +24,10 @@ const SelectExerciseGroups: React.FC<SelectExerciseProps> = props => {
   return (
     <ScrollView>
       <View>
-        <Button
-          title={'Create new exercise'}
+        <ClickableText
+          text={'Create new exercise'}
           onPress={props.onCreateExerciseClick}
+          styles={defaultStyles.textAlignCenter}
         />
       </View>
       <ScrollView style={styles.selectContainer} horizontal>

@@ -21,6 +21,7 @@ export type Query = {
   me?: Maybe<User>;
   meHasActiveWorkout: Scalars['Boolean'];
   myExercises?: Maybe<Array<Exercise>>;
+  myPreference?: Maybe<Preference>;
   myWorkouts?: Maybe<Array<Workout>>;
   userById?: Maybe<User>;
   users?: Maybe<Array<Maybe<User>>>;
@@ -88,6 +89,17 @@ export enum MuscleGroup {
   UPPER_BACK = 'UPPER_BACK'
 }
 
+export type Preference = {
+  __typename?: 'Preference';
+  defaultRepetitions?: Maybe<Scalars['Int']>;
+  unit?: Maybe<WeightUnit>;
+};
+
+export enum WeightUnit {
+  KG = 'KG',
+  LBS = 'LBS'
+}
+
 export type Workout = {
   __typename?: 'Workout';
   active?: Maybe<Scalars['Boolean']>;
@@ -112,11 +124,6 @@ export type ExerciseLog = {
   weightRight: Scalars['Float'];
 };
 
-export enum WeightUnit {
-  KG = 'KG',
-  LBS = 'LBS'
-}
-
 export type GroupedExerciseLog = {
   __typename?: 'GroupedExerciseLog';
   exercise: Exercise;
@@ -132,6 +139,7 @@ export type Mutation = {
   meStartWorkout?: Maybe<Workout>;
   removeExerciseLog: Scalars['Boolean'];
   runFetchWorkoutsTask?: Maybe<Scalars['Boolean']>;
+  updateMyPreference: Preference;
 };
 
 
@@ -166,6 +174,11 @@ export type MutationRemoveExerciseLogArgs = {
   exerciseLogId: Scalars['String'];
 };
 
+
+export type MutationUpdateMyPreferenceArgs = {
+  input: PreferenceInput;
+};
+
 export type ExerciseLogInput = {
   exerciseId: Scalars['String'];
   repetitions: Scalars['Float'];
@@ -195,6 +208,11 @@ export type WorkoutInput = {
   zonedDateTime: Scalars['String'];
 };
 
+export type PreferenceInput = {
+  defaultRepetitions?: InputMaybe<Scalars['Int']>;
+  unit?: InputMaybe<WeightUnit>;
+};
+
 export type CognitoUserFragment = { __typename?: 'CognitoUser', name: string };
 
 export type ExerciseFragment = { __typename?: 'Exercise', id: string, name: string, primaryMuscles?: Array<MuscleGroup | null> | null, secondaryMuscles?: Array<MuscleGroup | null> | null };
@@ -202,6 +220,8 @@ export type ExerciseFragment = { __typename?: 'Exercise', id: string, name: stri
 export type ExerciseLogFragment = { __typename?: 'ExerciseLog', id: string, logDateTime: any, repetitions: number, weightLeft: number, weightRight: number, unit: WeightUnit, exercise: { __typename?: 'Exercise', id: string, name: string, primaryMuscles?: Array<MuscleGroup | null> | null, secondaryMuscles?: Array<MuscleGroup | null> | null } };
 
 export type GroupedExerciseLogFragment = { __typename?: 'GroupedExerciseLog', exercise: { __typename?: 'Exercise', id: string, name: string, primaryMuscles?: Array<MuscleGroup | null> | null, secondaryMuscles?: Array<MuscleGroup | null> | null }, logs: Array<{ __typename?: 'ExerciseLog', id: string, logDateTime: any, repetitions: number, weightLeft: number, weightRight: number, unit: WeightUnit, exercise: { __typename?: 'Exercise', id: string, name: string, primaryMuscles?: Array<MuscleGroup | null> | null, secondaryMuscles?: Array<MuscleGroup | null> | null } }> };
+
+export type PreferenceFragment = { __typename?: 'Preference', unit?: WeightUnit | null, defaultRepetitions?: number | null };
 
 export type UserFragment = { __typename?: 'User', id: string, fid: string, cognitoUser: { __typename?: 'CognitoUser', name: string } };
 
@@ -222,6 +242,13 @@ export type RemoveExerciseLogMutationVariables = Exact<{
 
 
 export type RemoveExerciseLogMutation = { __typename?: 'Mutation', removeExerciseLog: boolean };
+
+export type UpdatePreferenceMutationVariables = Exact<{
+  input: PreferenceInput;
+}>;
+
+
+export type UpdatePreferenceMutation = { __typename?: 'Mutation', updateMyPreference: { __typename?: 'Preference', unit?: WeightUnit | null, defaultRepetitions?: number | null } };
 
 export type CreateUserMutationVariables = Exact<{
   input: UserInput;
@@ -249,6 +276,11 @@ export type MyExercisesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type MyExercisesQuery = { __typename?: 'Query', myExercises?: Array<{ __typename?: 'Exercise', id: string, name: string, primaryMuscles?: Array<MuscleGroup | null> | null, secondaryMuscles?: Array<MuscleGroup | null> | null }> | null };
+
+export type MyPreferenceQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type MyPreferenceQuery = { __typename?: 'Query', myPreference?: { __typename?: 'Preference', unit?: WeightUnit | null, defaultRepetitions?: number | null } | null };
 
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -280,6 +312,7 @@ export type WorkoutsQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type WorkoutsQuery = { __typename?: 'Query', myWorkouts?: Array<{ __typename?: 'Workout', id: string, name: string, muscleGroups: Array<MuscleGroup>, startDateTime?: any | null, endDateTime?: any | null, active?: boolean | null }> | null };
 
+export const PreferenceFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"Preference"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Preference"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"unit"}},{"kind":"Field","name":{"kind":"Name","value":"defaultRepetitions"}}]}}]} as unknown as DocumentNode;
 export const CognitoUserFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"CognitoUser"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"CognitoUser"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]} as unknown as DocumentNode;
 export const UserFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"User"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"User"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"fid"}},{"kind":"Field","name":{"kind":"Name","value":"cognitoUser"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"CognitoUser"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"CognitoUser"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"CognitoUser"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]} as unknown as DocumentNode;
 export const WorkoutShortFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"WorkoutShort"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Workout"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"muscleGroups"}},{"kind":"Field","name":{"kind":"Name","value":"startDateTime"}},{"kind":"Field","name":{"kind":"Name","value":"endDateTime"}},{"kind":"Field","name":{"kind":"Name","value":"active"}}]}}]} as unknown as DocumentNode;
@@ -341,6 +374,33 @@ export function useRemoveExerciseLogMutation(baseOptions?: Apollo.MutationHookOp
 export type RemoveExerciseLogMutationHookResult = ReturnType<typeof useRemoveExerciseLogMutation>;
 export type RemoveExerciseLogMutationResult = Apollo.MutationResult<RemoveExerciseLogMutation>;
 export type RemoveExerciseLogMutationOptions = Apollo.BaseMutationOptions<RemoveExerciseLogMutation, RemoveExerciseLogMutationVariables>;
+export const UpdatePreferenceDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"updatePreference"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"PreferenceInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"updateMyPreference"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"Preference"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"Preference"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Preference"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"unit"}},{"kind":"Field","name":{"kind":"Name","value":"defaultRepetitions"}}]}}]} as unknown as DocumentNode;
+export type UpdatePreferenceMutationFn = Apollo.MutationFunction<UpdatePreferenceMutation, UpdatePreferenceMutationVariables>;
+
+/**
+ * __useUpdatePreferenceMutation__
+ *
+ * To run a mutation, you first call `useUpdatePreferenceMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdatePreferenceMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updatePreferenceMutation, { data, loading, error }] = useUpdatePreferenceMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdatePreferenceMutation(baseOptions?: Apollo.MutationHookOptions<UpdatePreferenceMutation, UpdatePreferenceMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdatePreferenceMutation, UpdatePreferenceMutationVariables>(UpdatePreferenceDocument, options);
+      }
+export type UpdatePreferenceMutationHookResult = ReturnType<typeof useUpdatePreferenceMutation>;
+export type UpdatePreferenceMutationResult = Apollo.MutationResult<UpdatePreferenceMutation>;
+export type UpdatePreferenceMutationOptions = Apollo.BaseMutationOptions<UpdatePreferenceMutation, UpdatePreferenceMutationVariables>;
 export const CreateUserDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"createUser"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"UserInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createUser"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"userInput"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]} as unknown as DocumentNode;
 export type CreateUserMutationFn = Apollo.MutationFunction<CreateUserMutation, CreateUserMutationVariables>;
 
@@ -451,6 +511,34 @@ export function useMyExercisesLazyQuery(baseOptions?: Apollo.LazyQueryHookOption
 export type MyExercisesQueryHookResult = ReturnType<typeof useMyExercisesQuery>;
 export type MyExercisesLazyQueryHookResult = ReturnType<typeof useMyExercisesLazyQuery>;
 export type MyExercisesQueryResult = Apollo.QueryResult<MyExercisesQuery, MyExercisesQueryVariables>;
+export const MyPreferenceDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"myPreference"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"myPreference"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"Preference"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"Preference"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Preference"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"unit"}},{"kind":"Field","name":{"kind":"Name","value":"defaultRepetitions"}}]}}]} as unknown as DocumentNode;
+
+/**
+ * __useMyPreferenceQuery__
+ *
+ * To run a query within a React component, call `useMyPreferenceQuery` and pass it any options that fit your needs.
+ * When your component renders, `useMyPreferenceQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useMyPreferenceQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useMyPreferenceQuery(baseOptions?: Apollo.QueryHookOptions<MyPreferenceQuery, MyPreferenceQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<MyPreferenceQuery, MyPreferenceQueryVariables>(MyPreferenceDocument, options);
+      }
+export function useMyPreferenceLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<MyPreferenceQuery, MyPreferenceQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<MyPreferenceQuery, MyPreferenceQueryVariables>(MyPreferenceDocument, options);
+        }
+export type MyPreferenceQueryHookResult = ReturnType<typeof useMyPreferenceQuery>;
+export type MyPreferenceLazyQueryHookResult = ReturnType<typeof useMyPreferenceLazyQuery>;
+export type MyPreferenceQueryResult = Apollo.QueryResult<MyPreferenceQuery, MyPreferenceQueryVariables>;
 export const MeDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"me"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"me"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"User"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"CognitoUser"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"CognitoUser"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"User"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"User"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"fid"}},{"kind":"Field","name":{"kind":"Name","value":"cognitoUser"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"CognitoUser"}}]}}]}}]} as unknown as DocumentNode;
 
 /**

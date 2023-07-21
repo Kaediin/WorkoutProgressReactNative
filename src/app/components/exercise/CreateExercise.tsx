@@ -25,7 +25,11 @@ const CreateExercise: React.FC = () => {
 
 const styles = StyleSheet.create({
   button: {
-    marginVertical: 20,
+    position: 'absolute',
+    bottom: 10,
+    display: 'flex',
+    alignSelf: 'center',
+    zIndex: -1,
   },
 });
 

@@ -6,17 +6,19 @@ import {
   BottomSheetModal,
   BottomSheetScrollView,
 } from '@gorhom/bottom-sheet';
+import ClickableText from '../common/ClickableText';
 
 type CustomBottomSheetProps = {
   children: React.ReactNode;
   index?: number;
   onDismiss?: () => void;
+  showCloseText?: boolean;
 };
 
 export const CustomBottomSheet = React.forwardRef<
   BottomSheetModal,
   CustomBottomSheetProps
->(({children, index, onDismiss}, ref) => {
+>(({children, index, onDismiss, showCloseText}, ref) => {
   const modalRef = useMemo(
     () => ref as React.RefObject<BottomSheetModal>,
     [ref],
@@ -43,6 +45,13 @@ export const CustomBottomSheet = React.forwardRef<
       snapPoints={Constants.BOTTOM_SHEET_SNAPPOINTS}
       backdropComponent={renderBackdrop}
       onDismiss={onDismiss}>
+      {showCloseText && (
+        <ClickableText
+          styles={styles.dismissText}
+          text={'Dismiss'}
+          onPress={onDismiss}
+        />
+      )}
       <BottomSheetScrollView>
         <View style={styles.bottomSheetContainer}>{children}</View>
       </BottomSheetScrollView>
@@ -53,5 +62,9 @@ export const CustomBottomSheet = React.forwardRef<
 const styles = StyleSheet.create({
   bottomSheetContainer: {
     padding: Constants.CONTAINER_PADDING,
+  },
+  dismissText: {
+    alignSelf: 'flex-end',
+    marginRight: 20,
   },
 });

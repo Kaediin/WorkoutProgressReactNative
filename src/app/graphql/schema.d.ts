@@ -18,6 +18,7 @@ export type Query = {
   me?: Maybe<User>;
   meHasActiveWorkout: Scalars['Boolean'];
   myExercises?: Maybe<Array<Exercise>>;
+  myPreference?: Maybe<Preference>;
   myWorkouts?: Maybe<Array<Workout>>;
   userById?: Maybe<User>;
   users?: Maybe<Array<Maybe<User>>>;
@@ -85,6 +86,17 @@ export enum MuscleGroup {
   UpperBack = 'UPPER_BACK'
 }
 
+export type Preference = {
+  __typename?: 'Preference';
+  defaultRepetitions?: Maybe<Scalars['Int']>;
+  unit?: Maybe<WeightUnit>;
+};
+
+export enum WeightUnit {
+  Kg = 'KG',
+  Lbs = 'LBS'
+}
+
 export type Workout = {
   __typename?: 'Workout';
   active?: Maybe<Scalars['Boolean']>;
@@ -109,11 +121,6 @@ export type ExerciseLog = {
   weightRight: Scalars['Float'];
 };
 
-export enum WeightUnit {
-  Kg = 'KG',
-  Lbs = 'LBS'
-}
-
 export type GroupedExerciseLog = {
   __typename?: 'GroupedExerciseLog';
   exercise: Exercise;
@@ -129,6 +136,7 @@ export type Mutation = {
   meStartWorkout?: Maybe<Workout>;
   removeExerciseLog: Scalars['Boolean'];
   runFetchWorkoutsTask?: Maybe<Scalars['Boolean']>;
+  updateMyPreference: Preference;
 };
 
 
@@ -163,6 +171,11 @@ export type MutationRemoveExerciseLogArgs = {
   exerciseLogId: Scalars['String'];
 };
 
+
+export type MutationUpdateMyPreferenceArgs = {
+  input: PreferenceInput;
+};
+
 export type ExerciseLogInput = {
   exerciseId: Scalars['String'];
   repetitions: Scalars['Float'];
@@ -190,4 +203,9 @@ export type WorkoutInput = {
   muscleGroups: Array<MuscleGroup>;
   name: Scalars['String'];
   zonedDateTime: Scalars['String'];
+};
+
+export type PreferenceInput = {
+  defaultRepetitions?: InputMaybe<Scalars['Int']>;
+  unit?: InputMaybe<WeightUnit>;
 };
