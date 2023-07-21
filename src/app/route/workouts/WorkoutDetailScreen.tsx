@@ -122,7 +122,7 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
       preference?.defaultRepetitions || Constants.DEFAULT_REPETITIONS,
     weightLeft: 1,
     weightRight: 1,
-    zonedDateTimeString: moment().toISOString(true),
+    zonedDateTimeString: '',
     unit: preference?.unit || WeightUnit.KG,
   });
 
@@ -144,7 +144,7 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
         input: {
           exerciseId: exerciseLog.exerciseId,
           repetitions: exerciseLog.repetitions,
-          zonedDateTimeString: exerciseLog.zonedDateTimeString,
+          zonedDateTimeString: moment().toISOString(true),
           weightLeft: exerciseLog.weightLeft,
           weightRight: exerciseLog.weightLeft,
           unit: exerciseLog.unit,
