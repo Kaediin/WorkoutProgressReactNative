@@ -132,10 +132,13 @@ export type Mutation = {
   addExerciseLogToWorkout?: Maybe<Workout>;
   createExercise?: Maybe<Exercise>;
   createUser?: Maybe<User>;
+  deleteExercise: Scalars['Boolean'];
+  deleteWorkout?: Maybe<Scalars['Boolean']>;
   endWorkout?: Maybe<Workout>;
   meStartWorkout?: Maybe<Workout>;
   removeExerciseLog: Scalars['Boolean'];
   runFetchWorkoutsTask?: Maybe<Scalars['Boolean']>;
+  updateExercise?: Maybe<Exercise>;
   updateMyPreference: Preference;
 };
 
@@ -156,6 +159,16 @@ export type MutationCreateUserArgs = {
 };
 
 
+export type MutationDeleteExerciseArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type MutationDeleteWorkoutArgs = {
+  id: Scalars['ID'];
+};
+
+
 export type MutationEndWorkoutArgs = {
   workoutId: Scalars['ID'];
   zonedDateTimeString: Scalars['String'];
@@ -169,6 +182,12 @@ export type MutationMeStartWorkoutArgs = {
 
 export type MutationRemoveExerciseLogArgs = {
   exerciseLogId: Scalars['String'];
+};
+
+
+export type MutationUpdateExerciseArgs = {
+  id: Scalars['ID'];
+  input?: InputMaybe<ExerciseInput>;
 };
 
 

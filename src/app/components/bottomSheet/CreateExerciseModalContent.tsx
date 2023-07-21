@@ -1,27 +1,39 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {MuscleGroup, useCreateExerciseMutation} from '../../graphql/operations';
+import {
+  ExerciseFragment,
+  MuscleGroup,
+  useCreateExerciseMutation,
+  useUpdateExerciseMutation,
+} from '../../graphql/operations';
 import {BottomSheetModal} from '@gorhom/bottom-sheet';
 import GradientButton from '../common/GradientButton';
-import {CustomBottomSheet} from '../bottomSheet/CustomBottomSheet';
+import {CustomBottomSheet} from './CustomBottomSheet';
 import {StyleSheet, Text, TextInput, View} from 'react-native';
 import MuscleGroupList from '../workouts/MuscleGroupList';
 import Constants from '../../utils/Constants';
 import SelectMuscleGroups from '../workouts/SelectMuscleGroups';
 import ClickableText from '../common/ClickableText';
+import {nonNullable} from '../../utils/List';
 
 interface CreateExerciseModalProps {
   active: boolean;
   onDismiss: (added: boolean) => void;
+  existingExercise?: ExerciseFragment;
+  onUpdate: () => void;
 }
 
-const CreateExerciseModal: React.FC<CreateExerciseModalProps> = props => {
-  const [exerciseName, setExerciseName] = useState('');
+const CreateExerciseModalContent: React.FC<
+  CreateExerciseModalProps
+> = props => {
+  const [exerciseName, setExerciseName] = useState(
+    props.existingExercise?.name || '',
+  );
   const [primaryMuscleGroups, setPrimaryMuscleGroups] = useState<MuscleGroup[]>(
-    [],
+    props.existingExercise?.primaryMuscles?.filter(nonNullable) || [],
   );
   const [secondaryMuscleGroups, setSecondaryMuscleGroups] = useState<
     MuscleGroup[]
-  >([]);
+  >(props.existingExercise?.secondaryMuscles?.filter(nonNullable) || []);
 
   const bottomSheetModalRefMain = useRef<BottomSheetModal>(null);
   const bottomSheetModalRefMuscleSelect = useRef<BottomSheetModal>(null);
@@ -33,6 +45,7 @@ const CreateExerciseModal: React.FC<CreateExerciseModalProps> = props => {
   const [createExercise, {}] = useCreateExerciseMutation({
     fetchPolicy: 'no-cache',
   });
+  const [updateExercise] = useUpdateExerciseMutation({fetchPolicy: 'no-cache'});
 
   useEffect(() => {
     if (props.active) {
@@ -42,20 +55,49 @@ const CreateExerciseModal: React.FC<CreateExerciseModalProps> = props => {
     }
   }, [props.active]);
 
-  const saveNewExercise = (): void => {
-    createExercise({
-      variables: {
-        input: {
-          name: exerciseName,
-          primaryMuscles: primaryMuscleGroups,
-          secondaryMuscles: secondaryMuscleGroups,
+  const saveExercise = (): void => {
+    if (props.existingExercise?.id) {
+      updateExercise({
+        variables: {
+          id: props.existingExercise.id,
+          input: {
+            name: exerciseName,
+            primaryMuscles: primaryMuscleGroups,
+            secondaryMuscles: secondaryMuscleGroups,
+          },
         },
-      },
-    }).finally(() => {
-      bottomSheetModalRefMain?.current?.dismiss();
-      props.onDismiss(true);
-    });
+      });
+    } else {
+      createExercise({
+        variables: {
+          input: {
+            name: exerciseName,
+            primaryMuscles: primaryMuscleGroups,
+            secondaryMuscles: secondaryMuscleGroups,
+          },
+        },
+      });
+    }
+    bottomSheetModalRefMain?.current?.dismiss();
+    props.onDismiss(true);
+    props.onUpdate();
   };
+
+  useEffect(() => {
+    if (props.existingExercise) {
+      setExerciseName(props.existingExercise.name);
+      setPrimaryMuscleGroups(
+        props.existingExercise.primaryMuscles?.filter(nonNullable) || [],
+      );
+      setSecondaryMuscleGroups(
+        props.existingExercise.secondaryMuscles?.filter(nonNullable) || [],
+      );
+    } else {
+      setExerciseName('');
+      setPrimaryMuscleGroups([]);
+      setSecondaryMuscleGroups([]);
+    }
+  }, [props.existingExercise]);
 
   return (
     <>
@@ -63,10 +105,13 @@ const CreateExerciseModal: React.FC<CreateExerciseModalProps> = props => {
         ref={bottomSheetModalRefMain}
         index={55}
         onDismiss={() => props.onDismiss(false)}>
-        <Text style={styles.label}>New exercise</Text>
+        {!props.existingExercise && (
+          <Text style={styles.label}>New exercise</Text>
+        )}
         <TextInput
           style={styles.nameInput}
           placeholder={'Name'}
+          value={exerciseName}
           onChangeText={setExerciseName}
           maxLength={Constants.TEXT_INPUT_MAX_LENGTH}
         />
@@ -104,7 +149,7 @@ const CreateExerciseModal: React.FC<CreateExerciseModalProps> = props => {
           <GradientButton
             title={'Save'}
             gradients={Constants.PRIMARY_GRADIENT}
-            onClick={saveNewExercise}
+            onClick={saveExercise}
             disabled={
               exerciseName.length === 0 || primaryMuscleGroups.length === 0
             }
@@ -155,4 +200,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CreateExerciseModal;
+export default CreateExerciseModalContent;

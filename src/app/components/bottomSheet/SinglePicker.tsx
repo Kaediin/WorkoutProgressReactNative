@@ -35,7 +35,7 @@ const SinglePicker: React.FC<SinglePickerProps> = props => {
             selectedValue={props.pickerValue}
             onValueChange={props.onPickerSelect}>
             {props.pickerOptions.map(value => (
-              <Picker.Item label={value.toString()} value={value} />
+              <Picker.Item key={value} label={value.toString()} value={value} />
             ))}
           </Picker>
         </CustomBottomSheet>

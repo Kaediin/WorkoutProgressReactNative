@@ -77,10 +77,13 @@ type Mutation {
   addExerciseLogToWorkout(input: ExerciseLogInput, workoutId: ID!): Workout
   createExercise(input: ExerciseInput): Exercise
   createUser(userInput: UserInput!): User
+  deleteExercise(id: ID!): Boolean!
+  deleteWorkout(id: ID!): Boolean
   endWorkout(workoutId: ID!, zonedDateTimeString: String!): Workout
   meStartWorkout(input: WorkoutInput!): Workout
   removeExerciseLog(exerciseLogId: String!): Boolean!
   runFetchWorkoutsTask: Boolean
+  updateExercise(id: ID!, input: ExerciseInput): Exercise
   updateMyPreference(input: PreferenceInput!): Preference!
 }
 
