@@ -3,6 +3,7 @@ import Constants from '../../utils/Constants';
 import {
   KeyboardAvoidingView,
   Platform,
+  ScrollView,
   StyleSheet,
   Text,
   TextInput,
@@ -18,6 +19,7 @@ import useAuth from '../../hooks/useAuth';
 import useAuthStore, {AuthState} from '../../stores/authStore';
 import DropDownPicker from 'react-native-dropdown-picker';
 import {defaultStyles} from '../../utils/DefaultStyles';
+import ClickableText from '../../components/common/ClickableText';
 
 type Props = NativeStackScreenProps<AuthStackParamList, 'Signup'>;
 
@@ -54,157 +56,163 @@ const SignupScreen: React.FC<Props> = props => {
 
   return (
     <LinearGradient colors={Constants.PRIMARY_GRADIENT}>
-      <View style={styles.signupContainer}>
-        <Text style={[defaultStyles.h1, defaultStyles.container]}>Signup</Text>
+      <ScrollView style={styles.signupContainer}>
+        <Text
+          style={[
+            defaultStyles.h1,
+            defaultStyles.container,
+            defaultStyles.whiteTextColor,
+            defaultStyles.textAlignCenter,
+          ]}>
+          Signup
+        </Text>
         <KeyboardAvoidingView
           behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
           keyboardVerticalOffset={100}>
-          <View style={styles.signupForm}>
-            <View style={styles.signupInputContainer}>
-              <TextInput
-                style={styles.input}
-                onChangeText={setFirstName}
-                value={firstName}
-                placeholder="First name"
-                textContentType="givenName"
-                autoComplete="name"
-                placeholderTextColor="darkgrey"
-                maxLength={Constants.TEXT_INPUT_MAX_LENGTH}
-              />
-            </View>
-            <View style={styles.signupInputContainer}>
-              <TextInput
-                style={styles.input}
-                onChangeText={setMiddleName}
-                value={middleName}
-                placeholder="Middle name (optional)"
-                textContentType="middleName"
-                autoComplete="name"
-                placeholderTextColor="darkgrey"
-                maxLength={Constants.TEXT_INPUT_MAX_LENGTH}
-              />
-            </View>
-            <View style={styles.signupInputContainer}>
-              <TextInput
-                style={styles.input}
-                onChangeText={setLastName}
-                value={lastName}
-                placeholder="Last name"
-                textContentType="familyName"
-                autoComplete="name"
-                placeholderTextColor="darkgrey"
-                maxLength={Constants.TEXT_INPUT_MAX_LENGTH}
-              />
-            </View>
-            <View style={styles.signupInputContainer}>
-              <TextInput
-                style={styles.input}
-                onChangeText={setEmail}
-                value={email}
-                placeholder="Email"
-                textContentType="emailAddress"
-                autoComplete="email"
-                placeholderTextColor="darkgrey"
-                keyboardType="email-address"
-                inputMode="email"
-                maxLength={60}
-              />
-            </View>
-            <View style={[styles.signupInputContainer, styles.zIndex]}>
-              <Text style={[defaultStyles.footnote, styles.footnote]}>
-                Biological gender is only used for personalised content based on
-                your tracked workouts
-              </Text>
-              <DropDownPicker
-                setValue={setGender}
-                value={gender || ''}
-                placeholder={'Biological gender'}
-                items={[
-                  {
-                    label: Gender.Male,
-                    value: Gender.Male,
-                  },
-                  {
-                    label: Gender.Female,
-                    value: Gender.Female,
-                  },
-                ]}
-                open={genderPickerOpen}
-                setOpen={setGenderPickerOpen}
-                style={styles.dropdownPicker}
-                dropDownContainerStyle={styles.dropdownPicker}
-              />
-            </View>
-            <View style={styles.signupInputContainer}>
-              <TextInput
-                style={styles.input}
-                onChangeText={setPassword}
-                value={password}
-                placeholder="Password"
-                textContentType="newPassword"
-                autoComplete="password-new"
-                placeholderTextColor="darkgrey"
-                secureTextEntry
-                maxLength={Constants.TEXT_INPUT_MAX_LENGTH}
-              />
-            </View>
-            <View style={styles.signupInputContainer}>
-              <TextInput
-                style={styles.input}
-                onChangeText={setPasswordConfirmation}
-                value={passwordConfirmation}
-                placeholder="Confirm password"
-                textContentType="newPassword"
-                autoComplete="password-new"
-                placeholderTextColor="darkgrey"
-                secureTextEntry
-                maxLength={Constants.TEXT_INPUT_MAX_LENGTH}
-              />
-            </View>
+          <View style={styles.signupInputContainer}>
+            <TextInput
+              style={styles.input}
+              onChangeText={setFirstName}
+              value={firstName}
+              placeholder="First name"
+              textContentType="givenName"
+              autoComplete="name"
+              placeholderTextColor="darkgrey"
+              maxLength={Constants.TEXT_INPUT_MAX_LENGTH}
+            />
+          </View>
+          <View style={styles.signupInputContainer}>
+            <TextInput
+              style={styles.input}
+              onChangeText={setMiddleName}
+              value={middleName}
+              placeholder="Middle name (optional)"
+              autoCapitalize="none"
+              keyboardType="default"
+              autoComplete="name-middle"
+              placeholderTextColor="darkgrey"
+              maxLength={Constants.TEXT_INPUT_MAX_LENGTH}
+            />
+          </View>
+          <View style={styles.signupInputContainer}>
+            <TextInput
+              style={styles.input}
+              onChangeText={setLastName}
+              value={lastName}
+              placeholder="Last name"
+              textContentType="familyName"
+              autoComplete="name"
+              placeholderTextColor="darkgrey"
+              maxLength={Constants.TEXT_INPUT_MAX_LENGTH}
+            />
+          </View>
+          <View style={styles.signupInputContainer}>
+            <TextInput
+              style={styles.input}
+              onChangeText={setEmail}
+              value={email}
+              placeholder="Email"
+              textContentType="emailAddress"
+              autoComplete="email"
+              placeholderTextColor="darkgrey"
+              keyboardType="email-address"
+              inputMode="email"
+              maxLength={60}
+            />
+          </View>
+          <View style={[styles.signupInputContainer, styles.zIndex]}>
             <Text style={[defaultStyles.footnote, styles.footnote]}>
-              Your password should contain at least eight characters: one digit,
-              one upper case, one lower case, and one special character.
+              Biological gender is only used for personalised content based on
+              your tracked workouts
             </Text>
-            <View>
-              <Text style={styles.errorMessage}>{errorMessage}</Text>
-            </View>
+            <DropDownPicker
+              setValue={setGender}
+              value={gender || ''}
+              placeholder={'Biological gender'}
+              items={[
+                {
+                  label: Gender.Male,
+                  value: Gender.Male,
+                },
+                {
+                  label: Gender.Female,
+                  value: Gender.Female,
+                },
+              ]}
+              open={genderPickerOpen}
+              setOpen={setGenderPickerOpen}
+              style={styles.dropdownPicker}
+              dropDownContainerStyle={styles.dropdownPicker}
+            />
+          </View>
+          <View style={styles.signupInputContainer}>
+            <TextInput
+              style={styles.input}
+              onChangeText={setPassword}
+              value={password}
+              placeholder="Password"
+              textContentType="newPassword"
+              autoComplete="password-new"
+              placeholderTextColor="darkgrey"
+              secureTextEntry
+              maxLength={Constants.TEXT_INPUT_MAX_LENGTH}
+            />
+          </View>
+          <View style={styles.signupInputContainer}>
+            <TextInput
+              style={styles.input}
+              onChangeText={setPasswordConfirmation}
+              value={passwordConfirmation}
+              placeholder="Confirm password"
+              textContentType="newPassword"
+              autoComplete="password-new"
+              placeholderTextColor="darkgrey"
+              secureTextEntry
+              maxLength={Constants.TEXT_INPUT_MAX_LENGTH}
+            />
+          </View>
+          <Text style={[defaultStyles.footnote, styles.footnote]}>
+            Your password should contain at least eight characters: one digit,
+            one upper case, one lower case, and one special character.
+          </Text>
+          <View>
+            <Text style={styles.errorMessage}>{errorMessage}</Text>
           </View>
         </KeyboardAvoidingView>
 
-        <View style={styles.backButton}>
-          <View style={styles.continueButton}>
-            <GradientButton
-              title={'Create'}
-              onClick={async () => {
-                if (!gender) {
-                  return;
-                }
-                const {cognitoUser, error} = await signUp(
-                  firstName,
-                  middleName,
-                  lastName,
-                  email,
-                  gender,
-                  password,
-                );
-                if (error) {
-                  setErrorMessage(error);
-                }
-                if (cognitoUser) {
-                  props.navigation.navigate('ConfirmUser', {email: email});
-                }
-              }}
-              disabled={!buttonEnabled}
-            />
-          </View>
+        <View style={styles.continueButton}>
           <GradientButton
-            title={'Go back'}
-            onClick={() => {
-              props.navigation.goBack();
+            title={'Create'}
+            onClick={async () => {
+              if (!gender) {
+                return;
+              }
+              const {cognitoUser, error} = await signUp(
+                firstName,
+                middleName,
+                lastName,
+                email,
+                gender,
+                password,
+              );
+              if (error) {
+                setErrorMessage(error);
+              }
+              if (cognitoUser) {
+                props.navigation.navigate('ConfirmUser', {email: email});
+              }
             }}
+            disabled={!buttonEnabled}
           />
         </View>
-      </View>
+        <ClickableText
+          text={'Go back'}
+          onPress={() => {
+            props.navigation.goBack();
+          }}
+          styles={[defaultStyles.textAlignCenter, styles.fontSize]}
+        />
+      </ScrollView>
     </LinearGradient>
   );
 };
@@ -212,10 +220,9 @@ const styles = StyleSheet.create({
   signupContainer: {
     width: '100%',
     height: '100%',
-    justifyContent: 'center',
     padding: 20,
+    marginTop: 20,
   },
-  signupForm: {},
   input: {
     padding: Constants.CONTAINER_PADDING,
     backgroundColor: 'white',
@@ -223,12 +230,6 @@ const styles = StyleSheet.create({
   },
   continueButton: {
     marginBottom: 20,
-  },
-  backButton: {
-    position: 'absolute',
-    width: '100%',
-    left: 20,
-    bottom: 100,
   },
   signupInputContainer: {
     marginBottom: 5,
@@ -254,6 +255,9 @@ const styles = StyleSheet.create({
   },
   zIndex: {
     zIndex: 10,
+  },
+  fontSize: {
+    fontSize: 16,
   },
 });
 export default SignupScreen;
