@@ -194,9 +194,6 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
         <ActivityIndicator />
       ) : workout ? (
         <View style={defaultStyles.container}>
-          <View style={styles.containerMuscleGroups}>
-            <MuscleGroupList muscleGroups={workout.muscleGroups} alignCenter />
-          </View>
           {workout.groupedExerciseLogs.length === 0 ? (
             <Text style={styles.noExercisesText}>
               Click to + to log your exercises
@@ -204,6 +201,14 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
           ) : (
             <FlatList
               data={workout.groupedExerciseLogs}
+              ListHeaderComponent={
+                <View style={styles.containerMuscleGroups}>
+                  <MuscleGroupList
+                    muscleGroups={workout.muscleGroups}
+                    alignCenter
+                  />
+                </View>
+              }
               renderItem={({item}) => (
                 <GroupedExerciseLogListItem
                   groupedExercise={item}
