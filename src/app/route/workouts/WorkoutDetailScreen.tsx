@@ -85,13 +85,13 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
       props.navigation.setOptions({
         headerTitle: workoutData?.workoutById?.name,
       });
-      if (workoutData?.workoutById?.active) {
+      if (workoutData?.workoutById?.active && workoutData?.workoutById?.id) {
         props.navigation.setOptions({
           headerRight: () => (
             <EndWorkout
               label={'End Workout'}
               color={'red'}
-              onPress={doEndWorkout}
+              onPress={() => doEndWorkout(workoutData?.workoutById?.id)}
             />
           ),
         });
@@ -153,14 +153,14 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
     });
   };
 
-  const doEndWorkout = (): void => {
-    if (!workout?.id) {
+  const doEndWorkout = (id: string | undefined): void => {
+    if (!id) {
       return;
     }
     endWorkout({
       fetchPolicy: 'no-cache',
       variables: {
-        workoutId: workout.id,
+        workoutId: id,
         zonedDateTimeString: moment().toISOString(true),
       },
     }).finally(() =>
@@ -254,6 +254,7 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
             }
             setCreateExerciseModal(false);
           }}
+          onUpdate={() => refetchMyExercises()}
         />
         <CustomBottomSheet
           ref={bottomSheetRef}
