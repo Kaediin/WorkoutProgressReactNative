@@ -33,10 +33,13 @@ import moment from 'moment';
 import GroupedExerciseLogListItem from '../../components/exercise/ExerciseLogListItem';
 import CreateExerciseModal from '../../components/exercise/CreateExerciseModal';
 import EndWorkout from '../../components/nav/headerComponents/EndWorkout';
+import usePreferenceStore from '../../stores/preferenceStore';
 
 type Props = NativeStackScreenProps<WorkoutStackParamList, 'WorkoutDetail'>;
 
 const WorkoutDetailScreen: React.FC<Props> = props => {
+  const preference = usePreferenceStore(state => state.preference);
+
   const bottomSheetRef = useRef<BottomSheetModal>(null);
 
   const [createExerciseModal, setCreateExerciseModal] = useState(false);
@@ -115,11 +118,12 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
 
   const [exerciseLog, setExerciseLog] = useState<ExerciseLogInput>({
     exerciseId: '',
-    repetitions: 12,
+    repetitions:
+      preference?.defaultRepetitions || Constants.DEFAULT_REPETITIONS,
     weightLeft: 1,
     weightRight: 1,
     zonedDateTimeString: moment().toISOString(true),
-    unit: WeightUnit.KG,
+    unit: preference?.unit || WeightUnit.KG,
   });
 
   const logExercise = (): void => {
@@ -273,10 +277,12 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
                     } else {
                       setExerciseLog(prevState => ({
                         ...prevState,
-                        unit: WeightUnit.KG,
+                        unit: preference?.unit || WeightUnit.KG,
                         weightLeft: 1,
                         weightRight: 1,
-                        repetitions: 12,
+                        repetitions:
+                          preference?.defaultRepetitions ||
+                          Constants.DEFAULT_REPETITIONS,
                       }));
                     }
                   }}
@@ -301,7 +307,8 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
                             ...prevState,
                             repetitions: value,
                           }))
-                        }>
+                        }
+                        itemStyle={styles.fontSizeSmall}>
                         {Object.keys(Constants.BOTTOM_SHEET_SNAPPOINTS)
                           .splice(1, 100)
                           .map(repetition => (
@@ -333,7 +340,8 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
                               }`,
                             ),
                           }))
-                        }>
+                        }
+                        itemStyle={styles.fontSizeSmall}>
                         {Constants.WEIGHT_POINTS.map(weight => (
                           <Picker.Item
                             label={weight}
@@ -363,7 +371,8 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
                               }.${value.toString().split('.')[1]}`,
                             ),
                           }))
-                        }>
+                        }
+                        itemStyle={styles.fontSizeSmall}>
                         {Constants.WEIGHT_FRACTION_POINTS.map(fraction => (
                           <Picker.Item
                             label={fraction.toString()}
@@ -385,7 +394,8 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
                             ...prevState,
                             unit: unit,
                           }))
-                        }>
+                        }
+                        itemStyle={styles.fontSizeSmall}>
                         {Object.keys(WeightUnit).map(unit => (
                           <Picker.Item
                             label={unit}
@@ -449,6 +459,9 @@ const styles = StyleSheet.create({
   },
   button: {
     marginTop: 50,
+  },
+  fontSizeSmall: {
+    fontSize: 14,
   },
 });
 

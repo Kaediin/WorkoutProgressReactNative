@@ -3,10 +3,11 @@ import {MuscleGroup, useCreateExerciseMutation} from '../../graphql/operations';
 import {BottomSheetModal} from '@gorhom/bottom-sheet';
 import GradientButton from '../common/GradientButton';
 import {CustomBottomSheet} from '../bottomSheet/CustomBottomSheet';
-import {Button, StyleSheet, Text, TextInput, View} from 'react-native';
+import {StyleSheet, Text, TextInput, View} from 'react-native';
 import MuscleGroupList from '../workouts/MuscleGroupList';
 import Constants from '../../utils/Constants';
 import SelectMuscleGroups from '../workouts/SelectMuscleGroups';
+import ClickableText from '../common/ClickableText';
 
 interface CreateExerciseModalProps {
   active: boolean;
@@ -71,8 +72,8 @@ const CreateExerciseModal: React.FC<CreateExerciseModalProps> = props => {
         />
         <View style={styles.spaceBetween}>
           <Text>Primary muscle groups:</Text>
-          <Button
-            title={'Select'}
+          <ClickableText
+            text={'Select'}
             onPress={() => {
               bottomSheetModalRefMuscleSelect?.current?.present();
               setMuscleSelectType('PRIMARY');
@@ -86,8 +87,8 @@ const CreateExerciseModal: React.FC<CreateExerciseModalProps> = props => {
         />
         <View style={styles.spaceBetween}>
           <Text>Secondary muscle groups:</Text>
-          <Button
-            title={'Select'}
+          <ClickableText
+            text={'Select'}
             onPress={() => {
               bottomSheetModalRefMuscleSelect?.current?.present();
               setMuscleSelectType('SECONDARY');

@@ -35,14 +35,7 @@ const ExerciseLogListItem: React.FC<ExerciseLogListItemProps> = ({
           {getRelativeTimeIfToday(lastLoggedDate)}
         </Text>
       )}
-      <Text
-        style={[
-          defaultStyles.textAlignCenter,
-          defaultStyles.h3,
-          defaultStyles.whiteTextColor,
-        ]}>
-        {groupedExercise.exercise.name}
-      </Text>
+      <Text style={defaultStyles.h3}>{groupedExercise.exercise.name}</Text>
       <FlatList
         data={groupedExercise.logs}
         renderItem={({item}) => {

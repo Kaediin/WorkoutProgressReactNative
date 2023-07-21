@@ -1,0 +1,5 @@
+query myPreference {
+    myPreference {
+        ...Preference
+    }
+}

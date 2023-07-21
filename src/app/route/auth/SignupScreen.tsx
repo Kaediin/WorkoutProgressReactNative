@@ -55,15 +55,7 @@ const SignupScreen: React.FC<Props> = props => {
   return (
     <LinearGradient colors={Constants.PRIMARY_GRADIENT}>
       <View style={styles.signupContainer}>
-        <Text
-          style={[
-            defaultStyles.h1,
-            defaultStyles.whiteTextColor,
-            defaultStyles.textAlignCenter,
-            defaultStyles.container,
-          ]}>
-          Signup
-        </Text>
+        <Text style={[defaultStyles.h1, defaultStyles.container]}>Signup</Text>
         <KeyboardAvoidingView
           behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
           keyboardVerticalOffset={100}>

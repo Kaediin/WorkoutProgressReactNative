@@ -81,12 +81,24 @@ type Mutation {
   meStartWorkout(input: WorkoutInput!): Workout
   removeExerciseLog(exerciseLogId: String!): Boolean!
   runFetchWorkoutsTask: Boolean
+  updateMyPreference(input: PreferenceInput!): Preference!
+}
+
+type Preference {
+  defaultRepetitions: Int
+  unit: WeightUnit
+}
+
+input PreferenceInput {
+  defaultRepetitions: Int
+  unit: WeightUnit
 }
 
 type Query {
   me: User
   meHasActiveWorkout: Boolean!
   myExercises: [Exercise!]
+  myPreference: Preference
   myWorkouts: [Workout!]
   userById(id: String!): User
   users: [User]
