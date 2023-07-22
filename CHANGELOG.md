@@ -1,4 +1,4 @@
-## v0.1.0
+## [v0.1.0]
 
 # Added
 
@@ -7,7 +7,7 @@
 - #18: Remarks for creating a workout and logging an exercise
 - #20: Option to add a default applied weight to an exercises. Useful for some logging certain machines
 
-## v0.0.4
+## [v0.0.4]
 
 ### Added
 
@@ -24,7 +24,7 @@
 - #13: Scroll on log workout exercises
 - #15: Fixed end workout button not working
 
-## v0.0.3
+## [v0.0.3]
 
 ### Added
 
@@ -37,7 +37,7 @@
 - #5: Prevented being able to edit exercise id when editing
 - #6: moved Cognito credentials to environment files
 
-## v0.0.2
+## [v0.0.2]
 
 ### Added
 
