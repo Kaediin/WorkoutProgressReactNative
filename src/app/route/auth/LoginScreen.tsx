@@ -88,7 +88,7 @@ const LoginScreen: React.FC<Props> = props => {
             <Text style={styles.noAccountText}>
               No account yet? Click here to sign up!
             </Text>
-            <View style={styles.opacity}>
+            <View style={styles.warmup}>
               <GradientButton
                 title={'Signup'}
                 onClick={() => props.navigation.navigate('Signup')}
@@ -145,7 +145,7 @@ const styles = StyleSheet.create({
     color: 'white',
     marginBottom: Constants.CONTAINER_PADDING,
   },
-  opacity: {
+  warmup: {
     opacity: 0.9,
   },
 });

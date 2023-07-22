@@ -4,6 +4,7 @@ import {
   ActivityIndicator,
   FlatList,
   StyleSheet,
+  Switch,
   Text,
   View,
 } from 'react-native';
@@ -15,6 +16,7 @@ import {
   useEndWorkoutMutation,
   useMyExercisesQuery,
   useRemoveExerciseLogMutation,
+  useUpdateExerciseLogMutation,
   useWorkoutByIdLazyQuery,
   WeightUnit,
   WorkoutLongFragment,
@@ -44,7 +46,8 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
 
   const [createExerciseModal, setCreateExerciseModal] = useState(false);
   const [workout, setWorkout] = useState<WorkoutLongFragment>();
-  const [editExistingExercise, setEditExistingExercise] = useState(false);
+  const [editExistingExercise, setEditExistingExercise] =
+    useState<ExerciseLogFragment>();
 
   const {
     data: myExercisesData,
@@ -53,8 +56,12 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
   } = useMyExercisesQuery({fetchPolicy: 'no-cache'});
   const [workoutById, {data: workoutData, loading: workoutLoading}] =
     useWorkoutByIdLazyQuery({fetchPolicy: 'no-cache'});
-  const [logExecise, {data: logExeciseData, loading: logExeciseLoading}] =
+  const [logExercise, {data: logExeciseData, loading: logExeciseLoading}] =
     useAddExerciseLogToWorkoutMutation({fetchPolicy: 'no-cache'});
+  const [
+    updateExerciseLog,
+    {data: updateExerciseLogData, loading: updateExeciseLoading},
+  ] = useUpdateExerciseLogMutation({fetchPolicy: 'no-cache'});
   const [endWorkout, {loading: endWorkoutLoading}] = useEndWorkoutMutation();
   const [
     removeExerciseLog,
@@ -107,6 +114,13 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
   }, [logExeciseData?.addExerciseLogToWorkout]);
 
   useEffect(() => {
+    if (updateExerciseLogData?.updateExerciseLog) {
+      toggleBottomSheetRef(false);
+      setWorkout(updateExerciseLogData?.updateExerciseLog);
+    }
+  }, [updateExerciseLogData?.updateExerciseLog]);
+
+  useEffect(() => {
     if (removeExerciseLogData?.removeExerciseLog) {
       workoutById({
         variables: {
@@ -124,33 +138,45 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
     weightRight: 1,
     zonedDateTimeString: '',
     unit: preference?.unit || WeightUnit.KG,
+    warmup: false,
   });
 
-  const logExercise = (): void => {
+  const doLogExercise = (): void => {
     if (
       !workout?.id ||
       !exerciseLog.exerciseId ||
       !exerciseLog.weightRight ||
       !exerciseLog.weightLeft ||
       !exerciseLog.repetitions ||
-      !exerciseLog.unit
+      !exerciseLog.unit ||
+      exerciseLog.warmup === undefined
     ) {
       return;
     }
 
-    logExecise({
-      variables: {
-        workoutId: workout.id,
-        input: {
-          exerciseId: exerciseLog.exerciseId,
-          repetitions: exerciseLog.repetitions,
-          zonedDateTimeString: moment().toISOString(true),
-          weightLeft: exerciseLog.weightLeft,
-          weightRight: exerciseLog.weightLeft,
-          unit: exerciseLog.unit,
+    if (editExistingExercise) {
+      updateExerciseLog({
+        variables: {
+          id: editExistingExercise.id,
+          input: exerciseLog,
         },
-      },
-    });
+      });
+    } else {
+      logExercise({
+        variables: {
+          workoutId: workout.id,
+          input: {
+            exerciseId: exerciseLog.exerciseId,
+            repetitions: exerciseLog.repetitions,
+            zonedDateTimeString: moment().toISOString(true),
+            weightLeft: exerciseLog.weightLeft,
+            weightRight: exerciseLog.weightLeft,
+            unit: exerciseLog.unit,
+            warmup: exerciseLog.warmup,
+          },
+        },
+      });
+    }
   };
 
   const doEndWorkout = (id: string | undefined): void => {
@@ -188,7 +214,7 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
       bottomSheetRef.current?.present();
     } else {
       bottomSheetRef.current?.dismiss();
-      setEditExistingExercise(false);
+      setEditExistingExercise(undefined);
     }
   };
 
@@ -218,7 +244,7 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
                   groupedExercise={item}
                   key={item.exercise.id}
                   onEditLog={log => {
-                    setEditExistingExercise(true);
+                    setEditExistingExercise(log);
                     setExerciseLog({
                       zonedDateTimeString: log.logDateTime,
                       exerciseId: log.exercise.id,
@@ -226,6 +252,7 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
                       weightRight: log.weightRight,
                       weightLeft: log.weightLeft,
                       unit: log.unit,
+                      warmup: log.warmup || false,
                     });
                     toggleBottomSheetRef(true);
                   }}
@@ -260,7 +287,7 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
           ref={bottomSheetRef}
           onDismiss={() => toggleBottomSheetRef(false)}
           index={70}>
-          {myExercisesLoading || logExeciseLoading ? (
+          {myExercisesLoading || logExeciseLoading || updateExeciseLoading ? (
             <ActivityIndicator />
           ) : (
             <>
@@ -412,10 +439,31 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
                       </Picker>
                     </View>
                   </View>
-                  <Text style={styles.selectedWeightLabel}>
-                    {exerciseLog.repetitions} x {exerciseLog.weightLeft}{' '}
-                    {exerciseLog.unit}
-                  </Text>
+                  <View style={defaultStyles.spaceEvenly}>
+                    <Text style={styles.selectedWeightLabel}>
+                      {exerciseLog.repetitions} x {exerciseLog.weightLeft}{' '}
+                      {exerciseLog.unit}
+                    </Text>
+                    <View style={defaultStyles.row}>
+                      <Text
+                        style={[
+                          styles.fontSizeSmall,
+                          styles.warmupText,
+                          !exerciseLog.warmup ? styles.warmupDisabled : {},
+                        ]}>
+                        Warmup
+                      </Text>
+                      <Switch
+                        value={exerciseLog.warmup}
+                        onValueChange={value =>
+                          setExerciseLog(prevState => ({
+                            ...prevState,
+                            warmup: value,
+                          }))
+                        }
+                      />
+                    </View>
+                  </View>
                 </>
               )}
               <GradientButton
@@ -429,7 +477,7 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
                 }
                 styles={styles.button}
                 title={editExistingExercise ? 'Adjust' : 'Log'}
-                onClick={logExercise}
+                onClick={doLogExercise}
               />
             </>
           )}
@@ -464,10 +512,16 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   button: {
-    marginTop: 50,
+    marginTop: 20,
   },
   fontSizeSmall: {
     fontSize: 14,
+  },
+  warmupText: {
+    marginRight: 10,
+  },
+  warmupDisabled: {
+    color: '#cccccc',
   },
 });
 

@@ -117,6 +117,7 @@ export type ExerciseLog = {
   repetitions: Scalars['Float'];
   unit: WeightUnit;
   user: User;
+  warmup?: Maybe<Scalars['Boolean']>;
   weightLeft: Scalars['Float'];
   weightRight: Scalars['Float'];
 };
@@ -139,12 +140,13 @@ export type Mutation = {
   removeExerciseLog: Scalars['Boolean'];
   runFetchWorkoutsTask?: Maybe<Scalars['Boolean']>;
   updateExercise?: Maybe<Exercise>;
+  updateExerciseLog?: Maybe<Workout>;
   updateMyPreference: Preference;
 };
 
 
 export type MutationAddExerciseLogToWorkoutArgs = {
-  input?: InputMaybe<ExerciseLogInput>;
+  input: ExerciseLogInput;
   workoutId: Scalars['ID'];
 };
 
@@ -191,6 +193,12 @@ export type MutationUpdateExerciseArgs = {
 };
 
 
+export type MutationUpdateExerciseLogArgs = {
+  exerciseLogId: Scalars['ID'];
+  input: ExerciseLogInput;
+};
+
+
 export type MutationUpdateMyPreferenceArgs = {
   input: PreferenceInput;
 };
@@ -199,6 +207,7 @@ export type ExerciseLogInput = {
   exerciseId: Scalars['String'];
   repetitions: Scalars['Float'];
   unit: WeightUnit;
+  warmup: Scalars['Boolean'];
   weightLeft: Scalars['Float'];
   weightRight: Scalars['Float'];
   zonedDateTimeString: Scalars['String'];

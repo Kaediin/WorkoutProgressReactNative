@@ -40,7 +40,6 @@ const WorkoutListItem: React.FC<WorkoutListItemProps> = ({
 const styles = StyleSheet.create({
   container: {
     padding: Constants.CONTAINER_PADDING,
-    margin: Constants.CONTAINER_PADDING,
     borderRadius: Constants.BORDER_RADIUS_SMALL,
   },
   containerHeader: {

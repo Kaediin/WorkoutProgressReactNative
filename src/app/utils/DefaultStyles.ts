@@ -46,10 +46,19 @@ export const defaultStyles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
   },
+  spaceEvenly: {
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
+    alignItems: 'center',
+  },
   zIndex10: {
     zIndex: 10,
   },
   clickableText: {
     color: '#41E1B4',
+  },
+  row: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
 });

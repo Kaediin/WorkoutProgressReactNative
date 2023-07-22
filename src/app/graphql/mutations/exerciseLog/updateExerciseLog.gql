@@ -1,0 +1,5 @@
+mutation updateExerciseLog($id: ID!, $input: ExerciseLogInput!) {
+    updateExerciseLog(exerciseLogId: $id, input: $input) {
+        ...WorkoutLong
+    }
+}
