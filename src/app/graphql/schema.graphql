@@ -10,6 +10,7 @@ type CognitoUser {
 }
 
 type Exercise {
+  defaultAppliedWeight: WeightValue
   id: ID!
   name: String!
   primaryMuscles: [MuscleGroup]
@@ -18,6 +19,7 @@ type Exercise {
 }
 
 input ExerciseInput {
+  defaultAppliedWeight: WeightValueInput
   name: String!
   primaryMuscles: [MuscleGroup]
   secondaryMuscles: [MuscleGroup]
@@ -125,6 +127,18 @@ input UserInput {
 enum WeightUnit {
   KG
   LBS
+}
+
+type WeightValue {
+  baseWeight: Int!
+  fraction: Int
+  unit: WeightUnit!
+}
+
+input WeightValueInput {
+  baseWeight: Int!
+  fraction: Int
+  unit: WeightUnit!
 }
 
 type Workout {

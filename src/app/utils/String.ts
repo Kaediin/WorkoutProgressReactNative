@@ -1,3 +1,5 @@
+import {WeightValueFragment} from '../graphql/operations';
+
 export const enumToReadableString = (str: string): string => {
   return (str.charAt(0).toUpperCase() + str.slice(1).toLowerCase()).replace(
     '_',
@@ -15,4 +17,12 @@ export const isValidPassword = (password: string): boolean => {
       '^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$',
     ),
   );
+};
+
+export const weightValueToString = (
+  weightValue: WeightValueFragment,
+): string => {
+  return `${weightValue.baseWeight}${
+    weightValue.fraction ? '.' + weightValue.fraction : ''
+  } ${weightValue.unit}`;
 };
