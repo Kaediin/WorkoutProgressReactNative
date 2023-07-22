@@ -5,6 +5,7 @@ import {
   FlatList,
   StyleSheet,
   Text,
+  TextInput,
   View,
 } from 'react-native';
 import GradientBackground from '../../components/common/GradientBackground';
@@ -148,6 +149,7 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
           weightLeft: exerciseLog.weightLeft,
           weightRight: exerciseLog.weightLeft,
           unit: exerciseLog.unit,
+          remark: exerciseLog.remark,
         },
       },
     });
@@ -226,6 +228,7 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
                       weightRight: log.weightRight,
                       weightLeft: log.weightLeft,
                       unit: log.unit,
+                      remark: log.remark,
                     });
                     toggleBottomSheetRef(true);
                   }}
@@ -418,6 +421,18 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
                   </Text>
                 </>
               )}
+              <TextInput
+                defaultValue={exerciseLog?.remark || ''}
+                onChangeText={text =>
+                  setExerciseLog(prevState => ({
+                    ...prevState,
+                    remark: text,
+                  }))
+                }
+                style={defaultStyles.remarkInput}
+                placeholder={'Remarks for this log'}
+                multiline
+              />
               <GradientButton
                 disabled={
                   !workout?.id ||

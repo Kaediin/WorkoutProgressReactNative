@@ -4,7 +4,7 @@ import {
   GroupedExerciseLogFragment,
 } from '../../graphql/operations';
 import GradientBackground from '../common/GradientBackground';
-import {FlatList, StyleSheet, Text} from 'react-native';
+import {FlatList, StyleSheet, Text, View} from 'react-native';
 import Constants from '../../utils/Constants';
 import moment from 'moment';
 import {defaultStyles} from '../../utils/DefaultStyles';
@@ -59,14 +59,21 @@ const ExerciseLogListItem: React.FC<ExerciseLogListItemProps> = ({
               }>
               <LinearGradient
                 colors={Constants.TERTIARY_GRADIENT}
-                style={styles.containerExerciseLogRow}>
-                <Text style={styles.textExerciseLogRow}>
-                  {item.repetitions} x {item.weightLeft}
-                  {item.unit}
-                </Text>
-                <Text style={defaultStyles.footnote}>
-                  {getRelativeTimeIfToday(loggedDate)}
-                </Text>
+                style={styles.containerLinearGradient}>
+                <View style={styles.containerExerciseLogRow}>
+                  <Text style={styles.textExerciseLogRow}>
+                    {item.repetitions} x {item.weightLeft}
+                    {item.unit}
+                  </Text>
+                  <Text style={defaultStyles.footnote}>
+                    {getRelativeTimeIfToday(loggedDate)}
+                  </Text>
+                </View>
+                {item.remark && (
+                  <Text style={[defaultStyles.footnote, styles.margin]}>
+                    {item.remark}
+                  </Text>
+                )}
               </LinearGradient>
             </ContextMenu>
           );
@@ -78,7 +85,7 @@ const ExerciseLogListItem: React.FC<ExerciseLogListItemProps> = ({
 
 const styles = StyleSheet.create({
   container: {
-    padding: Constants.CONTAINER_PADDING,
+    padding: Constants.CONTAINER_PADDING_MARGIN,
     borderRadius: Constants.BORDER_RADIUS_SMALL,
     marginTop: 20,
   },
@@ -87,17 +94,23 @@ const styles = StyleSheet.create({
   },
   containerExerciseLogRow: {
     flexDirection: 'row',
-    borderRadius: Constants.BORDER_RADIUS_SMALL,
     justifyContent: 'space-between',
-    paddingHorizontal: Constants.CONTAINER_PADDING,
-    marginTop: Constants.CONTAINER_PADDING,
-    width: 250,
-    alignSelf: 'center',
     alignItems: 'center',
   },
   textExerciseLogRow: {
-    padding: Constants.CONTAINER_PADDING,
+    padding: Constants.CONTAINER_PADDING_MARGIN,
     color: 'white',
+  },
+  containerLinearGradient: {
+    marginTop: Constants.CONTAINER_PADDING_MARGIN,
+    paddingHorizontal: Constants.CONTAINER_PADDING_MARGIN,
+    width: 250,
+    alignSelf: 'center',
+    borderRadius: Constants.BORDER_RADIUS_SMALL,
+  },
+  margin: {
+    marginTop: (Constants.CONTAINER_PADDING_MARGIN / 2) * -1,
+    marginBottom: Constants.CONTAINER_PADDING_MARGIN / 2,
   },
 });
 

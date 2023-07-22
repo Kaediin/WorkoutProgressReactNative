@@ -8,4 +8,5 @@ fragment ExerciseLog on ExerciseLog {
     weightLeft
     weightRight
     unit
+    remark
 }

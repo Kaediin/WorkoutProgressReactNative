@@ -130,7 +130,7 @@ const styles = StyleSheet.create({
   },
   input: {
     margin: 5,
-    padding: Constants.CONTAINER_PADDING,
+    padding: Constants.CONTAINER_PADDING_MARGIN,
     backgroundColor: 'white',
     borderRadius: Constants.BORDER_RADIUS_SMALL,
   },
@@ -143,7 +143,7 @@ const styles = StyleSheet.create({
   noAccountText: {
     textAlign: 'center',
     color: 'white',
-    marginBottom: Constants.CONTAINER_PADDING,
+    marginBottom: Constants.CONTAINER_PADDING_MARGIN,
   },
   opacity: {
     opacity: 0.9,

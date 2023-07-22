@@ -224,7 +224,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   input: {
-    padding: Constants.CONTAINER_PADDING,
+    padding: Constants.CONTAINER_PADDING_MARGIN,
     backgroundColor: 'white',
     borderRadius: Constants.BORDER_RADIUS_SMALL,
   },

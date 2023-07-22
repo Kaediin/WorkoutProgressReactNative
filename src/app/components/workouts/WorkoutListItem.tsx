@@ -39,14 +39,14 @@ const WorkoutListItem: React.FC<WorkoutListItemProps> = ({
 
 const styles = StyleSheet.create({
   container: {
-    padding: Constants.CONTAINER_PADDING,
-    margin: Constants.CONTAINER_PADDING,
+    padding: Constants.CONTAINER_PADDING_MARGIN,
+    margin: Constants.CONTAINER_PADDING_MARGIN,
     borderRadius: Constants.BORDER_RADIUS_SMALL,
   },
   containerHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: Constants.CONTAINER_PADDING,
+    marginBottom: Constants.CONTAINER_PADDING_MARGIN,
   },
   inActive: {
     opacity: 0.4,
@@ -60,7 +60,7 @@ const styles = StyleSheet.create({
   headerText: {
     textAlign: 'center',
     fontSize: 20,
-    marginBottom: Constants.CONTAINER_PADDING,
+    marginBottom: Constants.CONTAINER_PADDING_MARGIN,
   },
 });
 

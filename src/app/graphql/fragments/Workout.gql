@@ -17,7 +17,5 @@ fragment WorkoutLong on Workout {
     groupedExerciseLogs {
         ...GroupedExerciseLog
     }
-    #    exerciseLogs {
-    #        ...ExerciseLog
-    #    }
+    remark
 }
