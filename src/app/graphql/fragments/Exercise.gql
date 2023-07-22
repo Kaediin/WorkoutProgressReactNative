@@ -3,4 +3,7 @@ fragment Exercise on Exercise {
     name
     primaryMuscles
     secondaryMuscles
+    defaultAppliedWeight {
+        ...WeightValue
+    }
 }
