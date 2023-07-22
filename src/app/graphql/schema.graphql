@@ -89,11 +89,13 @@ type Mutation {
 
 type Preference {
   defaultRepetitions: Int
+  hideUnitSelector: Boolean
   unit: WeightUnit
 }
 
 input PreferenceInput {
   defaultRepetitions: Int
+  hideUnitSelector: Boolean
   unit: WeightUnit
 }
 
