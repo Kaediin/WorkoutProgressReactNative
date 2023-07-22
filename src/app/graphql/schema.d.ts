@@ -89,6 +89,7 @@ export enum MuscleGroup {
 export type Preference = {
   __typename?: 'Preference';
   defaultRepetitions?: Maybe<Scalars['Int']>;
+  hideUnitSelector?: Maybe<Scalars['Boolean']>;
   unit?: Maybe<WeightUnit>;
 };
 
@@ -226,5 +227,6 @@ export type WorkoutInput = {
 
 export type PreferenceInput = {
   defaultRepetitions?: InputMaybe<Scalars['Int']>;
+  hideUnitSelector?: InputMaybe<Scalars['Boolean']>;
   unit?: InputMaybe<WeightUnit>;
 };
