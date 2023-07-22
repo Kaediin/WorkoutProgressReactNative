@@ -47,13 +47,13 @@ const PopupModal: React.FC<PopupModalProps> = props => {
 
 const styles = StyleSheet.create({
   container: {
-    padding: Constants.CONTAINER_PADDING * 2,
+    padding: Constants.CONTAINER_PADDING_MARGIN * 2,
     borderRadius: Constants.BORDER_RADIUS_SMALL,
   },
   header: {
     fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: Constants.CONTAINER_PADDING,
+    marginBottom: Constants.CONTAINER_PADDING_MARGIN,
     textAlign: 'center',
   },
   buttonContainer: {

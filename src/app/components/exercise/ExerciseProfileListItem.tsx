@@ -43,14 +43,14 @@ const ExerciseProfileListItem: React.FC<ExerciseProfileListItemProps> = ({
 
 const styles = StyleSheet.create({
   container: {
-    margin: Constants.CONTAINER_PADDING,
-    padding: Constants.CONTAINER_PADDING,
+    margin: Constants.CONTAINER_PADDING_MARGIN,
+    padding: Constants.CONTAINER_PADDING_MARGIN,
     borderRadius: Constants.BORDER_RADIUS_SMALL,
   },
   name: {
     fontSize: 20,
     textAlign: 'center',
-    marginBottom: Constants.CONTAINER_PADDING,
+    marginBottom: Constants.CONTAINER_PADDING_MARGIN,
     color: 'white',
   },
   textAlignCenter: {

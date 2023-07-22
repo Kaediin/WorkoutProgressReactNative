@@ -3,7 +3,7 @@ import Constants from './Constants';
 
 export const defaultStyles = StyleSheet.create({
   container: {
-    padding: Constants.CONTAINER_PADDING * 2,
+    padding: Constants.CONTAINER_PADDING_MARGIN * 2,
   },
   footnote: {
     opacity: 0.5,
@@ -60,5 +60,13 @@ export const defaultStyles = StyleSheet.create({
   row: {
     flexDirection: 'row',
     alignItems: 'center',
+  },
+  remarkInput: {
+    backgroundColor: 'lightgrey',
+    margin: 2,
+    padding: Constants.CONTAINER_PADDING_MARGIN,
+    borderRadius: Constants.BORDER_RADIUS_SMALL,
+    marginTop: Constants.CONTAINER_PADDING_MARGIN,
+    minHeight: 50,
   },
 });

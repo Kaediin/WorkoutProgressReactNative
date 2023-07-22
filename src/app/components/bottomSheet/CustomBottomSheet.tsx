@@ -61,7 +61,7 @@ export const CustomBottomSheet = React.forwardRef<
 
 const styles = StyleSheet.create({
   bottomSheetContainer: {
-    padding: Constants.CONTAINER_PADDING,
+    padding: Constants.CONTAINER_PADDING_MARGIN,
   },
   dismissText: {
     alignSelf: 'flex-end',
