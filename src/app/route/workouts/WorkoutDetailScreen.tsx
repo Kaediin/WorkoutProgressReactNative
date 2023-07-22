@@ -415,29 +415,31 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
                         ))}
                       </Picker>
                     </View>
-                    <View style={styles.pickerStyles}>
-                      <Text
-                        style={[defaultStyles.footnote, styles.pickerLabel]}>
-                        Unit
-                      </Text>
-                      <Picker
-                        selectedValue={exerciseLog.unit}
-                        onValueChange={unit =>
-                          setExerciseLog(prevState => ({
-                            ...prevState,
-                            unit: unit,
-                          }))
-                        }
-                        itemStyle={styles.fontSizeSmall}>
-                        {Object.keys(WeightUnit).map(unit => (
-                          <Picker.Item
-                            label={unit}
-                            value={unit}
-                            key={`unit_${unit}`}
-                          />
-                        ))}
-                      </Picker>
-                    </View>
+                    {!preference?.hideUnitSelector && (
+                      <View style={styles.pickerStyles}>
+                        <Text
+                          style={[defaultStyles.footnote, styles.pickerLabel]}>
+                          Unit
+                        </Text>
+                        <Picker
+                          selectedValue={exerciseLog.unit}
+                          onValueChange={unit =>
+                            setExerciseLog(prevState => ({
+                              ...prevState,
+                              unit: unit,
+                            }))
+                          }
+                          itemStyle={styles.fontSizeSmall}>
+                          {Object.keys(WeightUnit).map(unit => (
+                            <Picker.Item
+                              label={unit}
+                              value={unit}
+                              key={`unit_${unit}`}
+                            />
+                          ))}
+                        </Picker>
+                      </View>
+                    )}
                   </View>
                   <View style={defaultStyles.spaceEvenly}>
                     <Text style={styles.selectedWeightLabel}>
@@ -496,7 +498,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   pickerStyles: {
-    width: '25%',
+    flex: 1,
   },
   pickerContainer: {
     flexDirection: 'row',
