@@ -48,7 +48,7 @@ const styles = StyleSheet.create({
   },
   muscleGroup: {
     margin: 5,
-    padding: Constants.CONTAINER_PADDING,
+    padding: Constants.CONTAINER_PADDING_MARGIN,
     backgroundColor: 'white',
     borderRadius: Constants.BORDER_RADIUS_LARGE,
     width: 110,

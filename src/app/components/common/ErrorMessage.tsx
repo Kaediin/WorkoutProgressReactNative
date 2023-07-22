@@ -13,7 +13,7 @@ const ErrorMessage: React.FC<ErrorMessageProps> = ({message}) => {
 const styles = StyleSheet.create({
   errorMessage: {
     color: 'red',
-    margin: Constants.CONTAINER_PADDING,
+    margin: Constants.CONTAINER_PADDING_MARGIN,
     textDecorationLine: 'underline',
   },
 });
