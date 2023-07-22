@@ -8,12 +8,18 @@ interface ClickableTextProps {
   text: string | number | undefined;
   onPress: (() => void) | undefined;
   styles?: StyleProp<TextStyle>;
+  textAlignCenter?: boolean;
 }
 
 const ClickableText: React.FC<ClickableTextProps> = props => {
   return (
     <TouchableOpacity onPress={props.onPress}>
-      <Text style={[defaultStyles.clickableText, props.styles]}>
+      <Text
+        style={[
+          defaultStyles.clickableText,
+          props.styles,
+          props.textAlignCenter && defaultStyles.textAlignCenter,
+        ]}>
         {props.text}
       </Text>
     </TouchableOpacity>

@@ -4,6 +4,7 @@ import {
   MuscleGroup,
   useCreateExerciseMutation,
   useUpdateExerciseMutation,
+  WeightValueFragment,
 } from '../../graphql/operations';
 import {BottomSheetModal} from '@gorhom/bottom-sheet';
 import GradientButton from '../common/GradientButton';
@@ -14,6 +15,8 @@ import Constants from '../../utils/Constants';
 import SelectMuscleGroups from '../workouts/SelectMuscleGroups';
 import ClickableText from '../common/ClickableText';
 import {nonNullable} from '../../utils/List';
+import WeightSelect from '../common/WeightSelect';
+import {weightValueToString} from '../../utils/String';
 
 interface CreateExerciseModalProps {
   active: boolean;
@@ -31,12 +34,15 @@ const CreateExerciseModalContent: React.FC<
   const [primaryMuscleGroups, setPrimaryMuscleGroups] = useState<MuscleGroup[]>(
     props.existingExercise?.primaryMuscles?.filter(nonNullable) || [],
   );
+  const [defaultAppliedWeight, setDefaultAppliedWeight] =
+    useState<WeightValueFragment>(props.existingExercise?.defaultAppliedWeight);
   const [secondaryMuscleGroups, setSecondaryMuscleGroups] = useState<
     MuscleGroup[]
   >(props.existingExercise?.secondaryMuscles?.filter(nonNullable) || []);
 
   const bottomSheetModalRefMain = useRef<BottomSheetModal>(null);
   const bottomSheetModalRefMuscleSelect = useRef<BottomSheetModal>(null);
+  const bottomSheetModalRefWeightSelect = useRef<BottomSheetModal>(null);
 
   const [muscleSelectType, setMuscleSelectType] = useState<
     'PRIMARY' | 'SECONDARY'
@@ -64,6 +70,7 @@ const CreateExerciseModalContent: React.FC<
             name: exerciseName,
             primaryMuscles: primaryMuscleGroups,
             secondaryMuscles: secondaryMuscleGroups,
+            defaultAppliedWeight,
           },
         },
       });
@@ -74,6 +81,7 @@ const CreateExerciseModalContent: React.FC<
             name: exerciseName,
             primaryMuscles: primaryMuscleGroups,
             secondaryMuscles: secondaryMuscleGroups,
+            defaultAppliedWeight,
           },
         },
       });
@@ -145,6 +153,18 @@ const CreateExerciseModalContent: React.FC<
           pillColor="#00C5ED"
           textColor="white"
         />
+        <ClickableText
+          text={
+            defaultAppliedWeight
+              ? weightValueToString(defaultAppliedWeight)
+              : 'Set default applied weight'
+          }
+          onPress={() => {
+            bottomSheetModalRefMain?.current?.dismiss();
+            bottomSheetModalRefWeightSelect?.current?.present();
+          }}
+          textAlignCenter
+        />
         <View style={styles.containerButton}>
           <GradientButton
             title={'Save'}
@@ -158,7 +178,7 @@ const CreateExerciseModalContent: React.FC<
       </CustomBottomSheet>
       <CustomBottomSheet
         ref={bottomSheetModalRefMuscleSelect}
-        onDismiss={() => bottomSheetModalRefMuscleSelect?.current?.dismiss()}>
+        onDismiss={bottomSheetModalRefMuscleSelect?.current?.dismiss}>
         <SelectMuscleGroups
           preselected={
             muscleSelectType === 'PRIMARY'
@@ -172,6 +192,19 @@ const CreateExerciseModalContent: React.FC<
             bottomSheetModalRefMuscleSelect?.current?.dismiss();
             bottomSheetModalRefMain?.current?.present();
           }}
+        />
+      </CustomBottomSheet>
+      <CustomBottomSheet
+        ref={bottomSheetModalRefWeightSelect}
+        onDismiss={() => {
+          bottomSheetModalRefWeightSelect?.current?.dismiss();
+          bottomSheetModalRefMain?.current?.present();
+        }}
+        index={65}
+        showCloseText>
+        <WeightSelect
+          weightValue={defaultAppliedWeight}
+          onWeightSelected={setDefaultAppliedWeight}
         />
       </CustomBottomSheet>
     </>

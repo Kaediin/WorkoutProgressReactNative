@@ -56,12 +56,25 @@ export type CognitoUser = {
 
 export type Exercise = {
   __typename?: 'Exercise';
+  defaultAppliedWeight?: Maybe<WeightValue>;
   id: Scalars['ID'];
   name: Scalars['String'];
   primaryMuscles?: Maybe<Array<Maybe<MuscleGroup>>>;
   secondaryMuscles?: Maybe<Array<Maybe<MuscleGroup>>>;
   user?: Maybe<User>;
 };
+
+export type WeightValue = {
+  __typename?: 'WeightValue';
+  baseWeight: Scalars['Int'];
+  fraction?: Maybe<Scalars['Int']>;
+  unit: WeightUnit;
+};
+
+export enum WeightUnit {
+  Kg = 'KG',
+  Lbs = 'LBS'
+}
 
 export enum MuscleGroup {
   Abductor = 'ABDUCTOR',
@@ -91,11 +104,6 @@ export type Preference = {
   defaultRepetitions?: Maybe<Scalars['Int']>;
   unit?: Maybe<WeightUnit>;
 };
-
-export enum WeightUnit {
-  Kg = 'KG',
-  Lbs = 'LBS'
-}
 
 export type Workout = {
   __typename?: 'Workout';
@@ -205,9 +213,16 @@ export type ExerciseLogInput = {
 };
 
 export type ExerciseInput = {
+  defaultAppliedWeight?: InputMaybe<WeightValueInput>;
   name: Scalars['String'];
   primaryMuscles?: InputMaybe<Array<InputMaybe<MuscleGroup>>>;
   secondaryMuscles?: InputMaybe<Array<InputMaybe<MuscleGroup>>>;
+};
+
+export type WeightValueInput = {
+  baseWeight: Scalars['Int'];
+  fraction?: InputMaybe<Scalars['Int']>;
+  unit: WeightUnit;
 };
 
 export type UserInput = {
