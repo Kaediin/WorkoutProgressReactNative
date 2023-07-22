@@ -117,7 +117,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: Constants.CONTAINER_PADDING,
+    marginBottom: Constants.CONTAINER_PADDING_MARGIN,
   },
   pickerLabel: {
     textAlign: 'center',
