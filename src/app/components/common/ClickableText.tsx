@@ -12,12 +12,18 @@ interface ClickableTextProps {
   onPress: (() => void) | undefined;
   containerStyles?: StyleProp<ViewStyle>;
   styles?: StyleProp<TextStyle>;
+  textAlignCenter?: boolean;
 }
 
 const ClickableText: React.FC<ClickableTextProps> = props => {
   return (
     <TouchableOpacity style={props.containerStyles} onPress={props.onPress}>
-      <Text style={[defaultStyles.clickableText, props.styles]}>
+      <Text
+        style={[
+          defaultStyles.clickableText,
+          props.styles,
+          props.textAlignCenter && defaultStyles.textAlignCenter,
+        ]}>
         {props.text}
       </Text>
     </TouchableOpacity>

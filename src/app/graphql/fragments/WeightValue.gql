@@ -1,0 +1,5 @@
+fragment WeightValue on WeightValue {
+    unit
+    baseWeight
+    fraction
+}
