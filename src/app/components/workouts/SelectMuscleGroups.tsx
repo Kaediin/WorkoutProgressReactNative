@@ -24,14 +24,12 @@ const SelectMuscleGroups: React.FC<SelectMuscleGroupsProps> = props => {
           const isSelected = selected.includes(muscleGroup as MuscleGroup);
           return (
             <LinearGradient
-              colors={Constants.PRIMARY_GRADIENT}
-              style={[
-                styles.muscleGroupContainer,
-                // eslint-disable-next-line react-native/no-inline-styles
-                {
-                  opacity: isSelected ? 0.5 : 1,
-                },
-              ]}
+              colors={
+                isSelected
+                  ? Constants.SECONDARY_GRADIENT
+                  : Constants.SECONDARY_GRADIENT_FADED
+              }
+              style={styles.muscleGroupContainer}
               key={index}>
               <TouchableOpacity
                 onPress={() => {
@@ -52,7 +50,7 @@ const SelectMuscleGroups: React.FC<SelectMuscleGroupsProps> = props => {
       <View style={styles.buttonContainer}>
         <GradientButton
           title={props.buttonText || 'Confirm'}
-          gradients={Constants.POSITIVE_GRADIENT}
+          gradients={Constants.SECONDARY_GRADIENT}
           onClick={() => props.onConfirm(selected)}
         />
       </View>

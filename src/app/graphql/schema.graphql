@@ -30,6 +30,7 @@ type ExerciseLog {
   repetitions: Float!
   unit: WeightUnit!
   user: User!
+  warmup: Boolean
   weightLeft: Float!
   weightRight: Float!
 }
@@ -38,6 +39,7 @@ input ExerciseLogInput {
   exerciseId: String!
   repetitions: Float!
   unit: WeightUnit!
+  warmup: Boolean!
   weightLeft: Float!
   weightRight: Float!
   zonedDateTimeString: String!
@@ -74,7 +76,7 @@ enum MuscleGroup {
 }
 
 type Mutation {
-  addExerciseLogToWorkout(input: ExerciseLogInput, workoutId: ID!): Workout
+  addExerciseLogToWorkout(input: ExerciseLogInput!, workoutId: ID!): Workout
   createExercise(input: ExerciseInput): Exercise
   createUser(userInput: UserInput!): User
   deleteExercise(id: ID!): Boolean!
@@ -84,6 +86,7 @@ type Mutation {
   removeExerciseLog(exerciseLogId: String!): Boolean!
   runFetchWorkoutsTask: Boolean
   updateExercise(id: ID!, input: ExerciseInput): Exercise
+  updateExerciseLog(exerciseLogId: ID!, input: ExerciseLogInput!): Workout
   updateMyPreference(input: PreferenceInput!): Preference!
 }
 

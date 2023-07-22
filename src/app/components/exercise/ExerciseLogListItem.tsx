@@ -58,7 +58,11 @@ const ExerciseLogListItem: React.FC<ExerciseLogListItemProps> = ({
                   : onRemoveLog(item.id)
               }>
               <LinearGradient
-                colors={Constants.TERTIARY_GRADIENT}
+                colors={
+                  item.warmup
+                    ? Constants.QUATERNARY_GRADIENT
+                    : Constants.TERTIARY_GRADIENT
+                }
                 style={styles.containerExerciseLogRow}>
                 <Text style={styles.textExerciseLogRow}>
                   {item.repetitions} x {item.weightLeft}

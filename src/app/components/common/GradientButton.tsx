@@ -40,7 +40,7 @@ const stylesGrad = StyleSheet.create({
   titleOutline: {
     color: 'black',
   },
-  opacity: {opacity: 0.4},
+  warmup: {opacity: 0.4},
 });
 
 const GradientButton: React.FC<GradientButtonProps> = props => {
@@ -48,7 +48,7 @@ const GradientButton: React.FC<GradientButtonProps> = props => {
     <LinearGradient
       colors={props.gradients ?? Constants.SECONDARY_GRADIENT}
       locations={[0, 1]}
-      style={[props.styles, stylesGrad.opacity, stylesGrad.linearGradient]}>
+      style={[props.styles, stylesGrad.warmup, stylesGrad.linearGradient]}>
       <Text style={stylesGrad.title}>{props.title}</Text>
     </LinearGradient>
   ) : (

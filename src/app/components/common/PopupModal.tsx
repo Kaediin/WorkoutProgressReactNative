@@ -37,7 +37,7 @@ const PopupModal: React.FC<PopupModalProps> = props => {
           <GradientButton
             title={'Understood'}
             onClick={props.onDismiss}
-            gradients={Constants.POSITIVE_GRADIENT}
+            gradients={Constants.SECONDARY_GRADIENT}
           />
         </View>
       </LinearGradient>

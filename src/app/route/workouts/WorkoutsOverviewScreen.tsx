@@ -32,6 +32,7 @@ import PopupModal from '../../components/common/PopupModal';
 import {WorkoutStackParamList} from '../../stacks/WorkoutStack';
 import {ContextMenuActions} from '../../types/ContextMenuActions';
 import ContextMenu from 'react-native-context-menu-view';
+import {defaultStyles} from '../../utils/DefaultStyles';
 
 type Props = NativeStackScreenProps<WorkoutStackParamList, 'WorkoutsOverview'>;
 
@@ -153,6 +154,7 @@ const WorkoutsOverviewScreen: React.FC<Props> = ({route, navigation}) => {
               />
             </ContextMenu>
           )}
+          style={defaultStyles.container}
         />
       )}
 
