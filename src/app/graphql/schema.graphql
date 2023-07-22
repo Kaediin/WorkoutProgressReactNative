@@ -27,6 +27,7 @@ type ExerciseLog {
   exercise: Exercise!
   id: ID!
   logDateTime: LocalDateTime!
+  remark: String
   repetitions: Float!
   unit: WeightUnit!
   user: User!
@@ -37,6 +38,7 @@ type ExerciseLog {
 
 input ExerciseLogInput {
   exerciseId: String!
+  remark: String
   repetitions: Float!
   unit: WeightUnit!
   warmup: Boolean!
@@ -140,11 +142,13 @@ type Workout {
   id: ID!
   muscleGroups: [MuscleGroup!]!
   name: String!
+  remark: String
   startDateTime: LocalDateTime
 }
 
 input WorkoutInput {
   muscleGroups: [MuscleGroup!]!
   name: String!
+  remark: String
   zonedDateTime: String!
 }

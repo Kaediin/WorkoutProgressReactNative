@@ -63,7 +63,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   muscleGroupText: {
-    paddingVertical: Constants.CONTAINER_PADDING,
+    paddingVertical: Constants.CONTAINER_PADDING_MARGIN,
     textAlign: 'center',
     color: 'white',
   },

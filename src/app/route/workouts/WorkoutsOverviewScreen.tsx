@@ -33,13 +33,20 @@ import {WorkoutStackParamList} from '../../stacks/WorkoutStack';
 import {ContextMenuActions} from '../../types/ContextMenuActions';
 import ContextMenu from 'react-native-context-menu-view';
 import {defaultStyles} from '../../utils/DefaultStyles';
+import ClickableText from '../../components/common/ClickableText';
+import MuscleGroupList from '../../components/workouts/MuscleGroupList';
+import GradientButton from '../../components/common/GradientButton';
 
 type Props = NativeStackScreenProps<WorkoutStackParamList, 'WorkoutsOverview'>;
 
 const WorkoutsOverviewScreen: React.FC<Props> = ({route, navigation}) => {
+  const [remark, setRemark] = useState<string>();
   const [activeWorkoutWarningModalOpen, setActiveWorkoutWarningModalOpen] =
     useState(false);
 
+  const [selectedMuscleGroups, setSelectedMuscleGroups] = useState<
+    MuscleGroup[]
+  >([]);
   const [newWorkout, setNewWorkout] = useState<WorkoutInput>({
     name: '',
     muscleGroups: [],
@@ -47,14 +54,17 @@ const WorkoutsOverviewScreen: React.FC<Props> = ({route, navigation}) => {
   });
 
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
-  const onSelectWorkoutMuscleGroups = (groups: MuscleGroup[]): void => {
-    if (newWorkout?.name && groups.length > 0) {
+  const bottomSheetModalRefMuscleSelect = useRef<BottomSheetModal>(null);
+
+  const doStartWorkout = (): void => {
+    if (newWorkout?.name && selectedMuscleGroups.length > 0) {
       startWorkout({
         variables: {
           input: {
             name: newWorkout.name,
-            muscleGroups: groups,
+            muscleGroups: selectedMuscleGroups,
             zonedDateTime: moment().toISOString(true),
+            remark,
           },
         },
       });
@@ -182,9 +192,39 @@ const WorkoutsOverviewScreen: React.FC<Props> = ({route, navigation}) => {
             />
           </View>
           <Text style={styles.header}>Muscle groups</Text>
+          <ClickableText
+            text={'Select'}
+            onPress={bottomSheetModalRefMuscleSelect?.current?.present}
+            styles={defaultStyles.textAlignCenter}
+          />
+          <MuscleGroupList
+            muscleGroups={selectedMuscleGroups}
+            pillColor="#00C5ED"
+            textColor="white"
+          />
+          <TextInput
+            onChangeText={setRemark}
+            style={defaultStyles.remarkInput}
+            placeholder={'Remarks for this workout'}
+            multiline
+          />
+          <GradientButton
+            styles={styles.button}
+            title={'Start workout'}
+            onClick={doStartWorkout}
+          />
+        </CustomBottomSheet>
+        <CustomBottomSheet
+          ref={bottomSheetModalRefMuscleSelect}
+          onDismiss={() => bottomSheetModalRefMuscleSelect?.current?.dismiss()}>
           <SelectMuscleGroups
-            onConfirm={onSelectWorkoutMuscleGroups}
-            buttonText={'Start'}
+            preselected={selectedMuscleGroups}
+            onConfirm={groups => {
+              setSelectedMuscleGroups(groups);
+              bottomSheetModalRefMuscleSelect?.current?.dismiss();
+              bottomSheetModalRef?.current?.present();
+            }}
+            buttonText={'Select'}
           />
         </CustomBottomSheet>
         <FloatingButton onClick={onFloatingButtonClicked} />
@@ -207,14 +247,14 @@ const WorkoutsOverviewScreen: React.FC<Props> = ({route, navigation}) => {
 const styles = StyleSheet.create({
   header: {
     fontSize: 14,
-    margin: Constants.CONTAINER_PADDING,
+    margin: Constants.CONTAINER_PADDING_MARGIN,
     textAlign: 'center',
     fontWeight: 'bold',
     color: 'grey',
   },
   heading2: {
     fontSize: 18,
-    margin: Constants.CONTAINER_PADDING,
+    margin: Constants.CONTAINER_PADDING_MARGIN,
     textAlign: 'center',
     fontWeight: 'bold',
   },
@@ -225,9 +265,12 @@ const styles = StyleSheet.create({
   },
   containerTitle: {
     backgroundColor: 'lightgrey',
-    padding: Constants.CONTAINER_PADDING,
-    margin: Constants.CONTAINER_PADDING,
+    padding: Constants.CONTAINER_PADDING_MARGIN,
+    margin: Constants.CONTAINER_PADDING_MARGIN,
     borderRadius: Constants.BORDER_RADIUS_SMALL,
+  },
+  button: {
+    marginTop: 20,
   },
 });
 

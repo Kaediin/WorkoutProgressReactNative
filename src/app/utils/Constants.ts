@@ -16,7 +16,7 @@ const Constants = {
   ),
   WEIGHT_POINTS: Array.from(new Array(400), (val, index) => `${index + 1}`),
   WEIGHT_FRACTION_POINTS: [0, 0.25, 0.5, 0.75],
-  CONTAINER_PADDING: 10,
+  CONTAINER_PADDING_MARGIN: 10,
 
   TEXT_INPUT_MAX_LENGTH: 46,
 

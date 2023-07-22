@@ -186,14 +186,14 @@ const styles = StyleSheet.create({
   },
   nameInput: {
     backgroundColor: 'lightgrey',
-    padding: Constants.CONTAINER_PADDING,
+    padding: Constants.CONTAINER_PADDING_MARGIN,
     borderRadius: Constants.BORDER_RADIUS_SMALL,
   },
   spaceBetween: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: Constants.CONTAINER_PADDING,
+    padding: Constants.CONTAINER_PADDING_MARGIN,
   },
   containerButton: {
     marginTop: 20,

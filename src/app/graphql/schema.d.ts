@@ -107,6 +107,7 @@ export type Workout = {
   id: Scalars['ID'];
   muscleGroups: Array<MuscleGroup>;
   name: Scalars['String'];
+  remark?: Maybe<Scalars['String']>;
   startDateTime?: Maybe<Scalars['LocalDateTime']>;
 };
 
@@ -115,6 +116,7 @@ export type ExerciseLog = {
   exercise: Exercise;
   id: Scalars['ID'];
   logDateTime: Scalars['LocalDateTime'];
+  remark?: Maybe<Scalars['String']>;
   repetitions: Scalars['Float'];
   unit: WeightUnit;
   user: User;
@@ -206,6 +208,7 @@ export type MutationUpdateMyPreferenceArgs = {
 
 export type ExerciseLogInput = {
   exerciseId: Scalars['String'];
+  remark?: InputMaybe<Scalars['String']>;
   repetitions: Scalars['Float'];
   unit: WeightUnit;
   warmup: Scalars['Boolean'];
@@ -231,6 +234,7 @@ export type UserInput = {
 export type WorkoutInput = {
   muscleGroups: Array<MuscleGroup>;
   name: Scalars['String'];
+  remark?: InputMaybe<Scalars['String']>;
   zonedDateTime: Scalars['String'];
 };
 

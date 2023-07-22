@@ -9,4 +9,5 @@ fragment ExerciseLog on ExerciseLog {
     weightRight
     unit
     warmup
+    remark
 }
