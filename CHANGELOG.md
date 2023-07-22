@@ -1,3 +1,12 @@
+## v0.1.0
+
+# Added
+
+- #16: Warmup toggle
+- #17: Preference option for hiding unit selector
+- #18: Remarks for creating a workout and logging an exercise
+- #20: Option to add a default applied weight to an exercises. Useful for some logging certain machines
+
 ## v0.0.4
 
 ### Added

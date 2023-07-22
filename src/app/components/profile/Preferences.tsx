@@ -174,7 +174,7 @@ const styles = StyleSheet.create({
   },
   input: {
     backgroundColor: 'white',
-    padding: Constants.CONTAINER_PADDING,
+    padding: Constants.CONTAINER_PADDING_MARGIN,
     borderWidth: 0,
     width: 80,
     borderRadius: Constants.BORDER_RADIUS_SMALL,
@@ -186,7 +186,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     width: 80,
     alignItems: 'center',
-    padding: Constants.CONTAINER_PADDING,
+    padding: Constants.CONTAINER_PADDING_MARGIN,
     borderRadius: Constants.BORDER_RADIUS_SMALL,
   },
   marginTop: {
