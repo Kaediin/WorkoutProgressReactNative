@@ -3,7 +3,7 @@ const Constants = {
   SECONDARY_GRADIENT: ['#41E1B4', '#9DE297'],
   SECONDARY_GRADIENT_FADED: ['rgba(39,154,121,0.5)', 'rgba(79,119,75,0.5)'],
   TERTIARY_GRADIENT: ['#00b7fc', '#57b1ff'],
-  QUATERNARY_GRADIENT: ['rgba(0,183,252,0.7)', 'rgba(87,177,255,0.7)'],
+  QUATERNARY_GRADIENT: ['#cbd52c', '#ffad02'],
   ERROR_GRADIENT: ['#F20D0D', '#f20d0dbf'],
   // POSITIVE_GRADIENT: ['#006666', '#003300'],
 

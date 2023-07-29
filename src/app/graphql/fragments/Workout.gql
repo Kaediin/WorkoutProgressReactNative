@@ -5,6 +5,7 @@ fragment WorkoutShort on Workout {
     startDateTime
     endDateTime
     active
+    remark
 }
 
 fragment WorkoutLong on Workout {

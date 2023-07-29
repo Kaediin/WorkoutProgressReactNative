@@ -3,7 +3,7 @@ import Constants from './Constants';
 
 export const defaultStyles = StyleSheet.create({
   container: {
-    padding: Constants.CONTAINER_PADDING_MARGIN * 2,
+    margin: Constants.CONTAINER_PADDING_MARGIN,
   },
   footnote: {
     opacity: 0.5,
@@ -68,5 +68,8 @@ export const defaultStyles = StyleSheet.create({
     borderRadius: Constants.BORDER_RADIUS_SMALL,
     marginTop: Constants.CONTAINER_PADDING_MARGIN,
     minHeight: 50,
+  },
+  p11: {
+    fontSize: 11,
   },
 });

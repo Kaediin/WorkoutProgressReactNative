@@ -3,6 +3,7 @@ import {MuscleGroup} from '../../graphql/operations';
 import {ColorValue, StyleSheet, Text, View} from 'react-native';
 import {enumToReadableString} from '../../utils/String';
 import Constants from '../../utils/Constants';
+import {defaultStyles} from '../../utils/DefaultStyles';
 
 interface MuscleGroupListProps {
   muscleGroups: MuscleGroup[];
@@ -25,8 +26,8 @@ const MuscleGroupList: React.FC<MuscleGroupListProps> = props => {
             ]}>
             <Text
               style={[
-                styles.muscleGroupText,
                 props.textColor ? {color: props.textColor} : {},
+                defaultStyles.p11,
               ]}>
               {enumToReadableString(group)}
             </Text>
@@ -48,15 +49,12 @@ const styles = StyleSheet.create({
   },
   muscleGroup: {
     margin: 5,
-    padding: Constants.CONTAINER_PADDING_MARGIN,
+    padding: 6,
     backgroundColor: 'white',
     borderRadius: Constants.BORDER_RADIUS_LARGE,
-    width: 110,
+    width: 90,
     display: 'flex',
     alignItems: 'center',
-  },
-  muscleGroupText: {
-    fontSize: 12,
   },
 });
 
