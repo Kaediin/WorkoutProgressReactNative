@@ -113,9 +113,12 @@ const ProfileScreen: React.FC = () => {
       />
       <CreateExerciseModal
         active={createExerciseModalActive}
-        onDismiss={() => {
+        onDismiss={added => {
           setCreateExerciseModalActive(false);
           setEditExercise(undefined);
+          if (added) {
+            refetchData();
+          }
         }}
         existingExercise={editExercise}
         onUpdate={refetchData}

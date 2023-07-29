@@ -291,7 +291,7 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
         />
         <CustomBottomSheet
           ref={bottomSheetRef}
-          onDismiss={() => toggleBottomSheetRef(false)}
+          onCloseClicked={() => toggleBottomSheetRef(false)}
           index={70}>
           {myExercisesLoading || logExeciseLoading || updateExeciseLoading ? (
             <ActivityIndicator />

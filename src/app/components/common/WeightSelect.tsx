@@ -17,10 +17,10 @@ const WeightSelect: React.FC<WeightSelectProps> = ({
 }) => {
   const preferenceUnit = usePreferenceStore(state => state.preference)?.unit;
   const [baseWeight, setBaseWeight] = useState<number>(
-    weightValue?.baseWeight || 1,
+    weightValue?.baseWeight ?? 0,
   );
   const [fraction, setFraction] = useState<number>(
-    weightValue?.fraction ? `0.${weightValue.fraction}` : 0,
+    weightValue?.fraction ? parseFloat(`0.${weightValue.fraction}`) : 0,
   );
   const [unit, setUnit] = useState<WeightUnit>(
     weightValue?.unit || preferenceUnit || WeightUnit.KG,
@@ -35,10 +35,10 @@ const WeightSelect: React.FC<WeightSelectProps> = ({
   );
 
   useEffect(() => {
-    if (baseWeight) {
+    if (baseWeight !== undefined && baseWeight !== null) {
       onWeightSelected({
         baseWeight,
-        fraction: fraction ? fraction.toString().split('.')[1] : 0,
+        fraction: fraction ? parseFloat(fraction.toString().split('.')[1]) : 0,
         unit,
       });
     }

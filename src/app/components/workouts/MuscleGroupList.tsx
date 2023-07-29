@@ -28,6 +28,7 @@ const MuscleGroupList: React.FC<MuscleGroupListProps> = props => {
               style={[
                 props.textColor ? {color: props.textColor} : {},
                 defaultStyles.p11,
+                styles.center,
               ]}>
               {enumToReadableString(group)}
             </Text>
@@ -46,6 +47,7 @@ const styles = StyleSheet.create({
   },
   center: {
     justifyContent: 'center',
+    textAlign: 'center',
   },
   muscleGroup: {
     margin: 5,
@@ -55,6 +57,7 @@ const styles = StyleSheet.create({
     width: 90,
     display: 'flex',
     alignItems: 'center',
+    justifyContent: 'center',
   },
 });
 
