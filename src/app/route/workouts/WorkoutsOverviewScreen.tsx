@@ -216,10 +216,12 @@ const WorkoutsOverviewScreen: React.FC<Props> = ({route, navigation}) => {
         </CustomBottomSheet>
         <CustomBottomSheet
           ref={bottomSheetModalRefMuscleSelect}
-          onDismiss={() => bottomSheetModalRefMuscleSelect?.current?.dismiss()}>
+          onCloseClicked={() =>
+            bottomSheetModalRefMuscleSelect?.current?.dismiss()
+          }>
           <SelectMuscleGroups
             preselected={selectedMuscleGroups}
-            onConfirm={groups => {
+            onSelected={groups => {
               setSelectedMuscleGroups(groups);
               bottomSheetModalRefMuscleSelect?.current?.dismiss();
               bottomSheetModalRef?.current?.present();

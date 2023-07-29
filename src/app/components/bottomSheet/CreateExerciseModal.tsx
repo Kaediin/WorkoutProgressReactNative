@@ -5,7 +5,7 @@ import {ExerciseFragment} from '../../graphql/operations';
 
 interface CreateExerciseProps {
   active: boolean;
-  onDismiss: () => void;
+  onDismiss: (added: boolean) => void;
   existingExercise?: ExerciseFragment;
   onUpdate: () => void;
 }
