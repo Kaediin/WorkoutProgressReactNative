@@ -1,13 +1,12 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {MuscleGroup} from '../../graphql/operations';
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {enumToReadableString} from '../../utils/String';
 import Constants from '../../utils/Constants';
 import LinearGradient from 'react-native-linear-gradient';
-import GradientButton from '../common/GradientButton';
 
 interface SelectMuscleGroupsProps {
-  onConfirm: (groups: MuscleGroup[]) => void;
+  onSelected: (groups: MuscleGroup[]) => void;
   preselected?: MuscleGroup[];
   buttonText?: string;
 }
@@ -16,6 +15,10 @@ const SelectMuscleGroups: React.FC<SelectMuscleGroupsProps> = props => {
   const [selected, setSelected] = useState<MuscleGroup[]>(
     props.preselected || [],
   );
+
+  useEffect(() => {
+    props.onSelected(selected || []);
+  }, [selected]);
 
   return (
     <View>
@@ -46,13 +49,6 @@ const SelectMuscleGroups: React.FC<SelectMuscleGroupsProps> = props => {
             </LinearGradient>
           );
         })}
-      </View>
-      <View style={styles.buttonContainer}>
-        <GradientButton
-          title={props.buttonText || 'Confirm'}
-          gradients={Constants.SECONDARY_GRADIENT}
-          onClick={() => props.onConfirm(selected)}
-        />
       </View>
     </View>
   );

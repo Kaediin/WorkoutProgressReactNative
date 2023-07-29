@@ -14,7 +14,7 @@ const Constants = {
     new Array(101),
     (val, index) => `${index + 1}%`,
   ),
-  WEIGHT_POINTS: Array.from(new Array(400), (val, index) => `${index + 1}`),
+  WEIGHT_POINTS: Array.from(new Array(401), (val, index) => `${index}`),
   WEIGHT_FRACTION_POINTS: [0, 0.25, 0.5, 0.75],
   CONTAINER_PADDING_MARGIN: 10,
 

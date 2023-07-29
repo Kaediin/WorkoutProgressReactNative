@@ -10,7 +10,6 @@ import {
 import Constants from '../../utils/Constants';
 import LinearGradient from 'react-native-linear-gradient';
 import ClickableText from '../common/ClickableText';
-import {defaultStyles} from '../../utils/DefaultStyles';
 
 interface SelectExerciseProps {
   onSelect: (exercise: ExerciseFragment) => void;
@@ -22,12 +21,11 @@ interface SelectExerciseProps {
 
 const SelectExerciseGroups: React.FC<SelectExerciseProps> = props => {
   return (
-    <ScrollView>
-      <View>
+    <View>
+      <View style={styles.textAlignRight}>
         <ClickableText
           text={'Create new exercise'}
           onPress={props.onCreateExerciseClick}
-          styles={defaultStyles.textAlignCenter}
         />
       </View>
       <ScrollView style={styles.selectContainer} horizontal>
@@ -38,7 +36,7 @@ const SelectExerciseGroups: React.FC<SelectExerciseProps> = props => {
               colors={
                 isSelected
                   ? Constants.SECONDARY_GRADIENT
-                  : Constants.PRIMARY_GRADIENT
+                  : Constants.SECONDARY_GRADIENT_FADED
               }
               style={styles.muscleGroupContainer}
               key={index}>
@@ -49,7 +47,7 @@ const SelectExerciseGroups: React.FC<SelectExerciseProps> = props => {
           );
         })}
       </ScrollView>
-    </ScrollView>
+    </View>
   );
 };
 
@@ -66,6 +64,10 @@ const styles = StyleSheet.create({
     paddingVertical: Constants.CONTAINER_PADDING_MARGIN,
     textAlign: 'center',
     color: 'white',
+  },
+  textAlignRight: {
+    alignItems: 'flex-end',
+    marginBottom: Constants.CONTAINER_PADDING_MARGIN * 2,
   },
 });
 
