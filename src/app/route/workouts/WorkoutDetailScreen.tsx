@@ -37,6 +37,7 @@ import GroupedExerciseLogListItem from '../../components/exercise/GroupedExercis
 import CreateExerciseModalContent from '../../components/bottomSheet/CreateExerciseModalContent';
 import EndWorkout from '../../components/nav/headerComponents/EndWorkout';
 import usePreferenceStore from '../../stores/preferenceStore';
+import {weightValueToString} from '../../utils/String';
 
 type Props = NativeStackScreenProps<WorkoutStackParamList, 'WorkoutDetail'>;
 
@@ -135,10 +136,15 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
     exerciseId: '',
     repetitions:
       preference?.defaultRepetitions || Constants.DEFAULT_REPETITIONS,
-    weightLeft: 1,
-    weightRight: 1,
+    weightLeft: {
+      baseWeight: 0,
+      unit: preference?.unit || WeightUnit.KG,
+    },
+    weightRight: {
+      baseWeight: 0,
+      unit: preference?.unit || WeightUnit.KG,
+    },
     zonedDateTimeString: '',
-    unit: preference?.unit || WeightUnit.KG,
     warmup: false,
   });
 
@@ -149,7 +155,6 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
       !exerciseLog.weightRight ||
       !exerciseLog.weightLeft ||
       !exerciseLog.repetitions ||
-      !exerciseLog.unit ||
       exerciseLog.warmup === undefined
     ) {
       return;
@@ -172,7 +177,6 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
             zonedDateTimeString: moment().toISOString(true),
             weightLeft: exerciseLog.weightLeft,
             weightRight: exerciseLog.weightLeft,
-            unit: exerciseLog.unit,
             warmup: exerciseLog.warmup,
             remark: exerciseLog.remark,
           },
@@ -251,9 +255,8 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
                       zonedDateTimeString: log.logDateTime,
                       exerciseId: log.exercise.id,
                       repetitions: log.repetitions,
-                      weightRight: log.weightRight,
-                      weightLeft: log.weightLeft,
-                      unit: log.unit,
+                      weightRight: log.weightValueRight,
+                      weightLeft: log.weightValueLeft,
                       warmup: log.warmup || false,
                       remark: log.remark,
                     });
@@ -305,17 +308,21 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
                     if (latestLogged) {
                       setExerciseLog(prevState => ({
                         ...prevState,
-                        unit: latestLogged.unit,
-                        weightLeft: latestLogged.weightLeft,
-                        weightRight: latestLogged.weightRight,
+                        weightLeft: latestLogged.weightValueLeft,
+                        weightRight: latestLogged.weightValueRight,
                         repetitions: latestLogged.repetitions,
                       }));
                     } else {
                       setExerciseLog(prevState => ({
                         ...prevState,
-                        unit: preference?.unit || WeightUnit.KG,
-                        weightLeft: 1,
-                        weightRight: 1,
+                        weightLeft: {
+                          baseWeight: 0,
+                          unit: preference?.unit || WeightUnit.KG,
+                        },
+                        weightRight: {
+                          baseWeight: 0,
+                          unit: preference?.unit || WeightUnit.KG,
+                        },
                         repetitions:
                           preference?.defaultRepetitions ||
                           Constants.DEFAULT_REPETITIONS,
@@ -362,19 +369,15 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
                         Weight
                       </Text>
                       <Picker
-                        selectedValue={
-                          +(
-                            exerciseLog.weightLeft.toString().split('.')[0] ?? 0
-                          )
-                        }
+                        selectedValue={exerciseLog.weightLeft.baseWeight}
                         onValueChange={value =>
                           setExerciseLog(prevState => ({
                             ...prevState,
-                            weightLeft: parseFloat(
-                              `${value}.${
-                                prevState.weightLeft.toString().split('.')[1]
-                              }`,
-                            ),
+                            weightLeft: {
+                              baseWeight: value,
+                              fraction: prevState.weightLeft.fraction,
+                              unit: prevState.weightLeft.unit,
+                            },
                           }))
                         }
                         itemStyle={styles.fontSizeSmall}>
@@ -393,19 +396,15 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
                         Fraction
                       </Text>
                       <Picker
-                        selectedValue={parseFloat(
-                          `0.${
-                            exerciseLog.weightLeft.toString().split('.')[1] ?? 0
-                          }`,
-                        )}
+                        selectedValue={exerciseLog.weightLeft.fraction}
                         onValueChange={value =>
                           setExerciseLog(prevState => ({
                             ...prevState,
-                            weightLeft: parseFloat(
-                              `${
-                                prevState.weightLeft.toString().split('.')[0]
-                              }.${value.toString().split('.')[1]}`,
-                            ),
+                            weightLeft: {
+                              baseWeight: prevState.weightLeft.baseWeight,
+                              fraction: value,
+                              unit: prevState.weightLeft.unit,
+                            },
                           }))
                         }
                         itemStyle={styles.fontSizeSmall}>
@@ -425,7 +424,7 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
                           Unit
                         </Text>
                         <Picker
-                          selectedValue={exerciseLog.unit}
+                          selectedValue={exerciseLog.weightLeft.unit}
                           onValueChange={unit =>
                             setExerciseLog(prevState => ({
                               ...prevState,
@@ -446,8 +445,8 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
                   </View>
                   <View style={defaultStyles.spaceEvenly}>
                     <Text style={styles.selectedWeightLabel}>
-                      {exerciseLog.repetitions} x {exerciseLog.weightLeft}{' '}
-                      {exerciseLog.unit}
+                      {exerciseLog.repetitions} x{' '}
+                      {weightValueToString(exerciseLog.weightLeft)}
                     </Text>
                     <View style={defaultStyles.row}>
                       <Text
@@ -489,8 +488,7 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
                   !exerciseLog.exerciseId ||
                   !exerciseLog.weightRight ||
                   !exerciseLog.weightLeft ||
-                  !exerciseLog.repetitions ||
-                  !exerciseLog.unit
+                  !exerciseLog.repetitions
                 }
                 styles={styles.button}
                 title={editExistingExercise ? 'Adjust' : 'Log'}
