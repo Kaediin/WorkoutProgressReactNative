@@ -17,6 +17,7 @@ import ClickableText from '../common/ClickableText';
 import {nonNullable} from '../../utils/List';
 import WeightSelect from '../common/WeightSelect';
 import {weightValueToString} from '../../utils/String';
+import {defaultStyles} from '../../utils/DefaultStyles';
 
 interface CreateExerciseModalProps {
   active: boolean;
@@ -34,8 +35,9 @@ const CreateExerciseModalContent: React.FC<
   const [primaryMuscleGroups, setPrimaryMuscleGroups] = useState<MuscleGroup[]>(
     props.existingExercise?.primaryMuscles?.filter(nonNullable) || [],
   );
-  const [defaultAppliedWeight, setDefaultAppliedWeight] =
-    useState<WeightValueFragment>(props.existingExercise?.defaultAppliedWeight);
+  const [defaultAppliedWeight, setDefaultAppliedWeight] = useState<
+    WeightValueFragment | undefined
+  >(props.existingExercise?.defaultAppliedWeight || undefined);
   const [secondaryMuscleGroups, setSecondaryMuscleGroups] = useState<
     MuscleGroup[]
   >(props.existingExercise?.secondaryMuscles?.filter(nonNullable) || []);
@@ -70,7 +72,13 @@ const CreateExerciseModalContent: React.FC<
             name: exerciseName,
             primaryMuscles: primaryMuscleGroups,
             secondaryMuscles: secondaryMuscleGroups,
-            defaultAppliedWeight,
+            defaultAppliedWeight: defaultAppliedWeight
+              ? {
+                  baseWeight: defaultAppliedWeight.baseWeight,
+                  fraction: defaultAppliedWeight.fraction,
+                  unit: defaultAppliedWeight.unit,
+                }
+              : null,
           },
         },
       });
@@ -100,6 +108,9 @@ const CreateExerciseModalContent: React.FC<
       setSecondaryMuscleGroups(
         props.existingExercise.secondaryMuscles?.filter(nonNullable) || [],
       );
+      setDefaultAppliedWeight(
+        props.existingExercise.defaultAppliedWeight || undefined,
+      );
     } else {
       setExerciseName('');
       setPrimaryMuscleGroups([]);
@@ -112,7 +123,7 @@ const CreateExerciseModalContent: React.FC<
       <CustomBottomSheet
         ref={bottomSheetModalRefMain}
         index={55}
-        onDismiss={() => props.onDismiss(false)}>
+        onCloseClicked={() => props.onDismiss(false)}>
         {!props.existingExercise && (
           <Text style={styles.label}>New exercise</Text>
         )}
@@ -124,7 +135,7 @@ const CreateExerciseModalContent: React.FC<
           maxLength={Constants.TEXT_INPUT_MAX_LENGTH}
         />
         <View style={styles.spaceBetween}>
-          <Text>Primary muscle groups:</Text>
+          <Text>Primary muscle groups</Text>
           <ClickableText
             text={'Select'}
             onPress={() => {
@@ -135,11 +146,11 @@ const CreateExerciseModalContent: React.FC<
         </View>
         <MuscleGroupList
           muscleGroups={primaryMuscleGroups}
-          pillColor="#00C5ED"
+          pillColor={Constants.SECONDARY_GRADIENT[0]}
           textColor="white"
         />
         <View style={styles.spaceBetween}>
-          <Text>Secondary muscle groups:</Text>
+          <Text>Secondary muscle groups</Text>
           <ClickableText
             text={'Select'}
             onPress={() => {
@@ -150,25 +161,27 @@ const CreateExerciseModalContent: React.FC<
         </View>
         <MuscleGroupList
           muscleGroups={secondaryMuscleGroups}
-          pillColor="#00C5ED"
+          pillColor={Constants.SECONDARY_GRADIENT[0]}
           textColor="white"
         />
-        <ClickableText
-          text={
-            defaultAppliedWeight
-              ? weightValueToString(defaultAppliedWeight)
-              : 'Set default applied weight'
-          }
-          onPress={() => {
-            bottomSheetModalRefMain?.current?.dismiss();
-            bottomSheetModalRefWeightSelect?.current?.present();
-          }}
-          textAlignCenter
-        />
+        <View style={[defaultStyles.spaceBetween, defaultStyles.container]}>
+          <Text>Default applied weight</Text>
+          <ClickableText
+            text={
+              defaultAppliedWeight
+                ? weightValueToString(defaultAppliedWeight)
+                : 'Select'
+            }
+            onPress={() => {
+              bottomSheetModalRefMain?.current?.dismiss();
+              bottomSheetModalRefWeightSelect?.current?.present();
+            }}
+          />
+        </View>
         <View style={styles.containerButton}>
           <GradientButton
             title={'Save'}
-            gradients={Constants.PRIMARY_GRADIENT}
+            gradients={Constants.SECONDARY_GRADIENT}
             onClick={saveExercise}
             disabled={
               exerciseName.length === 0 || primaryMuscleGroups.length === 0
@@ -178,33 +191,41 @@ const CreateExerciseModalContent: React.FC<
       </CustomBottomSheet>
       <CustomBottomSheet
         ref={bottomSheetModalRefMuscleSelect}
-        onDismiss={bottomSheetModalRefMuscleSelect?.current?.dismiss}>
+        onCloseClicked={() => {
+          bottomSheetModalRefMuscleSelect?.current?.dismiss();
+          bottomSheetModalRefMain?.current?.present();
+        }}
+        closeText={'Select'}>
         <SelectMuscleGroups
           preselected={
             muscleSelectType === 'PRIMARY'
               ? primaryMuscleGroups
               : secondaryMuscleGroups
           }
-          onConfirm={groups => {
+          onSelected={groups => {
             muscleSelectType === 'PRIMARY'
               ? setPrimaryMuscleGroups(groups)
               : setSecondaryMuscleGroups(groups);
-            bottomSheetModalRefMuscleSelect?.current?.dismiss();
-            bottomSheetModalRefMain?.current?.present();
           }}
         />
       </CustomBottomSheet>
       <CustomBottomSheet
         ref={bottomSheetModalRefWeightSelect}
-        onDismiss={() => {
+        onCloseClicked={() => {
           bottomSheetModalRefWeightSelect?.current?.dismiss();
           bottomSheetModalRefMain?.current?.present();
         }}
         index={65}
-        showCloseText>
+        closeText={'Select'}>
         <WeightSelect
           weightValue={defaultAppliedWeight}
-          onWeightSelected={setDefaultAppliedWeight}
+          onWeightSelected={value =>
+            setDefaultAppliedWeight(
+              value.baseWeight > 0 || (value.fraction || 0) > 0
+                ? value
+                : undefined,
+            )
+          }
         />
       </CustomBottomSheet>
     </>

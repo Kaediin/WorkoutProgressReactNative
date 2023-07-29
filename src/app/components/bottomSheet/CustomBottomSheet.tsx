@@ -11,14 +11,15 @@ import ClickableText from '../common/ClickableText';
 type CustomBottomSheetProps = {
   children: React.ReactNode;
   index?: number;
-  onDismiss?: () => void;
-  showCloseText?: boolean;
+  onCloseClicked?: () => void;
+  closeText?: string;
+  dismissText?: string;
 };
 
 export const CustomBottomSheet = React.forwardRef<
   BottomSheetModal,
   CustomBottomSheetProps
->(({children, index, onDismiss, showCloseText}, ref) => {
+>(({children, index, onCloseClicked, closeText}, ref) => {
   const modalRef = useMemo(
     () => ref as React.RefObject<BottomSheetModal>,
     [ref],
@@ -44,12 +45,12 @@ export const CustomBottomSheet = React.forwardRef<
       index={index || 98}
       snapPoints={Constants.BOTTOM_SHEET_SNAPPOINTS}
       backdropComponent={renderBackdrop}
-      onDismiss={onDismiss}>
-      {showCloseText && (
+      onDismiss={onCloseClicked}>
+      {closeText && (
         <ClickableText
           styles={styles.dismissText}
-          text={'Dismiss'}
-          onPress={onDismiss}
+          text={closeText}
+          onPress={onCloseClicked}
         />
       )}
       <BottomSheetScrollView>
