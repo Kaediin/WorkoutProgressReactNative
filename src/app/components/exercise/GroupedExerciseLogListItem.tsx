@@ -78,8 +78,8 @@ const GroupedExerciseLogListItem: React.FC<ExerciseLogListItemProps> = ({
                 style={styles.containerLinearGradient}>
                 <View style={styles.containerExerciseLogRow}>
                   <Text style={styles.textExerciseLogRow}>
-                    {item.repetitions} x {item.weightLeft}
-                    {item.unit}
+                    {item.repetitions} x{' '}
+                    {weightValueToString(item.weightValueLeft)}
                   </Text>
                   <Text style={defaultStyles.footnote}>
                     {getRelativeTimeIfToday(loggedDate)}

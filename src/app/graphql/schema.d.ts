@@ -126,11 +126,16 @@ export type ExerciseLog = {
   logDateTime: Scalars['LocalDateTime'];
   remark?: Maybe<Scalars['String']>;
   repetitions: Scalars['Float'];
+  /** @deprecated No longer supported */
   unit: WeightUnit;
   user: User;
   warmup?: Maybe<Scalars['Boolean']>;
+  /** @deprecated No longer supported */
   weightLeft: Scalars['Float'];
+  /** @deprecated No longer supported */
   weightRight: Scalars['Float'];
+  weightValueLeft: WeightValue;
+  weightValueRight: WeightValue;
 };
 
 export type GroupedExerciseLog = {
@@ -218,11 +223,16 @@ export type ExerciseLogInput = {
   exerciseId: Scalars['String'];
   remark?: InputMaybe<Scalars['String']>;
   repetitions: Scalars['Float'];
-  unit: WeightUnit;
   warmup: Scalars['Boolean'];
-  weightLeft: Scalars['Float'];
-  weightRight: Scalars['Float'];
+  weightLeft: WeightValueInput;
+  weightRight: WeightValueInput;
   zonedDateTimeString: Scalars['String'];
+};
+
+export type WeightValueInput = {
+  baseWeight: Scalars['Int'];
+  fraction?: InputMaybe<Scalars['Int']>;
+  unit: WeightUnit;
 };
 
 export type ExerciseInput = {
@@ -230,12 +240,6 @@ export type ExerciseInput = {
   name: Scalars['String'];
   primaryMuscles?: InputMaybe<Array<InputMaybe<MuscleGroup>>>;
   secondaryMuscles?: InputMaybe<Array<InputMaybe<MuscleGroup>>>;
-};
-
-export type WeightValueInput = {
-  baseWeight: Scalars['Int'];
-  fraction?: InputMaybe<Scalars['Int']>;
-  unit: WeightUnit;
 };
 
 export type UserInput = {
