@@ -12,6 +12,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import ContextMenu from 'react-native-context-menu-view';
 import {getRelativeTimeIfToday} from '../../utils/Date';
 import {ContextMenuActions} from '../../types/ContextMenuActions';
+import {weightValueToString} from '../../utils/String';
 
 interface ExerciseLogListItemProps {
   groupedExercise: GroupedExerciseLogFragment;
@@ -19,7 +20,7 @@ interface ExerciseLogListItemProps {
   onRemoveLog: (id: string) => void;
 }
 
-const ExerciseLogListItem: React.FC<ExerciseLogListItemProps> = ({
+const GroupedExerciseLogListItem: React.FC<ExerciseLogListItemProps> = ({
   groupedExercise,
   onEditLog,
   onRemoveLog,
@@ -36,6 +37,17 @@ const ExerciseLogListItem: React.FC<ExerciseLogListItemProps> = ({
         </Text>
       )}
       <Text style={defaultStyles.h3}>{groupedExercise.exercise.name}</Text>
+      {groupedExercise.exercise.defaultAppliedWeight && (
+        <Text
+          style={[
+            defaultStyles.p11,
+            defaultStyles.whiteTextColor,
+            defaultStyles.textAlignCenter,
+            styles.marginSmall,
+          ]}>
+          +{weightValueToString(groupedExercise.exercise.defaultAppliedWeight)}
+        </Text>
+      )}
       <FlatList
         data={groupedExercise.logs}
         renderItem={({item}) => {
@@ -116,6 +128,9 @@ const styles = StyleSheet.create({
     marginTop: (Constants.CONTAINER_PADDING_MARGIN / 2) * -1,
     marginBottom: Constants.CONTAINER_PADDING_MARGIN / 2,
   },
+  marginSmall: {
+    marginTop: Constants.CONTAINER_PADDING_MARGIN / 2,
+  },
 });
 
-export default ExerciseLogListItem;
+export default GroupedExerciseLogListItem;

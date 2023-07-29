@@ -39,7 +39,12 @@ const ExerciseProfileListItem: React.FC<ExerciseProfileListItemProps> = ({
         </>
       )}
       {exercise.defaultAppliedWeight && (
-        <Text style={[defaultStyles.footnote, defaultStyles.textAlignCenter]}>
+        <Text
+          style={[
+            defaultStyles.p11,
+            defaultStyles.textAlignCenter,
+            defaultStyles.whiteTextColor,
+          ]}>
           +{weightValueToString(exercise.defaultAppliedWeight)}
         </Text>
       )}

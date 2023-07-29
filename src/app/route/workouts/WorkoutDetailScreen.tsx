@@ -33,7 +33,7 @@ import {Picker} from '@react-native-picker/picker';
 import Constants from '../../utils/Constants';
 import GradientButton from '../../components/common/GradientButton';
 import moment from 'moment';
-import GroupedExerciseLogListItem from '../../components/exercise/ExerciseLogListItem';
+import GroupedExerciseLogListItem from '../../components/exercise/GroupedExerciseLogListItem';
 import CreateExerciseModalContent from '../../components/bottomSheet/CreateExerciseModalContent';
 import EndWorkout from '../../components/nav/headerComponents/EndWorkout';
 import usePreferenceStore from '../../stores/preferenceStore';
@@ -174,8 +174,8 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
             weightRight: exerciseLog.weightLeft,
             unit: exerciseLog.unit,
             warmup: exerciseLog.warmup,
+            remark: exerciseLog.remark,
           },
-          remark: exerciseLog.remark,
         },
       });
     }

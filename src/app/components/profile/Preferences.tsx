@@ -115,7 +115,12 @@ const Preferences: React.FC<PreferencesProps> = ({
               open={unitSelectOpen}
               setOpen={setUnitSelectOpen}
               style={styles.dropdownContainerStyle}
+              labelStyle={[
+                defaultStyles.clickableText,
+                defaultStyles.textAlignCenter,
+              ]}
               dropDownContainerStyle={styles.dropdownContainerStyle}
+              showArrowIcon={false}
             />
           </View>
         </View>
@@ -180,7 +185,7 @@ const styles = StyleSheet.create({
     borderRadius: Constants.BORDER_RADIUS_SMALL,
   },
   padding: {
-    marginHorizontal: 20,
+    marginHorizontal: Constants.CONTAINER_PADDING_MARGIN,
   },
   containerDefaultRepetitionValue: {
     backgroundColor: 'white',

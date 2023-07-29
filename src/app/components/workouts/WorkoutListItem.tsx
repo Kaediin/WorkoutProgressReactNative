@@ -18,7 +18,9 @@ const WorkoutListItem: React.FC<WorkoutListItemProps> = ({
   onWorkoutPressed,
 }) => {
   return (
-    <TouchableOpacity onPress={() => onWorkoutPressed(workout.id)}>
+    <TouchableOpacity
+      style={styles.touchableOpacity}
+      onPress={() => onWorkoutPressed(workout.id)}>
       <LinearGradient
         colors={Constants.SECONDARY_GRADIENT}
         style={[styles.container, workout.active ? {} : styles.inActive]}>
@@ -31,16 +33,24 @@ const WorkoutListItem: React.FC<WorkoutListItemProps> = ({
           </Text>
         </View>
         <Text style={styles.headerText}>{workout.name}</Text>
-        <MuscleGroupList muscleGroups={workout.muscleGroups} />
+        {workout.remark && (
+          <Text style={[defaultStyles.footnote, defaultStyles.textAlignCenter]}>
+            {workout?.remark}
+          </Text>
+        )}
+        <MuscleGroupList muscleGroups={workout.muscleGroups} alignCenter />
       </LinearGradient>
     </TouchableOpacity>
   );
 };
 
 const styles = StyleSheet.create({
+  touchableOpacity: {
+    margin: Constants.CONTAINER_PADDING_MARGIN,
+    borderRadius: Constants.BORDER_RADIUS_SMALL, // Needed for ContextAction Styling
+  },
   container: {
     padding: Constants.CONTAINER_PADDING_MARGIN,
-    margin: Constants.CONTAINER_PADDING_MARGIN,
     borderRadius: Constants.BORDER_RADIUS_SMALL,
   },
   containerHeader: {
