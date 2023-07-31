@@ -9,6 +9,8 @@ import Loader from '../../components/common/Loader';
 import GradientBackground from '../../components/common/GradientBackground';
 import Constants from '../../utils/Constants';
 import useAuthStore, {AuthState} from '../../stores/authStore';
+import {defaultStyles} from '../../utils/DefaultStyles';
+import {errorCodeToMessage} from '../../utils/String';
 
 type Props = NativeStackScreenProps<AuthStackParamList, 'Login'>;
 
@@ -17,6 +19,7 @@ const LoginScreen: React.FC<Props> = props => {
 
   const {signIn} = useAuth();
 
+  const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -25,15 +28,16 @@ const LoginScreen: React.FC<Props> = props => {
 
   useEffect(() => {
     if (cognitoUser) {
+      console.log(cognitoUser);
       console.log(`[LoginScreen] Challenge: ${cognitoUser.challengeName}`);
     }
   }, [cognitoUser]);
 
-  useEffect(() => {
-    if (authState === AuthState.USER_NOT_CONFIRMED && email) {
-      props.navigation.navigate('ConfirmUser', {email: email});
-    }
-  }, [authState]);
+  // useEffect(() => {
+  //   if (authState === AuthState.USER_NOT_CONFIRMED && email) {
+  //     props.navigation.navigate('ConfirmUser', {email: email});
+  //   }
+  // }, [authState]);
 
   return (
     <GradientBackground>
@@ -72,12 +76,21 @@ const LoginScreen: React.FC<Props> = props => {
                 autoComplete="password-new"
                 secureTextEntry
               />
+              <Text style={defaultStyles.error}>{error}</Text>
               <View style={styles.loginButton}>
                 <GradientButton
                   title={'Login'}
                   onClick={async () => {
                     setLoading(true);
-                    setCognitoUser(await signIn(email, password));
+                    const {user, error: signInError} = await signIn(
+                      email,
+                      password,
+                    );
+                    if (signInError) {
+                      setError(errorCodeToMessage(signInError));
+                    } else {
+                      setCognitoUser(user);
+                    }
                     setLoading(false);
                   }}
                 />

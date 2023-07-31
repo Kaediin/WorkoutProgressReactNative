@@ -26,3 +26,10 @@ export const weightValueToString = (
     weightValue.fraction ? '.' + weightValue.fraction : ''
   } ${weightValue.unit}`;
 };
+
+export const errorCodeToMessage = (code: string): string => {
+  if (code === 'NotAuthorizedException') {
+    return 'Invalid email and password combination';
+  }
+  return '';
+};
