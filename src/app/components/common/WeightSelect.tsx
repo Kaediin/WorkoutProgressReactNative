@@ -9,13 +9,18 @@ import Constants from '../../utils/Constants';
 interface WeightSelectProps {
   weightValue?: WeightValueFragment;
   onWeightSelected: (weight: WeightValueFragment) => void;
+  hideLabel?: boolean;
 }
 
 const WeightSelect: React.FC<WeightSelectProps> = ({
   weightValue,
   onWeightSelected,
+  hideLabel,
 }) => {
   const preferenceUnit = usePreferenceStore(state => state.preference)?.unit;
+  const hideUnitSelector = usePreferenceStore(
+    state => state.preference,
+  )?.hideUnitSelector;
   const [baseWeight, setBaseWeight] = useState<number>(
     weightValue?.baseWeight ?? 0,
   );
@@ -47,7 +52,7 @@ const WeightSelect: React.FC<WeightSelectProps> = ({
   return (
     <>
       <View style={styles.pickerContainer}>
-        <View style={styles.pickerStyles}>
+        <View style={styles.repetition}>
           <Text style={[defaultStyles.footnote, styles.pickerLabel]}>
             Weight
           </Text>
@@ -64,7 +69,7 @@ const WeightSelect: React.FC<WeightSelectProps> = ({
             ))}
           </Picker>
         </View>
-        <View style={styles.pickerStyles}>
+        <View style={styles.repetition}>
           <Text style={[defaultStyles.footnote, styles.pickerLabel]}>
             Fraction
           </Text>
@@ -81,31 +86,37 @@ const WeightSelect: React.FC<WeightSelectProps> = ({
             ))}
           </Picker>
         </View>
-        <View style={styles.pickerStyles}>
-          <Text style={[defaultStyles.footnote, styles.pickerLabel]}>Unit</Text>
-          <Picker
-            selectedValue={unit}
-            onValueChange={setUnit}
-            itemStyle={styles.fontSizeSmall}>
-            {Object.keys(WeightUnit).map(weightUnit => (
-              <Picker.Item
-                label={weightUnit}
-                value={weightUnit}
-                key={`unit_${weightUnit}`}
-              />
-            ))}
-          </Picker>
-        </View>
+        {!hideUnitSelector && (
+          <View style={styles.repetition}>
+            <Text style={[defaultStyles.footnote, styles.pickerLabel]}>
+              Unit
+            </Text>
+            <Picker
+              selectedValue={unit}
+              onValueChange={setUnit}
+              itemStyle={styles.fontSizeSmall}>
+              {Object.keys(WeightUnit).map(weightUnit => (
+                <Picker.Item
+                  label={weightUnit}
+                  value={weightUnit}
+                  key={`unit_${weightUnit}`}
+                />
+              ))}
+            </Picker>
+          </View>
+        )}
       </View>
-      <Text style={styles.selectedWeightLabel}>
-        {weight} {unit}
-      </Text>
+      {!hideLabel && (
+        <Text style={styles.selectedWeightLabel}>
+          {weight} {unit}
+        </Text>
+      )}
     </>
   );
 };
 
 const styles = StyleSheet.create({
-  pickerStyles: {
+  repetition: {
     flex: 1,
   },
   pickerContainer: {
