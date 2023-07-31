@@ -273,6 +273,17 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
                       },
                     })
                   }
+                  onLogPress={log => {
+                    setExerciseLog(prevState => ({
+                      ...prevState,
+                      repetitions: log.repetitions,
+                      exerciseId: log.exercise.id,
+                      weightLeft: log.weightValueLeft,
+                      warmup: log.warmup || false,
+                      remark: log.remark,
+                    }));
+                    toggleBottomSheetRef(true);
+                  }}
                 />
               )}
             />
