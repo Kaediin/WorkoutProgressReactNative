@@ -20,7 +20,17 @@ const ExerciseProfileListItem: React.FC<ExerciseProfileListItemProps> = ({
       style={styles.container}
       colors={Constants.SECONDARY_GRADIENT}>
       <Text style={styles.name}>{exercise.name}</Text>
-      <Text style={[defaultStyles.footnote, styles.textAlignCenter]}>
+      {exercise.notes && (
+        <Text
+          style={[
+            defaultStyles.textAlignCenter,
+            defaultStyles.footnote,
+            defaultStyles.marginBottom,
+          ]}>
+          {exercise.notes}
+        </Text>
+      )}
+      <Text style={[defaultStyles.footnote, defaultStyles.textAlignCenter]}>
         Primary muscle groups
       </Text>
       <MuscleGroupList
@@ -29,7 +39,7 @@ const ExerciseProfileListItem: React.FC<ExerciseProfileListItemProps> = ({
       />
       {exercise.secondaryMuscles && exercise.secondaryMuscles?.length > 0 && (
         <>
-          <Text style={[defaultStyles.footnote, styles.textAlignCenter]}>
+          <Text style={[defaultStyles.footnote, defaultStyles.textAlignCenter]}>
             Secondary muscle groups
           </Text>
           <MuscleGroupList
@@ -39,12 +49,7 @@ const ExerciseProfileListItem: React.FC<ExerciseProfileListItemProps> = ({
         </>
       )}
       {exercise.defaultAppliedWeight && (
-        <Text
-          style={[
-            defaultStyles.p11,
-            defaultStyles.textAlignCenter,
-            defaultStyles.whiteTextColor,
-          ]}>
+        <Text style={[defaultStyles.p11, defaultStyles.textAlignCenter]}>
           +{weightValueToString(exercise.defaultAppliedWeight)}
         </Text>
       )}
@@ -61,11 +66,7 @@ const styles = StyleSheet.create({
   name: {
     fontSize: 20,
     textAlign: 'center',
-    marginBottom: Constants.CONTAINER_PADDING_MARGIN,
     color: 'white',
-  },
-  textAlignCenter: {
-    textAlign: 'center',
   },
 });
 

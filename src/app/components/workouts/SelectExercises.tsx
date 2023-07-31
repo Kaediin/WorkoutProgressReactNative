@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {ExerciseFragment, MuscleGroup} from '../../graphql/operations';
 import {
   ScrollView,
@@ -10,6 +10,7 @@ import {
 import Constants from '../../utils/Constants';
 import LinearGradient from 'react-native-linear-gradient';
 import ClickableText from '../common/ClickableText';
+import {defaultStyles} from '../../utils/DefaultStyles';
 
 interface SelectExerciseProps {
   onSelect: (exercise: ExerciseFragment) => void;
@@ -20,6 +21,14 @@ interface SelectExerciseProps {
 }
 
 const SelectExerciseGroups: React.FC<SelectExerciseProps> = props => {
+  const [selected, setSelected] = useState<ExerciseFragment>();
+
+  useEffect(() => {
+    if (selected) {
+      props.onSelect(selected);
+    }
+  }, [selected]);
+
   return (
     <View>
       <View style={styles.textAlignRight}>
@@ -40,13 +49,23 @@ const SelectExerciseGroups: React.FC<SelectExerciseProps> = props => {
               }
               style={styles.muscleGroupContainer}
               key={index}>
-              <TouchableOpacity onPress={() => props.onSelect(exercise)}>
+              <TouchableOpacity onPress={() => setSelected(exercise)}>
                 <Text style={styles.muscleGroupText}>{exercise.name}</Text>
               </TouchableOpacity>
             </LinearGradient>
           );
         })}
       </ScrollView>
+      {selected?.notes && (
+        <Text
+          style={[
+            defaultStyles.textAlignCenter,
+            defaultStyles.footnote,
+            defaultStyles.container,
+          ]}>
+          {selected.notes}
+        </Text>
+      )}
     </View>
   );
 };

@@ -427,7 +427,7 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
                     remark: text,
                   }))
                 }
-                style={defaultStyles.remarkInput}
+                style={defaultStyles.textAreaInput}
                 placeholder={'Remarks for this log'}
                 multiline
               />
@@ -468,8 +468,6 @@ const styles = StyleSheet.create({
   },
   pickerContainer: {
     flexDirection: 'row',
-    // justifyContent: 'space-evenly',
-    marginTop: 20,
   },
   selectedWeightLabel: {
     textAlign: 'center',
