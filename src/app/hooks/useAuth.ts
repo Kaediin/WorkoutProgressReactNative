@@ -15,7 +15,10 @@ export enum CognitoResponse {
 
 const useAuth = (): {
   getToken: () => Promise<string | null>;
-  signIn: (username: string, password: string) => Promise<CognitoUser | null>;
+  signIn: (
+    username: string,
+    password: string,
+  ) => Promise<{user?: CognitoUser; error?: string}>;
   completeNewPassword: (
     oldCognitoUser: CognitoUser,
     username: string,
@@ -55,9 +58,9 @@ const useAuth = (): {
   const trySignInWithKeyChain = async (): Promise<string | null> => {
     const credentials = await Keychain.getGenericPassword();
     if (credentials) {
-      const response = await signIn(credentials.username, credentials.password);
-      if (response) {
-        const newToken = response
+      const {user} = await signIn(credentials.username, credentials.password);
+      if (user) {
+        const newToken = user
           .getSignInUserSession()
           ?.getAccessToken()
           .getJwtToken();
@@ -92,18 +95,18 @@ const useAuth = (): {
   const signIn = async (
     username: string,
     password: string,
-  ): Promise<CognitoUser | null> => {
+  ): Promise<{user?: CognitoUser; error?: string}> => {
     try {
       const cognitoUser: CognitoUser = await Auth.signIn(username, password);
       await Keychain.setGenericPassword(username, password);
       setAuthToken(
         cognitoUser.getSignInUserSession()?.getAccessToken().getJwtToken(),
       );
-      return cognitoUser;
+      return {user: cognitoUser};
     } catch (error) {
       console.log('[useAuth - signIn] Error signing in:', error);
+      return {error: error.code || ''};
     }
-    return null;
   };
 
   const completeNewPassword = async (

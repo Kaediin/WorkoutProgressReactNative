@@ -81,4 +81,8 @@ export const defaultStyles = StyleSheet.create({
   marginBottom: {
     marginBottom: Constants.CONTAINER_PADDING_MARGIN,
   },
+  error: {
+    color: 'red',
+    fontSize: 12,
+  },
 });

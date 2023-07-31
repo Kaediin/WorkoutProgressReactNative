@@ -1,4 +1,4 @@
-import React, {useEffect, useMemo, useState} from 'react';
+import React, {useMemo, useState} from 'react';
 import Constants from '../../utils/Constants';
 import {
   KeyboardAvoidingView,
@@ -47,12 +47,6 @@ const SignupScreen: React.FC<Props> = props => {
       password === passwordConfirmation,
     [firstName, lastName, email, gender, password, passwordConfirmation],
   );
-
-  useEffect(() => {
-    if (authState === AuthState.USER_NOT_CONFIRMED && email) {
-      props.navigation.navigate('ConfirmUser', {email: email});
-    }
-  }, [authState]);
 
   return (
     <LinearGradient colors={Constants.PRIMARY_GRADIENT}>
@@ -137,6 +131,10 @@ const SignupScreen: React.FC<Props> = props => {
                 {
                   label: Gender.Female,
                   value: Gender.Female,
+                },
+                {
+                  label: Gender.Other,
+                  value: Gender.Other,
                 },
               ]}
               open={genderPickerOpen}
