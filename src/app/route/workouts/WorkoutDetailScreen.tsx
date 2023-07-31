@@ -29,7 +29,6 @@ import {WorkoutStackParamList} from '../../stacks/WorkoutStack';
 import {BottomSheetModal, BottomSheetModalProvider} from '@gorhom/bottom-sheet';
 import {CustomBottomSheet} from '../../components/bottomSheet/CustomBottomSheet';
 import SelectExercises from '../../components/workouts/SelectExercises';
-import {Picker} from '@react-native-picker/picker';
 import Constants from '../../utils/Constants';
 import GradientButton from '../../components/common/GradientButton';
 import moment from 'moment';
@@ -37,12 +36,17 @@ import GroupedExerciseLogListItem from '../../components/exercise/GroupedExercis
 import CreateExerciseModalContent from '../../components/bottomSheet/CreateExerciseModalContent';
 import EndWorkout from '../../components/nav/headerComponents/EndWorkout';
 import usePreferenceStore from '../../stores/preferenceStore';
+import WeightSelect from '../../components/common/WeightSelect';
+import {Picker} from '@react-native-picker/picker';
 import {weightValueToString} from '../../utils/String';
 
 type Props = NativeStackScreenProps<WorkoutStackParamList, 'WorkoutDetail'>;
 
 const WorkoutDetailScreen: React.FC<Props> = props => {
   const preference = usePreferenceStore(state => state.preference);
+  const hideUnitSelector = usePreferenceStore(
+    state => state.preference,
+  )?.hideUnitSelector;
 
   const bottomSheetRef = useRef<BottomSheetModal>(null);
 
@@ -338,7 +342,7 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
               {exerciseLog?.exerciseId && (
                 <>
                   <View style={styles.pickerContainer}>
-                    <View style={styles.pickerStyles}>
+                    <View style={styles.repetition}>
                       <Text
                         style={[defaultStyles.footnote, styles.pickerLabel]}>
                         Repetition
@@ -363,85 +367,19 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
                           ))}
                       </Picker>
                     </View>
-                    <View style={styles.pickerStyles}>
-                      <Text
-                        style={[defaultStyles.footnote, styles.pickerLabel]}>
-                        Weight
-                      </Text>
-                      <Picker
-                        selectedValue={exerciseLog.weightLeft.baseWeight}
-                        onValueChange={value =>
+                    {/* eslint-disable-next-line react-native/no-inline-styles */}
+                    <View style={{flex: hideUnitSelector ? 2 : 3}}>
+                      <WeightSelect
+                        onWeightSelected={weight =>
                           setExerciseLog(prevState => ({
                             ...prevState,
-                            weightLeft: {
-                              baseWeight: value,
-                              fraction: prevState.weightLeft.fraction,
-                              unit: prevState.weightLeft.unit,
-                            },
+                            weightLeft: weight,
                           }))
                         }
-                        itemStyle={styles.fontSizeSmall}>
-                        {Constants.WEIGHT_POINTS.map(weight => (
-                          <Picker.Item
-                            label={weight}
-                            value={+weight}
-                            key={`weight_${weight}`}
-                          />
-                        ))}
-                      </Picker>
+                        weightValue={exerciseLog.weightLeft}
+                        hideLabel
+                      />
                     </View>
-                    <View style={styles.pickerStyles}>
-                      <Text
-                        style={[defaultStyles.footnote, styles.pickerLabel]}>
-                        Fraction
-                      </Text>
-                      <Picker
-                        selectedValue={exerciseLog.weightLeft.fraction}
-                        onValueChange={value =>
-                          setExerciseLog(prevState => ({
-                            ...prevState,
-                            weightLeft: {
-                              baseWeight: prevState.weightLeft.baseWeight,
-                              fraction: value,
-                              unit: prevState.weightLeft.unit,
-                            },
-                          }))
-                        }
-                        itemStyle={styles.fontSizeSmall}>
-                        {Constants.WEIGHT_FRACTION_POINTS.map(fraction => (
-                          <Picker.Item
-                            label={fraction.toString()}
-                            value={+fraction}
-                            key={`fraction_${fraction}`}
-                          />
-                        ))}
-                      </Picker>
-                    </View>
-                    {!preference?.hideUnitSelector && (
-                      <View style={styles.pickerStyles}>
-                        <Text
-                          style={[defaultStyles.footnote, styles.pickerLabel]}>
-                          Unit
-                        </Text>
-                        <Picker
-                          selectedValue={exerciseLog.weightLeft.unit}
-                          onValueChange={unit =>
-                            setExerciseLog(prevState => ({
-                              ...prevState,
-                              unit: unit,
-                            }))
-                          }
-                          itemStyle={styles.fontSizeSmall}>
-                          {Object.keys(WeightUnit).map(unit => (
-                            <Picker.Item
-                              label={unit}
-                              value={unit}
-                              key={`unit_${unit}`}
-                            />
-                          ))}
-                        </Picker>
-                      </View>
-                    )}
                   </View>
                   <View style={defaultStyles.spaceEvenly}>
                     <Text style={styles.selectedWeightLabel}>
@@ -510,12 +448,16 @@ const styles = StyleSheet.create({
   containerMuscleGroups: {
     marginTop: 10,
   },
-  pickerStyles: {
+  repetition: {
     flex: 1,
+    marginTop: 20,
+  },
+  picker: {
+    flex: 3,
   },
   pickerContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-evenly',
+    // justifyContent: 'space-evenly',
     marginTop: 20,
   },
   selectedWeightLabel: {
