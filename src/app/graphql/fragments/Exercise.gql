@@ -6,4 +6,5 @@ fragment Exercise on Exercise {
     defaultAppliedWeight {
         ...WeightValue
     }
+    notes
 }

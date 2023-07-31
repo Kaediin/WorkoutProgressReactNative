@@ -61,7 +61,7 @@ export const defaultStyles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
-  remarkInput: {
+  textAreaInput: {
     backgroundColor: 'lightgrey',
     margin: 2,
     padding: Constants.CONTAINER_PADDING_MARGIN,
@@ -71,5 +71,14 @@ export const defaultStyles = StyleSheet.create({
   },
   p11: {
     fontSize: 11,
+    color: 'white',
+  },
+  textInput: {
+    backgroundColor: 'lightgrey',
+    padding: Constants.CONTAINER_PADDING_MARGIN,
+    borderRadius: Constants.BORDER_RADIUS_SMALL,
+  },
+  marginBottom: {
+    marginBottom: Constants.CONTAINER_PADDING_MARGIN,
   },
 });

@@ -26,8 +26,9 @@ const MuscleGroupList: React.FC<MuscleGroupListProps> = props => {
             ]}>
             <Text
               style={[
-                props.textColor ? {color: props.textColor} : {},
                 defaultStyles.p11,
+                // eslint-disable-next-line react-native/no-inline-styles
+                {color: props.textColor ? props.textColor : 'black'},
                 styles.center,
               ]}>
               {enumToReadableString(group)}

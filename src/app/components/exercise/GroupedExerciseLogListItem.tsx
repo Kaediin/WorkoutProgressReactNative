@@ -43,7 +43,6 @@ const GroupedExerciseLogListItem: React.FC<ExerciseLogListItemProps> = ({
         <Text
           style={[
             defaultStyles.p11,
-            defaultStyles.whiteTextColor,
             defaultStyles.textAlignCenter,
             styles.marginSmall,
           ]}>

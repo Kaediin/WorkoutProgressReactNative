@@ -13,6 +13,7 @@ type Exercise {
   defaultAppliedWeight: WeightValue
   id: ID!
   name: String!
+  notes: String
   primaryMuscles: [MuscleGroup]
   secondaryMuscles: [MuscleGroup]
   user: User
@@ -21,6 +22,7 @@ type Exercise {
 input ExerciseInput {
   defaultAppliedWeight: WeightValueInput
   name: String!
+  notes: String
   primaryMuscles: [MuscleGroup]
   secondaryMuscles: [MuscleGroup]
 }

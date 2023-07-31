@@ -59,6 +59,7 @@ export type Exercise = {
   defaultAppliedWeight?: Maybe<WeightValue>;
   id: Scalars['ID'];
   name: Scalars['String'];
+  notes?: Maybe<Scalars['String']>;
   primaryMuscles?: Maybe<Array<Maybe<MuscleGroup>>>;
   secondaryMuscles?: Maybe<Array<Maybe<MuscleGroup>>>;
   user?: Maybe<User>;
@@ -238,6 +239,7 @@ export type WeightValueInput = {
 export type ExerciseInput = {
   defaultAppliedWeight?: InputMaybe<WeightValueInput>;
   name: Scalars['String'];
+  notes?: InputMaybe<Scalars['String']>;
   primaryMuscles?: InputMaybe<Array<InputMaybe<MuscleGroup>>>;
   secondaryMuscles?: InputMaybe<Array<InputMaybe<MuscleGroup>>>;
 };

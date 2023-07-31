@@ -204,7 +204,7 @@ const WorkoutsOverviewScreen: React.FC<Props> = ({route, navigation}) => {
           />
           <TextInput
             onChangeText={setRemark}
-            style={defaultStyles.remarkInput}
+            style={defaultStyles.textAreaInput}
             placeholder={'Remarks for this workout'}
             multiline
           />

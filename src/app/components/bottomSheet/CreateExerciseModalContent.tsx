@@ -32,6 +32,9 @@ const CreateExerciseModalContent: React.FC<
   const [exerciseName, setExerciseName] = useState(
     props.existingExercise?.name || '',
   );
+  const [exerciseNotes, setExerciseNotes] = useState(
+    props.existingExercise?.notes || '',
+  );
   const [primaryMuscleGroups, setPrimaryMuscleGroups] = useState<MuscleGroup[]>(
     props.existingExercise?.primaryMuscles?.filter(nonNullable) || [],
   );
@@ -79,6 +82,7 @@ const CreateExerciseModalContent: React.FC<
                   unit: defaultAppliedWeight.unit,
                 }
               : null,
+            notes: exerciseNotes,
           },
         },
       });
@@ -90,6 +94,7 @@ const CreateExerciseModalContent: React.FC<
             primaryMuscles: primaryMuscleGroups,
             secondaryMuscles: secondaryMuscleGroups,
             defaultAppliedWeight,
+            notes: exerciseNotes,
           },
         },
       });
@@ -128,7 +133,7 @@ const CreateExerciseModalContent: React.FC<
           <Text style={styles.label}>New exercise</Text>
         )}
         <TextInput
-          style={styles.nameInput}
+          style={defaultStyles.textInput}
           placeholder={'Name'}
           value={exerciseName}
           onChangeText={setExerciseName}
@@ -178,6 +183,14 @@ const CreateExerciseModalContent: React.FC<
             }}
           />
         </View>
+        <TextInput
+          style={defaultStyles.textAreaInput}
+          defaultValue={exerciseNotes}
+          placeholder={'Notes (ex: Machine height 5)'}
+          onChangeText={setExerciseNotes}
+          maxLength={Constants.TEXT_AREA_MAX_LENGTH}
+          multiline
+        />
         <View style={styles.containerButton}>
           <GradientButton
             title={'Save'}
@@ -237,11 +250,6 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 20,
     marginBottom: 10,
-  },
-  nameInput: {
-    backgroundColor: 'lightgrey',
-    padding: Constants.CONTAINER_PADDING_MARGIN,
-    borderRadius: Constants.BORDER_RADIUS_SMALL,
   },
   spaceBetween: {
     flexDirection: 'row',
