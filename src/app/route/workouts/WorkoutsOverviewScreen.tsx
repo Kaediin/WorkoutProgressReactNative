@@ -4,7 +4,7 @@ import GradientBackground from '../../components/common/GradientBackground';
 import {
   MuscleGroup,
   useDeleteWorkoutMutation,
-  useHasActiveWorkoutLazyQuery,
+  useHasActiveWorkoutQuery,
   useStartWorkoutMutation,
   useWorkoutsQuery,
   WorkoutInput,
@@ -15,7 +15,6 @@ import {BottomSheetModal, BottomSheetModalProvider} from '@gorhom/bottom-sheet';
 import {CustomBottomSheet} from '../../components/bottomSheet/CustomBottomSheet';
 import SelectMuscleGroups from '../../components/workouts/SelectMuscleGroups';
 import {
-  ActivityIndicator,
   Button,
   FlatList,
   StyleSheet,
@@ -37,6 +36,7 @@ import ClickableText from '../../components/common/ClickableText';
 import MuscleGroupList from '../../components/workouts/MuscleGroupList';
 import GradientButton from '../../components/common/GradientButton';
 import usePreferenceStore from '../../stores/preferenceStore';
+import Loader from '../../components/common/Loader';
 
 type Props = NativeStackScreenProps<WorkoutStackParamList, 'WorkoutsOverview'>;
 
@@ -93,8 +93,10 @@ const WorkoutsOverviewScreen: React.FC<Props> = ({route, navigation}) => {
       fetchPolicy: 'no-cache',
     });
 
-  const [hasActiveWorkout, {data: hasActiveWorkoutData}] =
-    useHasActiveWorkoutLazyQuery({fetchPolicy: 'no-cache'});
+  const {data: hasActiveWorkoutData, refetch: refetchActiveWorkout} =
+    useHasActiveWorkoutQuery({
+      fetchPolicy: 'no-cache',
+    });
 
   const existingWorkouts = useMemo(() => {
     return [
@@ -107,28 +109,31 @@ const WorkoutsOverviewScreen: React.FC<Props> = ({route, navigation}) => {
   useEffect(() => {
     if (startWorkoutData?.meStartWorkout) {
       refetchWorkouts();
+      refetchActiveWorkout();
     }
   }, [startWorkoutData?.meStartWorkout]);
 
   const loading = startWorkoutLoading || getWorkoutsLoading;
 
   const onFloatingButtonClicked = (): void => {
-    hasActiveWorkout();
-  };
-
-  useEffect(() => {
-    if (hasActiveWorkoutData?.meHasActiveWorkout) {
+    if (hasActiveWorkout) {
       setActiveWorkoutWarningModalOpen(true);
-    } else if (hasActiveWorkoutData?.meHasActiveWorkout === false) {
+    } else {
       setActiveWorkoutWarningModalOpen(false);
       bottomSheetModalRef.current?.present();
     }
-  }, [hasActiveWorkoutData]);
+  };
+
+  const hasActiveWorkout = useMemo(
+    () => hasActiveWorkoutData?.meHasActiveWorkout,
+    [hasActiveWorkoutData],
+  );
 
   useEffect(() => {
     // @ts-ignore
     if (route.params?.cameFrom) {
       refetchWorkouts();
+      refetchActiveWorkout();
     }
     // @ts-ignore
   }, [route.params?.cameFrom]);
@@ -150,7 +155,7 @@ const WorkoutsOverviewScreen: React.FC<Props> = ({route, navigation}) => {
       {getWorkoutsError?.message ? (
         <ErrorMessage message={getWorkoutsError?.message} />
       ) : loading ? (
-        <ActivityIndicator style={styles.centerContent} size="large" />
+        <Loader isLoading={loading} />
       ) : existingWorkouts.length === 0 ? (
         <View style={styles.centerContent}>
           <Text>Click on the + to start your first workout!</Text>
@@ -166,6 +171,7 @@ const WorkoutsOverviewScreen: React.FC<Props> = ({route, navigation}) => {
                 key={item.id}
                 workout={item}
                 onWorkoutPressed={navigateToWorkout}
+                hasActiveWorkout={hasActiveWorkout || false}
               />
             </ContextMenu>
           )}

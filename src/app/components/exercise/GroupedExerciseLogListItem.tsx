@@ -94,7 +94,7 @@ const styles = StyleSheet.create({
   container: {
     padding: Constants.CONTAINER_PADDING_MARGIN,
     borderRadius: Constants.BORDER_RADIUS_SMALL,
-    marginTop: 20,
+    margin: Constants.CONTAINER_PADDING_MARGIN,
   },
   name: {
     textAlign: 'center',
