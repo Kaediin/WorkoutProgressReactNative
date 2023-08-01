@@ -1,11 +1,32 @@
 ## [v0.1.0]
 
-# Added
+### Added
 
 - #16: Warmup toggle
 - #17: Preference option for hiding unit selector
 - #18: Remarks for creating a workout and logging an exercise
 - #20: Option to add a default applied weight to an exercises. Useful for some logging certain machines
+- #22: Clicking on a grouped exercise log now opens the log sheet with the pressed log preset
+- #23: Notes to exercise
+- #27: Adjusted opacity
+- #27: Removed main time from grouped log
+- #27: Expanded height on exercises
+- #27: Added multiple columns on larger phones
+- #27: Centered loader
+- #28: Auto adjust workout muscle groups based on logged exercises
+- #29: Footnote indicating last logged exercise log if doing an exercise for the first time in the workout
+
+### Fixed
+
+- #19: Refresh selector when creating a new exercise when logging
+- #19: Restyled the 'Create new exercise' on log screen
+- #19: Data refreshes when added or editing an exercise in the profile screen
+- #19: Styled the preferences the same
+- #24: User going to MFA screen with invalid credentials
+
+### Changed
+
+- #21: Migration number value of logged weight to WeightValue object
 
 ## [v0.0.4]
 
