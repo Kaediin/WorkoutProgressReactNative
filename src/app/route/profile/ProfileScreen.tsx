@@ -6,7 +6,7 @@ import {
   useDeleteExerciseMutation,
   useMyExercisesQuery,
 } from '../../graphql/operations';
-import {ActivityIndicator, FlatList, Text, View} from 'react-native';
+import {FlatList, Text, View} from 'react-native';
 import ExerciseProfileListItem from '../../components/exercise/ExerciseProfileListItem';
 import {defaultStyles} from '../../utils/DefaultStyles';
 import Constants from '../../utils/Constants';
@@ -15,6 +15,7 @@ import ContextMenu from 'react-native-context-menu-view';
 import {ContextMenuActions} from '../../types/ContextMenuActions';
 import Preferences from '../../components/profile/Preferences';
 import SinglePicker from '../../components/bottomSheet/SinglePicker';
+import Loader from '../../components/common/Loader';
 
 const ProfileScreen: React.FC = () => {
   const [createExerciseModalActive, setCreateExerciseModalActive] =
@@ -59,7 +60,7 @@ const ProfileScreen: React.FC = () => {
     <GradientBackground>
       <View style={defaultStyles.container}>
         {exercisesDataLoading ? (
-          <ActivityIndicator />
+          <Loader isLoading={exercisesDataLoading} />
         ) : (
           <FlatList
             data={exercises}

@@ -1,7 +1,7 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {
-  ActivityIndicator,
+  Dimensions,
   FlatList,
   StyleSheet,
   Switch,
@@ -39,8 +39,12 @@ import usePreferenceStore from '../../stores/preferenceStore';
 import WeightSelect from '../../components/common/WeightSelect';
 import {Picker} from '@react-native-picker/picker';
 import {weightValueToString} from '../../utils/String';
+import Loader from '../../components/common/Loader';
 
 type Props = NativeStackScreenProps<WorkoutStackParamList, 'WorkoutDetail'>;
+
+const windowDimensions = Dimensions.get('window');
+const screenDimensions = Dimensions.get('screen');
 
 const WorkoutDetailScreen: React.FC<Props> = props => {
   const preference = usePreferenceStore(state => state.preference);
@@ -228,10 +232,27 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
     }
   };
 
+  const [dimensions, setDimensions] = useState({
+    window: windowDimensions,
+    screen: screenDimensions,
+  });
+
+  useEffect(() => {
+    const subscription = Dimensions.addEventListener(
+      'change',
+      ({window, screen}) => {
+        setDimensions({window, screen});
+      },
+    );
+    return () => subscription?.remove();
+  });
+
+  console.log(dimensions.screen.width);
+
   return (
     <GradientBackground>
       {workoutLoading || endWorkoutLoading || removeExerciseLogLoading ? (
-        <ActivityIndicator />
+        <Loader />
       ) : workout ? (
         <View style={defaultStyles.container}>
           {workout.groupedExerciseLogs.length === 0 ? (
@@ -240,6 +261,7 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
             </Text>
           ) : (
             <FlatList
+              style={styles.flatlist}
               data={workout.groupedExerciseLogs}
               ListHeaderComponent={
                 <View style={styles.containerMuscleGroups}>
@@ -249,10 +271,12 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
                   />
                 </View>
               }
+              key={dimensions.screen.width}
+              keyExtractor={item => dimensions.screen.width + item.exercise.id}
               renderItem={({item}) => (
                 <GroupedExerciseLogListItem
                   groupedExercise={item}
-                  key={item.exercise.id}
+                  key={dimensions.screen.width + item.exercise.id}
                   onEditLog={log => {
                     setEditExistingExercise(log);
                     setExerciseLog({
@@ -287,6 +311,7 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
                   }}
                 />
               )}
+              numColumns={dimensions.screen.width > 500 ? 2 : 1}
             />
           )}
         </View>
@@ -310,7 +335,7 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
           onCloseClicked={() => toggleBottomSheetRef(false)}
           index={70}>
           {myExercisesLoading || logExeciseLoading || updateExeciseLoading ? (
-            <ActivityIndicator />
+            <Loader />
           ) : (
             <>
               {!editExistingExercise && (
@@ -489,6 +514,9 @@ const styles = StyleSheet.create({
   },
   warmupDisabled: {
     color: '#cccccc',
+  },
+  flatlist: {
+    height: '100%',
   },
 });
 

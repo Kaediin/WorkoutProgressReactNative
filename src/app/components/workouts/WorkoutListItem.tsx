@@ -11,19 +11,25 @@ import {DATE_TIME_FORMAT} from '../../utils/Date';
 interface WorkoutListItemProps {
   workout: WorkoutShortFragment;
   onWorkoutPressed: (id: string) => void;
+  hasActiveWorkout: boolean;
 }
 
 const WorkoutListItem: React.FC<WorkoutListItemProps> = ({
   workout,
   onWorkoutPressed,
+  hasActiveWorkout,
 }) => {
+  // console.log(hasActiveWorkout);
   return (
     <TouchableOpacity
       style={styles.touchableOpacity}
       onPress={() => onWorkoutPressed(workout.id)}>
       <LinearGradient
         colors={Constants.SECONDARY_GRADIENT}
-        style={[styles.container, workout.active ? {} : styles.inActive]}>
+        style={[
+          styles.container,
+          hasActiveWorkout ? (workout.active ? {} : styles.inActive) : {},
+        ]}>
         <View style={styles.containerHeader}>
           <Text style={styles.activeText}>
             {workout.active ? '• active' : ''}
