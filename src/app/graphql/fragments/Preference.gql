@@ -2,4 +2,5 @@ fragment Preference on Preference {
     unit
     defaultRepetitions
     hideUnitSelector
+    autoAdjustWorkoutMuscleGroups
 }

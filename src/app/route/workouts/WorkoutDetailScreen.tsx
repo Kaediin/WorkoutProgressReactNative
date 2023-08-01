@@ -13,7 +13,7 @@ import GradientBackground from '../../components/common/GradientBackground';
 import {
   ExerciseLogFragment,
   ExerciseLogInput,
-  useAddExerciseLogToWorkoutMutation,
+  useAddExerciseLogMutation,
   useEndWorkoutMutation,
   useMyExercisesQuery,
   useRemoveExerciseLogMutation,
@@ -44,9 +44,8 @@ type Props = NativeStackScreenProps<WorkoutStackParamList, 'WorkoutDetail'>;
 
 const WorkoutDetailScreen: React.FC<Props> = props => {
   const preference = usePreferenceStore(state => state.preference);
-  const hideUnitSelector = usePreferenceStore(
-    state => state.preference,
-  )?.hideUnitSelector;
+  const hideUnitSelector = preference?.hideUnitSelector || false;
+  const autoAdjust = preference?.autoAdjustWorkoutMuscleGroups || false;
 
   const bottomSheetRef = useRef<BottomSheetModal>(null);
 
@@ -63,7 +62,7 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
   const [workoutById, {data: workoutData, loading: workoutLoading}] =
     useWorkoutByIdLazyQuery({fetchPolicy: 'no-cache'});
   const [logExercise, {data: logExeciseData, loading: logExeciseLoading}] =
-    useAddExerciseLogToWorkoutMutation({fetchPolicy: 'no-cache'});
+    useAddExerciseLogMutation({fetchPolicy: 'no-cache'});
   const [
     updateExerciseLog,
     {data: updateExerciseLogData, loading: updateExeciseLoading},
@@ -113,11 +112,11 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
   }, [workoutData?.workoutById]);
 
   useEffect(() => {
-    if (logExeciseData?.addExerciseLogToWorkout) {
+    if (logExeciseData?.addExerciseLog) {
       toggleBottomSheetRef(false);
-      setWorkout(logExeciseData?.addExerciseLogToWorkout);
+      setWorkout(logExeciseData?.addExerciseLog);
     }
-  }, [logExeciseData?.addExerciseLogToWorkout]);
+  }, [logExeciseData?.addExerciseLog]);
 
   useEffect(() => {
     if (updateExerciseLogData?.updateExerciseLog) {
@@ -184,6 +183,7 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
             warmup: exerciseLog.warmup,
             remark: exerciseLog.remark,
           },
+          autoAdjust: autoAdjust,
         },
       });
     }
@@ -270,6 +270,7 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
                     removeExerciseLog({
                       variables: {
                         exerciseLogId: id,
+                        autoAdjust,
                       },
                     })
                   }

@@ -36,10 +36,15 @@ import {defaultStyles} from '../../utils/DefaultStyles';
 import ClickableText from '../../components/common/ClickableText';
 import MuscleGroupList from '../../components/workouts/MuscleGroupList';
 import GradientButton from '../../components/common/GradientButton';
+import usePreferenceStore from '../../stores/preferenceStore';
 
 type Props = NativeStackScreenProps<WorkoutStackParamList, 'WorkoutsOverview'>;
 
 const WorkoutsOverviewScreen: React.FC<Props> = ({route, navigation}) => {
+  const autoSelectMuscleGroups = usePreferenceStore(
+    state => state.preference,
+  )?.autoAdjustWorkoutMuscleGroups;
+
   const [remark, setRemark] = useState<string>();
   const [activeWorkoutWarningModalOpen, setActiveWorkoutWarningModalOpen] =
     useState(false);
@@ -57,12 +62,12 @@ const WorkoutsOverviewScreen: React.FC<Props> = ({route, navigation}) => {
   const bottomSheetModalRefMuscleSelect = useRef<BottomSheetModal>(null);
 
   const doStartWorkout = (): void => {
-    if (newWorkout?.name && selectedMuscleGroups.length > 0) {
+    if (newWorkout?.name) {
       startWorkout({
         variables: {
           input: {
             name: newWorkout.name,
-            muscleGroups: selectedMuscleGroups,
+            muscleGroups: selectedMuscleGroups || [],
             zonedDateTime: moment().toISOString(true),
             remark,
           },
@@ -191,17 +196,21 @@ const WorkoutsOverviewScreen: React.FC<Props> = ({route, navigation}) => {
               }}
             />
           </View>
-          <Text style={styles.header}>Muscle groups</Text>
-          <ClickableText
-            text={'Select'}
-            onPress={bottomSheetModalRefMuscleSelect?.current?.present}
-            styles={defaultStyles.textAlignCenter}
-          />
-          <MuscleGroupList
-            muscleGroups={selectedMuscleGroups}
-            pillColor="#00C5ED"
-            textColor="white"
-          />
+          {!autoSelectMuscleGroups && (
+            <>
+              <Text style={styles.header}>Muscle groups</Text>
+              <ClickableText
+                text={'Select'}
+                onPress={bottomSheetModalRefMuscleSelect?.current?.present}
+                styles={defaultStyles.textAlignCenter}
+              />
+              <MuscleGroupList
+                muscleGroups={selectedMuscleGroups}
+                pillColor="#00C5ED"
+                textColor="white"
+              />
+            </>
+          )}
           <TextInput
             onChangeText={setRemark}
             style={defaultStyles.textAreaInput}
@@ -268,7 +277,7 @@ const styles = StyleSheet.create({
   containerTitle: {
     backgroundColor: 'lightgrey',
     padding: Constants.CONTAINER_PADDING_MARGIN,
-    margin: Constants.CONTAINER_PADDING_MARGIN,
+    margin: 2,
     borderRadius: Constants.BORDER_RADIUS_SMALL,
   },
   button: {
