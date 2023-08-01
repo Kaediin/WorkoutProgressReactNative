@@ -15,6 +15,7 @@ import {
   ExerciseLogInput,
   useAddExerciseLogMutation,
   useEndWorkoutMutation,
+  useLatestLogByExerciseIdLazyQuery,
   useMyExercisesQuery,
   useRemoveExerciseLogMutation,
   useUpdateExerciseLogMutation,
@@ -40,6 +41,7 @@ import WeightSelect from '../../components/common/WeightSelect';
 import {Picker} from '@react-native-picker/picker';
 import {weightValueToString} from '../../utils/String';
 import Loader from '../../components/common/Loader';
+import {DATE_TIME_FORMAT} from '../../utils/Date';
 
 type Props = NativeStackScreenProps<WorkoutStackParamList, 'WorkoutDetail'>;
 
@@ -55,6 +57,7 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
 
   const [createExerciseModal, setCreateExerciseModal] = useState(false);
   const [workout, setWorkout] = useState<WorkoutLongFragment>();
+  const [latestLog, setLatestLog] = useState<ExerciseLogFragment>();
   const [editExistingExercise, setEditExistingExercise] =
     useState<ExerciseLogFragment>();
 
@@ -76,6 +79,14 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
     removeExerciseLog,
     {data: removeExerciseLogData, loading: removeExerciseLogLoading},
   ] = useRemoveExerciseLogMutation({fetchPolicy: 'no-cache'});
+  const [latestLogQuery] = useLatestLogByExerciseIdLazyQuery({
+    fetchPolicy: 'no-cache',
+    onCompleted: data => {
+      if (data?.latestLogByExerciseId) {
+        setLatestLog(data.latestLogByExerciseId);
+      }
+    },
+  });
 
   useEffect(() => {
     if (!workoutData?.workoutById) {
@@ -247,8 +258,6 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
     return () => subscription?.remove();
   });
 
-  console.log(dimensions.screen.width);
-
   return (
     <GradientBackground>
       {workoutLoading || endWorkoutLoading || removeExerciseLogLoading ? (
@@ -347,6 +356,7 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
                     }));
                     const latestLogged = getLatestLogByExerciseId(exercise.id);
                     if (latestLogged) {
+                      setLatestLog(undefined);
                       setExerciseLog(prevState => ({
                         ...prevState,
                         weightLeft: latestLogged.weightValueLeft,
@@ -354,6 +364,11 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
                         repetitions: latestLogged.repetitions,
                       }));
                     } else {
+                      latestLogQuery({
+                        variables: {
+                          id: exercise.id,
+                        },
+                      });
                       setExerciseLog(prevState => ({
                         ...prevState,
                         weightLeft: {
@@ -418,7 +433,17 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
                       />
                     </View>
                   </View>
-                  <View style={defaultStyles.spaceEvenly}>
+                  {latestLog && (
+                    <Text style={defaultStyles.footnote}>
+                      You last logged {latestLog.exercise.name} for{' '}
+                      {latestLog.repetitions} x{' '}
+                      {weightValueToString(latestLog.weightValueLeft)} on{' '}
+                      {moment
+                        .utc(latestLog.logDateTime)
+                        .format(DATE_TIME_FORMAT)}
+                    </Text>
+                  )}
+                  <View style={[defaultStyles.spaceEvenly, styles.marginTop]}>
                     <Text style={styles.selectedWeightLabel}>
                       {exerciseLog.repetitions} x{' '}
                       {weightValueToString(exerciseLog.weightLeft)}
@@ -465,7 +490,7 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
                   !exerciseLog.weightLeft ||
                   !exerciseLog.repetitions
                 }
-                styles={styles.button}
+                styles={styles.marginTop}
                 title={editExistingExercise ? 'Adjust' : 'Log'}
                 onClick={doLogExercise}
               />
@@ -503,7 +528,7 @@ const styles = StyleSheet.create({
   pickerLabel: {
     textAlign: 'center',
   },
-  button: {
+  marginTop: {
     marginTop: 20,
   },
   fontSizeSmall: {
