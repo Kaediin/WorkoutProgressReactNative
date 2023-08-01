@@ -15,6 +15,7 @@ export type Scalars = {
 
 export type Query = {
   __typename?: 'Query';
+  latestLogByExerciseId?: Maybe<ExerciseLog>;
   me?: Maybe<User>;
   meHasActiveWorkout: Scalars['Boolean'];
   myExercises?: Maybe<Array<Exercise>>;
@@ -23,6 +24,11 @@ export type Query = {
   userById?: Maybe<User>;
   users?: Maybe<Array<Maybe<User>>>;
   workoutById?: Maybe<Workout>;
+};
+
+
+export type QueryLatestLogByExerciseIdArgs = {
+  exerciseId: Scalars['ID'];
 };
 
 
@@ -35,23 +41,23 @@ export type QueryWorkoutByIdArgs = {
   id: Scalars['ID'];
 };
 
-export type User = {
-  __typename?: 'User';
-  cognitoUser: CognitoUser;
-  fid: Scalars['String'];
+export type ExerciseLog = {
+  __typename?: 'ExerciseLog';
+  exercise: Exercise;
   id: Scalars['ID'];
-};
-
-export type CognitoUser = {
-  __typename?: 'CognitoUser';
-  email: Scalars['String'];
-  family_name: Scalars['String'];
-  gender: Scalars['String'];
-  given_name: Scalars['String'];
-  locale: Scalars['String'];
-  name: Scalars['String'];
-  nickname: Scalars['String'];
-  zoneinfo: Scalars['String'];
+  logDateTime: Scalars['LocalDateTime'];
+  remark?: Maybe<Scalars['String']>;
+  repetitions: Scalars['Float'];
+  /** @deprecated No longer supported */
+  unit: WeightUnit;
+  user: User;
+  warmup?: Maybe<Scalars['Boolean']>;
+  /** @deprecated No longer supported */
+  weightLeft: Scalars['Float'];
+  /** @deprecated No longer supported */
+  weightRight: Scalars['Float'];
+  weightValueLeft: WeightValue;
+  weightValueRight: WeightValue;
 };
 
 export type Exercise = {
@@ -100,6 +106,25 @@ export enum MuscleGroup {
   UpperBack = 'UPPER_BACK'
 }
 
+export type User = {
+  __typename?: 'User';
+  cognitoUser: CognitoUser;
+  fid: Scalars['String'];
+  id: Scalars['ID'];
+};
+
+export type CognitoUser = {
+  __typename?: 'CognitoUser';
+  email: Scalars['String'];
+  family_name: Scalars['String'];
+  gender: Scalars['String'];
+  given_name: Scalars['String'];
+  locale: Scalars['String'];
+  name: Scalars['String'];
+  nickname: Scalars['String'];
+  zoneinfo: Scalars['String'];
+};
+
 export type Preference = {
   __typename?: 'Preference';
   autoAdjustWorkoutMuscleGroups?: Maybe<Scalars['Boolean']>;
@@ -119,25 +144,6 @@ export type Workout = {
   name: Scalars['String'];
   remark?: Maybe<Scalars['String']>;
   startDateTime?: Maybe<Scalars['LocalDateTime']>;
-};
-
-export type ExerciseLog = {
-  __typename?: 'ExerciseLog';
-  exercise: Exercise;
-  id: Scalars['ID'];
-  logDateTime: Scalars['LocalDateTime'];
-  remark?: Maybe<Scalars['String']>;
-  repetitions: Scalars['Float'];
-  /** @deprecated No longer supported */
-  unit: WeightUnit;
-  user: User;
-  warmup?: Maybe<Scalars['Boolean']>;
-  /** @deprecated No longer supported */
-  weightLeft: Scalars['Float'];
-  /** @deprecated No longer supported */
-  weightRight: Scalars['Float'];
-  weightValueLeft: WeightValue;
-  weightValueRight: WeightValue;
 };
 
 export type GroupedExerciseLog = {

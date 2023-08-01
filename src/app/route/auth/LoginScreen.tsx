@@ -8,15 +8,12 @@ import {AuthStackParamList} from '../AppRoute';
 import Loader from '../../components/common/Loader';
 import GradientBackground from '../../components/common/GradientBackground';
 import Constants from '../../utils/Constants';
-import useAuthStore, {AuthState} from '../../stores/authStore';
 import {defaultStyles} from '../../utils/DefaultStyles';
 import {errorCodeToMessage} from '../../utils/String';
 
 type Props = NativeStackScreenProps<AuthStackParamList, 'Login'>;
 
 const LoginScreen: React.FC<Props> = props => {
-  const authState: AuthState = useAuthStore(state => state.state);
-
   const {signIn} = useAuth();
 
   const [error, setError] = useState('');
@@ -32,12 +29,6 @@ const LoginScreen: React.FC<Props> = props => {
       console.log(`[LoginScreen] Challenge: ${cognitoUser.challengeName}`);
     }
   }, [cognitoUser]);
-
-  // useEffect(() => {
-  //   if (authState === AuthState.USER_NOT_CONFIRMED && email) {
-  //     props.navigation.navigate('ConfirmUser', {email: email});
-  //   }
-  // }, [authState]);
 
   return (
     <GradientBackground>

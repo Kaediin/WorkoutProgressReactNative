@@ -19,7 +19,6 @@ const WorkoutListItem: React.FC<WorkoutListItemProps> = ({
   onWorkoutPressed,
   hasActiveWorkout,
 }) => {
-  // console.log(hasActiveWorkout);
   return (
     <TouchableOpacity
       style={styles.touchableOpacity}
