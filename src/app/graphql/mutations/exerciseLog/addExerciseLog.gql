@@ -1,0 +1,5 @@
+mutation addExerciseLog($workoutId: ID!, $input: ExerciseLogInput!, $autoAdjust: Boolean!){
+    addExerciseLog(workoutId:$workoutId, input: $input, autoAdjust: $autoAdjust){
+        ...WorkoutLong
+    }
+}

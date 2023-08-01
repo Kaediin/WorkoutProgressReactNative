@@ -83,14 +83,14 @@ enum MuscleGroup {
 }
 
 type Mutation {
-  addExerciseLogToWorkout(input: ExerciseLogInput!, workoutId: ID!): Workout
+  addExerciseLog(autoAdjust: Boolean!, input: ExerciseLogInput!, workoutId: ID!): Workout
   createExercise(input: ExerciseInput): Exercise
   createUser(userInput: UserInput!): User
   deleteExercise(id: ID!): Boolean!
   deleteWorkout(id: ID!): Boolean
   endWorkout(workoutId: ID!, zonedDateTimeString: String!): Workout
   meStartWorkout(input: WorkoutInput!): Workout
-  removeExerciseLog(exerciseLogId: String!): Boolean!
+  removeExerciseLog(autoAdjust: Boolean!, exerciseLogId: String!): Boolean!
   runFetchWorkoutsTask: Boolean
   updateExercise(id: ID!, input: ExerciseInput): Exercise
   updateExerciseLog(exerciseLogId: ID!, input: ExerciseLogInput!): Workout
@@ -98,12 +98,14 @@ type Mutation {
 }
 
 type Preference {
+  autoAdjustWorkoutMuscleGroups: Boolean
   defaultRepetitions: Int
   hideUnitSelector: Boolean
   unit: WeightUnit
 }
 
 input PreferenceInput {
+  autoAdjustWorkoutMuscleGroups: Boolean
   defaultRepetitions: Int
   hideUnitSelector: Boolean
   unit: WeightUnit

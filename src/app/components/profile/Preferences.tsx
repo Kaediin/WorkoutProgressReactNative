@@ -57,6 +57,7 @@ const Preferences: React.FC<PreferencesProps> = ({
         unit: preference.unit,
         defaultRepetitions: preference.defaultRepetitions,
         hideUnitSelector: preference.hideUnitSelector,
+        autoAdjustWorkoutMuscleGroups: preference.autoAdjustWorkoutMuscleGroups,
       });
       onSetRepetitions(
         preference.defaultRepetitions || Constants.DEFAULT_REPETITIONS,
@@ -97,8 +98,11 @@ const Preferences: React.FC<PreferencesProps> = ({
             defaultStyles.container,
             defaultStyles.zIndex10,
           ]}>
-          <Text style={defaultStyles.whiteTextColor}>Unit</Text>
-          <View>
+          <View style={styles.labelContainer}>
+            <Text style={defaultStyles.whiteTextColor}>Unit</Text>
+            <Text style={defaultStyles.footnote}>Prefered unit</Text>
+          </View>
+          <View style={styles.controlContainer}>
             <DropDownPicker
               setValue={setNewUnitSelect}
               value={newUnitSelect || preferenceInput?.unit || WeightUnit.KG}
@@ -125,19 +129,24 @@ const Preferences: React.FC<PreferencesProps> = ({
           </View>
         </View>
         <View style={[defaultStyles.spaceBetween, styles.padding]}>
-          <View>
+          <View style={styles.labelContainer}>
             <Text style={defaultStyles.whiteTextColor}>
               Default repetitions
             </Text>
+            <Text style={defaultStyles.footnote}>
+              Automatically preset the value for repetitions
+            </Text>
           </View>
-          <ClickableText
-            text={
-              preferenceInput?.defaultRepetitions ||
-              Constants.DEFAULT_REPETITIONS
-            }
-            onPress={onDefaultRepetitionClicked}
-            containerStyles={styles.containerDefaultRepetitionValue}
-          />
+          <View style={styles.controlContainer}>
+            <ClickableText
+              text={
+                preferenceInput?.defaultRepetitions ||
+                Constants.DEFAULT_REPETITIONS
+              }
+              onPress={onDefaultRepetitionClicked}
+              containerStyles={styles.containerDefaultRepetitionValue}
+            />
+          </View>
         </View>
         <View
           style={[
@@ -145,27 +154,68 @@ const Preferences: React.FC<PreferencesProps> = ({
             styles.padding,
             styles.marginTop,
           ]}>
-          <View>
+          <View style={styles.labelContainer}>
             <Text style={defaultStyles.whiteTextColor}>Hide unit selector</Text>
+            <Text style={defaultStyles.footnote}>
+              Hide the unit selector when logging any weight value
+            </Text>
           </View>
-          <Switch
-            value={preferenceInput?.hideUnitSelector || false}
-            onValueChange={value => {
-              setPreferenceInput(prevState => ({
-                ...prevState,
-                hideUnitSelector: value,
-              }));
-              updateMyPreferences({
-                variables: {
-                  input: {
-                    ...preferenceInput,
-                    hideUnitSelector: value,
+          <View style={styles.controlContainer}>
+            <Switch
+              value={preferenceInput?.hideUnitSelector || false}
+              onValueChange={value => {
+                setPreferenceInput(prevState => ({
+                  ...prevState,
+                  hideUnitSelector: value,
+                }));
+                updateMyPreferences({
+                  variables: {
+                    input: {
+                      ...preferenceInput,
+                      hideUnitSelector: value,
+                    },
                   },
-                },
-              });
-            }}
-            ios_backgroundColor={'red'}
-          />
+                });
+              }}
+              ios_backgroundColor={'red'}
+            />
+          </View>
+        </View>
+        <View
+          style={[
+            defaultStyles.spaceBetween,
+            styles.padding,
+            styles.marginTop,
+          ]}>
+          <View style={styles.labelContainer}>
+            <Text style={defaultStyles.whiteTextColor}>
+              Auto adjust workout muscle groups
+            </Text>
+            <Text style={defaultStyles.footnote}>
+              Automatically determine the muscle groups based on the logged
+              exercises
+            </Text>
+          </View>
+          <View style={styles.controlContainer}>
+            <Switch
+              value={preferenceInput?.autoAdjustWorkoutMuscleGroups ?? false}
+              onValueChange={value => {
+                setPreferenceInput(prevState => ({
+                  ...prevState,
+                  autoAdjustWorkoutMuscleGroups: value,
+                }));
+                updateMyPreferences({
+                  variables: {
+                    input: {
+                      ...preferenceInput,
+                      autoAdjustWorkoutMuscleGroups: value,
+                    },
+                  },
+                });
+              }}
+              ios_backgroundColor={'red'}
+            />
+          </View>
         </View>
       </View>
     </View>
@@ -173,6 +223,15 @@ const Preferences: React.FC<PreferencesProps> = ({
 };
 
 const styles = StyleSheet.create({
+  labelContainer: {
+    flex: 3,
+    alignItems: 'flex-start',
+    marginRight: Constants.CONTAINER_PADDING_MARGIN,
+  },
+  controlContainer: {
+    flex: 1,
+    alignItems: 'flex-end',
+  },
   dropdownContainerStyle: {
     width: 80,
     borderWidth: 0,

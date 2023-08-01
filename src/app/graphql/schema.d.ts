@@ -102,6 +102,7 @@ export enum MuscleGroup {
 
 export type Preference = {
   __typename?: 'Preference';
+  autoAdjustWorkoutMuscleGroups?: Maybe<Scalars['Boolean']>;
   defaultRepetitions?: Maybe<Scalars['Int']>;
   hideUnitSelector?: Maybe<Scalars['Boolean']>;
   unit?: Maybe<WeightUnit>;
@@ -147,7 +148,7 @@ export type GroupedExerciseLog = {
 
 export type Mutation = {
   __typename?: 'Mutation';
-  addExerciseLogToWorkout?: Maybe<Workout>;
+  addExerciseLog?: Maybe<Workout>;
   createExercise?: Maybe<Exercise>;
   createUser?: Maybe<User>;
   deleteExercise: Scalars['Boolean'];
@@ -162,7 +163,8 @@ export type Mutation = {
 };
 
 
-export type MutationAddExerciseLogToWorkoutArgs = {
+export type MutationAddExerciseLogArgs = {
+  autoAdjust: Scalars['Boolean'];
   input: ExerciseLogInput;
   workoutId: Scalars['ID'];
 };
@@ -200,6 +202,7 @@ export type MutationMeStartWorkoutArgs = {
 
 
 export type MutationRemoveExerciseLogArgs = {
+  autoAdjust: Scalars['Boolean'];
   exerciseLogId: Scalars['String'];
 };
 
@@ -260,6 +263,7 @@ export type WorkoutInput = {
 };
 
 export type PreferenceInput = {
+  autoAdjustWorkoutMuscleGroups?: InputMaybe<Scalars['Boolean']>;
   defaultRepetitions?: InputMaybe<Scalars['Int']>;
   hideUnitSelector?: InputMaybe<Scalars['Boolean']>;
   unit?: InputMaybe<WeightUnit>;

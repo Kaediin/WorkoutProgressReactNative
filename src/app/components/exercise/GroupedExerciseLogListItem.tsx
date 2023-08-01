@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {
   ExerciseLogFragment,
   GroupedExerciseLogFragment,
@@ -27,17 +27,10 @@ const GroupedExerciseLogListItem: React.FC<ExerciseLogListItemProps> = ({
   onRemoveLog,
   onLogPress,
 }) => {
-  const [lastLoggedDate, setLastLoggedDate] = useState<string>();
-
   return (
     <GradientBackground
       gradient={Constants.SECONDARY_GRADIENT}
       styles={styles.container}>
-      {lastLoggedDate && (
-        <Text style={defaultStyles.footnote}>
-          {getRelativeTimeIfToday(lastLoggedDate)}
-        </Text>
-      )}
       <Text style={defaultStyles.h3}>{groupedExercise.exercise.name}</Text>
       {groupedExercise.exercise.defaultAppliedWeight && (
         <Text
@@ -52,13 +45,6 @@ const GroupedExerciseLogListItem: React.FC<ExerciseLogListItemProps> = ({
       <FlatList
         data={groupedExercise.logs}
         renderItem={({item}) => {
-          const loggedDate = moment.utc(item.logDateTime).toISOString();
-          if (
-            !lastLoggedDate ||
-            moment.utc(lastLoggedDate).isBefore(moment.utc(loggedDate))
-          ) {
-            setLastLoggedDate(loggedDate);
-          }
           return (
             <TouchableOpacity onPress={() => onLogPress(item)}>
               <ContextMenu
@@ -84,7 +70,9 @@ const GroupedExerciseLogListItem: React.FC<ExerciseLogListItemProps> = ({
                       {weightValueToString(item.weightValueLeft)}
                     </Text>
                     <Text style={defaultStyles.footnote}>
-                      {getRelativeTimeIfToday(loggedDate)}
+                      {getRelativeTimeIfToday(
+                        moment.utc(item.logDateTime).toISOString(),
+                      )}
                     </Text>
                   </View>
                   {item.remark && (
