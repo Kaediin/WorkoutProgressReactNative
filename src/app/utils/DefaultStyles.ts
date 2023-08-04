@@ -12,6 +12,9 @@ export const defaultStyles = StyleSheet.create({
   textAlignCenter: {
     textAlign: 'center',
   },
+  textAlignRight: {
+    textAlign: 'right',
+  },
   h1: {
     fontSize: 28,
     lineHeight: 34,
