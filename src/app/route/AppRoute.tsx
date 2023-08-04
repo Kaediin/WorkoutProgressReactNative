@@ -22,7 +22,7 @@ const AppRoute: React.FC = () => {
     <NavigationContainer>
       {authState === AuthState.AUTHENTICATED ? (
         <TabNavigator />
-      ) : (
+      ) : authState === AuthState.UNAUTHENTICATED ? (
         <AuthStackNavigator.Navigator initialRouteName="Login">
           <AuthStackNavigator.Screen
             name={'Login'}
@@ -40,6 +40,8 @@ const AppRoute: React.FC = () => {
             options={{headerShown: false}}
           />
         </AuthStackNavigator.Navigator>
+      ) : (
+        <></>
       )}
     </NavigationContainer>
   );
