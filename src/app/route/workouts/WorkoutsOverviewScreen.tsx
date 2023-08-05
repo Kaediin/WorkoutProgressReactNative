@@ -280,7 +280,7 @@ const WorkoutsOverviewScreen: React.FC<Props> = ({navigation}) => {
             styles={styles.button}
             title={editingExistingWorkoutId ? 'Adjust' : 'Start workout'}
             onClick={() =>
-              existingWorkouts ? doEditWorkout() : doStartWorkout()
+              editingExistingWorkoutId ? doEditWorkout() : doStartWorkout()
             }
           />
         </CustomBottomSheet>
