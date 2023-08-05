@@ -42,7 +42,7 @@ export const CustomBottomSheet = React.forwardRef<
   return (
     <BottomSheetModal
       ref={modalRef}
-      index={index || 98}
+      index={index || 90}
       snapPoints={Constants.BOTTOM_SHEET_SNAPPOINTS}
       backdropComponent={renderBackdrop}
       onDismiss={onCloseClicked}>

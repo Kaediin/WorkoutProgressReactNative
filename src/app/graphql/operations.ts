@@ -169,6 +169,7 @@ export type Mutation = {
   updateExercise?: Maybe<Exercise>;
   updateExerciseLog?: Maybe<Workout>;
   updateMyPreference: Preference;
+  updateWorkout: Workout;
 };
 
 
@@ -230,6 +231,12 @@ export type MutationUpdateExerciseLogArgs = {
 
 export type MutationUpdateMyPreferenceArgs = {
   input: PreferenceInput;
+};
+
+
+export type MutationUpdateWorkoutArgs = {
+  id: Scalars['ID'];
+  input: WorkoutInput;
 };
 
 export type ExerciseLogInput = {
@@ -378,6 +385,14 @@ export type StartWorkoutMutationVariables = Exact<{
 
 
 export type StartWorkoutMutation = { __typename?: 'Mutation', meStartWorkout?: { __typename?: 'Workout', id: string, name: string, muscleGroups: Array<MuscleGroup>, startDateTime?: any | null, endDateTime?: any | null, active?: boolean | null, remark?: string | null } | null };
+
+export type UpdateWorkoutMutationVariables = Exact<{
+  id: Scalars['ID'];
+  input: WorkoutInput;
+}>;
+
+
+export type UpdateWorkoutMutation = { __typename?: 'Mutation', updateWorkout: { __typename?: 'Workout', id: string, name: string, muscleGroups: Array<MuscleGroup>, startDateTime?: any | null, endDateTime?: any | null, active?: boolean | null, remark?: string | null } };
 
 export type MyExercisesQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -730,6 +745,34 @@ export function useStartWorkoutMutation(baseOptions?: Apollo.MutationHookOptions
 export type StartWorkoutMutationHookResult = ReturnType<typeof useStartWorkoutMutation>;
 export type StartWorkoutMutationResult = Apollo.MutationResult<StartWorkoutMutation>;
 export type StartWorkoutMutationOptions = Apollo.BaseMutationOptions<StartWorkoutMutation, StartWorkoutMutationVariables>;
+export const UpdateWorkoutDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"updateWorkout"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"WorkoutInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"updateWorkout"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}},{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"WorkoutShort"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"WorkoutShort"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Workout"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"muscleGroups"}},{"kind":"Field","name":{"kind":"Name","value":"startDateTime"}},{"kind":"Field","name":{"kind":"Name","value":"endDateTime"}},{"kind":"Field","name":{"kind":"Name","value":"active"}},{"kind":"Field","name":{"kind":"Name","value":"remark"}}]}}]} as unknown as DocumentNode;
+export type UpdateWorkoutMutationFn = Apollo.MutationFunction<UpdateWorkoutMutation, UpdateWorkoutMutationVariables>;
+
+/**
+ * __useUpdateWorkoutMutation__
+ *
+ * To run a mutation, you first call `useUpdateWorkoutMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateWorkoutMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateWorkoutMutation, { data, loading, error }] = useUpdateWorkoutMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateWorkoutMutation(baseOptions?: Apollo.MutationHookOptions<UpdateWorkoutMutation, UpdateWorkoutMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateWorkoutMutation, UpdateWorkoutMutationVariables>(UpdateWorkoutDocument, options);
+      }
+export type UpdateWorkoutMutationHookResult = ReturnType<typeof useUpdateWorkoutMutation>;
+export type UpdateWorkoutMutationResult = Apollo.MutationResult<UpdateWorkoutMutation>;
+export type UpdateWorkoutMutationOptions = Apollo.BaseMutationOptions<UpdateWorkoutMutation, UpdateWorkoutMutationVariables>;
 export const MyExercisesDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"myExercises"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"myExercises"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"Exercise"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"Exercise"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Exercise"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"primaryMuscles"}},{"kind":"Field","name":{"kind":"Name","value":"secondaryMuscles"}},{"kind":"Field","name":{"kind":"Name","value":"defaultAppliedWeight"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"WeightValue"}}]}},{"kind":"Field","name":{"kind":"Name","value":"notes"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"WeightValue"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"WeightValue"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"unit"}},{"kind":"Field","name":{"kind":"Name","value":"baseWeight"}},{"kind":"Field","name":{"kind":"Name","value":"fraction"}}]}}]} as unknown as DocumentNode;
 
 /**

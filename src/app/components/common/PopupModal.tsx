@@ -5,11 +5,13 @@ import LinearGradient from 'react-native-linear-gradient';
 import Constants from '../../utils/Constants';
 import {enumToReadableString} from '../../utils/String';
 import GradientButton from './GradientButton';
+import {defaultStyles} from '../../utils/DefaultStyles';
 
 interface PopupModalProps {
   message: string;
   isOpen: boolean;
   type: 'WARNING' | 'ERROR' | 'INFO';
+  onConfirm?: () => void;
   onDismiss: () => void;
   overrideGradient?: (string | number)[];
 }
@@ -33,12 +35,21 @@ const PopupModal: React.FC<PopupModalProps> = props => {
         }>
         <Text style={styles.header}>{enumToReadableString(props.type)}</Text>
         <Text>{props.message}</Text>
-        <View style={styles.buttonContainer}>
+        <View style={[defaultStyles.spaceBetween, defaultStyles.marginTop]}>
           <GradientButton
-            title={'Understood'}
+            title={props.onConfirm ? 'Dismiss' : 'Understood'}
             onClick={props.onDismiss}
-            gradients={Constants.SECONDARY_GRADIENT}
+            gradients={Constants.SECONDARY_GRADIENT_FADED}
+            styles={[defaultStyles.flex1, styles.margin]}
           />
+          {props.onConfirm && (
+            <GradientButton
+              title={'Confirm'}
+              onClick={props.onConfirm}
+              gradients={Constants.TERTIARY_GRADIENT}
+              styles={defaultStyles.flex1}
+            />
+          )}
         </View>
       </LinearGradient>
     </Modal>
@@ -56,8 +67,8 @@ const styles = StyleSheet.create({
     marginBottom: Constants.CONTAINER_PADDING_MARGIN,
     textAlign: 'center',
   },
-  buttonContainer: {
-    marginTop: 20,
+  margin: {
+    marginRight: 10,
   },
 });
 

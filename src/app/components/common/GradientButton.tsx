@@ -25,7 +25,7 @@ const stylesGrad = StyleSheet.create({
   },
   linearGradient: {
     height: 44,
-    width: 250,
+    width: '100%',
     justifyContent: 'center',
     alignSelf: 'center',
     borderRadius: Constants.BORDER_RADIUS_LARGE,
@@ -48,7 +48,7 @@ const GradientButton: React.FC<GradientButtonProps> = props => {
     <LinearGradient
       colors={props.gradients ?? Constants.SECONDARY_GRADIENT}
       locations={[0, 1]}
-      style={[props.styles, stylesGrad.warmup, stylesGrad.linearGradient]}>
+      style={[stylesGrad.warmup, stylesGrad.linearGradient, props.styles]}>
       <Text style={stylesGrad.title}>{props.title}</Text>
     </LinearGradient>
   ) : (

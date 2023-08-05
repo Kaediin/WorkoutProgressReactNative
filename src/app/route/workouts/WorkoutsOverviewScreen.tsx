@@ -2,10 +2,10 @@ import React, {useEffect, useMemo, useRef, useState} from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import GradientBackground from '../../components/common/GradientBackground';
 import {
-  MuscleGroup,
   useDeleteWorkoutMutation,
   useHasActiveWorkoutQuery,
   useStartWorkoutMutation,
+  useUpdateWorkoutMutation,
   useWorkoutsQuery,
   WorkoutInput,
   WorkoutShortFragment,
@@ -48,37 +48,23 @@ const WorkoutsOverviewScreen: React.FC<Props> = ({navigation}) => {
   )?.autoAdjustWorkoutMuscleGroups;
 
   const isFocussed = useIsFocused();
-  const [remark, setRemark] = useState<string>();
+  const [deleteWorkoutId, setDeleteWorkoutId] = useState<string>('');
+  const [editingExistingWorkoutId, setEditingExistingWorkoutId] =
+    useState<string>('');
   const [activeWorkoutWarningModalOpen, setActiveWorkoutWarningModalOpen] =
     useState(false);
 
-  const [selectedMuscleGroups, setSelectedMuscleGroups] = useState<
-    MuscleGroup[]
-  >([]);
-  const [newWorkout, setNewWorkout] = useState<WorkoutInput>({
+  const initialWorkout: WorkoutInput = {
     name: '',
     muscleGroups: [],
     zonedDateTime: '',
-  });
+    remark: '',
+  };
+
+  const [newWorkout, setNewWorkout] = useState<WorkoutInput>(initialWorkout);
 
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
   const bottomSheetModalRefMuscleSelect = useRef<BottomSheetModal>(null);
-
-  const doStartWorkout = (): void => {
-    if (newWorkout?.name) {
-      startWorkout({
-        variables: {
-          input: {
-            name: newWorkout.name,
-            muscleGroups: selectedMuscleGroups || [],
-            zonedDateTime: moment().toISOString(true),
-            remark,
-          },
-        },
-      });
-    }
-    bottomSheetModalRef.current?.dismiss();
-  };
 
   const {
     data: getWorkoutsData,
@@ -88,6 +74,39 @@ const WorkoutsOverviewScreen: React.FC<Props> = ({navigation}) => {
   } = useWorkoutsQuery({
     fetchPolicy: 'no-cache',
   });
+  const [updateWorkout] = useUpdateWorkoutMutation({fetchPolicy: 'no-cache'});
+
+  const doStartWorkout = (): void => {
+    if (newWorkout?.name) {
+      startWorkout({
+        variables: {
+          input: {
+            name: newWorkout.name,
+            muscleGroups: newWorkout.muscleGroups,
+            zonedDateTime: moment().toISOString(true),
+            remark: newWorkout.remark,
+          },
+        },
+      });
+    }
+    bottomSheetModalRef.current?.dismiss();
+  };
+
+  const doEditWorkout = (): void => {
+    updateWorkout({
+      variables: {
+        id: editingExistingWorkoutId,
+        input: {
+          name: newWorkout.name,
+          muscleGroups: newWorkout.muscleGroups,
+          zonedDateTime: newWorkout.zonedDateTime,
+          remark: newWorkout.remark,
+        },
+      },
+    });
+    bottomSheetModalRef.current?.dismiss();
+    refetchWorkouts();
+  };
 
   const [deleteWorkout] = useDeleteWorkoutMutation({fetchPolicy: 'no-cache'});
 
@@ -125,6 +144,7 @@ const WorkoutsOverviewScreen: React.FC<Props> = ({navigation}) => {
   const loading = startWorkoutLoading || getWorkoutsLoading;
 
   const onFloatingButtonClicked = (): void => {
+    setNewWorkout(initialWorkout);
     if (hasActiveWorkout) {
       setActiveWorkoutWarningModalOpen(true);
     } else {
@@ -142,12 +162,27 @@ const WorkoutsOverviewScreen: React.FC<Props> = ({navigation}) => {
     navigation.navigate('WorkoutDetail', {workoutId: id});
   };
 
-  const removeWorkout = (workout: WorkoutShortFragment): void => {
+  const removeWorkout = (id: string): void => {
     deleteWorkout({
       variables: {
-        id: workout.id,
+        id,
       },
-    }).finally(() => refetchWorkouts());
+    }).finally(() => {
+      setDeleteWorkoutId('');
+      refetchActiveWorkout();
+      refetchWorkouts();
+    });
+  };
+
+  const editWorkout = (workout: WorkoutShortFragment): void => {
+    setEditingExistingWorkoutId(workout.id);
+    setNewWorkout({
+      name: workout.name,
+      muscleGroups: workout.muscleGroups,
+      remark: workout.remark,
+      zonedDateTime: workout.startDateTime,
+    });
+    bottomSheetModalRef.current?.present();
   };
 
   return (
@@ -173,13 +208,20 @@ const WorkoutsOverviewScreen: React.FC<Props> = ({navigation}) => {
           }
           renderItem={({item}) => (
             <ContextMenu
-              actions={[{title: ContextMenuActions.REMOVE}]}
-              onPress={() => removeWorkout(item)}>
+              actions={[
+                {title: ContextMenuActions.REMOVE},
+                {title: ContextMenuActions.EDIT},
+              ]}
+              onPress={event => {
+                event.nativeEvent.name === ContextMenuActions.REMOVE
+                  ? setDeleteWorkoutId(item.id)
+                  : editWorkout(item);
+              }}>
               <WorkoutListItem
                 key={item.id}
                 workout={item}
                 onWorkoutPressed={navigateToWorkout}
-                hasActiveWorkout={hasActiveWorkout || false}
+                hasActiveWorkout={hasActiveWorkout}
               />
             </ContextMenu>
           )}
@@ -219,22 +261,27 @@ const WorkoutsOverviewScreen: React.FC<Props> = ({navigation}) => {
                 styles={defaultStyles.textAlignCenter}
               />
               <MuscleGroupList
-                muscleGroups={selectedMuscleGroups}
+                muscleGroups={newWorkout.muscleGroups}
                 pillColor="#00C5ED"
                 textColor="white"
               />
             </>
           )}
           <TextInput
-            onChangeText={setRemark}
+            defaultValue={newWorkout.remark}
+            onChangeText={remark =>
+              setNewWorkout(prevState => ({...prevState, remark}))
+            }
             style={defaultStyles.textAreaInput}
             placeholder={'Remarks for this workout'}
             multiline
           />
           <GradientButton
             styles={styles.button}
-            title={'Start workout'}
-            onClick={doStartWorkout}
+            title={editingExistingWorkoutId ? 'Adjust' : 'Start workout'}
+            onClick={() =>
+              existingWorkouts ? doEditWorkout() : doStartWorkout()
+            }
           />
         </CustomBottomSheet>
         <CustomBottomSheet
@@ -243,9 +290,13 @@ const WorkoutsOverviewScreen: React.FC<Props> = ({navigation}) => {
             bottomSheetModalRefMuscleSelect?.current?.dismiss()
           }>
           <SelectMuscleGroups
-            preselected={selectedMuscleGroups}
+            preselected={newWorkout.muscleGroups}
             onSelected={groups => {
-              setSelectedMuscleGroups(groups);
+              setNewWorkout(prevState => ({
+                ...prevState,
+                muscleGroups: groups,
+              }));
+              // setSelectedMuscleGroups(groups);
               bottomSheetModalRefMuscleSelect?.current?.dismiss();
               bottomSheetModalRef?.current?.present();
             }}
@@ -264,6 +315,13 @@ const WorkoutsOverviewScreen: React.FC<Props> = ({navigation}) => {
           setActiveWorkoutWarningModalOpen(false);
           bottomSheetModalRef.current?.present();
         }}
+      />
+      <PopupModal
+        message={'Are you sure you want to remove this workout?'}
+        isOpen={!!deleteWorkoutId}
+        type={'WARNING'}
+        onDismiss={() => setDeleteWorkoutId('')}
+        onConfirm={() => removeWorkout(deleteWorkoutId)}
       />
     </GradientBackground>
   );

@@ -95,6 +95,7 @@ type Mutation {
   updateExercise(id: ID!, input: ExerciseInput): Exercise
   updateExerciseLog(exerciseLogId: ID!, input: ExerciseLogInput!): Workout
   updateMyPreference(input: PreferenceInput!): Preference!
+  updateWorkout(id: ID!, input: WorkoutInput!): Workout!
 }
 
 type Preference {
