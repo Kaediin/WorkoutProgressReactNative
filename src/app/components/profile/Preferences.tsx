@@ -103,29 +103,31 @@ const Preferences: React.FC<PreferencesProps> = ({
             <Text style={defaultStyles.footnote}>Prefered unit</Text>
           </View>
           <View style={styles.controlContainer}>
-            <DropDownPicker
-              setValue={setNewUnitSelect}
-              value={newUnitSelect || preferenceInput?.unit || WeightUnit.KG}
-              items={[
-                {
-                  value: WeightUnit.KG,
-                  label: WeightUnit.KG,
-                },
-                {
-                  value: WeightUnit.LBS,
-                  label: WeightUnit.LBS,
-                },
-              ]}
-              open={unitSelectOpen}
-              setOpen={setUnitSelectOpen}
-              style={styles.dropdownContainerStyle}
-              labelStyle={[
-                defaultStyles.clickableText,
-                defaultStyles.textAlignCenter,
-              ]}
-              dropDownContainerStyle={styles.dropdownContainerStyle}
-              showArrowIcon={false}
-            />
+            <View style={{flex: 1}}>
+              <DropDownPicker
+                setValue={setNewUnitSelect}
+                value={newUnitSelect || preferenceInput?.unit || WeightUnit.KG}
+                items={[
+                  {
+                    value: WeightUnit.KG,
+                    label: WeightUnit.KG,
+                  },
+                  {
+                    value: WeightUnit.LBS,
+                    label: WeightUnit.LBS,
+                  },
+                ]}
+                open={unitSelectOpen}
+                setOpen={setUnitSelectOpen}
+                style={styles.dropdownStyle}
+                labelStyle={[
+                  defaultStyles.clickableText,
+                  defaultStyles.textAlignRight,
+                ]}
+                dropDownContainerStyle={styles.dropdownContainerStyle}
+                showArrowIcon={false}
+              />
+            </View>
           </View>
         </View>
         <View style={[defaultStyles.spaceBetween, styles.padding]}>
@@ -232,6 +234,11 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'flex-end',
   },
+  dropdownStyle: {
+    width: 80,
+    borderWidth: 0,
+    backgroundColor: '0000000',
+  },
   dropdownContainerStyle: {
     width: 80,
     borderWidth: 0,
@@ -247,11 +254,9 @@ const styles = StyleSheet.create({
     marginHorizontal: Constants.CONTAINER_PADDING_MARGIN,
   },
   containerDefaultRepetitionValue: {
-    backgroundColor: 'white',
     width: 80,
-    alignItems: 'center',
+    alignItems: 'flex-end',
     padding: Constants.CONTAINER_PADDING_MARGIN,
-    borderRadius: Constants.BORDER_RADIUS_SMALL,
   },
   marginTop: {
     marginTop: 20,

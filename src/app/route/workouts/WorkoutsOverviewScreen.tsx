@@ -17,6 +17,7 @@ import SelectMuscleGroups from '../../components/workouts/SelectMuscleGroups';
 import {
   Button,
   FlatList,
+  RefreshControl,
   StyleSheet,
   Text,
   TextInput,
@@ -37,14 +38,16 @@ import MuscleGroupList from '../../components/workouts/MuscleGroupList';
 import GradientButton from '../../components/common/GradientButton';
 import usePreferenceStore from '../../stores/preferenceStore';
 import Loader from '../../components/common/Loader';
+import {useIsFocused} from '@react-navigation/native';
 
 type Props = NativeStackScreenProps<WorkoutStackParamList, 'WorkoutsOverview'>;
 
-const WorkoutsOverviewScreen: React.FC<Props> = ({route, navigation}) => {
+const WorkoutsOverviewScreen: React.FC<Props> = ({navigation}) => {
   const autoSelectMuscleGroups = usePreferenceStore(
     state => state.preference,
   )?.autoAdjustWorkoutMuscleGroups;
 
+  const isFocussed = useIsFocused();
   const [remark, setRemark] = useState<string>();
   const [activeWorkoutWarningModalOpen, setActiveWorkoutWarningModalOpen] =
     useState(false);
@@ -108,10 +111,16 @@ const WorkoutsOverviewScreen: React.FC<Props> = ({route, navigation}) => {
 
   useEffect(() => {
     if (startWorkoutData?.meStartWorkout) {
-      refetchWorkouts();
       refetchActiveWorkout();
+      navigateToWorkout(startWorkoutData.meStartWorkout.id);
     }
   }, [startWorkoutData?.meStartWorkout]);
+
+  useEffect(() => {
+    if (isFocussed && getWorkoutsData?.myWorkouts) {
+      refetchWorkouts();
+    }
+  }, [isFocussed]);
 
   const loading = startWorkoutLoading || getWorkoutsLoading;
 
@@ -128,15 +137,6 @@ const WorkoutsOverviewScreen: React.FC<Props> = ({route, navigation}) => {
     () => hasActiveWorkoutData?.meHasActiveWorkout,
     [hasActiveWorkoutData],
   );
-
-  useEffect(() => {
-    // @ts-ignore
-    if (route.params?.cameFrom) {
-      refetchWorkouts();
-      refetchActiveWorkout();
-    }
-    // @ts-ignore
-  }, [route.params?.cameFrom]);
 
   const navigateToWorkout = (id: string): void => {
     navigation.navigate('WorkoutDetail', {workoutId: id});
@@ -163,6 +163,14 @@ const WorkoutsOverviewScreen: React.FC<Props> = ({route, navigation}) => {
       ) : (
         <FlatList
           data={existingWorkouts}
+          refreshControl={
+            <RefreshControl
+              colors={['#fff', '#ccc']}
+              tintColor={'#fff'}
+              refreshing={getWorkoutsLoading}
+              onRefresh={refetchWorkouts}
+            />
+          }
           renderItem={({item}) => (
             <ContextMenu
               actions={[{title: ContextMenuActions.REMOVE}]}

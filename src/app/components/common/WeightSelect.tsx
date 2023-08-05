@@ -49,6 +49,11 @@ const WeightSelect: React.FC<WeightSelectProps> = ({
     }
   }, [baseWeight, fraction]);
 
+  useEffect(() => {
+    setBaseWeight(weightValue?.baseWeight ?? 0);
+    setFraction(weightValue?.fraction ?? 0);
+  }, [weightValue]);
+
   return (
     <>
       <View style={styles.pickerContainer}>
@@ -57,7 +62,7 @@ const WeightSelect: React.FC<WeightSelectProps> = ({
             Weight
           </Text>
           <Picker
-            selectedValue={baseWeight}
+            selectedValue={+baseWeight}
             onValueChange={setBaseWeight}
             itemStyle={styles.fontSizeSmall}>
             {Constants.WEIGHT_POINTS.map(weightPoint => (

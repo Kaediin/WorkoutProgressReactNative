@@ -43,6 +43,7 @@ import {Picker} from '@react-native-picker/picker';
 import {weightValueToString} from '../../utils/String';
 import Loader from '../../components/common/Loader';
 import {DATE_TIME_FORMAT} from '../../utils/Date';
+import {stripTypenames} from '../../utils/GrahqlUtils';
 
 type Props = NativeStackScreenProps<WorkoutStackParamList, 'WorkoutDetail'>;
 
@@ -163,7 +164,7 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
     }
   }, [removeExerciseLogData?.removeExerciseLog]);
 
-  const [exerciseLog, setExerciseLog] = useState<ExerciseLogInput>({
+  const initialLog: ExerciseLogInput = {
     exerciseId: '',
     repetitions:
       preference?.defaultRepetitions || Constants.DEFAULT_REPETITIONS,
@@ -177,7 +178,9 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
     },
     zonedDateTimeString: '',
     warmup: false,
-  });
+  };
+
+  const [exerciseLog, setExerciseLog] = useState<ExerciseLogInput>(initialLog);
 
   const doLogExercise = (): void => {
     if (
@@ -195,7 +198,7 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
       updateExerciseLog({
         variables: {
           id: editExistingExercise.id,
-          input: exerciseLog,
+          input: stripTypenames(exerciseLog),
         },
       });
     } else {
@@ -340,7 +343,14 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
       ) : (
         <></>
       )}
-      {workout && <FloatingButton onClick={() => toggleBottomSheetRef(true)} />}
+      {workout && (
+        <FloatingButton
+          onClick={() => {
+            setExerciseLog(initialLog);
+            toggleBottomSheetRef(true);
+          }}
+        />
+      )}
       <BottomSheetModalProvider>
         <CreateExerciseModalContent
           active={createExerciseModal}
@@ -350,7 +360,7 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
         <CustomBottomSheet
           ref={bottomSheetRef}
           onCloseClicked={() => toggleBottomSheetRef(false)}
-          index={70}>
+          index={90}>
           {myExercisesLoading || logExeciseLoading || updateExeciseLoading ? (
             <Loader />
           ) : (
@@ -381,10 +391,12 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
                         ...prevState,
                         weightLeft: {
                           baseWeight: 0,
+                          fraction: 0,
                           unit: preference?.unit || WeightUnit.KG,
                         },
                         weightRight: {
                           baseWeight: 0,
+                          fraction: 0,
                           unit: preference?.unit || WeightUnit.KG,
                         },
                         repetitions:
