@@ -166,6 +166,7 @@ export type Mutation = {
   updateExercise?: Maybe<Exercise>;
   updateExerciseLog?: Maybe<Workout>;
   updateMyPreference: Preference;
+  updateWorkout: Workout;
 };
 
 
@@ -227,6 +228,12 @@ export type MutationUpdateExerciseLogArgs = {
 
 export type MutationUpdateMyPreferenceArgs = {
   input: PreferenceInput;
+};
+
+
+export type MutationUpdateWorkoutArgs = {
+  id: Scalars['ID'];
+  input: WorkoutInput;
 };
 
 export type ExerciseLogInput = {

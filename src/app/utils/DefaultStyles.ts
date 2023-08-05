@@ -5,6 +5,9 @@ export const defaultStyles = StyleSheet.create({
   container: {
     margin: Constants.CONTAINER_PADDING_MARGIN,
   },
+  marginTop: {
+    marginTop: Constants.CONTAINER_PADDING_MARGIN,
+  },
   footnote: {
     opacity: 0.5,
     fontSize: 11,
@@ -45,6 +48,7 @@ export const defaultStyles = StyleSheet.create({
     color: 'white',
   },
   spaceBetween: {
+    width: '100%',
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -87,5 +91,8 @@ export const defaultStyles = StyleSheet.create({
   error: {
     color: 'red',
     fontSize: 12,
+  },
+  flex1: {
+    flex: 1,
   },
 });
