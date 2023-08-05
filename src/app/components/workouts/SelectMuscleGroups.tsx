@@ -23,7 +23,7 @@ const SelectMuscleGroups: React.FC<SelectMuscleGroupsProps> = props => {
   return (
     <View>
       <View style={styles.selectContainer}>
-        {Object.keys(MuscleGroup).map((muscleGroup, index) => {
+        {Object.keys(MuscleGroup).map(muscleGroup => {
           const isSelected = selected.includes(muscleGroup as MuscleGroup);
           return (
             <LinearGradient
@@ -33,7 +33,7 @@ const SelectMuscleGroups: React.FC<SelectMuscleGroupsProps> = props => {
                   : Constants.SECONDARY_GRADIENT_FADED
               }
               style={styles.muscleGroupContainer}
-              key={index}>
+              key={muscleGroup}>
               <TouchableOpacity
                 onPress={() => {
                   if (isSelected) {

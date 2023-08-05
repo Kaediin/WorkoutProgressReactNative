@@ -18,10 +18,11 @@ import {nonNullable} from '../../utils/List';
 import WeightSelect from '../common/WeightSelect';
 import {weightValueToString} from '../../utils/String';
 import {defaultStyles} from '../../utils/DefaultStyles';
+import Loader from '../common/Loader';
 
 interface CreateExerciseModalProps {
   active: boolean;
-  onDismiss: (added: boolean) => void;
+  onDismiss: () => void;
   existingExercise?: ExerciseFragment;
   onUpdate: () => void;
 }
@@ -29,6 +30,7 @@ interface CreateExerciseModalProps {
 const CreateExerciseModalContent: React.FC<
   CreateExerciseModalProps
 > = props => {
+  const [loading, setLoading] = useState(false);
   const [exerciseName, setExerciseName] = useState(
     props.existingExercise?.name || '',
   );
@@ -66,9 +68,11 @@ const CreateExerciseModalContent: React.FC<
     }
   }, [props.active]);
 
-  const saveExercise = (): void => {
+  const saveExercise = async (): Promise<void> => {
+    bottomSheetModalRefMain?.current?.dismiss();
+    setLoading(true);
     if (props.existingExercise?.id) {
-      updateExercise({
+      await updateExercise({
         variables: {
           id: props.existingExercise.id,
           input: {
@@ -87,7 +91,7 @@ const CreateExerciseModalContent: React.FC<
         },
       });
     } else {
-      createExercise({
+      await createExercise({
         variables: {
           input: {
             name: exerciseName,
@@ -98,10 +102,10 @@ const CreateExerciseModalContent: React.FC<
           },
         },
       });
+      props.onUpdate();
     }
-    bottomSheetModalRefMain?.current?.dismiss();
-    props.onDismiss(true);
-    props.onUpdate();
+    props.onDismiss();
+    setLoading(false);
   };
 
   useEffect(() => {
@@ -125,122 +129,128 @@ const CreateExerciseModalContent: React.FC<
 
   return (
     <>
-      <CustomBottomSheet
-        ref={bottomSheetModalRefMain}
-        index={55}
-        onCloseClicked={() => props.onDismiss(false)}>
-        {!props.existingExercise && (
-          <Text style={styles.label}>New exercise</Text>
-        )}
-        <TextInput
-          style={defaultStyles.textInput}
-          placeholder={'Name'}
-          value={exerciseName}
-          onChangeText={setExerciseName}
-          maxLength={Constants.TEXT_INPUT_MAX_LENGTH}
-        />
-        <View style={styles.spaceBetween}>
-          <Text>Primary muscle groups</Text>
-          <ClickableText
-            text={'Select'}
-            onPress={() => {
-              bottomSheetModalRefMuscleSelect?.current?.present();
-              setMuscleSelectType('PRIMARY');
+      {loading ? (
+        <Loader />
+      ) : (
+        <>
+          <CustomBottomSheet
+            ref={bottomSheetModalRefMain}
+            index={55}
+            onCloseClicked={() => props.onDismiss()}>
+            {!props.existingExercise && (
+              <Text style={styles.label}>New exercise</Text>
+            )}
+            <TextInput
+              style={defaultStyles.textInput}
+              placeholder={'Name'}
+              value={exerciseName}
+              onChangeText={setExerciseName}
+              maxLength={Constants.TEXT_INPUT_MAX_LENGTH}
+            />
+            <View style={styles.spaceBetween}>
+              <Text>Primary muscle groups</Text>
+              <ClickableText
+                text={'Select'}
+                onPress={() => {
+                  bottomSheetModalRefMuscleSelect?.current?.present();
+                  setMuscleSelectType('PRIMARY');
+                }}
+              />
+            </View>
+            <MuscleGroupList
+              muscleGroups={primaryMuscleGroups}
+              pillColor={Constants.SECONDARY_GRADIENT[0]}
+              textColor="white"
+            />
+            <View style={styles.spaceBetween}>
+              <Text>Secondary muscle groups</Text>
+              <ClickableText
+                text={'Select'}
+                onPress={() => {
+                  bottomSheetModalRefMuscleSelect?.current?.present();
+                  setMuscleSelectType('SECONDARY');
+                }}
+              />
+            </View>
+            <MuscleGroupList
+              muscleGroups={secondaryMuscleGroups}
+              pillColor={Constants.SECONDARY_GRADIENT[0]}
+              textColor="white"
+            />
+            <View style={[defaultStyles.spaceBetween, defaultStyles.container]}>
+              <Text>Default applied weight</Text>
+              <ClickableText
+                text={
+                  defaultAppliedWeight
+                    ? weightValueToString(defaultAppliedWeight)
+                    : 'Select'
+                }
+                onPress={() => {
+                  bottomSheetModalRefMain?.current?.dismiss();
+                  bottomSheetModalRefWeightSelect?.current?.present();
+                }}
+              />
+            </View>
+            <TextInput
+              style={defaultStyles.textAreaInput}
+              defaultValue={exerciseNotes}
+              placeholder={'Notes (ex: Machine height 5)'}
+              onChangeText={setExerciseNotes}
+              maxLength={Constants.TEXT_AREA_MAX_LENGTH}
+              multiline
+            />
+            <View style={styles.containerButton}>
+              <GradientButton
+                title={'Save'}
+                gradients={Constants.SECONDARY_GRADIENT}
+                onClick={saveExercise}
+                disabled={
+                  exerciseName.length === 0 || primaryMuscleGroups.length === 0
+                }
+              />
+            </View>
+          </CustomBottomSheet>
+          <CustomBottomSheet
+            ref={bottomSheetModalRefMuscleSelect}
+            onCloseClicked={() => {
+              bottomSheetModalRefMuscleSelect?.current?.dismiss();
+              bottomSheetModalRefMain?.current?.present();
             }}
-          />
-        </View>
-        <MuscleGroupList
-          muscleGroups={primaryMuscleGroups}
-          pillColor={Constants.SECONDARY_GRADIENT[0]}
-          textColor="white"
-        />
-        <View style={styles.spaceBetween}>
-          <Text>Secondary muscle groups</Text>
-          <ClickableText
-            text={'Select'}
-            onPress={() => {
-              bottomSheetModalRefMuscleSelect?.current?.present();
-              setMuscleSelectType('SECONDARY');
+            closeText={'Select'}>
+            <SelectMuscleGroups
+              preselected={
+                muscleSelectType === 'PRIMARY'
+                  ? primaryMuscleGroups
+                  : secondaryMuscleGroups
+              }
+              onSelected={groups => {
+                muscleSelectType === 'PRIMARY'
+                  ? setPrimaryMuscleGroups(groups)
+                  : setSecondaryMuscleGroups(groups);
+              }}
+            />
+          </CustomBottomSheet>
+          <CustomBottomSheet
+            ref={bottomSheetModalRefWeightSelect}
+            onCloseClicked={() => {
+              bottomSheetModalRefWeightSelect?.current?.dismiss();
+              bottomSheetModalRefMain?.current?.present();
             }}
-          />
-        </View>
-        <MuscleGroupList
-          muscleGroups={secondaryMuscleGroups}
-          pillColor={Constants.SECONDARY_GRADIENT[0]}
-          textColor="white"
-        />
-        <View style={[defaultStyles.spaceBetween, defaultStyles.container]}>
-          <Text>Default applied weight</Text>
-          <ClickableText
-            text={
-              defaultAppliedWeight
-                ? weightValueToString(defaultAppliedWeight)
-                : 'Select'
-            }
-            onPress={() => {
-              bottomSheetModalRefMain?.current?.dismiss();
-              bottomSheetModalRefWeightSelect?.current?.present();
-            }}
-          />
-        </View>
-        <TextInput
-          style={defaultStyles.textAreaInput}
-          defaultValue={exerciseNotes}
-          placeholder={'Notes (ex: Machine height 5)'}
-          onChangeText={setExerciseNotes}
-          maxLength={Constants.TEXT_AREA_MAX_LENGTH}
-          multiline
-        />
-        <View style={styles.containerButton}>
-          <GradientButton
-            title={'Save'}
-            gradients={Constants.SECONDARY_GRADIENT}
-            onClick={saveExercise}
-            disabled={
-              exerciseName.length === 0 || primaryMuscleGroups.length === 0
-            }
-          />
-        </View>
-      </CustomBottomSheet>
-      <CustomBottomSheet
-        ref={bottomSheetModalRefMuscleSelect}
-        onCloseClicked={() => {
-          bottomSheetModalRefMuscleSelect?.current?.dismiss();
-          bottomSheetModalRefMain?.current?.present();
-        }}
-        closeText={'Select'}>
-        <SelectMuscleGroups
-          preselected={
-            muscleSelectType === 'PRIMARY'
-              ? primaryMuscleGroups
-              : secondaryMuscleGroups
-          }
-          onSelected={groups => {
-            muscleSelectType === 'PRIMARY'
-              ? setPrimaryMuscleGroups(groups)
-              : setSecondaryMuscleGroups(groups);
-          }}
-        />
-      </CustomBottomSheet>
-      <CustomBottomSheet
-        ref={bottomSheetModalRefWeightSelect}
-        onCloseClicked={() => {
-          bottomSheetModalRefWeightSelect?.current?.dismiss();
-          bottomSheetModalRefMain?.current?.present();
-        }}
-        index={65}
-        closeText={'Select'}>
-        <WeightSelect
-          weightValue={defaultAppliedWeight}
-          onWeightSelected={value =>
-            setDefaultAppliedWeight(
-              value.baseWeight > 0 || (value.fraction || 0) > 0
-                ? value
-                : undefined,
-            )
-          }
-        />
-      </CustomBottomSheet>
+            index={65}
+            closeText={'Select'}>
+            <WeightSelect
+              weightValue={defaultAppliedWeight}
+              onWeightSelected={value =>
+                setDefaultAppliedWeight(
+                  value.baseWeight > 0 || (value.fraction || 0) > 0
+                    ? value
+                    : undefined,
+                )
+              }
+            />
+          </CustomBottomSheet>
+        </>
+      )}
     </>
   );
 };

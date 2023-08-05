@@ -1,26 +1,20 @@
 import React, {useEffect, useState} from 'react';
-import {ExerciseFragment, MuscleGroup} from '../../graphql/operations';
-import {
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import {ExerciseFragment} from '../../graphql/operations';
+import {StyleSheet, Text, View} from 'react-native';
 import Constants from '../../utils/Constants';
-import LinearGradient from 'react-native-linear-gradient';
 import ClickableText from '../common/ClickableText';
 import {defaultStyles} from '../../utils/DefaultStyles';
+import {Picker} from '@react-native-picker/picker';
 
 interface SelectExerciseProps {
   onSelect: (exercise: ExerciseFragment) => void;
   exercises: ExerciseFragment[];
   selectedId: string;
   onCreateExerciseClick: () => void;
-  sortByMuscleGroups?: MuscleGroup[];
+  sort?: boolean;
 }
 
-const SelectExerciseGroups: React.FC<SelectExerciseProps> = props => {
+const SelectExercises: React.FC<SelectExerciseProps> = props => {
   const [selected, setSelected] = useState<ExerciseFragment>();
 
   useEffect(() => {
@@ -37,25 +31,21 @@ const SelectExerciseGroups: React.FC<SelectExerciseProps> = props => {
           onPress={props.onCreateExerciseClick}
         />
       </View>
-      <ScrollView style={styles.selectContainer} horizontal>
-        {props.exercises.map((exercise, index) => {
-          const isSelected = props.selectedId === exercise?.id;
-          return (
-            <LinearGradient
-              colors={
-                isSelected
-                  ? Constants.SECONDARY_GRADIENT
-                  : Constants.SECONDARY_GRADIENT_FADED
-              }
-              style={styles.muscleGroupContainer}
-              key={index}>
-              <TouchableOpacity onPress={() => setSelected(exercise)}>
-                <Text style={styles.muscleGroupText}>{exercise.name}</Text>
-              </TouchableOpacity>
-            </LinearGradient>
-          );
-        })}
-      </ScrollView>
+      <Picker
+        selectedValue={props.exercises.find(it => it.id === props.selectedId)}
+        onValueChange={setSelected}
+        itemStyle={styles.pickerItemStyle}>
+        <Picker.Item label={''} value={''} />
+        {props.exercises
+          .sort((a, b) => (props.sort ? a.name.localeCompare(b.name) : 0))
+          .map(exercise => (
+            <Picker.Item
+              key={exercise.id}
+              label={exercise.name}
+              value={exercise}
+            />
+          ))}
+      </Picker>
       {selected?.notes && (
         <Text
           style={[
@@ -71,23 +61,13 @@ const SelectExerciseGroups: React.FC<SelectExerciseProps> = props => {
 };
 
 const styles = StyleSheet.create({
-  selectContainer: {},
-  muscleGroupContainer: {
-    borderRadius: Constants.BORDER_RADIUS_SMALL,
-    width: 100,
-    margin: 5,
-    paddingHorizontale: 5,
-    justifyContent: 'center',
-  },
-  muscleGroupText: {
-    paddingVertical: Constants.CONTAINER_PADDING_MARGIN,
-    textAlign: 'center',
-    color: 'white',
-  },
   textAlignRight: {
     alignItems: 'flex-end',
     marginBottom: Constants.CONTAINER_PADDING_MARGIN * 2,
   },
+  pickerItemStyle: {
+    fontSize: 11,
+  },
 });
 
-export default SelectExerciseGroups;
+export default SelectExercises;
