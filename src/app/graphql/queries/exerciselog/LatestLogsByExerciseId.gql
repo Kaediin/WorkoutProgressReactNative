@@ -1,0 +1,5 @@
+query latestLogsByExerciseId($id: ID!) {
+    latestLogsByExerciseId(exerciseId: $id) {
+        ...ExerciseLog
+    }
+}

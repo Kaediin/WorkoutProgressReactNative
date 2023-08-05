@@ -113,7 +113,7 @@ input PreferenceInput {
 }
 
 type Query {
-  latestLogByExerciseId(exerciseId: ID!): ExerciseLog
+  latestLogsByExerciseId(exerciseId: ID!): [ExerciseLog]
   me: User
   meHasActiveWorkout: Boolean!
   myExercises: [Exercise!]
