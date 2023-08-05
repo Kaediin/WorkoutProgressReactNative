@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import GradientBackground from '../../components/common/GradientBackground';
 import {
+  ExerciseFragment,
   ExerciseLogFragment,
   ExerciseLogInput,
   useAddExerciseLogMutation,
@@ -60,12 +61,15 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
   const [latestLog, setLatestLog] = useState<ExerciseLogFragment>();
   const [editExistingExercise, setEditExistingExercise] =
     useState<ExerciseLogFragment>();
+  const [myExercises, setMyExercises] = useState<ExerciseFragment[]>([]);
 
-  const {
-    data: myExercisesData,
-    loading: myExercisesLoading,
-    refetch: refetchMyExercises,
-  } = useMyExercisesQuery({fetchPolicy: 'no-cache'});
+  const {loading: myExercisesLoading, refetch: refetchMyExercises} =
+    useMyExercisesQuery({
+      fetchPolicy: 'no-cache',
+      onCompleted: data => {
+        setMyExercises(data?.myExercises || []);
+      },
+    });
   const [workoutById, {data: workoutData, loading: workoutLoading}] =
     useWorkoutByIdLazyQuery({fetchPolicy: 'no-cache'});
   const [logExercise, {data: logExeciseData, loading: logExeciseLoading}] =
@@ -84,6 +88,15 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
     onCompleted: data => {
       if (data?.latestLogByExerciseId) {
         setLatestLog(data.latestLogByExerciseId);
+        setExerciseLog({
+          exerciseId: data.latestLogByExerciseId.exercise.id,
+          warmup: data.latestLogByExerciseId.warmup || false,
+          remark: '',
+          repetitions: data.latestLogByExerciseId.repetitions,
+          weightLeft: data.latestLogByExerciseId.weightValueLeft,
+          weightRight: data.latestLogByExerciseId.weightValueRight,
+          zonedDateTimeString: '',
+        });
       }
     },
   });
@@ -331,13 +344,8 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
       <BottomSheetModalProvider>
         <CreateExerciseModalContent
           active={createExerciseModal}
-          onDismiss={added => {
-            if (added) {
-              refetchMyExercises();
-            }
-            setCreateExerciseModal(false);
-          }}
-          onUpdate={() => refetchMyExercises()}
+          onDismiss={() => setCreateExerciseModal(false)}
+          onUpdate={refetchMyExercises}
         />
         <CustomBottomSheet
           ref={bottomSheetRef}
@@ -386,10 +394,18 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
                     }
                   }}
                   selectedId={exerciseLog.exerciseId}
-                  exercises={myExercisesData?.myExercises || []}
+                  exercises={myExercises}
                   onCreateExerciseClick={() => setCreateExerciseModal(true)}
-                  sortByMuscleGroups={workout?.muscleGroups}
+                  sort
                 />
+              )}
+              {latestLog && (
+                <Text style={defaultStyles.footnote}>
+                  You last logged {latestLog.exercise.name} for{' '}
+                  {latestLog.repetitions} x{' '}
+                  {weightValueToString(latestLog.weightValueLeft)} on{' '}
+                  {moment.utc(latestLog.logDateTime).format(DATE_TIME_FORMAT)}
+                </Text>
               )}
               {exerciseLog?.exerciseId && (
                 <>
@@ -433,16 +449,6 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
                       />
                     </View>
                   </View>
-                  {latestLog && (
-                    <Text style={defaultStyles.footnote}>
-                      You last logged {latestLog.exercise.name} for{' '}
-                      {latestLog.repetitions} x{' '}
-                      {weightValueToString(latestLog.weightValueLeft)} on{' '}
-                      {moment
-                        .utc(latestLog.logDateTime)
-                        .format(DATE_TIME_FORMAT)}
-                    </Text>
-                  )}
                   <View style={[defaultStyles.spaceEvenly, styles.marginTop]}>
                     <Text style={styles.selectedWeightLabel}>
                       {exerciseLog.repetitions} x{' '}
