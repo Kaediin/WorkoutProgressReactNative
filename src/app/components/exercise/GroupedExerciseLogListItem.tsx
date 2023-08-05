@@ -43,7 +43,11 @@ const GroupedExerciseLogListItem: React.FC<ExerciseLogListItemProps> = ({
         </Text>
       )}
       <FlatList
-        data={groupedExercise.logs}
+        data={groupedExercise.logs.sort(
+          (a, b) =>
+            new Date(a.logDateTime).getTime() -
+            new Date(b.logDateTime).getTime(),
+        )}
         renderItem={({item}) => {
           return (
             <TouchableOpacity onPress={() => onLogPress(item)}>

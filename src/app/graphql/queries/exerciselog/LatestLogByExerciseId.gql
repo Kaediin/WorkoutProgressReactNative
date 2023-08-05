@@ -1,5 +1,0 @@
-query latestLogByExerciseId($id: ID!) {
-    latestLogByExerciseId(exerciseId: $id) {
-        ...ExerciseLog
-    }
-}

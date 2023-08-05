@@ -66,7 +66,7 @@ const styles = StyleSheet.create({
     marginBottom: Constants.CONTAINER_PADDING_MARGIN * 2,
   },
   pickerItemStyle: {
-    fontSize: 11,
+    fontSize: 18,
   },
 });
 

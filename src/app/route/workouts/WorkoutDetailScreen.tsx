@@ -16,7 +16,7 @@ import {
   ExerciseLogInput,
   useAddExerciseLogMutation,
   useEndWorkoutMutation,
-  useLatestLogByExerciseIdLazyQuery,
+  useLatestLogsByExerciseIdLazyQuery,
   useMyExercisesQuery,
   useRemoveExerciseLogMutation,
   useUpdateExerciseLogMutation,
@@ -44,6 +44,7 @@ import {weightValueToString} from '../../utils/String';
 import Loader from '../../components/common/Loader';
 import {DATE_TIME_FORMAT} from '../../utils/Date';
 import {stripTypenames} from '../../utils/GrahqlUtils';
+import {nonNullable} from '../../utils/List';
 
 type Props = NativeStackScreenProps<WorkoutStackParamList, 'WorkoutDetail'>;
 
@@ -59,7 +60,7 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
 
   const [createExerciseModal, setCreateExerciseModal] = useState(false);
   const [workout, setWorkout] = useState<WorkoutLongFragment>();
-  const [latestLog, setLatestLog] = useState<ExerciseLogFragment>();
+  const [latestLogs, setLatestLogs] = useState<ExerciseLogFragment[]>([]);
   const [editExistingExercise, setEditExistingExercise] =
     useState<ExerciseLogFragment>();
   const [myExercises, setMyExercises] = useState<ExerciseFragment[]>([]);
@@ -84,23 +85,37 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
     removeExerciseLog,
     {data: removeExerciseLogData, loading: removeExerciseLogLoading},
   ] = useRemoveExerciseLogMutation({fetchPolicy: 'no-cache'});
-  const [latestLogQuery] = useLatestLogByExerciseIdLazyQuery({
-    fetchPolicy: 'no-cache',
-    onCompleted: data => {
-      if (data?.latestLogByExerciseId) {
-        setLatestLog(data.latestLogByExerciseId);
-        setExerciseLog({
-          exerciseId: data.latestLogByExerciseId.exercise.id,
-          warmup: data.latestLogByExerciseId.warmup || false,
-          remark: '',
-          repetitions: data.latestLogByExerciseId.repetitions,
-          weightLeft: data.latestLogByExerciseId.weightValueLeft,
-          weightRight: data.latestLogByExerciseId.weightValueRight,
-          zonedDateTimeString: '',
-        });
-      }
-    },
-  });
+  const [latestLogQuery, {loading: latestLogsLoading}] =
+    useLatestLogsByExerciseIdLazyQuery({
+      fetchPolicy: 'no-cache',
+      onCompleted: data => {
+        if (data?.latestLogsByExerciseId) {
+          setLatestLogs(
+            data.latestLogsByExerciseId
+              .filter(nonNullable)
+              .sort(
+                (a, b) =>
+                  new Date(a.logDateTime).getTime() -
+                  new Date(b.logDateTime).getTime(),
+              ),
+          );
+        }
+      },
+    });
+
+  useEffect(() => {
+    if (latestLogs && latestLogs.length > 0) {
+      setExerciseLog({
+        exerciseId: latestLogs[0].exercise.id,
+        warmup: latestLogs[0].warmup || false,
+        remark: '',
+        repetitions: latestLogs[0].repetitions,
+        weightLeft: latestLogs[0].weightValueLeft,
+        weightRight: latestLogs[0].weightValueRight,
+        zonedDateTimeString: '',
+      });
+    }
+  }, [latestLogs]);
 
   useEffect(() => {
     if (!workoutData?.workoutById) {
@@ -362,7 +377,7 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
           onCloseClicked={() => toggleBottomSheetRef(false)}
           index={90}>
           {myExercisesLoading || logExeciseLoading || updateExeciseLoading ? (
-            <Loader />
+            <Loader dark />
           ) : (
             <>
               {!editExistingExercise && (
@@ -374,7 +389,7 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
                     }));
                     const latestLogged = getLatestLogByExerciseId(exercise.id);
                     if (latestLogged) {
-                      setLatestLog(undefined);
+                      setLatestLogs([]);
                       setExerciseLog(prevState => ({
                         ...prevState,
                         weightLeft: latestLogged.weightValueLeft,
@@ -411,81 +426,101 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
                   sort
                 />
               )}
-              {latestLog && (
-                <Text style={defaultStyles.footnote}>
-                  You last logged {latestLog.exercise.name} for{' '}
-                  {latestLog.repetitions} x{' '}
-                  {weightValueToString(latestLog.weightValueLeft)} on{' '}
-                  {moment.utc(latestLog.logDateTime).format(DATE_TIME_FORMAT)}
-                </Text>
-              )}
-              {exerciseLog?.exerciseId && (
+              {latestLogsLoading ? (
+                <Loader dark />
+              ) : (
                 <>
-                  <View style={styles.pickerContainer}>
-                    <View style={styles.repetition}>
-                      <Text
-                        style={[defaultStyles.footnote, styles.pickerLabel]}>
-                        Repetition
+                  {latestLogs && latestLogs.length > 0 && (
+                    <>
+                      <Text style={defaultStyles.footnote}>
+                        Last set {latestLogs[0].exercise.name} (
+                        {moment
+                          .utc(latestLogs[0].logDateTime)
+                          .format(DATE_TIME_FORMAT)}
+                        ):
                       </Text>
-                      <Picker
-                        selectedValue={exerciseLog.repetitions}
-                        onValueChange={value =>
-                          setExerciseLog(prevState => ({
-                            ...prevState,
-                            repetitions: value,
-                          }))
-                        }
-                        itemStyle={styles.fontSizeSmall}>
-                        {Object.keys(Constants.BOTTOM_SHEET_SNAPPOINTS)
-                          .splice(1, 100)
-                          .map(repetition => (
-                            <Picker.Item
-                              label={repetition}
-                              value={+repetition}
-                              key={`rep_${repetition}`}
-                            />
-                          ))}
-                      </Picker>
-                    </View>
-                    {/* eslint-disable-next-line react-native/no-inline-styles */}
-                    <View style={{flex: hideUnitSelector ? 2 : 3}}>
-                      <WeightSelect
-                        onWeightSelected={weight =>
-                          setExerciseLog(prevState => ({
-                            ...prevState,
-                            weightLeft: weight,
-                          }))
-                        }
-                        weightValue={exerciseLog.weightLeft}
-                        hideLabel
-                      />
-                    </View>
-                  </View>
-                  <View style={[defaultStyles.spaceEvenly, styles.marginTop]}>
-                    <Text style={styles.selectedWeightLabel}>
-                      {exerciseLog.repetitions} x{' '}
-                      {weightValueToString(exerciseLog.weightLeft)}
-                    </Text>
-                    <View style={defaultStyles.row}>
-                      <Text
-                        style={[
-                          styles.fontSizeSmall,
-                          styles.warmupText,
-                          !exerciseLog.warmup ? styles.warmupDisabled : {},
-                        ]}>
-                        Warmup
-                      </Text>
-                      <Switch
-                        value={exerciseLog.warmup}
-                        onValueChange={value =>
-                          setExerciseLog(prevState => ({
-                            ...prevState,
-                            warmup: value,
-                          }))
-                        }
-                      />
-                    </View>
-                  </View>
+                      {latestLogs.map(log => (
+                        <Text style={defaultStyles.footnote} key={log.id}>
+                          - {log.repetitions} x{' '}
+                          {weightValueToString(log.weightValueLeft)}
+                          {log.warmup && ' (warmup)'}
+                        </Text>
+                      ))}
+                    </>
+                  )}
+                  {exerciseLog?.exerciseId && (
+                    <>
+                      <View style={styles.pickerContainer}>
+                        <View style={styles.repetition}>
+                          <Text
+                            style={[
+                              defaultStyles.footnote,
+                              styles.pickerLabel,
+                            ]}>
+                            Repetition
+                          </Text>
+                          <Picker
+                            selectedValue={exerciseLog.repetitions}
+                            onValueChange={value =>
+                              setExerciseLog(prevState => ({
+                                ...prevState,
+                                repetitions: value,
+                              }))
+                            }
+                            itemStyle={styles.fontSizeSmall}>
+                            {Object.keys(Constants.BOTTOM_SHEET_SNAPPOINTS)
+                              .splice(1, 100)
+                              .map(repetition => (
+                                <Picker.Item
+                                  label={repetition}
+                                  value={+repetition}
+                                  key={`rep_${repetition}`}
+                                />
+                              ))}
+                          </Picker>
+                        </View>
+                        {/* eslint-disable-next-line react-native/no-inline-styles */}
+                        <View style={{flex: hideUnitSelector ? 2 : 3}}>
+                          <WeightSelect
+                            onWeightSelected={weight =>
+                              setExerciseLog(prevState => ({
+                                ...prevState,
+                                weightLeft: weight,
+                              }))
+                            }
+                            weightValue={exerciseLog.weightLeft}
+                            hideLabel
+                          />
+                        </View>
+                      </View>
+                      <View
+                        style={[defaultStyles.spaceEvenly, styles.marginTop]}>
+                        <Text style={styles.selectedWeightLabel}>
+                          {exerciseLog.repetitions} x{' '}
+                          {weightValueToString(exerciseLog.weightLeft)}
+                        </Text>
+                        <View style={defaultStyles.row}>
+                          <Text
+                            style={[
+                              styles.fontSizeSmall,
+                              styles.warmupText,
+                              !exerciseLog.warmup ? styles.warmupDisabled : {},
+                            ]}>
+                            Warmup
+                          </Text>
+                          <Switch
+                            value={exerciseLog.warmup}
+                            onValueChange={value =>
+                              setExerciseLog(prevState => ({
+                                ...prevState,
+                                warmup: value,
+                              }))
+                            }
+                          />
+                        </View>
+                      </View>
+                    </>
+                  )}
                 </>
               )}
               <TextInput

@@ -23,16 +23,21 @@ interface LoaderProps {
   isLoading?: boolean;
   style?: ViewStyle;
   size?: ActivityIndicatorProps['size'];
+  dark?: boolean;
 }
 
-const Loader: React.FC<LoaderProps> = ({isLoading, style, size}) => {
+const Loader: React.FC<LoaderProps> = ({isLoading, style, size, dark}) => {
   if (isLoading === false) {
     return null;
   }
 
   return (
     <View style={style ? style : styles.container}>
-      <ActivityIndicator size={size || 'large'} color={'white'} animating />
+      <ActivityIndicator
+        size={size || 'large'}
+        color={dark ? 'black' : 'white'}
+        animating
+      />
     </View>
   );
 };
