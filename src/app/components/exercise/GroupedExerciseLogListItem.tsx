@@ -72,7 +72,7 @@ const GroupedExerciseLogListItem: React.FC<ExerciseLogListItemProps> = ({
                     <Text style={styles.textExerciseLogRow}>
                       {item.repetitions} x {logValueToString(item.logValue)}
                     </Text>
-                    <Text style={defaultStyles.footnote}>
+                    <Text style={[defaultStyles.footnote, styles.opacity]}>
                       {getRelativeTimeIfToday(
                         moment.utc(item.logDateTime).toISOString(),
                       )}
@@ -124,6 +124,9 @@ const styles = StyleSheet.create({
   },
   marginSmall: {
     marginTop: Constants.CONTAINER_PADDING_MARGIN / 2,
+  },
+  opacity: {
+    opacity: 0.8,
   },
 });
 

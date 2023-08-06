@@ -16,6 +16,7 @@ import UserProvider from './providers/UserProvider';
 import * as Sentry from '@sentry/react-native';
 import Config from 'react-native-config';
 import {StyleSheet} from 'react-native';
+import NetworkProvider from './providers/NetworkProvider';
 
 export const routingInstrumentation =
   new Sentry.ReactNavigationInstrumentation();
@@ -36,19 +37,21 @@ const App: React.FC = () => {
   });
 
   return (
-    <ApolloClientProvider>
-      <GestureHandlerRootView style={styles.flex}>
-        <AuthProvider>
-          <UserProvider>
-            <SafeAreaProvider>
-              <GradientBackground>
-                <AppRoute />
-              </GradientBackground>
-            </SafeAreaProvider>
-          </UserProvider>
-        </AuthProvider>
-      </GestureHandlerRootView>
-    </ApolloClientProvider>
+    <NetworkProvider>
+      <ApolloClientProvider>
+        <GestureHandlerRootView style={styles.flex}>
+          <AuthProvider>
+            <UserProvider>
+              <SafeAreaProvider>
+                <GradientBackground>
+                  <AppRoute />
+                </GradientBackground>
+              </SafeAreaProvider>
+            </UserProvider>
+          </AuthProvider>
+        </GestureHandlerRootView>
+      </ApolloClientProvider>
+    </NetworkProvider>
   );
 };
 

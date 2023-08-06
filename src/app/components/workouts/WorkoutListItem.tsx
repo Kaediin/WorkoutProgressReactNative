@@ -6,7 +6,10 @@ import LinearGradient from 'react-native-linear-gradient';
 import moment from 'moment';
 import {defaultStyles} from '../../utils/DefaultStyles';
 import MuscleGroupList from './MuscleGroupList';
-import {DATE_TIME_FORMAT} from '../../utils/Date';
+import {
+  DATE_TIME_FORMAT,
+  getFormattedHoursMinutesString,
+} from '../../utils/Date';
 
 interface WorkoutListItemProps {
   workout: WorkoutShortFragment;
@@ -35,6 +38,13 @@ const WorkoutListItem: React.FC<WorkoutListItemProps> = ({
           </Text>
           <Text style={[defaultStyles.footnote, styles.dateText]}>
             {moment.utc(workout.startDateTime).format(DATE_TIME_FORMAT)}
+            {workout.endDateTime &&
+              ' (' +
+                getFormattedHoursMinutesString(
+                  workout.startDateTime,
+                  workout.endDateTime,
+                ) +
+                ')'}
           </Text>
         </View>
         <Text style={styles.headerText}>{workout.name}</Text>
@@ -75,6 +85,7 @@ const styles = StyleSheet.create({
   headerText: {
     textAlign: 'center',
     fontSize: 20,
+    color: 'white',
     marginBottom: Constants.CONTAINER_PADDING_MARGIN,
   },
 });

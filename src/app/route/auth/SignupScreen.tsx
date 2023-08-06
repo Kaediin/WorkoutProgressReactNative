@@ -16,7 +16,6 @@ import {AuthStackParamList} from '../AppRoute';
 import {Gender} from '../../types/Type';
 import {isValidEmail, isValidPassword} from '../../utils/String';
 import useAuth from '../../hooks/useAuth';
-import useAuthStore, {AuthState} from '../../stores/authStore';
 import DropDownPicker from 'react-native-dropdown-picker';
 import {defaultStyles} from '../../utils/DefaultStyles';
 import ClickableText from '../../components/common/ClickableText';
@@ -24,8 +23,6 @@ import ClickableText from '../../components/common/ClickableText';
 type Props = NativeStackScreenProps<AuthStackParamList, 'Signup'>;
 
 const SignupScreen: React.FC<Props> = props => {
-  const authState: AuthState = useAuthStore(state => state.state);
-
   const {signUp} = useAuth();
 
   const [firstName, setFirstName] = useState('');
@@ -51,15 +48,7 @@ const SignupScreen: React.FC<Props> = props => {
   return (
     <LinearGradient colors={Constants.PRIMARY_GRADIENT}>
       <ScrollView style={styles.signupContainer}>
-        <Text
-          style={[
-            defaultStyles.h1,
-            defaultStyles.container,
-            defaultStyles.whiteTextColor,
-            defaultStyles.textAlignCenter,
-          ]}>
-          Signup
-        </Text>
+        <Text style={[defaultStyles.h1, defaultStyles.container]}>Signup</Text>
         <KeyboardAvoidingView
           behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
           keyboardVerticalOffset={100}>
