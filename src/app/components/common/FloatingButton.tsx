@@ -1,7 +1,8 @@
 import React from 'react';
-import {StyleSheet, Text, TouchableOpacity} from 'react-native';
+import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import Constants from '../../utils/Constants';
+import {defaultStyles} from '../../utils/DefaultStyles';
 
 interface FloatingButtonProps {
   onClick?: () => void;
@@ -9,13 +10,15 @@ interface FloatingButtonProps {
 
 const FloatingButton: React.FC<FloatingButtonProps> = ({onClick}) => {
   return (
-    <LinearGradient
-      colors={Constants.SECONDARY_GRADIENT}
-      style={styles.container}>
-      <TouchableOpacity onPress={onClick} style={styles.touchableOpacity}>
-        <Text style={styles.textColor}>+</Text>
-      </TouchableOpacity>
-    </LinearGradient>
+    <View style={defaultStyles.shadow}>
+      <LinearGradient
+        colors={Constants.SECONDARY_GRADIENT}
+        style={[styles.container]}>
+        <TouchableOpacity onPress={onClick} style={styles.touchableOpacity}>
+          <Text style={styles.textColor}>+</Text>
+        </TouchableOpacity>
+      </LinearGradient>
+    </View>
   );
 };
 
