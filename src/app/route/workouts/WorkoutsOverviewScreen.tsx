@@ -39,10 +39,13 @@ import GradientButton from '../../components/common/GradientButton';
 import usePreferenceStore from '../../stores/preferenceStore';
 import Loader from '../../components/common/Loader';
 import {useIsFocused} from '@react-navigation/native';
+import useAuth from '../../hooks/useAuth';
 
 type Props = NativeStackScreenProps<WorkoutStackParamList, 'WorkoutsOverview'>;
 
 const WorkoutsOverviewScreen: React.FC<Props> = ({navigation}) => {
+  const {getToken} = useAuth();
+
   const autoSelectMuscleGroups = usePreferenceStore(
     state => state.preference,
   )?.autoAdjustWorkoutMuscleGroups;
@@ -188,7 +191,7 @@ const WorkoutsOverviewScreen: React.FC<Props> = ({navigation}) => {
   return (
     <GradientBackground>
       {getWorkoutsError?.message ? (
-        <ErrorMessage message={getWorkoutsError?.message} />
+        <ErrorMessage message={getWorkoutsError?.message} onRetry={getToken} />
       ) : loading ? (
         <Loader isLoading={loading} />
       ) : existingWorkouts.length === 0 ? (

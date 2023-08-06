@@ -11,3 +11,21 @@ export const getRelativeTimeIfToday = (dateString: string): string => {
     return date.format(DATE_TIME_FORMAT);
   }
 };
+
+export const getFormattedHoursMinutesString = (
+  startString: string,
+  endString: string,
+): string => {
+  const start = moment.utc(startString);
+  const end = moment.utc(endString);
+  return formattedHoursMinutesString(end.diff(start, 'minutes'));
+};
+
+const formattedHoursMinutesString = (minutes: number): string => {
+  const fullHours = Math.floor(minutes / 60);
+  if (fullHours === 0) {
+    return `${minutes} minutes`;
+  }
+  const mins = minutes % 60;
+  return `${fullHours}hrs ${mins} minutes`;
+};

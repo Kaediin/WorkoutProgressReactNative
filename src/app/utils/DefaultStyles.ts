@@ -9,7 +9,7 @@ export const defaultStyles = StyleSheet.create({
     marginTop: Constants.CONTAINER_PADDING_MARGIN,
   },
   footnote: {
-    opacity: 0.5,
+    color: '#ccc',
     fontSize: 11,
   },
   textAlignCenter: {
@@ -22,6 +22,8 @@ export const defaultStyles = StyleSheet.create({
     fontSize: 28,
     lineHeight: 34,
     fontWeight: 'bold',
+    color: 'white',
+    textAlign: 'center',
   },
   h2: {
     fontSize: 22,

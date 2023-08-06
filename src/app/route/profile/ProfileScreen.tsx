@@ -6,7 +6,7 @@ import {
   useDeleteExerciseMutation,
   useMyExercisesQuery,
 } from '../../graphql/operations';
-import {FlatList, Text, View} from 'react-native';
+import {FlatList, StyleSheet, Text, View} from 'react-native';
 import ExerciseProfileListItem from '../../components/exercise/ExerciseProfileListItem';
 import {defaultStyles} from '../../utils/DefaultStyles';
 import Constants from '../../utils/Constants';
@@ -73,15 +73,17 @@ const ProfileScreen: React.FC = () => {
                   onSetRepetitions={setRepetitions}
                   changedRepetition={nRepetitions}
                 />
-                <Text style={defaultStyles.h2}>Exercises</Text>
-                <ClickableText
-                  text={'Create exercise'}
-                  onPress={() => {
-                    setEditExercise(undefined);
-                    setCreateExerciseModalActive(true);
-                  }}
-                  styles={defaultStyles.textAlignCenter}
-                />
+                <View style={styles.exercisesHeader}>
+                  <Text style={defaultStyles.h2}>Exercises</Text>
+                  <ClickableText
+                    text={'Create'}
+                    onPress={() => {
+                      setEditExercise(undefined);
+                      setCreateExerciseModalActive(true);
+                    }}
+                    styles={styles.exercisesCreateText}
+                  />
+                </View>
               </>
             }
             renderItem={({item}) => (
@@ -127,5 +129,16 @@ const ProfileScreen: React.FC = () => {
     </GradientBackground>
   );
 };
+
+const styles = StyleSheet.create({
+  exercisesHeader: {
+    position: 'relative',
+  },
+  exercisesCreateText: {
+    position: 'absolute',
+    right: Constants.CONTAINER_PADDING_MARGIN,
+    top: Constants.CONTAINER_PADDING_MARGIN * -2,
+  },
+});
 
 export default ProfileScreen;
