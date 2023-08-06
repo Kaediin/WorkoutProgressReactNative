@@ -1,4 +1,4 @@
-import {WeightValueFragment} from '../graphql/operations';
+import {LogValueFragment} from '../graphql/operations';
 
 export const enumToReadableString = (str: string): string => {
   return (str.charAt(0).toUpperCase() + str.slice(1).toLowerCase()).replace(
@@ -19,12 +19,11 @@ export const isValidPassword = (password: string): boolean => {
   );
 };
 
-export const weightValueToString = (
-  weightValue: WeightValueFragment,
-): string => {
-  return `${weightValue.baseWeight}${
-    weightValue.fraction ? '.' + weightValue.fraction : ''
-  } ${weightValue.unit}`;
+export const logValueToString = (logValue: LogValueFragment): string => {
+  if (!logValue) return '';
+  return `${logValue.base}${logValue.fraction ? '.' + logValue.fraction : ''} ${
+    logValue.unit
+  }`;
 };
 
 export const errorCodeToMessage = (code: string): string => {

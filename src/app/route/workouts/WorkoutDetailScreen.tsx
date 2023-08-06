@@ -14,6 +14,7 @@ import {
   ExerciseFragment,
   ExerciseLogFragment,
   ExerciseLogInput,
+  LogUnit,
   useAddExerciseLogMutation,
   useEndWorkoutMutation,
   useLatestLogsByExerciseIdLazyQuery,
@@ -21,7 +22,6 @@ import {
   useRemoveExerciseLogMutation,
   useUpdateExerciseLogMutation,
   useWorkoutByIdLazyQuery,
-  WeightUnit,
   WorkoutLongFragment,
 } from '../../graphql/operations';
 import {defaultStyles} from '../../utils/DefaultStyles';
@@ -38,9 +38,9 @@ import GroupedExerciseLogListItem from '../../components/exercise/GroupedExercis
 import CreateExerciseModalContent from '../../components/bottomSheet/CreateExerciseModalContent';
 import EndWorkout from '../../components/nav/headerComponents/EndWorkout';
 import usePreferenceStore from '../../stores/preferenceStore';
-import WeightSelect from '../../components/common/WeightSelect';
+import LogValueSelect from '../../components/common/LogValueSelect';
 import {Picker} from '@react-native-picker/picker';
-import {weightValueToString} from '../../utils/String';
+import {logValueToString} from '../../utils/String';
 import Loader from '../../components/common/Loader';
 import {DATE_TIME_FORMAT} from '../../utils/Date';
 import {stripTypenames} from '../../utils/GrahqlUtils';
@@ -99,6 +99,8 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
                   new Date(b.logDateTime).getTime(),
               ),
           );
+        } else {
+          setLatestLogs([]);
         }
       },
     });
@@ -110,8 +112,7 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
         warmup: latestLogs[0].warmup || false,
         remark: '',
         repetitions: latestLogs[0].repetitions,
-        weightLeft: latestLogs[0].weightValueLeft,
-        weightRight: latestLogs[0].weightValueRight,
+        logValue: latestLogs[0].logValue,
         zonedDateTimeString: '',
       });
     }
@@ -183,13 +184,10 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
     exerciseId: '',
     repetitions:
       preference?.defaultRepetitions || Constants.DEFAULT_REPETITIONS,
-    weightLeft: {
-      baseWeight: 0,
-      unit: preference?.unit || WeightUnit.KG,
-    },
-    weightRight: {
-      baseWeight: 0,
-      unit: preference?.unit || WeightUnit.KG,
+    logValue: {
+      base: 0,
+      fraction: 0,
+      unit: preference?.weightUnit || LogUnit.KG,
     },
     zonedDateTimeString: '',
     warmup: false,
@@ -201,8 +199,7 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
     if (
       !workout?.id ||
       !exerciseLog.exerciseId ||
-      !exerciseLog.weightRight ||
-      !exerciseLog.weightLeft ||
+      !exerciseLog.logValue ||
       !exerciseLog.repetitions ||
       exerciseLog.warmup === undefined
     ) {
@@ -224,8 +221,7 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
             exerciseId: exerciseLog.exerciseId,
             repetitions: exerciseLog.repetitions,
             zonedDateTimeString: moment().toISOString(true),
-            weightLeft: exerciseLog.weightLeft,
-            weightRight: exerciseLog.weightLeft,
+            logValue: exerciseLog.logValue,
             warmup: exerciseLog.warmup,
             remark: exerciseLog.remark,
           },
@@ -323,8 +319,7 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
                       zonedDateTimeString: log.logDateTime,
                       exerciseId: log.exercise.id,
                       repetitions: log.repetitions,
-                      weightRight: log.weightValueRight,
-                      weightLeft: log.weightValueLeft,
+                      logValue: log.logValue,
                       warmup: log.warmup || false,
                       remark: log.remark,
                     });
@@ -343,7 +338,7 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
                       ...prevState,
                       repetitions: log.repetitions,
                       exerciseId: log.exercise.id,
-                      weightLeft: log.weightValueLeft,
+                      logValue: log.logValue,
                       warmup: log.warmup || false,
                       remark: log.remark,
                     }));
@@ -392,8 +387,7 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
                       setLatestLogs([]);
                       setExerciseLog(prevState => ({
                         ...prevState,
-                        weightLeft: latestLogged.weightValueLeft,
-                        weightRight: latestLogged.weightValueRight,
+                        logValue: latestLogged.logValue,
                         repetitions: latestLogged.repetitions,
                       }));
                     } else {
@@ -404,16 +398,7 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
                       });
                       setExerciseLog(prevState => ({
                         ...prevState,
-                        weightLeft: {
-                          baseWeight: 0,
-                          fraction: 0,
-                          unit: preference?.unit || WeightUnit.KG,
-                        },
-                        weightRight: {
-                          baseWeight: 0,
-                          fraction: 0,
-                          unit: preference?.unit || WeightUnit.KG,
-                        },
+                        logValue: initialLog.logValue,
                         repetitions:
                           preference?.defaultRepetitions ||
                           Constants.DEFAULT_REPETITIONS,
@@ -441,8 +426,7 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
                       </Text>
                       {latestLogs.map(log => (
                         <Text style={defaultStyles.footnote} key={log.id}>
-                          - {log.repetitions} x{' '}
-                          {weightValueToString(log.weightValueLeft)}
+                          - {log.repetitions} x {logValueToString(log.logValue)}
                           {log.warmup && ' (warmup)'}
                         </Text>
                       ))}
@@ -481,14 +465,14 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
                         </View>
                         {/* eslint-disable-next-line react-native/no-inline-styles */}
                         <View style={{flex: hideUnitSelector ? 2 : 3}}>
-                          <WeightSelect
-                            onWeightSelected={weight =>
+                          <LogValueSelect
+                            onWeightSelected={logValue =>
                               setExerciseLog(prevState => ({
                                 ...prevState,
-                                weightLeft: weight,
+                                logValue: logValue,
                               }))
                             }
-                            weightValue={exerciseLog.weightLeft}
+                            logValue={exerciseLog.logValue}
                             hideLabel
                           />
                         </View>
@@ -497,7 +481,7 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
                         style={[defaultStyles.spaceEvenly, styles.marginTop]}>
                         <Text style={styles.selectedWeightLabel}>
                           {exerciseLog.repetitions} x{' '}
-                          {weightValueToString(exerciseLog.weightLeft)}
+                          {logValueToString(exerciseLog.logValue)}
                         </Text>
                         <View style={defaultStyles.row}>
                           <Text
@@ -539,8 +523,7 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
                 disabled={
                   !workout?.id ||
                   !exerciseLog.exerciseId ||
-                  !exerciseLog.weightRight ||
-                  !exerciseLog.weightLeft ||
+                  !exerciseLog.logValue ||
                   !exerciseLog.repetitions
                 }
                 styles={styles.marginTop}

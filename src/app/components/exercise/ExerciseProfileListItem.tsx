@@ -6,7 +6,7 @@ import Constants from '../../utils/Constants';
 import {defaultStyles} from '../../utils/DefaultStyles';
 import MuscleGroupList from '../workouts/MuscleGroupList';
 import {nonNullable} from '../../utils/List';
-import {weightValueToString} from '../../utils/String';
+import {logValueToString} from '../../utils/String';
 
 interface ExerciseProfileListItemProps {
   exercise: ExerciseFragment;
@@ -50,7 +50,7 @@ const ExerciseProfileListItem: React.FC<ExerciseProfileListItemProps> = ({
       )}
       {exercise.defaultAppliedWeight && (
         <Text style={[defaultStyles.p11, defaultStyles.textAlignCenter]}>
-          +{weightValueToString(exercise.defaultAppliedWeight)}
+          +{logValueToString(exercise.defaultAppliedWeight)}
         </Text>
       )}
     </LinearGradient>

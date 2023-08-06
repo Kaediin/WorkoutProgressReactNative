@@ -1,10 +1,10 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {
   ExerciseFragment,
+  LogValueFragment,
   MuscleGroup,
   useCreateExerciseMutation,
   useUpdateExerciseMutation,
-  WeightValueFragment,
 } from '../../graphql/operations';
 import {BottomSheetModal} from '@gorhom/bottom-sheet';
 import GradientButton from '../common/GradientButton';
@@ -15,8 +15,8 @@ import Constants from '../../utils/Constants';
 import SelectMuscleGroups from '../workouts/SelectMuscleGroups';
 import ClickableText from '../common/ClickableText';
 import {nonNullable} from '../../utils/List';
-import WeightSelect from '../common/WeightSelect';
-import {weightValueToString} from '../../utils/String';
+import LogValueSelect from '../common/LogValueSelect';
+import {logValueToString} from '../../utils/String';
 import {defaultStyles} from '../../utils/DefaultStyles';
 import Loader from '../common/Loader';
 
@@ -41,7 +41,7 @@ const CreateExerciseModalContent: React.FC<
     props.existingExercise?.primaryMuscles?.filter(nonNullable) || [],
   );
   const [defaultAppliedWeight, setDefaultAppliedWeight] = useState<
-    WeightValueFragment | undefined
+    LogValueFragment | undefined
   >(props.existingExercise?.defaultAppliedWeight || undefined);
   const [secondaryMuscleGroups, setSecondaryMuscleGroups] = useState<
     MuscleGroup[]
@@ -81,7 +81,7 @@ const CreateExerciseModalContent: React.FC<
             secondaryMuscles: secondaryMuscleGroups,
             defaultAppliedWeight: defaultAppliedWeight
               ? {
-                  baseWeight: defaultAppliedWeight.baseWeight,
+                  base: defaultAppliedWeight.base,
                   fraction: defaultAppliedWeight.fraction,
                   unit: defaultAppliedWeight.unit,
                 }
@@ -182,7 +182,7 @@ const CreateExerciseModalContent: React.FC<
               <ClickableText
                 text={
                   defaultAppliedWeight
-                    ? weightValueToString(defaultAppliedWeight)
+                    ? logValueToString(defaultAppliedWeight)
                     : 'Select'
                 }
                 onPress={() => {
@@ -238,11 +238,11 @@ const CreateExerciseModalContent: React.FC<
             }}
             index={65}
             closeText={'Select'}>
-            <WeightSelect
-              weightValue={defaultAppliedWeight}
+            <LogValueSelect
+              logValue={defaultAppliedWeight}
               onWeightSelected={value =>
                 setDefaultAppliedWeight(
-                  value.baseWeight > 0 || (value.fraction || 0) > 0
+                  value.base > 0 || (value.fraction || 0) > 0
                     ? value
                     : undefined,
                 )

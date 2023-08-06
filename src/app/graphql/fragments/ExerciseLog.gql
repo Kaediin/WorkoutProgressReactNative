@@ -5,11 +5,8 @@ fragment ExerciseLog on ExerciseLog {
     }
     logDateTime
     repetitions
-    weightValueLeft {
-        ...WeightValue
-    }
-    weightValueRight {
-        ...WeightValue
+    logValue {
+        ...LogValue
     }
     warmup
     remark
