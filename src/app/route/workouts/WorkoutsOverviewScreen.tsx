@@ -221,7 +221,7 @@ const WorkoutsOverviewScreen: React.FC<Props> = ({navigation}) => {
                 key={item.id}
                 workout={item}
                 onWorkoutPressed={navigateToWorkout}
-                hasActiveWorkout={hasActiveWorkout}
+                hasActiveWorkout={hasActiveWorkout || false}
               />
             </ContextMenu>
           )}
@@ -268,7 +268,7 @@ const WorkoutsOverviewScreen: React.FC<Props> = ({navigation}) => {
             </>
           )}
           <TextInput
-            defaultValue={newWorkout.remark}
+            defaultValue={newWorkout.remark || ''}
             onChangeText={remark =>
               setNewWorkout(prevState => ({...prevState, remark}))
             }

@@ -1,0 +1,5 @@
+fragment LogValue on LogValue {
+    unit
+    base
+    fraction
+}

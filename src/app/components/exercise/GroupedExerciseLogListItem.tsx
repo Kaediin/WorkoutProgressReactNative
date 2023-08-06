@@ -12,7 +12,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import ContextMenu from 'react-native-context-menu-view';
 import {getRelativeTimeIfToday} from '../../utils/Date';
 import {ContextMenuActions} from '../../types/ContextMenuActions';
-import {weightValueToString} from '../../utils/String';
+import {logValueToString} from '../../utils/String';
 
 interface ExerciseLogListItemProps {
   groupedExercise: GroupedExerciseLogFragment;
@@ -39,7 +39,7 @@ const GroupedExerciseLogListItem: React.FC<ExerciseLogListItemProps> = ({
             defaultStyles.textAlignCenter,
             styles.marginSmall,
           ]}>
-          +{weightValueToString(groupedExercise.exercise.defaultAppliedWeight)}
+          +{logValueToString(groupedExercise.exercise.defaultAppliedWeight)}
         </Text>
       )}
       <FlatList
@@ -70,8 +70,7 @@ const GroupedExerciseLogListItem: React.FC<ExerciseLogListItemProps> = ({
                   style={styles.containerLinearGradient}>
                   <View style={styles.containerExerciseLogRow}>
                     <Text style={styles.textExerciseLogRow}>
-                      {item.repetitions} x{' '}
-                      {weightValueToString(item.weightValueLeft)}
+                      {item.repetitions} x {logValueToString(item.logValue)}
                     </Text>
                     <Text style={defaultStyles.footnote}>
                       {getRelativeTimeIfToday(

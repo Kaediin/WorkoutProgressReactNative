@@ -46,23 +46,16 @@ export type ExerciseLog = {
   exercise: Exercise;
   id: Scalars['ID'];
   logDateTime: Scalars['LocalDateTime'];
+  logValue: LogValue;
   remark?: Maybe<Scalars['String']>;
   repetitions: Scalars['Float'];
-  /** @deprecated No longer supported */
-  unit: WeightUnit;
   user: User;
   warmup?: Maybe<Scalars['Boolean']>;
-  /** @deprecated No longer supported */
-  weightLeft: Scalars['Float'];
-  /** @deprecated No longer supported */
-  weightRight: Scalars['Float'];
-  weightValueLeft: WeightValue;
-  weightValueRight: WeightValue;
 };
 
 export type Exercise = {
   __typename?: 'Exercise';
-  defaultAppliedWeight?: Maybe<WeightValue>;
+  defaultAppliedWeight?: Maybe<LogValue>;
   id: Scalars['ID'];
   name: Scalars['String'];
   notes?: Maybe<Scalars['String']>;
@@ -71,16 +64,18 @@ export type Exercise = {
   user?: Maybe<User>;
 };
 
-export type WeightValue = {
-  __typename?: 'WeightValue';
-  baseWeight: Scalars['Int'];
+export type LogValue = {
+  __typename?: 'LogValue';
+  base: Scalars['Int'];
   fraction?: Maybe<Scalars['Int']>;
-  unit: WeightUnit;
+  unit: LogUnit;
 };
 
-export enum WeightUnit {
+export enum LogUnit {
   Kg = 'KG',
-  Lbs = 'LBS'
+  Km = 'KM',
+  Lbs = 'LBS',
+  Mi = 'MI'
 }
 
 export enum MuscleGroup {
@@ -129,8 +124,11 @@ export type Preference = {
   __typename?: 'Preference';
   autoAdjustWorkoutMuscleGroups?: Maybe<Scalars['Boolean']>;
   defaultRepetitions?: Maybe<Scalars['Int']>;
+  distanceUnit?: Maybe<LogUnit>;
   hideUnitSelector?: Maybe<Scalars['Boolean']>;
-  unit?: Maybe<WeightUnit>;
+  /** @deprecated No longer supported */
+  unit?: Maybe<LogUnit>;
+  weightUnit?: Maybe<LogUnit>;
 };
 
 export type Workout = {
@@ -238,22 +236,21 @@ export type MutationUpdateWorkoutArgs = {
 
 export type ExerciseLogInput = {
   exerciseId: Scalars['String'];
+  logValue: LogValueInput;
   remark?: InputMaybe<Scalars['String']>;
   repetitions: Scalars['Float'];
   warmup: Scalars['Boolean'];
-  weightLeft: WeightValueInput;
-  weightRight: WeightValueInput;
   zonedDateTimeString: Scalars['String'];
 };
 
-export type WeightValueInput = {
-  baseWeight: Scalars['Int'];
+export type LogValueInput = {
+  base: Scalars['Int'];
   fraction?: InputMaybe<Scalars['Int']>;
-  unit: WeightUnit;
+  unit: LogUnit;
 };
 
 export type ExerciseInput = {
-  defaultAppliedWeight?: InputMaybe<WeightValueInput>;
+  defaultAppliedWeight?: InputMaybe<LogValueInput>;
   name: Scalars['String'];
   notes?: InputMaybe<Scalars['String']>;
   primaryMuscles?: InputMaybe<Array<InputMaybe<MuscleGroup>>>;
@@ -278,6 +275,8 @@ export type WorkoutInput = {
 export type PreferenceInput = {
   autoAdjustWorkoutMuscleGroups?: InputMaybe<Scalars['Boolean']>;
   defaultRepetitions?: InputMaybe<Scalars['Int']>;
+  distanceUnit?: InputMaybe<LogUnit>;
   hideUnitSelector?: InputMaybe<Scalars['Boolean']>;
-  unit?: InputMaybe<WeightUnit>;
+  unit?: InputMaybe<LogUnit>;
+  weightUnit?: InputMaybe<LogUnit>;
 };

@@ -10,7 +10,7 @@ type CognitoUser {
 }
 
 type Exercise {
-  defaultAppliedWeight: WeightValue
+  defaultAppliedWeight: LogValue
   id: ID!
   name: String!
   notes: String
@@ -20,7 +20,7 @@ type Exercise {
 }
 
 input ExerciseInput {
-  defaultAppliedWeight: WeightValueInput
+  defaultAppliedWeight: LogValueInput
   name: String!
   notes: String
   primaryMuscles: [MuscleGroup]
@@ -31,24 +31,19 @@ type ExerciseLog {
   exercise: Exercise!
   id: ID!
   logDateTime: LocalDateTime!
+  logValue: LogValue!
   remark: String
   repetitions: Float!
-  unit: WeightUnit! @deprecated
   user: User!
   warmup: Boolean
-  weightLeft: Float! @deprecated
-  weightRight: Float! @deprecated
-  weightValueLeft: WeightValue!
-  weightValueRight: WeightValue!
 }
 
 input ExerciseLogInput {
   exerciseId: String!
+  logValue: LogValueInput!
   remark: String
   repetitions: Float!
   warmup: Boolean!
-  weightLeft: WeightValueInput!
-  weightRight: WeightValueInput!
   zonedDateTimeString: String!
 }
 
@@ -58,6 +53,25 @@ type GroupedExerciseLog {
 }
 
 scalar LocalDateTime
+
+enum LogUnit {
+  KG
+  KM
+  LBS
+  MI
+}
+
+type LogValue {
+  base: Int!
+  fraction: Int
+  unit: LogUnit!
+}
+
+input LogValueInput {
+  base: Int!
+  fraction: Int
+  unit: LogUnit!
+}
 
 enum MuscleGroup {
   ABDUCTOR
@@ -101,15 +115,19 @@ type Mutation {
 type Preference {
   autoAdjustWorkoutMuscleGroups: Boolean
   defaultRepetitions: Int
+  distanceUnit: LogUnit
   hideUnitSelector: Boolean
-  unit: WeightUnit
+  unit: LogUnit @deprecated
+  weightUnit: LogUnit
 }
 
 input PreferenceInput {
   autoAdjustWorkoutMuscleGroups: Boolean
   defaultRepetitions: Int
+  distanceUnit: LogUnit
   hideUnitSelector: Boolean
-  unit: WeightUnit
+  unit: LogUnit
+  weightUnit: LogUnit
 }
 
 type Query {
@@ -136,23 +154,6 @@ input UserInput {
   lastName: String!
   middleName: String!
   password: String!
-}
-
-enum WeightUnit {
-  KG
-  LBS
-}
-
-type WeightValue {
-  baseWeight: Int!
-  fraction: Int
-  unit: WeightUnit!
-}
-
-input WeightValueInput {
-  baseWeight: Int!
-  fraction: Int
-  unit: WeightUnit!
 }
 
 type Workout {

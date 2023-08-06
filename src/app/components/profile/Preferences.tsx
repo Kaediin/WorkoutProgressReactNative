@@ -3,9 +3,9 @@ import {defaultStyles} from '../../utils/DefaultStyles';
 import {StyleSheet, Switch, Text, View} from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
 import {
+  LogUnit,
   PreferenceInput,
   useUpdatePreferenceMutation,
-  WeightUnit,
 } from '../../graphql/operations';
 import ClickableText from '../common/ClickableText';
 import Constants from '../../utils/Constants';
@@ -25,9 +25,11 @@ const Preferences: React.FC<PreferencesProps> = ({
   const preference = usePreferenceStore(state => state.preference);
   const setPreference = usePreferenceStore(state => state.setPreference);
 
-  const [newUnitSelect, setNewUnitSelect] = useState<WeightUnit.KG>();
+  const [distanceUnitSelect, setDistanceUnitSelect] = useState<LogUnit.KM>();
+  const [weightUnitSelect, setWeightUnitSelect] = useState<LogUnit.KG>();
   const [preferenceInput, setPreferenceInput] = useState<PreferenceInput>();
-  const [unitSelectOpen, setUnitSelectOpen] = useState(false);
+  const [distanceUnitSelectOpen, setDistanceUnitSelectOpen] = useState(false);
+  const [weightSelectOpen, setWeightSelectOpen] = useState(false);
 
   const [updateMyPreferences, {data: dataUpdateMyPreferences}] =
     useUpdatePreferenceMutation({
@@ -54,7 +56,8 @@ const Preferences: React.FC<PreferencesProps> = ({
   useEffect(() => {
     if (preference) {
       setPreferenceInput({
-        unit: preference.unit,
+        distanceUnit: preference.distanceUnit,
+        weightUnit: preference.weightUnit,
         defaultRepetitions: preference.defaultRepetitions,
         hideUnitSelector: preference.hideUnitSelector,
         autoAdjustWorkoutMuscleGroups: preference.autoAdjustWorkoutMuscleGroups,
@@ -66,21 +69,38 @@ const Preferences: React.FC<PreferencesProps> = ({
   }, [preference]);
 
   useEffect(() => {
-    if (newUnitSelect) {
+    if (weightUnitSelect) {
       setPreferenceInput(prevState => ({
         ...prevState,
-        unit: newUnitSelect,
+        weightUnit: weightUnitSelect,
       }));
       updateMyPreferences({
         variables: {
           input: {
             ...preferenceInput,
-            unit: newUnitSelect,
+            weightUnit: weightUnitSelect,
           },
         },
       });
     }
-  }, [newUnitSelect]);
+  }, [weightUnitSelect]);
+
+  useEffect(() => {
+    if (distanceUnitSelect) {
+      setPreferenceInput(prevState => ({
+        ...prevState,
+        distanceUnit: distanceUnitSelect,
+      }));
+      updateMyPreferences({
+        variables: {
+          input: {
+            ...preferenceInput,
+            distanceUnit: distanceUnitSelect,
+          },
+        },
+      });
+    }
+  }, [distanceUnitSelect]);
 
   useEffect(() => {
     if (dataUpdateMyPreferences?.updateMyPreference) {
@@ -100,25 +120,56 @@ const Preferences: React.FC<PreferencesProps> = ({
           ]}>
           <View style={styles.labelContainer}>
             <Text style={defaultStyles.whiteTextColor}>Unit</Text>
-            <Text style={defaultStyles.footnote}>Prefered unit</Text>
+            <Text style={defaultStyles.footnote}>
+              Preferred unit (weight, distance)
+            </Text>
           </View>
           <View style={styles.controlContainer}>
-            <View style={{flex: 1}}>
+            <View style={defaultStyles.row}>
               <DropDownPicker
-                setValue={setNewUnitSelect}
-                value={newUnitSelect || preferenceInput?.unit || WeightUnit.KG}
+                setValue={setWeightUnitSelect}
+                value={
+                  weightUnitSelect || preferenceInput?.weightUnit || LogUnit.KG
+                }
                 items={[
                   {
-                    value: WeightUnit.KG,
-                    label: WeightUnit.KG,
+                    value: LogUnit.KG,
+                    label: LogUnit.KG,
                   },
                   {
-                    value: WeightUnit.LBS,
-                    label: WeightUnit.LBS,
+                    value: LogUnit.LBS,
+                    label: LogUnit.LBS,
                   },
                 ]}
-                open={unitSelectOpen}
-                setOpen={setUnitSelectOpen}
+                open={weightSelectOpen}
+                setOpen={setWeightSelectOpen}
+                style={styles.dropdownStyle}
+                labelStyle={[
+                  defaultStyles.clickableText,
+                  defaultStyles.textAlignRight,
+                ]}
+                dropDownContainerStyle={styles.dropdownContainerStyle}
+                showArrowIcon={false}
+              />
+              <DropDownPicker
+                setValue={setDistanceUnitSelect}
+                value={
+                  distanceUnitSelect ||
+                  preferenceInput?.distanceUnit ||
+                  LogUnit.KM
+                }
+                items={[
+                  {
+                    value: LogUnit.KM,
+                    label: LogUnit.KM,
+                  },
+                  {
+                    value: LogUnit.MI,
+                    label: LogUnit.MI,
+                  },
+                ]}
+                open={distanceUnitSelectOpen}
+                setOpen={setDistanceUnitSelectOpen}
                 style={styles.dropdownStyle}
                 labelStyle={[
                   defaultStyles.clickableText,
@@ -159,7 +210,7 @@ const Preferences: React.FC<PreferencesProps> = ({
           <View style={styles.labelContainer}>
             <Text style={defaultStyles.whiteTextColor}>Hide unit selector</Text>
             <Text style={defaultStyles.footnote}>
-              Hide the unit selector when logging any weight value
+              Hide the unit selector when logging any value.
             </Text>
           </View>
           <View style={styles.controlContainer}>

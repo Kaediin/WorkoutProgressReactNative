@@ -1,5 +1,5 @@
 import React, {useEffect, useMemo, useState} from 'react';
-import {WeightUnit, WeightValueFragment} from '../../graphql/operations';
+import {LogUnit, LogValueFragment} from '../../graphql/operations';
 import usePreferenceStore from '../../stores/preferenceStore';
 import {StyleSheet, Text, View} from 'react-native';
 import {defaultStyles} from '../../utils/DefaultStyles';
@@ -7,63 +7,66 @@ import {Picker} from '@react-native-picker/picker';
 import Constants from '../../utils/Constants';
 
 interface WeightSelectProps {
-  weightValue?: WeightValueFragment;
-  onWeightSelected: (weight: WeightValueFragment) => void;
+  logValue?: LogValueFragment;
+  onWeightSelected: (weight: LogValueFragment) => void;
   hideLabel?: boolean;
 }
 
-const WeightSelect: React.FC<WeightSelectProps> = ({
-  weightValue,
+const LogValueSelect: React.FC<WeightSelectProps> = ({
+  logValue,
   onWeightSelected,
   hideLabel,
 }) => {
-  const preferenceUnit = usePreferenceStore(state => state.preference)?.unit;
+  const preferenceWeightUnit = usePreferenceStore(
+    state => state.preference,
+  )?.weightUnit;
+  const preferenceDistanceUnit = usePreferenceStore(
+    state => state.preference,
+  )?.distanceUnit;
   const hideUnitSelector = usePreferenceStore(
     state => state.preference,
   )?.hideUnitSelector;
-  const [baseWeight, setBaseWeight] = useState<number>(
-    weightValue?.baseWeight ?? 0,
-  );
+  const [base, setBase] = useState<number>(logValue?.base ?? 0);
   const [fraction, setFraction] = useState<number>(
-    weightValue?.fraction ? parseFloat(`0.${weightValue.fraction}`) : 0,
+    logValue?.fraction ? parseFloat(`0.${logValue.fraction}`) : 0,
   );
-  const [unit, setUnit] = useState<WeightUnit>(
-    weightValue?.unit || preferenceUnit || WeightUnit.KG,
+  const [unit, setUnit] = useState<LogUnit>(
+    logValue?.unit || preferenceWeightUnit || LogUnit.KG,
   );
 
   const weight = useMemo(
     () =>
       parseFloat(
-        `${baseWeight}.${fraction ? fraction.toString().split('.')[1] : '0'}`,
+        `${base}.${fraction ? fraction.toString().split('.')[1] : '0'}`,
       ),
-    [baseWeight, fraction],
+    [base, fraction],
   );
 
   useEffect(() => {
-    if (baseWeight !== undefined && baseWeight !== null) {
+    if (base !== undefined && base !== null) {
       onWeightSelected({
-        baseWeight,
+        base,
         fraction: fraction ? parseFloat(fraction.toString().split('.')[1]) : 0,
         unit,
       });
     }
-  }, [baseWeight, fraction]);
+  }, [base, fraction, unit]);
 
   useEffect(() => {
-    setBaseWeight(weightValue?.baseWeight ?? 0);
-    setFraction(weightValue?.fraction ?? 0);
-  }, [weightValue]);
+    setBase(logValue?.base ?? 0);
+    setFraction(logValue?.fraction ?? 0);
+  }, [logValue]);
 
   return (
     <>
       <View style={styles.pickerContainer}>
         <View style={styles.repetition}>
           <Text style={[defaultStyles.footnote, styles.pickerLabel]}>
-            Weight
+            Value
           </Text>
           <Picker
-            selectedValue={+baseWeight}
-            onValueChange={setBaseWeight}
+            selectedValue={+base}
+            onValueChange={setBase}
             itemStyle={styles.fontSizeSmall}>
             {Constants.WEIGHT_POINTS.map(weightPoint => (
               <Picker.Item
@@ -100,11 +103,14 @@ const WeightSelect: React.FC<WeightSelectProps> = ({
               selectedValue={unit}
               onValueChange={setUnit}
               itemStyle={styles.fontSizeSmall}>
-              {Object.keys(WeightUnit).map(weightUnit => (
+              {[
+                preferenceWeightUnit || LogUnit.KG,
+                preferenceDistanceUnit || LogUnit.KM,
+              ].map(logUnit => (
                 <Picker.Item
-                  label={weightUnit}
-                  value={weightUnit}
-                  key={`unit_${weightUnit}`}
+                  label={logUnit}
+                  value={logUnit}
+                  key={`unit_${logUnit}`}
                 />
               ))}
             </Picker>
@@ -143,4 +149,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default WeightSelect;
+export default LogValueSelect;
