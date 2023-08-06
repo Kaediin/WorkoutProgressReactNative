@@ -126,6 +126,7 @@ const styles = StyleSheet.create({
     marginTop: Constants.CONTAINER_PADDING_MARGIN / 2,
   },
   opacity: {
+    color: 'white',
     opacity: 0.8,
   },
 });

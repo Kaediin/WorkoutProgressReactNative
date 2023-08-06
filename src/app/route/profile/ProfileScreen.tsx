@@ -6,7 +6,7 @@ import {
   useDeleteExerciseMutation,
   useMyExercisesQuery,
 } from '../../graphql/operations';
-import {FlatList, StyleSheet, Text, View} from 'react-native';
+import {ScrollView, StyleSheet, Text, View} from 'react-native';
 import ExerciseProfileListItem from '../../components/exercise/ExerciseProfileListItem';
 import {defaultStyles} from '../../utils/DefaultStyles';
 import Constants from '../../utils/Constants';
@@ -16,6 +16,7 @@ import {ContextMenuActions} from '../../types/ContextMenuActions';
 import Preferences from '../../components/profile/Preferences';
 import SinglePicker from '../../components/bottomSheet/SinglePicker';
 import Loader from '../../components/common/Loader';
+import ExpandableView from '../../components/common/ExpandableView';
 
 const ProfileScreen: React.FC = () => {
   const [createExerciseModalActive, setCreateExerciseModalActive] =
@@ -56,51 +57,58 @@ const ProfileScreen: React.FC = () => {
     }
   }, [editExercise]);
 
+  const [showExercises, setShowExercises] = useState(false);
+
   return (
     <GradientBackground>
       <View style={defaultStyles.container}>
         {exercisesDataLoading ? (
           <Loader isLoading={exercisesDataLoading} />
         ) : (
-          <FlatList
-            data={exercises}
-            ListHeaderComponent={
+          <ScrollView>
+            <Preferences
+              onDefaultRepetitionClicked={() =>
+                setAdjustDefaultRepetitions(true)
+              }
+              onSetRepetitions={setRepetitions}
+              changedRepetition={nRepetitions}
+            />
+            <View style={styles.exercisesHeader}>
+              <Text style={defaultStyles.h2}>Exercises</Text>
+              <ClickableText
+                text={showExercises ? 'Hide' : 'Show'}
+                onPress={() => setShowExercises(!showExercises)}
+                styles={styles.exercisesToggle}
+              />
+              <ClickableText
+                text={'Create'}
+                onPress={() => {
+                  setEditExercise(undefined);
+                  setCreateExerciseModalActive(true);
+                }}
+                styles={styles.exercisesCreateText}
+              />
+            </View>
+            <ExpandableView showChildren={showExercises}>
               <>
-                <Preferences
-                  onDefaultRepetitionClicked={() =>
-                    setAdjustDefaultRepetitions(true)
-                  }
-                  onSetRepetitions={setRepetitions}
-                  changedRepetition={nRepetitions}
-                />
-                <View style={styles.exercisesHeader}>
-                  <Text style={defaultStyles.h2}>Exercises</Text>
-                  <ClickableText
-                    text={'Create'}
-                    onPress={() => {
-                      setEditExercise(undefined);
-                      setCreateExerciseModalActive(true);
-                    }}
-                    styles={styles.exercisesCreateText}
-                  />
-                </View>
+                {exercises?.map(exercise => (
+                  <ContextMenu
+                    key={exercise.id}
+                    actions={[
+                      {title: ContextMenuActions.EDIT},
+                      {title: ContextMenuActions.REMOVE},
+                    ]}
+                    onPress={e =>
+                      e.nativeEvent.name === ContextMenuActions.EDIT
+                        ? setEditExercise(exercise)
+                        : onDeleteExercise(exercise.id)
+                    }>
+                    <ExerciseProfileListItem exercise={exercise} />
+                  </ContextMenu>
+                ))}
               </>
-            }
-            renderItem={({item}) => (
-              <ContextMenu
-                actions={[
-                  {title: ContextMenuActions.EDIT},
-                  {title: ContextMenuActions.REMOVE},
-                ]}
-                onPress={e =>
-                  e.nativeEvent.name === ContextMenuActions.EDIT
-                    ? setEditExercise(item)
-                    : onDeleteExercise(item.id)
-                }>
-                <ExerciseProfileListItem exercise={item} />
-              </ContextMenu>
-            )}
-          />
+            </ExpandableView>
+          </ScrollView>
         )}
       </View>
       <SinglePicker
@@ -137,6 +145,11 @@ const styles = StyleSheet.create({
   exercisesCreateText: {
     position: 'absolute',
     right: Constants.CONTAINER_PADDING_MARGIN,
+    top: Constants.CONTAINER_PADDING_MARGIN * -2,
+  },
+  exercisesToggle: {
+    position: 'absolute',
+    left: Constants.CONTAINER_PADDING_MARGIN,
     top: Constants.CONTAINER_PADDING_MARGIN * -2,
   },
 });
