@@ -6,11 +6,12 @@ import {CognitoJWTPayload} from '../types/Auth';
 import jwt_decode from 'jwt-decode';
 import moment from 'moment';
 import Config from 'react-native-config';
+import {useNetInfo} from '@react-native-community/netinfo';
 
 export const AuthProvider: React.FC<PropsWithChildren> = props => {
   const setState = useAuthStore(state => state.setState);
   const setAuthToken = useAuthStore(state => state.setAuthToken);
-
+  const networkInfo = useNetInfo();
   const {getToken} = useAuth();
 
   const getAndUpdateAuthToken = async (): Promise<void> => {
@@ -75,18 +76,20 @@ export const AuthProvider: React.FC<PropsWithChildren> = props => {
   }, []);
 
   useEffect(() => {
-    Amplify.configure({
-      Auth: {
-        identityPoolId: Config.IDENTITY_POOL_ID,
-        identityPoolRegion: Config.IDENTITY_POOL_REGION,
-        region: Config.REGION,
-        userPoolId: Config.USER_POOL_ID,
-        userPoolWebClientId: Config.USER_POOL_WEB_CLIENT_ID,
-      },
-    });
-    console.log('[AuthProvider] Configured Amplify');
-    getAndUpdateAuthToken();
-  }, []);
+    if (networkInfo.isConnected) {
+      Amplify.configure({
+        Auth: {
+          identityPoolId: Config.IDENTITY_POOL_ID,
+          identityPoolRegion: Config.IDENTITY_POOL_REGION,
+          region: Config.REGION,
+          userPoolId: Config.USER_POOL_ID,
+          userPoolWebClientId: Config.USER_POOL_WEB_CLIENT_ID,
+        },
+      });
+      console.log('[AuthProvider] Configured Amplify');
+      getAndUpdateAuthToken();
+    }
+  }, [networkInfo]);
   return <>{props.children}</>;
 };
 

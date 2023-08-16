@@ -10,7 +10,7 @@ interface FloatingButtonProps {
 
 const FloatingButton: React.FC<FloatingButtonProps> = ({onClick}) => {
   return (
-    <View style={defaultStyles.shadow}>
+    <View style={[defaultStyles.shadow, styles.alignment]}>
       <LinearGradient
         colors={Constants.SECONDARY_GRADIENT}
         style={[styles.container]}>
@@ -23,13 +23,15 @@ const FloatingButton: React.FC<FloatingButtonProps> = ({onClick}) => {
 };
 
 const styles = StyleSheet.create({
-  container: {
+  alignment: {
     position: 'absolute',
-    borderRadius: 999,
     bottom: 30,
     right: 30,
     width: 60,
     height: 60,
+  },
+  container: {
+    borderRadius: 999,
   },
   textColor: {
     fontWeight: 'bold',
