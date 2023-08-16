@@ -1,3 +1,35 @@
+## [v0.1.1]
+
+### Added
+
+- #30: Edit workout functionality
+- #35: Alignment to create exercise
+- #35: Background colors
+- #35: Retry button to connect to the API
+- #35: Support for when a device is offline
+- #35: Workout duration
+- #35: Keyboard avoiding view
+- #35: Add shadow over floating button
+- #35: Make exercises click to expand
+- #35: Adjusted splash screen
+- #35: Are you sure popup when removing exercise and log
+- #37: Support for logging distance
+
+### Fixed
+
+- #33: No refresh on the overview page after starting a workout
+- #33: No workout update after adding an exercise updating the muscle groups
+- #33: Can't edit log
+- #33: Weight picker doesn't reset when logging a new exercise after being preset
+- #33: Decrease size unit selector in preference
+- #33: Login screen shows when starting the app
+
+### Changed
+
+- #34: Changed exercise selector in log to picker
+- #34: Exercise selector now correctly updates when creating new exercise
+- #36: Last logged exercise is not last logged set
+
 ## [v0.1.0]
 
 ### Added
