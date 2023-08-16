@@ -25,7 +25,6 @@ const useAuthStore = create<AuthStore>()(set => ({
   state: AuthState.UNAUTHENTICATED,
   setState: (state): void => {
     console.log('[authStore] Settings state to ' + state);
-    set({state: AuthState.UNKNOWN});
     set({state});
   },
 

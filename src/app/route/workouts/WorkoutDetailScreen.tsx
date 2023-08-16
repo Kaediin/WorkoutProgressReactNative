@@ -45,6 +45,7 @@ import Loader from '../../components/common/Loader';
 import {DATE_TIME_FORMAT} from '../../utils/Date';
 import {stripTypenames} from '../../utils/GrahqlUtils';
 import {nonNullable} from '../../utils/List';
+import PopupModal from '../../components/common/PopupModal';
 
 type Props = NativeStackScreenProps<WorkoutStackParamList, 'WorkoutDetail'>;
 
@@ -58,6 +59,7 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
 
   const bottomSheetRef = useRef<BottomSheetModal>(null);
 
+  const [deleteLogId, setDeleteLogId] = useState('');
   const [createExerciseModal, setCreateExerciseModal] = useState(false);
   const [workout, setWorkout] = useState<WorkoutLongFragment>();
   const [latestLogs, setLatestLogs] = useState<ExerciseLogFragment[]>([]);
@@ -84,7 +86,14 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
   const [
     removeExerciseLog,
     {data: removeExerciseLogData, loading: removeExerciseLogLoading},
-  ] = useRemoveExerciseLogMutation({fetchPolicy: 'no-cache'});
+  ] = useRemoveExerciseLogMutation({
+    fetchPolicy: 'no-cache',
+    onCompleted: data => {
+      if (data?.removeExerciseLog) {
+        setDeleteLogId('');
+      }
+    },
+  });
   const [latestLogQuery, {loading: latestLogsLoading}] =
     useLatestLogsByExerciseIdLazyQuery({
       fetchPolicy: 'no-cache',
@@ -325,14 +334,7 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
                     });
                     toggleBottomSheetRef(true);
                   }}
-                  onRemoveLog={id =>
-                    removeExerciseLog({
-                      variables: {
-                        exerciseLogId: id,
-                        autoAdjust,
-                      },
-                    })
-                  }
+                  onRemoveLog={setDeleteLogId}
                   onLogPress={log => {
                     setExerciseLog(prevState => ({
                       ...prevState,
@@ -349,6 +351,20 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
               numColumns={dimensions.screen.width > 500 ? 2 : 1}
             />
           )}
+          <PopupModal
+            message={'Are you sure you want to remove this log?'}
+            isOpen={Boolean(deleteLogId)}
+            type={'WARNING'}
+            onDismiss={() => setDeleteLogId('')}
+            onConfirm={() => {
+              removeExerciseLog({
+                variables: {
+                  exerciseLogId: deleteLogId,
+                  autoAdjust,
+                },
+              });
+            }}
+          />
         </View>
       ) : (
         <></>

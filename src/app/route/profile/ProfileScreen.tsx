@@ -17,12 +17,22 @@ import Preferences from '../../components/profile/Preferences';
 import SinglePicker from '../../components/bottomSheet/SinglePicker';
 import Loader from '../../components/common/Loader';
 import ExpandableView from '../../components/common/ExpandableView';
+import PopupModal from '../../components/common/PopupModal';
 
 const ProfileScreen: React.FC = () => {
+  const [deleteExerciseId, setDeleteExerciseId] = useState('');
   const [createExerciseModalActive, setCreateExerciseModalActive] =
     useState(false);
   const [editExercise, setEditExercise] = useState<ExerciseFragment>();
-  const [deleteExercise] = useDeleteExerciseMutation({fetchPolicy: 'no-cache'});
+  const [deleteExercise, {loading: deleteExerciseLoading}] =
+    useDeleteExerciseMutation({
+      fetchPolicy: 'no-cache',
+      onCompleted: data => {
+        if (data?.deleteExercise) {
+          refetchExercises();
+        }
+      },
+    });
   const [adjustDefaultRepetitions, setAdjustDefaultRepetitions] =
     useState(false);
   const [repetitions, setRepetitions] = useState<number>();
@@ -45,10 +55,6 @@ const ProfileScreen: React.FC = () => {
         id,
       },
     });
-  };
-
-  const refetchData = (): void => {
-    refetchExercises();
   };
 
   useEffect(() => {
@@ -89,25 +95,29 @@ const ProfileScreen: React.FC = () => {
                 styles={styles.exercisesCreateText}
               />
             </View>
-            <ExpandableView showChildren={showExercises}>
-              <>
-                {exercises?.map(exercise => (
-                  <ContextMenu
-                    key={exercise.id}
-                    actions={[
-                      {title: ContextMenuActions.EDIT},
-                      {title: ContextMenuActions.REMOVE},
-                    ]}
-                    onPress={e =>
-                      e.nativeEvent.name === ContextMenuActions.EDIT
-                        ? setEditExercise(exercise)
-                        : onDeleteExercise(exercise.id)
-                    }>
-                    <ExerciseProfileListItem exercise={exercise} />
-                  </ContextMenu>
-                ))}
-              </>
-            </ExpandableView>
+            {deleteExerciseLoading ? (
+              <Loader isLoading={deleteExerciseLoading} />
+            ) : (
+              <ExpandableView showChildren={showExercises}>
+                <>
+                  {exercises?.map(exercise => (
+                    <ContextMenu
+                      key={exercise.id}
+                      actions={[
+                        {title: ContextMenuActions.EDIT},
+                        {title: ContextMenuActions.REMOVE},
+                      ]}
+                      onPress={e =>
+                        e.nativeEvent.name === ContextMenuActions.EDIT
+                          ? setEditExercise(exercise)
+                          : setDeleteExerciseId(exercise.id)
+                      }>
+                      <ExerciseProfileListItem exercise={exercise} />
+                    </ContextMenu>
+                  ))}
+                </>
+              </ExpandableView>
+            )}
           </ScrollView>
         )}
       </View>
@@ -128,11 +138,21 @@ const ProfileScreen: React.FC = () => {
           setCreateExerciseModalActive(false);
           setEditExercise(undefined);
           if (added) {
-            refetchData();
+            refetchExercises();
           }
         }}
         existingExercise={editExercise}
-        onUpdate={refetchData}
+        onUpdate={refetchExercises}
+      />
+      <PopupModal
+        message={'Are you sure you want to delete this workout?'}
+        isOpen={Boolean(deleteExerciseId)}
+        type={'WARNING'}
+        onDismiss={() => setDeleteExerciseId('')}
+        onConfirm={() => {
+          onDeleteExercise(deleteExerciseId);
+          setDeleteExerciseId('');
+        }}
       />
     </GradientBackground>
   );
