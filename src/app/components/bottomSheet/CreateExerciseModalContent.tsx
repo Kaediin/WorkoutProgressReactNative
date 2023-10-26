@@ -102,8 +102,8 @@ const CreateExerciseModalContent: React.FC<
           },
         },
       });
-      props.onUpdate();
     }
+    props.onUpdate();
     props.onDismiss();
     setLoading(false);
   };
@@ -177,7 +177,7 @@ const CreateExerciseModalContent: React.FC<
               pillColor={Constants.SECONDARY_GRADIENT[0]}
               textColor="white"
             />
-            <View style={[defaultStyles.spaceBetween, defaultStyles.container]}>
+            <View style={styles.spaceBetween}>
               <Text>Default applied weight</Text>
               <ClickableText
                 text={
@@ -186,7 +186,6 @@ const CreateExerciseModalContent: React.FC<
                     : 'Select'
                 }
                 onPress={() => {
-                  bottomSheetModalRefMain?.current?.dismiss();
                   bottomSheetModalRefWeightSelect?.current?.present();
                 }}
               />
