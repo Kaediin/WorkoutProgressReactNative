@@ -22,7 +22,9 @@ const AppRoute: React.FC = () => {
     <NavigationContainer>
       {authState === AuthState.AUTHENTICATED ? (
         <TabNavigator />
-      ) : authState === AuthState.UNAUTHENTICATED ? (
+      ) : [AuthState.UNAUTHENTICATED, AuthState.USER_NOT_CONFIRMED].includes(
+          authState,
+        ) ? (
         <AuthStackNavigator.Navigator initialRouteName="Login">
           <AuthStackNavigator.Screen
             name={'Login'}
