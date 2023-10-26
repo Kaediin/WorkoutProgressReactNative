@@ -162,6 +162,7 @@ export type Mutation = {
   deleteWorkout?: Maybe<Scalars['Boolean']>;
   endWorkout?: Maybe<Workout>;
   meStartWorkout?: Maybe<Workout>;
+  reLogLatestLog?: Maybe<Workout>;
   removeExerciseLog: Scalars['Boolean'];
   runFetchWorkoutsTask?: Maybe<Scalars['Boolean']>;
   updateExercise?: Maybe<Exercise>;
@@ -206,6 +207,13 @@ export type MutationEndWorkoutArgs = {
 
 export type MutationMeStartWorkoutArgs = {
   input: WorkoutInput;
+};
+
+
+export type MutationReLogLatestLogArgs = {
+  autoAdjust: Scalars['Boolean'];
+  workoutId: Scalars['ID'];
+  zonedDateTimeString: Scalars['String'];
 };
 
 
@@ -332,6 +340,15 @@ export type AddExerciseLogMutationVariables = Exact<{
 
 
 export type AddExerciseLogMutation = { __typename?: 'Mutation', addExerciseLog?: { __typename?: 'Workout', id: string, name: string, muscleGroups: Array<MuscleGroup>, startDateTime?: any | null, endDateTime?: any | null, active?: boolean | null, remark?: string | null, groupedExerciseLogs: Array<{ __typename?: 'GroupedExerciseLog', exercise: { __typename?: 'Exercise', id: string, name: string, primaryMuscles?: Array<MuscleGroup | null> | null, secondaryMuscles?: Array<MuscleGroup | null> | null, notes?: string | null, defaultAppliedWeight?: { __typename?: 'LogValue', unit: LogUnit, base: number, fraction?: number | null } | null }, logs: Array<{ __typename?: 'ExerciseLog', id: string, logDateTime: any, repetitions: number, warmup?: boolean | null, remark?: string | null, exercise: { __typename?: 'Exercise', id: string, name: string, primaryMuscles?: Array<MuscleGroup | null> | null, secondaryMuscles?: Array<MuscleGroup | null> | null, notes?: string | null, defaultAppliedWeight?: { __typename?: 'LogValue', unit: LogUnit, base: number, fraction?: number | null } | null }, logValue: { __typename?: 'LogValue', unit: LogUnit, base: number, fraction?: number | null } }> }> } | null };
+
+export type ReLogLatestLogMutationVariables = Exact<{
+  workoutId: Scalars['ID'];
+  zonedDateTimeString: Scalars['String'];
+  autoAdjust: Scalars['Boolean'];
+}>;
+
+
+export type ReLogLatestLogMutation = { __typename?: 'Mutation', reLogLatestLog?: { __typename?: 'Workout', id: string, name: string, muscleGroups: Array<MuscleGroup>, startDateTime?: any | null, endDateTime?: any | null, active?: boolean | null, remark?: string | null, groupedExerciseLogs: Array<{ __typename?: 'GroupedExerciseLog', exercise: { __typename?: 'Exercise', id: string, name: string, primaryMuscles?: Array<MuscleGroup | null> | null, secondaryMuscles?: Array<MuscleGroup | null> | null, notes?: string | null, defaultAppliedWeight?: { __typename?: 'LogValue', unit: LogUnit, base: number, fraction?: number | null } | null }, logs: Array<{ __typename?: 'ExerciseLog', id: string, logDateTime: any, repetitions: number, warmup?: boolean | null, remark?: string | null, exercise: { __typename?: 'Exercise', id: string, name: string, primaryMuscles?: Array<MuscleGroup | null> | null, secondaryMuscles?: Array<MuscleGroup | null> | null, notes?: string | null, defaultAppliedWeight?: { __typename?: 'LogValue', unit: LogUnit, base: number, fraction?: number | null } | null }, logValue: { __typename?: 'LogValue', unit: LogUnit, base: number, fraction?: number | null } }> }> } | null };
 
 export type RemoveExerciseLogMutationVariables = Exact<{
   exerciseLogId: Scalars['String'];
@@ -552,6 +569,35 @@ export function useAddExerciseLogMutation(baseOptions?: Apollo.MutationHookOptio
 export type AddExerciseLogMutationHookResult = ReturnType<typeof useAddExerciseLogMutation>;
 export type AddExerciseLogMutationResult = Apollo.MutationResult<AddExerciseLogMutation>;
 export type AddExerciseLogMutationOptions = Apollo.BaseMutationOptions<AddExerciseLogMutation, AddExerciseLogMutationVariables>;
+export const ReLogLatestLogDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"reLogLatestLog"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"workoutId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"zonedDateTimeString"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"autoAdjust"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Boolean"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"reLogLatestLog"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"workoutId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"workoutId"}}},{"kind":"Argument","name":{"kind":"Name","value":"zonedDateTimeString"},"value":{"kind":"Variable","name":{"kind":"Name","value":"zonedDateTimeString"}}},{"kind":"Argument","name":{"kind":"Name","value":"autoAdjust"},"value":{"kind":"Variable","name":{"kind":"Name","value":"autoAdjust"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"WorkoutLong"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"Exercise"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Exercise"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"primaryMuscles"}},{"kind":"Field","name":{"kind":"Name","value":"secondaryMuscles"}},{"kind":"Field","name":{"kind":"Name","value":"defaultAppliedWeight"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"LogValue"}}]}},{"kind":"Field","name":{"kind":"Name","value":"notes"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"ExerciseLog"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"ExerciseLog"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"exercise"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"Exercise"}}]}},{"kind":"Field","name":{"kind":"Name","value":"logDateTime"}},{"kind":"Field","name":{"kind":"Name","value":"repetitions"}},{"kind":"Field","name":{"kind":"Name","value":"logValue"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"LogValue"}}]}},{"kind":"Field","name":{"kind":"Name","value":"warmup"}},{"kind":"Field","name":{"kind":"Name","value":"remark"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"GroupedExerciseLog"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"GroupedExerciseLog"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"exercise"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"Exercise"}}]}},{"kind":"Field","name":{"kind":"Name","value":"logs"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"ExerciseLog"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"LogValue"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"LogValue"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"unit"}},{"kind":"Field","name":{"kind":"Name","value":"base"}},{"kind":"Field","name":{"kind":"Name","value":"fraction"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"WorkoutLong"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Workout"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"muscleGroups"}},{"kind":"Field","name":{"kind":"Name","value":"startDateTime"}},{"kind":"Field","name":{"kind":"Name","value":"endDateTime"}},{"kind":"Field","name":{"kind":"Name","value":"active"}},{"kind":"Field","name":{"kind":"Name","value":"groupedExerciseLogs"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"GroupedExerciseLog"}}]}},{"kind":"Field","name":{"kind":"Name","value":"remark"}}]}}]} as unknown as DocumentNode;
+export type ReLogLatestLogMutationFn = Apollo.MutationFunction<ReLogLatestLogMutation, ReLogLatestLogMutationVariables>;
+
+/**
+ * __useReLogLatestLogMutation__
+ *
+ * To run a mutation, you first call `useReLogLatestLogMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useReLogLatestLogMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [reLogLatestLogMutation, { data, loading, error }] = useReLogLatestLogMutation({
+ *   variables: {
+ *      workoutId: // value for 'workoutId'
+ *      zonedDateTimeString: // value for 'zonedDateTimeString'
+ *      autoAdjust: // value for 'autoAdjust'
+ *   },
+ * });
+ */
+export function useReLogLatestLogMutation(baseOptions?: Apollo.MutationHookOptions<ReLogLatestLogMutation, ReLogLatestLogMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<ReLogLatestLogMutation, ReLogLatestLogMutationVariables>(ReLogLatestLogDocument, options);
+      }
+export type ReLogLatestLogMutationHookResult = ReturnType<typeof useReLogLatestLogMutation>;
+export type ReLogLatestLogMutationResult = Apollo.MutationResult<ReLogLatestLogMutation>;
+export type ReLogLatestLogMutationOptions = Apollo.BaseMutationOptions<ReLogLatestLogMutation, ReLogLatestLogMutationVariables>;
 export const RemoveExerciseLogDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"removeExerciseLog"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"exerciseLogId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"autoAdjust"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Boolean"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"removeExerciseLog"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"exerciseLogId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"exerciseLogId"}}},{"kind":"Argument","name":{"kind":"Name","value":"autoAdjust"},"value":{"kind":"Variable","name":{"kind":"Name","value":"autoAdjust"}}}]}]}}]} as unknown as DocumentNode;
 export type RemoveExerciseLogMutationFn = Apollo.MutationFunction<RemoveExerciseLogMutation, RemoveExerciseLogMutationVariables>;
 

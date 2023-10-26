@@ -37,3 +37,13 @@ export const Profile = () => {
 
   return <ProfileSVG />;
 };
+
+export const Retry = () => {
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="15" height="15" viewBox="0,0,256,256"
+style="fill:#FFFFFF;">
+<g transform="translate(-38.4,-38.4) scale(1.3,1.3)"><g fill="#ffffff" fill-rule="nonzero" stroke="none" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0" font-family="none" font-weight="none" font-size="none" text-anchor="none" style="mix-blend-mode: normal"><g transform="translate(0.71111,10.66796) scale(3.55556,3.55556)"><path d="M34.09961,7.00195c-1.07001,-0.0562 -2.09961,0.77673 -2.09961,1.99023v3.34766c-11.33513,1.91057 -20,11.78941 -20,23.66016c0,13.234 10.767,24 24,24c13.233,0 24,-10.766 24,-24c0,-5.67 -2.01488,-11.17214 -5.67187,-15.49414c-1.43,-1.687 -3.95372,-1.8997 -5.63672,-0.4707c-1.687,1.427 -1.8977,3.95167 -0.4707,5.63867c2.437,2.879 3.7793,6.54617 3.7793,10.32617c0,8.822 -7.178,16 -16,16c-8.822,0 -16,-7.178 -16,-16c0,-7.43861 5.11088,-13.68922 12,-15.47266v2.47852c0,1.619 1.82948,2.56014 3.14648,1.61914l9.80469,-7.00781c1.11,-0.793 1.11,-2.44333 0,-3.23633l-9.80469,-7.00781c-0.32925,-0.23525 -0.6902,-0.35236 -1.04687,-0.37109z"></path></g></g></g>
+</svg>`;
+
+  const RetrySVG = () => <SvgXml xml={svg} />;
+  return <RetrySVG />;
+};

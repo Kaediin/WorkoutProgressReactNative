@@ -1,0 +1,5 @@
+mutation reLogLatestLog($workoutId: ID!, $zonedDateTimeString: String!, $autoAdjust: Boolean!) {
+    reLogLatestLog(workoutId: $workoutId, zonedDateTimeString: $zonedDateTimeString, autoAdjust: $autoAdjust) {
+        ...WorkoutLong
+    }
+}
