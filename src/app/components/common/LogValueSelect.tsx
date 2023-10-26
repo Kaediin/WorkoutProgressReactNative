@@ -1,4 +1,4 @@
-import React, {useEffect, useMemo, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {LogUnit, LogValueFragment} from '../../graphql/operations';
 import usePreferenceStore from '../../stores/preferenceStore';
 import {StyleSheet, Text, View} from 'react-native';
@@ -34,28 +34,16 @@ const LogValueSelect: React.FC<WeightSelectProps> = ({
     logValue?.unit || preferenceWeightUnit || LogUnit.KG,
   );
 
-  const weight = useMemo(
-    () =>
-      parseFloat(
-        `${base}.${fraction ? fraction.toString().split('.')[1] : '0'}`,
-      ),
-    [base, fraction],
-  );
-
   useEffect(() => {
     if (base !== undefined && base !== null) {
-      onWeightSelected({
+      const nWeight: LogValueFragment = {
         base,
         fraction: fraction ? parseFloat(fraction.toString().split('.')[1]) : 0,
         unit,
-      });
+      };
+      onWeightSelected(nWeight);
     }
   }, [base, fraction, unit]);
-
-  useEffect(() => {
-    setBase(logValue?.base ?? 0);
-    setFraction(logValue?.fraction ?? 0);
-  }, [logValue]);
 
   return (
     <>
@@ -119,7 +107,8 @@ const LogValueSelect: React.FC<WeightSelectProps> = ({
       </View>
       {!hideLabel && (
         <Text style={styles.selectedWeightLabel}>
-          {weight} {unit}
+          {base}
+          {fraction} {unit}
         </Text>
       )}
     </>
