@@ -219,7 +219,14 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
       updateExerciseLog({
         variables: {
           id: editExistingExercise.id,
-          input: stripTypenames(exerciseLog),
+          input: {
+            exerciseId: exerciseLog.exerciseId,
+            repetitions: exerciseLog.repetitions,
+            logValue: stripTypenames(exerciseLog.logValue),
+            remark: exerciseLog.remark,
+            warmup: exerciseLog.warmup,
+            zonedDateTimeString: exerciseLog.zonedDateTimeString,
+          },
         },
       });
     } else {
@@ -230,7 +237,7 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
             exerciseId: exerciseLog.exerciseId,
             repetitions: exerciseLog.repetitions,
             zonedDateTimeString: moment().toISOString(true),
-            logValue: exerciseLog.logValue,
+            logValue: stripTypenames(exerciseLog.logValue),
             warmup: exerciseLog.warmup,
             remark: exerciseLog.remark,
           },
