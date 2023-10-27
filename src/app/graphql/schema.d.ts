@@ -159,6 +159,7 @@ export type Mutation = {
   deleteWorkout?: Maybe<Scalars['Boolean']>;
   endWorkout?: Maybe<Workout>;
   meStartWorkout?: Maybe<Workout>;
+  reLogLatestLog?: Maybe<Workout>;
   removeExerciseLog: Scalars['Boolean'];
   runFetchWorkoutsTask?: Maybe<Scalars['Boolean']>;
   updateExercise?: Maybe<Exercise>;
@@ -203,6 +204,13 @@ export type MutationEndWorkoutArgs = {
 
 export type MutationMeStartWorkoutArgs = {
   input: WorkoutInput;
+};
+
+
+export type MutationReLogLatestLogArgs = {
+  autoAdjust: Scalars['Boolean'];
+  workoutId: Scalars['ID'];
+  zonedDateTimeString: Scalars['String'];
 };
 
 
