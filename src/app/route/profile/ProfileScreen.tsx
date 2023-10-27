@@ -98,7 +98,9 @@ const ProfileScreen: React.FC = () => {
             {deleteExerciseLoading ? (
               <Loader isLoading={deleteExerciseLoading} />
             ) : (
-              <ExpandableView showChildren={showExercises}>
+              <ExpandableView
+                showChildren={showExercises}
+                contentHeight={175 * (exercises?.length ?? 0)}>
                 <>
                   {exercises?.map(exercise => (
                     <ContextMenu
