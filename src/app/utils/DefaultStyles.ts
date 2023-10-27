@@ -93,6 +93,7 @@ export const defaultStyles = StyleSheet.create({
   error: {
     color: 'red',
     fontSize: 12,
+    textAlign: 'center',
   },
   flex1: {
     flex: 1,

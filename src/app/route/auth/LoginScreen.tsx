@@ -25,7 +25,6 @@ const LoginScreen: React.FC<Props> = props => {
 
   useEffect(() => {
     if (cognitoUser) {
-      console.log(cognitoUser);
       console.log(`[LoginScreen] Challenge: ${cognitoUser.challengeName}`);
     }
   }, [cognitoUser]);
