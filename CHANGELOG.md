@@ -1,3 +1,20 @@
+## [v0.1.2]
+
+### Added
+
+- #32: Readme & license
+- #39: Mini floating button to re-log the latest logged exercise for a workout
+- #48: A light background indicating the select field. This should help prevent accidentally changing the logged weight
+  when the intention was to scroll.
+- #48: Removed the big button in modals and replaces with simple, responsive, header text pressables
+
+### Fixed
+
+- #40: Setting a default applied weight to existing exercise
+- #41: Cant scroll on exercises in profile
+- #42: Can't input fractions
+- #47: Nothing happens when inputting wrong credentials on login
+
 ## [v0.1.1]
 
 ### Added
