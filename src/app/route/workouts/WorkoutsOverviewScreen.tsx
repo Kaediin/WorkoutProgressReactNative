@@ -141,6 +141,7 @@ const WorkoutsOverviewScreen: React.FC<Props> = ({navigation}) => {
   useEffect(() => {
     if (isFocussed && getWorkoutsData?.myWorkouts) {
       refetchWorkouts();
+      refetchActiveWorkout();
     }
   }, [isFocussed]);
 
@@ -206,7 +207,10 @@ const WorkoutsOverviewScreen: React.FC<Props> = ({navigation}) => {
               colors={['#fff', '#ccc']}
               tintColor={'#fff'}
               refreshing={getWorkoutsLoading}
-              onRefresh={refetchWorkouts}
+              onRefresh={() => {
+                refetchWorkouts();
+                refetchActiveWorkout();
+              }}
             />
           }
           renderItem={({item}) => (

@@ -19,6 +19,7 @@ import {
   useEndWorkoutMutation,
   useLatestLogsByExerciseIdLazyQuery,
   useMyExercisesQuery,
+  useReLogLatestLogMutation,
   useRemoveExerciseLogMutation,
   useUpdateExerciseLogMutation,
   useWorkoutByIdLazyQuery,
@@ -113,6 +114,14 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
         }
       },
     });
+  const [reLogLatestLog, {loading: reLogLoading}] = useReLogLatestLogMutation({
+    fetchPolicy: 'no-cache',
+    onCompleted: data => {
+      if (data?.reLogLatestLog) {
+        setWorkout(data?.reLogLatestLog);
+      }
+    },
+  });
 
   useEffect(() => {
     if (latestLogs && latestLogs.length > 0) {
@@ -303,7 +312,10 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
 
   return (
     <GradientBackground>
-      {workoutLoading || endWorkoutLoading || removeExerciseLogLoading ? (
+      {workoutLoading ||
+      endWorkoutLoading ||
+      removeExerciseLogLoading ||
+      reLogLoading ? (
         <Loader />
       ) : workout ? (
         <View style={defaultStyles.container}>
@@ -377,12 +389,29 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
         <></>
       )}
       {workout && (
-        <FloatingButton
-          onClick={() => {
-            setExerciseLog(initialLog);
-            toggleBottomSheetRef(true);
-          }}
-        />
+        <>
+          {workout.groupedExerciseLogs &&
+            workout.groupedExerciseLogs.length > 0 && (
+              <FloatingButton
+                onClick={() =>
+                  reLogLatestLog({
+                    variables: {
+                      workoutId: workout.id,
+                      zonedDateTimeString: moment().toISOString(true),
+                      autoAdjust,
+                    },
+                  })
+                }
+                secondary
+              />
+            )}
+          <FloatingButton
+            onClick={() => {
+              setExerciseLog(initialLog);
+              toggleBottomSheetRef(true);
+            }}
+          />
+        </>
       )}
       <BottomSheetModalProvider>
         <CreateExerciseModalContent
