@@ -476,7 +476,7 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
               ) : (
                 <>
                   {latestLogs && latestLogs.length > 0 && (
-                    <>
+                    <View style={defaultStyles.container}>
                       <Text style={defaultStyles.footnote}>
                         Last set {latestLogs[0].exercise.name} (
                         {moment
@@ -490,7 +490,7 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
                           {log.warmup && ' (warmup)'}
                         </Text>
                       ))}
-                    </>
+                    </View>
                   )}
                   {exerciseLog?.exerciseId && (
                     <>

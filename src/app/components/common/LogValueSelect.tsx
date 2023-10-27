@@ -5,6 +5,7 @@ import {StyleSheet, Text, View} from 'react-native';
 import {defaultStyles} from '../../utils/DefaultStyles';
 import {Picker} from '@react-native-picker/picker';
 import Constants from '../../utils/Constants';
+import {logValueToString} from '../../utils/String';
 
 interface LogValueSelectProps {
   logValue?: LogValueFragment;
@@ -34,6 +35,8 @@ const LogValueSelect: React.FC<LogValueSelectProps> = ({
     logValue?.unit || preferenceWeightUnit || LogUnit.KG,
   );
 
+  const [nLogValue, setNLogValue] = useState<LogValueFragment>();
+
   useEffect(() => {
     if (base !== undefined && base !== null) {
       const nWeight: LogValueFragment = {
@@ -41,6 +44,7 @@ const LogValueSelect: React.FC<LogValueSelectProps> = ({
         fraction: fraction ? parseFloat(fraction.toString().split('.')[1]) : 0,
         unit,
       };
+      setNLogValue(nWeight);
       onWeightSelected(nWeight);
     }
   }, [base, fraction, unit]);
@@ -107,8 +111,7 @@ const LogValueSelect: React.FC<LogValueSelectProps> = ({
       </View>
       {!hideLabel && (
         <Text style={styles.selectedWeightLabel}>
-          {base}
-          {fraction} {unit}
+          {nLogValue && logValueToString(nLogValue)}
         </Text>
       )}
     </>
