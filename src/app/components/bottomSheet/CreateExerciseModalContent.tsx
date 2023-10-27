@@ -7,7 +7,6 @@ import {
   useUpdateExerciseMutation,
 } from '../../graphql/operations';
 import {BottomSheetModal} from '@gorhom/bottom-sheet';
-import GradientButton from '../common/GradientButton';
 import {CustomBottomSheet} from './CustomBottomSheet';
 import {StyleSheet, Text, TextInput, View} from 'react-native';
 import MuscleGroupList from '../workouts/MuscleGroupList';
@@ -136,7 +135,12 @@ const CreateExerciseModalContent: React.FC<
           <CustomBottomSheet
             ref={bottomSheetModalRefMain}
             index={55}
-            onCloseClicked={() => props.onDismiss()}>
+            onDismissClicked={props.onDismiss}
+            rightText={'Save'}
+            onRightTextClicked={saveExercise}
+            disableRightText={
+              exerciseName.length === 0 || primaryMuscleGroups.length === 0
+            }>
             {!props.existingExercise && (
               <Text style={styles.label}>New exercise</Text>
             )}
@@ -198,24 +202,14 @@ const CreateExerciseModalContent: React.FC<
               maxLength={Constants.TEXT_AREA_MAX_LENGTH}
               multiline
             />
-            <View style={styles.containerButton}>
-              <GradientButton
-                title={'Save'}
-                gradients={Constants.SECONDARY_GRADIENT}
-                onClick={saveExercise}
-                disabled={
-                  exerciseName.length === 0 || primaryMuscleGroups.length === 0
-                }
-              />
-            </View>
           </CustomBottomSheet>
           <CustomBottomSheet
             ref={bottomSheetModalRefMuscleSelect}
-            onCloseClicked={() => {
+            onRightTextClicked={() => {
               bottomSheetModalRefMuscleSelect?.current?.dismiss();
               bottomSheetModalRefMain?.current?.present();
             }}
-            closeText={'Select'}>
+            rightText={'Select'}>
             <SelectMuscleGroups
               preselected={
                 muscleSelectType === 'PRIMARY'
@@ -231,12 +225,12 @@ const CreateExerciseModalContent: React.FC<
           </CustomBottomSheet>
           <CustomBottomSheet
             ref={bottomSheetModalRefWeightSelect}
-            onCloseClicked={() => {
+            onRightTextClicked={() => {
               bottomSheetModalRefWeightSelect?.current?.dismiss();
               bottomSheetModalRefMain?.current?.present();
             }}
             index={65}
-            closeText={'Select'}>
+            rightText={'Select'}>
             <LogValueSelect
               logValue={defaultAppliedWeight}
               onWeightSelected={value =>
@@ -265,9 +259,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     padding: Constants.CONTAINER_PADDING_MARGIN,
-  },
-  containerButton: {
-    marginTop: 20,
   },
 });
 

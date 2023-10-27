@@ -35,7 +35,6 @@ import ContextMenu from 'react-native-context-menu-view';
 import {defaultStyles} from '../../utils/DefaultStyles';
 import ClickableText from '../../components/common/ClickableText';
 import MuscleGroupList from '../../components/workouts/MuscleGroupList';
-import GradientButton from '../../components/common/GradientButton';
 import usePreferenceStore from '../../stores/preferenceStore';
 import Loader from '../../components/common/Loader';
 import {useIsFocused} from '@react-navigation/native';
@@ -237,7 +236,13 @@ const WorkoutsOverviewScreen: React.FC<Props> = ({navigation}) => {
       )}
 
       <BottomSheetModalProvider>
-        <CustomBottomSheet ref={bottomSheetModalRef}>
+        <CustomBottomSheet
+          ref={bottomSheetModalRef}
+          rightText={'Start'}
+          onRightTextClicked={() =>
+            editingExistingWorkoutId ? doEditWorkout() : doStartWorkout()
+          }
+          index={50}>
           <Text style={styles.header}>Name</Text>
           <View style={styles.containerTitle}>
             <TextInput
@@ -283,17 +288,10 @@ const WorkoutsOverviewScreen: React.FC<Props> = ({navigation}) => {
             placeholder={'Remarks for this workout'}
             multiline
           />
-          <GradientButton
-            styles={styles.button}
-            title={editingExistingWorkoutId ? 'Adjust' : 'Start workout'}
-            onClick={() =>
-              editingExistingWorkoutId ? doEditWorkout() : doStartWorkout()
-            }
-          />
         </CustomBottomSheet>
         <CustomBottomSheet
           ref={bottomSheetModalRefMuscleSelect}
-          onCloseClicked={() =>
+          onDismissClicked={() =>
             bottomSheetModalRefMuscleSelect?.current?.dismiss()
           }>
           <SelectMuscleGroups

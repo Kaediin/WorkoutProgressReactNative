@@ -66,6 +66,9 @@ export const defaultStyles = StyleSheet.create({
   clickableText: {
     color: '#41E1B4',
   },
+  disabledText: {
+    color: '#ccc',
+  },
   row: {
     flexDirection: 'row',
     alignItems: 'center',

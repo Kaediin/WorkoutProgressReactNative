@@ -13,16 +13,21 @@ interface ClickableTextProps {
   containerStyles?: StyleProp<ViewStyle>;
   styles?: StyleProp<TextStyle>;
   textAlignCenter?: boolean;
+  disabled?: boolean;
 }
 
 const ClickableText: React.FC<ClickableTextProps> = props => {
   return (
-    <TouchableOpacity style={props.containerStyles} onPress={props.onPress}>
+    <TouchableOpacity
+      style={props.containerStyles}
+      disabled={props.disabled}
+      onPress={props.onPress}>
       <Text
         style={[
           defaultStyles.clickableText,
           props.styles,
           props.textAlignCenter && defaultStyles.textAlignCenter,
+          props.disabled && defaultStyles.disabledText,
         ]}>
         {props.text}
       </Text>

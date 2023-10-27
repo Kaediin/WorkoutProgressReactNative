@@ -33,7 +33,6 @@ import {BottomSheetModal, BottomSheetModalProvider} from '@gorhom/bottom-sheet';
 import {CustomBottomSheet} from '../../components/bottomSheet/CustomBottomSheet';
 import SelectExercises from '../../components/workouts/SelectExercises';
 import Constants from '../../utils/Constants';
-import GradientButton from '../../components/common/GradientButton';
 import moment from 'moment';
 import GroupedExerciseLogListItem from '../../components/exercise/GroupedExerciseLogListItem';
 import CreateExerciseModalContent from '../../components/bottomSheet/CreateExerciseModalContent';
@@ -421,8 +420,18 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
         />
         <CustomBottomSheet
           ref={bottomSheetRef}
-          onCloseClicked={() => toggleBottomSheetRef(false)}
-          index={90}>
+          onDismissClicked={() => toggleBottomSheetRef(false)}
+          onLeftTextClicked={() => setCreateExerciseModal(true)}
+          index={90}
+          rightText={editExistingExercise ? 'Adjust' : 'Log'}
+          disableRightText={
+            !workout?.id ||
+            !exerciseLog.exerciseId ||
+            !exerciseLog.logValue ||
+            !exerciseLog.repetitions
+          }
+          onRightTextClicked={doLogExercise}
+          leftText={'Create new exercise'}>
           {myExercisesLoading || logExeciseLoading || updateExeciseLoading ? (
             <Loader dark />
           ) : (
@@ -459,7 +468,6 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
                   }}
                   selectedId={exerciseLog.exerciseId}
                   exercises={myExercises}
-                  onCreateExerciseClick={() => setCreateExerciseModal(true)}
                   sort
                 />
               )}
@@ -571,17 +579,6 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
                 placeholder={'Remarks for this log'}
                 multiline
               />
-              <GradientButton
-                disabled={
-                  !workout?.id ||
-                  !exerciseLog.exerciseId ||
-                  !exerciseLog.logValue ||
-                  !exerciseLog.repetitions
-                }
-                styles={styles.marginTop}
-                title={editExistingExercise ? 'Adjust' : 'Log'}
-                onClick={doLogExercise}
-              />
             </>
           )}
         </CustomBottomSheet>
@@ -607,6 +604,9 @@ const styles = StyleSheet.create({
   },
   pickerContainer: {
     flexDirection: 'row',
+    borderWidth: 3,
+    borderColor: '#ccc',
+    borderRadius: Constants.BORDER_RADIUS_SMALL,
   },
   selectedWeightLabel: {
     textAlign: 'center',
