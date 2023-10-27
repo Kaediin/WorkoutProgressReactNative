@@ -6,13 +6,13 @@ import {defaultStyles} from '../../utils/DefaultStyles';
 import {Picker} from '@react-native-picker/picker';
 import Constants from '../../utils/Constants';
 
-interface WeightSelectProps {
+interface LogValueSelectProps {
   logValue?: LogValueFragment;
   onWeightSelected: (weight: LogValueFragment) => void;
   hideLabel?: boolean;
 }
 
-const LogValueSelect: React.FC<WeightSelectProps> = ({
+const LogValueSelect: React.FC<LogValueSelectProps> = ({
   logValue,
   onWeightSelected,
   hideLabel,

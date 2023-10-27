@@ -28,9 +28,9 @@ const SinglePicker: React.FC<SinglePickerProps> = props => {
       <View style={styles.absolute}>
         <CustomBottomSheet
           ref={bottomSheetModalRefMain}
-          onCloseClicked={props.onDismiss}
+          onRightTextClicked={props.onDismiss}
           index={50}
-          closeText={'Select'}>
+          rightText={'Select'}>
           <Picker
             selectedValue={props.pickerValue}
             onValueChange={props.onPickerSelect}>
