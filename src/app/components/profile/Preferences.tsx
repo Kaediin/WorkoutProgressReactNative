@@ -15,12 +15,18 @@ interface PreferencesProps {
   onDefaultRepetitionClicked: () => void;
   onSetRepetitions: (repetitions: number) => void;
   changedRepetition: number | undefined;
+  onTimerDurationClicked: () => void;
+  onSetTimerDuration: (repetitions: number) => void;
+  changedTimerDuration: number | undefined;
 }
 
 const Preferences: React.FC<PreferencesProps> = ({
   onDefaultRepetitionClicked,
   onSetRepetitions,
   changedRepetition,
+  onTimerDurationClicked,
+  onSetTimerDuration,
+  changedTimerDuration,
 }) => {
   const preference = usePreferenceStore(state => state.preference);
   const setPreference = usePreferenceStore(state => state.setPreference);
@@ -54,6 +60,23 @@ const Preferences: React.FC<PreferencesProps> = ({
   }, [changedRepetition]);
 
   useEffect(() => {
+    if (changedTimerDuration && changedTimerDuration >= 10) {
+      setPreferenceInput(prevState => ({
+        ...prevState,
+        timerDuration: changedTimerDuration,
+      }));
+      updateMyPreferences({
+        variables: {
+          input: {
+            ...preferenceInput,
+            timerDuration: changedTimerDuration,
+          },
+        },
+      });
+    }
+  }, [changedTimerDuration]);
+
+  useEffect(() => {
     if (preference) {
       setPreferenceInput({
         distanceUnit: preference.distanceUnit,
@@ -61,9 +84,14 @@ const Preferences: React.FC<PreferencesProps> = ({
         defaultRepetitions: preference.defaultRepetitions,
         hideUnitSelector: preference.hideUnitSelector,
         autoAdjustWorkoutMuscleGroups: preference.autoAdjustWorkoutMuscleGroups,
+        timerDuration: preference.timerDuration,
+        autoStartTimer: preference.autoStartTimer,
       });
       onSetRepetitions(
         preference.defaultRepetitions || Constants.DEFAULT_REPETITIONS,
+      );
+      onSetTimerDuration(
+        preference.timerDuration || Constants.DEFAULT_DURATION,
       );
     }
   }, [preference]);
@@ -262,6 +290,67 @@ const Preferences: React.FC<PreferencesProps> = ({
                     input: {
                       ...preferenceInput,
                       autoAdjustWorkoutMuscleGroups: value,
+                    },
+                  },
+                });
+              }}
+              ios_backgroundColor={'red'}
+            />
+          </View>
+        </View>
+        <View
+          style={[
+            defaultStyles.spaceBetween,
+            styles.padding,
+            styles.marginTop,
+          ]}>
+          <View style={styles.labelContainer}>
+            <Text style={defaultStyles.whiteTextColor}>
+              Default timer duration
+            </Text>
+            <Text style={defaultStyles.footnote}>
+              Automatically start the timer from the set duration
+            </Text>
+          </View>
+          <View style={styles.controlContainer}>
+            <ClickableText
+              text={
+                preferenceInput?.timerDuration || Constants.DEFAULT_DURATION
+              }
+              onPress={onTimerDurationClicked}
+              containerStyles={styles.containerDefaultRepetitionValue}
+            />
+          </View>
+        </View>
+        <View
+          style={[
+            defaultStyles.spaceBetween,
+            styles.padding,
+            styles.marginTop,
+          ]}>
+          <View style={styles.labelContainer}>
+            <Text style={defaultStyles.whiteTextColor}>
+              Auto start timer after logging exercise
+            </Text>
+            <Text style={defaultStyles.footnote}>
+              Automatically start the timer with the duration set in preference,
+              after logging an exercise for a workout. Note: this only applies
+              for you active workout.
+            </Text>
+          </View>
+          <View style={styles.controlContainer}>
+            <Switch
+              value={preferenceInput?.autoStartTimer ?? false}
+              onValueChange={value => {
+                setPreferenceInput(prevState => ({
+                  ...prevState,
+                  autoStartTimer: value,
+                }));
+                updateMyPreferences({
+                  variables: {
+                    input: {
+                      ...preferenceInput,
+                      autoStartTimer: value,
                     },
                   },
                 });

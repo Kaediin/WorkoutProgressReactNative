@@ -7,6 +7,7 @@ import {
   Switch,
   Text,
   TextInput,
+  TouchableOpacity,
   View,
 } from 'react-native';
 import GradientBackground from '../../components/common/GradientBackground';
@@ -46,8 +47,13 @@ import {DATE_TIME_FORMAT} from '../../utils/Date';
 import {stripTypenames} from '../../utils/GrahqlUtils';
 import {nonNullable} from '../../utils/List';
 import PopupModal from '../../components/common/PopupModal';
-import {Add, Retry, Timer} from '../../icons/svg';
+import {Add, Pause, Retry, Timer} from '../../icons/svg';
 import {Fab} from '../../utils/Fab';
+import {
+  ColorFormat,
+  CountdownCircleTimer,
+} from 'react-native-countdown-circle-timer';
+import {IActionProps} from 'react-native-floating-action';
 
 type Props = NativeStackScreenProps<WorkoutStackParamList, 'WorkoutDetail'>;
 
@@ -61,6 +67,9 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
 
   const bottomSheetRef = useRef<BottomSheetModal>(null);
 
+  const [clearCountdown, setClearCountdown] = useState(false);
+  const [countdown, setCountdown] = useState<number>(0);
+  const [countdownIsPlaying, setCountdownIsPlaying] = useState(false);
   const [deleteLogId, setDeleteLogId] = useState('');
   const [createExerciseModal, setCreateExerciseModal] = useState(false);
   const [workout, setWorkout] = useState<WorkoutLongFragment>();
@@ -78,7 +87,7 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
     });
   const [workoutById, {data: workoutData, loading: workoutLoading}] =
     useWorkoutByIdLazyQuery({fetchPolicy: 'no-cache'});
-  const [logExercise, {data: logExeciseData, loading: logExeciseLoading}] =
+  const [logExercise, {data: logExerciseData, loading: logExeciseLoading}] =
     useAddExerciseLogMutation({fetchPolicy: 'no-cache'});
   const [
     updateExerciseLog,
@@ -176,11 +185,14 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
   }, [workoutData?.workoutById]);
 
   useEffect(() => {
-    if (logExeciseData?.addExerciseLog) {
+    if (logExerciseData?.addExerciseLog) {
       toggleBottomSheetRef(false);
-      setWorkout(logExeciseData?.addExerciseLog);
+      setWorkout(logExerciseData?.addExerciseLog);
+      if (preference?.autoStartTimer) {
+        toggleTimer();
+      }
     }
-  }, [logExeciseData?.addExerciseLog]);
+  }, [logExerciseData?.addExerciseLog]);
 
   useEffect(() => {
     if (updateExerciseLogData?.updateExerciseLog) {
@@ -311,6 +323,45 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
     return () => subscription?.remove();
   });
 
+  const toggleTimer = (): void => {
+    if (countdown) {
+      setCountdown(0);
+      setCountdownIsPlaying(false);
+    } else {
+      setCountdown(preference?.timerDuration || Constants.DEFAULT_DURATION);
+      setCountdownIsPlaying(true);
+    }
+  };
+
+  const getFabActions = (): IActionProps[] => {
+    const actions: IActionProps[] = [
+      {
+        text: countdown > 0 ? 'Clear timer' : 'Timer',
+        icon: <Timer />,
+        name: Fab.TIMER,
+        color:
+          countdown > 0
+            ? Constants.ERROR_GRADIENT[0]
+            : Constants.FAB_ACTION_COLOR,
+      },
+    ];
+    if (workout && workout.active) {
+      actions.push({
+        text: 'Re-log latest log',
+        icon: <Retry />,
+        name: Fab.RELOG,
+        color: Constants.FAB_ACTION_COLOR,
+      });
+    }
+    actions.push({
+      text: 'New log',
+      icon: <Add />,
+      name: Fab.NEWLOG,
+      color: Constants.FAB_ACTION_COLOR,
+    });
+    return actions;
+  };
+
   return (
     <GradientBackground>
       {workoutLoading ||
@@ -389,35 +440,55 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
       ) : (
         <></>
       )}
+      <PopupModal
+        message={'Are you sure you want to clear the countdown?'}
+        isOpen={clearCountdown}
+        type={'WARNING'}
+        onDismiss={() => setClearCountdown(false)}
+        onConfirm={() => {
+          setCountdown(0);
+          setCountdownIsPlaying(false);
+          setClearCountdown(false);
+        }}
+      />
+      {countdown > 0 && (
+        <TouchableOpacity
+          style={styles.countDownCircle}
+          onPress={() => setCountdownIsPlaying(!countdownIsPlaying)}
+          onLongPress={() => setClearCountdown(true)}>
+          <CountdownCircleTimer
+            duration={countdown}
+            // @ts-ignore
+            colors={Constants.TIMER_GRADIENT}
+            size={58}
+            strokeWidth={5}
+            trailColor={Constants.PRIMARY_GRADIENT[0] as ColorFormat}
+            onComplete={() => setCountdown(0)}
+            isPlaying={countdownIsPlaying}>
+            {({remainingTime}) => (
+              <View style={styles.innerCircleCountdown}>
+                {countdownIsPlaying ? (
+                  <Text style={defaultStyles.whiteTextColor}>
+                    {remainingTime}
+                  </Text>
+                ) : (
+                  <Pause />
+                )}
+              </View>
+            )}
+          </CountdownCircleTimer>
+        </TouchableOpacity>
+      )}
       {workout && (
         <>
           {workout.groupedExerciseLogs &&
             workout.groupedExerciseLogs.length > 0 && (
               <FloatingButton
-                actions={[
-                  {
-                    text: 'Timer',
-                    icon: <Timer />,
-                    name: Fab.TIMER,
-                    color: Constants.FAB_ACTION_COLOR,
-                  },
-                  {
-                    text: 'Re-log latest log',
-                    icon: <Retry />,
-                    name: Fab.RELOG,
-                    color: Constants.FAB_ACTION_COLOR,
-                  },
-                  {
-                    text: 'New log',
-                    icon: <Add />,
-                    name: Fab.NEWLOG,
-                    color: Constants.FAB_ACTION_COLOR,
-                  },
-                ]}
+                actions={getFabActions()}
                 onPressAction={name => {
                   switch (name) {
                     case Fab.TIMER:
-                      // TODO: start timer
+                      toggleTimer();
                       break;
                     case Fab.RELOG:
                       reLogLatestLog({
@@ -656,6 +727,19 @@ const styles = StyleSheet.create({
   },
   flatlist: {
     height: '100%',
+  },
+  countDownCircle: {
+    position: 'absolute',
+    bottom: 100,
+    right: 30,
+  },
+  innerCircleCountdown: {
+    backgroundColor: Constants.PRIMARY_GRADIENT[0],
+    width: 50,
+    height: 50,
+    borderRadius: 9999,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 

@@ -115,18 +115,22 @@ type Mutation {
 
 type Preference {
   autoAdjustWorkoutMuscleGroups: Boolean
+  autoStartTimer: Boolean
   defaultRepetitions: Int
   distanceUnit: LogUnit
   hideUnitSelector: Boolean
+  timerDuration: Int
   unit: LogUnit @deprecated
   weightUnit: LogUnit
 }
 
 input PreferenceInput {
   autoAdjustWorkoutMuscleGroups: Boolean
+  autoStartTimer: Boolean
   defaultRepetitions: Int
   distanceUnit: LogUnit
   hideUnitSelector: Boolean
+  timerDuration: Int
   unit: LogUnit
   weightUnit: LogUnit
 }

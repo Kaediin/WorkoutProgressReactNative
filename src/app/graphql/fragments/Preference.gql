@@ -4,4 +4,6 @@ fragment Preference on Preference {
     defaultRepetitions
     hideUnitSelector
     autoAdjustWorkoutMuscleGroups
+    timerDuration
+    autoStartTimer
 }

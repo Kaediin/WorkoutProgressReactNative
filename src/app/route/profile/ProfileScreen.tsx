@@ -33,10 +33,13 @@ const ProfileScreen: React.FC = () => {
         }
       },
     });
+  const [adjustTimeDuration, setAdjustTimeDuration] = useState(false);
   const [adjustDefaultRepetitions, setAdjustDefaultRepetitions] =
     useState(false);
   const [repetitions, setRepetitions] = useState<number>();
+  const [timerDuration, setTimerDuration] = useState<number>();
   const [nRepetitions, setNRepetitions] = useState<number>();
+  const [nTimerDuration, setNTimerDuration] = useState<number>();
 
   const {
     data: exercisesData,
@@ -78,6 +81,9 @@ const ProfileScreen: React.FC = () => {
               }
               onSetRepetitions={setRepetitions}
               changedRepetition={nRepetitions}
+              onTimerDurationClicked={() => setAdjustTimeDuration(true)}
+              onSetTimerDuration={setTimerDuration}
+              changedTimerDuration={nTimerDuration}
             />
             <View style={styles.exercisesHeader}>
               <Text style={defaultStyles.h2}>Exercises</Text>
@@ -123,6 +129,15 @@ const ProfileScreen: React.FC = () => {
           </ScrollView>
         )}
       </View>
+      <SinglePicker
+        active={adjustTimeDuration}
+        onDismiss={() => setAdjustTimeDuration(false)}
+        pickerValue={
+          nTimerDuration || timerDuration || Constants.DEFAULT_DURATION
+        }
+        onPickerSelect={value => setNTimerDuration(+value)}
+        pickerOptions={Constants.DURATION_SECONDS}
+      />
       <SinglePicker
         active={adjustDefaultRepetitions}
         onDismiss={() => setAdjustDefaultRepetitions(false)}
