@@ -47,3 +47,24 @@ style="fill:#FFFFFF;">
   const RetrySVG = () => <SvgXml xml={svg} />;
   return <RetrySVG />;
 };
+
+export const Add = () => {
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="15" height="15" viewBox="0,0,256,256">
+<g fill="#ffffff" fill-rule="evenodd" stroke="none" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0" font-family="none" font-weight="none" font-size="none" text-anchor="none" style="mix-blend-mode: normal"><g transform="scale(10.66667,10.66667)"><path d="M11,2v9h-9v2h9v9h2v-9h9v-2h-9v-9z"></path></g></g>
+</svg>`;
+
+  const AddSVG = () => <SvgXml xml={svg} />;
+  return <AddSVG />;
+};
+
+export const Timer = () => {
+  const svg = `<svg viewBox="-12 -12 48.00 48.00" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#ffffff">
+<g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+<g id="SVGRepo_iconCarrier"> 
+<path d="M4.51555 7C3.55827 8.4301 3 10.1499 3 12C3 16.9706 7.02944 21 12 21C16.9706 21 21 16.9706 21 12C21 7.02944 16.9706 3 12 3V6M12 12L8 8" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+</path> 
+</g></svg>`;
+
+  const TimerSVG = () => <SvgXml xml={svg} />;
+  return <TimerSVG />;
+};
