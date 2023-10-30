@@ -21,6 +21,8 @@ const Constants = {
   TEXT_AREA_MAX_LENGTH: 100,
 
   DEFAULT_REPETITIONS: 10,
+
+  FAB_ACTION_COLOR: '#218683',
 };
 
 export default Constants;

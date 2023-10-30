@@ -46,6 +46,8 @@ import {DATE_TIME_FORMAT} from '../../utils/Date';
 import {stripTypenames} from '../../utils/GrahqlUtils';
 import {nonNullable} from '../../utils/List';
 import PopupModal from '../../components/common/PopupModal';
+import {Add, Retry, Timer} from '../../icons/svg';
+import {Fab} from '../../utils/Fab';
 
 type Props = NativeStackScreenProps<WorkoutStackParamList, 'WorkoutDetail'>;
 
@@ -392,24 +394,48 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
           {workout.groupedExerciseLogs &&
             workout.groupedExerciseLogs.length > 0 && (
               <FloatingButton
-                onClick={() =>
-                  reLogLatestLog({
-                    variables: {
-                      workoutId: workout.id,
-                      zonedDateTimeString: moment().toISOString(true),
-                      autoAdjust,
-                    },
-                  })
-                }
-                secondary
+                actions={[
+                  {
+                    text: 'Timer',
+                    icon: <Timer />,
+                    name: Fab.TIMER,
+                    color: Constants.FAB_ACTION_COLOR,
+                  },
+                  {
+                    text: 'Re-log latest log',
+                    icon: <Retry />,
+                    name: Fab.RELOG,
+                    color: Constants.FAB_ACTION_COLOR,
+                  },
+                  {
+                    text: 'New log',
+                    icon: <Add />,
+                    name: Fab.NEWLOG,
+                    color: Constants.FAB_ACTION_COLOR,
+                  },
+                ]}
+                onPressAction={name => {
+                  switch (name) {
+                    case Fab.TIMER:
+                      // TODO: start timer
+                      break;
+                    case Fab.RELOG:
+                      reLogLatestLog({
+                        variables: {
+                          workoutId: workout.id,
+                          zonedDateTimeString: moment().toISOString(true),
+                          autoAdjust,
+                        },
+                      });
+                      break;
+                    case Fab.NEWLOG:
+                      setExerciseLog(initialLog);
+                      toggleBottomSheetRef(true);
+                      break;
+                  }
+                }}
               />
             )}
-          <FloatingButton
-            onClick={() => {
-              setExerciseLog(initialLog);
-              toggleBottomSheetRef(true);
-            }}
-          />
         </>
       )}
       <BottomSheetModalProvider>
