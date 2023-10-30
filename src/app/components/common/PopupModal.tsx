@@ -34,7 +34,9 @@ const PopupModal: React.FC<PopupModalProps> = props => {
             : ['#ffffff', '#cccccc']
         }>
         <Text style={defaultStyles.h1}>{enumToReadableString(props.type)}</Text>
-        <Text style={defaultStyles.whiteTextColor}>{props.message}</Text>
+        <Text style={[defaultStyles.whiteTextColor, defaultStyles.container]}>
+          {props.message}
+        </Text>
         {props.type !== 'ERROR' && (
           <View style={[defaultStyles.spaceBetween, defaultStyles.marginTop]}>
             <GradientButton

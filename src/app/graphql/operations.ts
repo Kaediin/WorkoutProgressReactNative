@@ -126,9 +126,11 @@ export type CognitoUser = {
 export type Preference = {
   __typename?: 'Preference';
   autoAdjustWorkoutMuscleGroups?: Maybe<Scalars['Boolean']>;
+  autoStartTimer?: Maybe<Scalars['Boolean']>;
   defaultRepetitions?: Maybe<Scalars['Int']>;
   distanceUnit?: Maybe<LogUnit>;
   hideUnitSelector?: Maybe<Scalars['Boolean']>;
+  timerDuration?: Maybe<Scalars['Int']>;
   /** @deprecated No longer supported */
   unit?: Maybe<LogUnit>;
   weightUnit?: Maybe<LogUnit>;
@@ -285,9 +287,11 @@ export type WorkoutInput = {
 
 export type PreferenceInput = {
   autoAdjustWorkoutMuscleGroups?: InputMaybe<Scalars['Boolean']>;
+  autoStartTimer?: InputMaybe<Scalars['Boolean']>;
   defaultRepetitions?: InputMaybe<Scalars['Int']>;
   distanceUnit?: InputMaybe<LogUnit>;
   hideUnitSelector?: InputMaybe<Scalars['Boolean']>;
+  timerDuration?: InputMaybe<Scalars['Int']>;
   unit?: InputMaybe<LogUnit>;
   weightUnit?: InputMaybe<LogUnit>;
 };
@@ -302,7 +306,7 @@ export type GroupedExerciseLogFragment = { __typename?: 'GroupedExerciseLog', ex
 
 export type LogValueFragment = { __typename?: 'LogValue', unit: LogUnit, base: number, fraction?: number | null };
 
-export type PreferenceFragment = { __typename?: 'Preference', weightUnit?: LogUnit | null, distanceUnit?: LogUnit | null, defaultRepetitions?: number | null, hideUnitSelector?: boolean | null, autoAdjustWorkoutMuscleGroups?: boolean | null };
+export type PreferenceFragment = { __typename?: 'Preference', weightUnit?: LogUnit | null, distanceUnit?: LogUnit | null, defaultRepetitions?: number | null, hideUnitSelector?: boolean | null, autoAdjustWorkoutMuscleGroups?: boolean | null, timerDuration?: number | null, autoStartTimer?: boolean | null };
 
 export type UserFragment = { __typename?: 'User', id: string, fid: string, cognitoUser: { __typename?: 'CognitoUser', name: string } };
 
@@ -371,7 +375,7 @@ export type UpdatePreferenceMutationVariables = Exact<{
 }>;
 
 
-export type UpdatePreferenceMutation = { __typename?: 'Mutation', updateMyPreference: { __typename?: 'Preference', weightUnit?: LogUnit | null, distanceUnit?: LogUnit | null, defaultRepetitions?: number | null, hideUnitSelector?: boolean | null, autoAdjustWorkoutMuscleGroups?: boolean | null } };
+export type UpdatePreferenceMutation = { __typename?: 'Mutation', updateMyPreference: { __typename?: 'Preference', weightUnit?: LogUnit | null, distanceUnit?: LogUnit | null, defaultRepetitions?: number | null, hideUnitSelector?: boolean | null, autoAdjustWorkoutMuscleGroups?: boolean | null, timerDuration?: number | null, autoStartTimer?: boolean | null } };
 
 export type CreateUserMutationVariables = Exact<{
   input: UserInput;
@@ -425,7 +429,7 @@ export type LatestLogsByExerciseIdQuery = { __typename?: 'Query', latestLogsByEx
 export type MyPreferenceQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type MyPreferenceQuery = { __typename?: 'Query', myPreference?: { __typename?: 'Preference', weightUnit?: LogUnit | null, distanceUnit?: LogUnit | null, defaultRepetitions?: number | null, hideUnitSelector?: boolean | null, autoAdjustWorkoutMuscleGroups?: boolean | null } | null };
+export type MyPreferenceQuery = { __typename?: 'Query', myPreference?: { __typename?: 'Preference', weightUnit?: LogUnit | null, distanceUnit?: LogUnit | null, defaultRepetitions?: number | null, hideUnitSelector?: boolean | null, autoAdjustWorkoutMuscleGroups?: boolean | null, timerDuration?: number | null, autoStartTimer?: boolean | null } | null };
 
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -449,7 +453,7 @@ export type WorkoutsQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type WorkoutsQuery = { __typename?: 'Query', myWorkouts?: Array<{ __typename?: 'Workout', id: string, name: string, muscleGroups: Array<MuscleGroup>, startDateTime?: any | null, endDateTime?: any | null, active?: boolean | null, remark?: string | null }> | null };
 
-export const PreferenceFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"Preference"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Preference"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"weightUnit"}},{"kind":"Field","name":{"kind":"Name","value":"distanceUnit"}},{"kind":"Field","name":{"kind":"Name","value":"defaultRepetitions"}},{"kind":"Field","name":{"kind":"Name","value":"hideUnitSelector"}},{"kind":"Field","name":{"kind":"Name","value":"autoAdjustWorkoutMuscleGroups"}}]}}]} as unknown as DocumentNode;
+export const PreferenceFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"Preference"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Preference"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"weightUnit"}},{"kind":"Field","name":{"kind":"Name","value":"distanceUnit"}},{"kind":"Field","name":{"kind":"Name","value":"defaultRepetitions"}},{"kind":"Field","name":{"kind":"Name","value":"hideUnitSelector"}},{"kind":"Field","name":{"kind":"Name","value":"autoAdjustWorkoutMuscleGroups"}},{"kind":"Field","name":{"kind":"Name","value":"timerDuration"}},{"kind":"Field","name":{"kind":"Name","value":"autoStartTimer"}}]}}]} as unknown as DocumentNode;
 export const CognitoUserFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"CognitoUser"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"CognitoUser"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]} as unknown as DocumentNode;
 export const UserFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"User"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"User"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"fid"}},{"kind":"Field","name":{"kind":"Name","value":"cognitoUser"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"CognitoUser"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"CognitoUser"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"CognitoUser"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]} as unknown as DocumentNode;
 export const WorkoutShortFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"WorkoutShort"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Workout"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"muscleGroups"}},{"kind":"Field","name":{"kind":"Name","value":"startDateTime"}},{"kind":"Field","name":{"kind":"Name","value":"endDateTime"}},{"kind":"Field","name":{"kind":"Name","value":"active"}},{"kind":"Field","name":{"kind":"Name","value":"remark"}}]}}]} as unknown as DocumentNode;
@@ -654,7 +658,7 @@ export function useUpdateExerciseLogMutation(baseOptions?: Apollo.MutationHookOp
 export type UpdateExerciseLogMutationHookResult = ReturnType<typeof useUpdateExerciseLogMutation>;
 export type UpdateExerciseLogMutationResult = Apollo.MutationResult<UpdateExerciseLogMutation>;
 export type UpdateExerciseLogMutationOptions = Apollo.BaseMutationOptions<UpdateExerciseLogMutation, UpdateExerciseLogMutationVariables>;
-export const UpdatePreferenceDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"updatePreference"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"PreferenceInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"updateMyPreference"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"Preference"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"Preference"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Preference"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"weightUnit"}},{"kind":"Field","name":{"kind":"Name","value":"distanceUnit"}},{"kind":"Field","name":{"kind":"Name","value":"defaultRepetitions"}},{"kind":"Field","name":{"kind":"Name","value":"hideUnitSelector"}},{"kind":"Field","name":{"kind":"Name","value":"autoAdjustWorkoutMuscleGroups"}}]}}]} as unknown as DocumentNode;
+export const UpdatePreferenceDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"updatePreference"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"PreferenceInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"updateMyPreference"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"Preference"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"Preference"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Preference"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"weightUnit"}},{"kind":"Field","name":{"kind":"Name","value":"distanceUnit"}},{"kind":"Field","name":{"kind":"Name","value":"defaultRepetitions"}},{"kind":"Field","name":{"kind":"Name","value":"hideUnitSelector"}},{"kind":"Field","name":{"kind":"Name","value":"autoAdjustWorkoutMuscleGroups"}},{"kind":"Field","name":{"kind":"Name","value":"timerDuration"}},{"kind":"Field","name":{"kind":"Name","value":"autoStartTimer"}}]}}]} as unknown as DocumentNode;
 export type UpdatePreferenceMutationFn = Apollo.MutationFunction<UpdatePreferenceMutation, UpdatePreferenceMutationVariables>;
 
 /**
@@ -875,7 +879,7 @@ export function useLatestLogsByExerciseIdLazyQuery(baseOptions?: Apollo.LazyQuer
 export type LatestLogsByExerciseIdQueryHookResult = ReturnType<typeof useLatestLogsByExerciseIdQuery>;
 export type LatestLogsByExerciseIdLazyQueryHookResult = ReturnType<typeof useLatestLogsByExerciseIdLazyQuery>;
 export type LatestLogsByExerciseIdQueryResult = Apollo.QueryResult<LatestLogsByExerciseIdQuery, LatestLogsByExerciseIdQueryVariables>;
-export const MyPreferenceDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"myPreference"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"myPreference"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"Preference"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"Preference"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Preference"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"weightUnit"}},{"kind":"Field","name":{"kind":"Name","value":"distanceUnit"}},{"kind":"Field","name":{"kind":"Name","value":"defaultRepetitions"}},{"kind":"Field","name":{"kind":"Name","value":"hideUnitSelector"}},{"kind":"Field","name":{"kind":"Name","value":"autoAdjustWorkoutMuscleGroups"}}]}}]} as unknown as DocumentNode;
+export const MyPreferenceDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"myPreference"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"myPreference"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"Preference"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"Preference"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Preference"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"weightUnit"}},{"kind":"Field","name":{"kind":"Name","value":"distanceUnit"}},{"kind":"Field","name":{"kind":"Name","value":"defaultRepetitions"}},{"kind":"Field","name":{"kind":"Name","value":"hideUnitSelector"}},{"kind":"Field","name":{"kind":"Name","value":"autoAdjustWorkoutMuscleGroups"}},{"kind":"Field","name":{"kind":"Name","value":"timerDuration"}},{"kind":"Field","name":{"kind":"Name","value":"autoStartTimer"}}]}}]} as unknown as DocumentNode;
 
 /**
  * __useMyPreferenceQuery__

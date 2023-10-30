@@ -123,9 +123,11 @@ export type CognitoUser = {
 export type Preference = {
   __typename?: 'Preference';
   autoAdjustWorkoutMuscleGroups?: Maybe<Scalars['Boolean']>;
+  autoStartTimer?: Maybe<Scalars['Boolean']>;
   defaultRepetitions?: Maybe<Scalars['Int']>;
   distanceUnit?: Maybe<LogUnit>;
   hideUnitSelector?: Maybe<Scalars['Boolean']>;
+  timerDuration?: Maybe<Scalars['Int']>;
   /** @deprecated No longer supported */
   unit?: Maybe<LogUnit>;
   weightUnit?: Maybe<LogUnit>;
@@ -282,9 +284,11 @@ export type WorkoutInput = {
 
 export type PreferenceInput = {
   autoAdjustWorkoutMuscleGroups?: InputMaybe<Scalars['Boolean']>;
+  autoStartTimer?: InputMaybe<Scalars['Boolean']>;
   defaultRepetitions?: InputMaybe<Scalars['Int']>;
   distanceUnit?: InputMaybe<LogUnit>;
   hideUnitSelector?: InputMaybe<Scalars['Boolean']>;
+  timerDuration?: InputMaybe<Scalars['Int']>;
   unit?: InputMaybe<LogUnit>;
   weightUnit?: InputMaybe<LogUnit>;
 };
