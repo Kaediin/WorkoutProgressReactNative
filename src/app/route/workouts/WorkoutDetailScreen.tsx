@@ -47,6 +47,7 @@ import {DATE_TIME_FORMAT} from '../../utils/Date';
 import {stripTypenames} from '../../utils/GrahqlUtils';
 import {nonNullable} from '../../utils/List';
 import PopupModal from '../../components/common/PopupModal';
+import ExpandableView from '../../components/common/ExpandableView';
 import {Add, Pause, Retry, Timer} from '../../icons/svg';
 import {Fab} from '../../utils/Fab';
 import {
@@ -70,6 +71,7 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
   const [clearCountdown, setClearCountdown] = useState(false);
   const [countdown, setCountdown] = useState<number>(0);
   const [countdownIsPlaying, setCountdownIsPlaying] = useState(false);
+  const [showPicker, setShowPicker] = useState(false);
   const [deleteLogId, setDeleteLogId] = useState('');
   const [createExerciseModal, setCreateExerciseModal] = useState(false);
   const [workout, setWorkout] = useState<WorkoutLongFragment>();
@@ -534,45 +536,50 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
           ) : (
             <>
               {!editExistingExercise && (
-                <SelectExercises
-                  onSelect={exercise => {
-                    setExerciseLog(prevState => ({
-                      ...prevState,
-                      exerciseId: exercise.id,
-                    }));
-                    const latestLogged = getLatestLogByExerciseId(exercise.id);
-                    if (latestLogged) {
-                      setLatestLogs([]);
+                <View style={styles.border}>
+                  <SelectExercises
+                    onSelect={exercise => {
                       setExerciseLog(prevState => ({
                         ...prevState,
-                        logValue: latestLogged.logValue,
-                        repetitions: latestLogged.repetitions,
+                        exerciseId: exercise.id,
                       }));
-                    } else {
-                      latestLogQuery({
-                        variables: {
-                          id: exercise.id,
-                        },
-                      });
-                      setExerciseLog(prevState => ({
-                        ...prevState,
-                        logValue: initialLog.logValue,
-                        repetitions:
-                          preference?.defaultRepetitions ||
-                          Constants.DEFAULT_REPETITIONS,
-                      }));
-                    }
-                  }}
-                  selectedId={exerciseLog.exerciseId}
-                  exercises={myExercises}
-                  sort
-                />
+                      const latestLogged = getLatestLogByExerciseId(
+                        exercise.id,
+                      );
+                      if (latestLogged) {
+                        setLatestLogs([]);
+                        setExerciseLog(prevState => ({
+                          ...prevState,
+                          logValue: latestLogged.logValue,
+                          repetitions: latestLogged.repetitions,
+                        }));
+                      } else {
+                        latestLogQuery({
+                          variables: {
+                            id: exercise.id,
+                          },
+                        });
+                        setExerciseLog(prevState => ({
+                          ...prevState,
+                          logValue: initialLog.logValue,
+                          repetitions:
+                            preference?.defaultRepetitions ||
+                            Constants.DEFAULT_REPETITIONS,
+                        }));
+                      }
+                      setShowPicker(true);
+                    }}
+                    selectedId={exerciseLog.exerciseId}
+                    exercises={myExercises}
+                    sort
+                  />
+                </View>
               )}
               {latestLogsLoading ? (
                 <Loader dark />
               ) : (
                 <>
-                  {latestLogs && latestLogs.length > 0 && (
+                  {latestLogs && latestLogs.length > 0 ? (
                     <View style={defaultStyles.container}>
                       <Text style={defaultStyles.footnote}>
                         Last set {latestLogs[0].exercise.name} (
@@ -588,77 +595,86 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
                         </Text>
                       ))}
                     </View>
+                  ) : (
+                    <View style={styles.marginTop} />
                   )}
                   {exerciseLog?.exerciseId && (
                     <>
-                      <View style={styles.pickerContainer}>
-                        <View style={styles.repetition}>
-                          <Text
-                            style={[
-                              defaultStyles.footnote,
-                              styles.pickerLabel,
-                            ]}>
-                            Repetition
+                      <View style={[styles.border]}>
+                        <TouchableOpacity
+                          style={[
+                            defaultStyles.spaceEvenly,
+                            styles.expandableWeightSelectorLabel,
+                          ]}
+                          onPress={() => setShowPicker(!showPicker)}>
+                          <Text style={styles.selectedWeightLabel}>
+                            {exerciseLog.repetitions} x{' '}
+                            {logValueToString(exerciseLog.logValue)}
                           </Text>
-                          <Picker
-                            selectedValue={exerciseLog.repetitions}
-                            onValueChange={value =>
-                              setExerciseLog(prevState => ({
-                                ...prevState,
-                                repetitions: value,
-                              }))
-                            }
-                            itemStyle={styles.fontSizeSmall}>
-                            {Object.keys(Constants.BOTTOM_SHEET_SNAPPOINTS)
-                              .splice(1, 100)
-                              .map(repetition => (
-                                <Picker.Item
-                                  label={repetition}
-                                  value={+repetition}
-                                  key={`rep_${repetition}`}
-                                />
-                              ))}
-                          </Picker>
-                        </View>
-                        {/* eslint-disable-next-line react-native/no-inline-styles */}
-                        <View style={{flex: hideUnitSelector ? 2 : 3}}>
-                          <LogValueSelect
-                            onWeightSelected={logValue =>
-                              setExerciseLog(prevState => ({
-                                ...prevState,
-                                logValue: logValue,
-                              }))
-                            }
-                            logValue={exerciseLog.logValue}
-                            hideLabel
-                          />
-                        </View>
-                      </View>
-                      <View
-                        style={[defaultStyles.spaceEvenly, styles.marginTop]}>
-                        <Text style={styles.selectedWeightLabel}>
-                          {exerciseLog.repetitions} x{' '}
-                          {logValueToString(exerciseLog.logValue)}
-                        </Text>
-                        <View style={defaultStyles.row}>
-                          <Text
-                            style={[
-                              styles.fontSizeSmall,
-                              styles.warmupText,
-                              !exerciseLog.warmup ? styles.warmupDisabled : {},
-                            ]}>
-                            Warmup
-                          </Text>
-                          <Switch
-                            value={exerciseLog.warmup}
-                            onValueChange={value =>
-                              setExerciseLog(prevState => ({
-                                ...prevState,
-                                warmup: value,
-                              }))
-                            }
-                          />
-                        </View>
+                          <View style={defaultStyles.row}>
+                            <Text
+                              style={[styles.fontSizeSmall, styles.warmupText]}>
+                              Warmup
+                            </Text>
+                            <Switch
+                              value={exerciseLog.warmup}
+                              onValueChange={value =>
+                                setExerciseLog(prevState => ({
+                                  ...prevState,
+                                  warmup: value,
+                                }))
+                              }
+                              ios_backgroundColor={Constants.ERROR_GRADIENT[0]}
+                            />
+                          </View>
+                        </TouchableOpacity>
+                        <ExpandableView
+                          showChildren={showPicker}
+                          contentHeight={225}>
+                          <View style={styles.pickerContainer}>
+                            <View style={styles.repetition}>
+                              <Text
+                                style={[
+                                  defaultStyles.footnote,
+                                  styles.pickerLabel,
+                                ]}>
+                                Repetition
+                              </Text>
+                              <Picker
+                                selectedValue={exerciseLog.repetitions}
+                                onValueChange={value =>
+                                  setExerciseLog(prevState => ({
+                                    ...prevState,
+                                    repetitions: value,
+                                  }))
+                                }
+                                itemStyle={styles.fontSizeSmall}>
+                                {Object.keys(Constants.BOTTOM_SHEET_SNAPPOINTS)
+                                  .splice(1, 100)
+                                  .map(repetition => (
+                                    <Picker.Item
+                                      label={repetition}
+                                      value={+repetition}
+                                      key={`rep_${repetition}`}
+                                    />
+                                  ))}
+                              </Picker>
+                            </View>
+                            {/* eslint-disable-next-line react-native/no-inline-styles */}
+                            <View style={{flex: hideUnitSelector ? 2 : 3}}>
+                              <LogValueSelect
+                                onWeightSelected={logValue =>
+                                  setExerciseLog(prevState => ({
+                                    ...prevState,
+                                    logValue: logValue,
+                                  }))
+                                }
+                                logValue={exerciseLog.logValue}
+                                hideLabel
+                              />
+                            </View>
+                          </View>
+                        </ExpandableView>
                       </View>
                     </>
                   )}
@@ -701,14 +717,12 @@ const styles = StyleSheet.create({
   },
   pickerContainer: {
     flexDirection: 'row',
-    borderWidth: 3,
-    borderColor: '#ccc',
-    borderRadius: Constants.BORDER_RADIUS_SMALL,
   },
   selectedWeightLabel: {
     textAlign: 'center',
     fontSize: 24,
     fontWeight: 'bold',
+    color: 'white',
   },
   pickerLabel: {
     textAlign: 'center',
@@ -721,9 +735,7 @@ const styles = StyleSheet.create({
   },
   warmupText: {
     marginRight: 10,
-  },
-  warmupDisabled: {
-    color: '#cccccc',
+    color: 'white',
   },
   flatlist: {
     height: '100%',
@@ -740,6 +752,17 @@ const styles = StyleSheet.create({
     borderRadius: 9999,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  border: {
+    borderWidth: 3,
+    borderColor: Constants.QUATERNARY_GRADIENT[1],
+    borderRadius: Constants.BORDER_RADIUS_SMALL,
+    borderBottomWidth: 3,
+    borderBottomColor: Constants.PRIMARY_GRADIENT[0],
+  },
+  expandableWeightSelectorLabel: {
+    padding: Constants.CONTAINER_PADDING_MARGIN,
+    backgroundColor: Constants.QUATERNARY_GRADIENT[1],
   },
 });
 
