@@ -45,9 +45,30 @@ const LogValueSelect: React.FC<LogValueSelectProps> = ({
         unit,
       };
       setNLogValue(nWeight);
-      onWeightSelected(nWeight);
     }
   }, [base, fraction, unit]);
+
+  const setBaseFromPicker = (_base: number): void => {
+    const nWeight: LogValueFragment = {
+      base: _base,
+      fraction: fraction ? parseFloat(fraction.toString().split('.')[1]) : 0,
+      unit,
+    };
+    setNLogValue(nWeight);
+    onWeightSelected(nWeight);
+    setBase(_base);
+  };
+
+  const setFractionFromPicker = (_fraction: number): void => {
+    const nWeight: LogValueFragment = {
+      base,
+      fraction: _fraction ? parseFloat(_fraction.toString().split('.')[1]) : 0,
+      unit,
+    };
+    setNLogValue(nWeight);
+    onWeightSelected(nWeight);
+    setFraction(_fraction);
+  };
 
   return (
     <>
@@ -58,7 +79,7 @@ const LogValueSelect: React.FC<LogValueSelectProps> = ({
           </Text>
           <Picker
             selectedValue={+base}
-            onValueChange={setBase}
+            onValueChange={setBaseFromPicker}
             itemStyle={styles.fontSizeSmall}>
             {Constants.WEIGHT_POINTS.map(weightPoint => (
               <Picker.Item
@@ -75,7 +96,7 @@ const LogValueSelect: React.FC<LogValueSelectProps> = ({
           </Text>
           <Picker
             selectedValue={+fraction}
-            onValueChange={setFraction}
+            onValueChange={setFractionFromPicker}
             itemStyle={styles.fontSizeSmall}>
             {Constants.WEIGHT_FRACTION_POINTS.map(weightFraction => (
               <Picker.Item

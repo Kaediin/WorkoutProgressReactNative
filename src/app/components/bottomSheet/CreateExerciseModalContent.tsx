@@ -6,7 +6,7 @@ import {
   useCreateExerciseMutation,
   useUpdateExerciseMutation,
 } from '../../graphql/operations';
-import {BottomSheetModal} from '@gorhom/bottom-sheet';
+import {BottomSheetModal, BottomSheetTextInput} from '@gorhom/bottom-sheet';
 import {CustomBottomSheet} from './CustomBottomSheet';
 import {StyleSheet, Text, TextInput, View} from 'react-native';
 import MuscleGroupList from '../workouts/MuscleGroupList';
@@ -194,13 +194,12 @@ const CreateExerciseModalContent: React.FC<
                 }}
               />
             </View>
-            <TextInput
-              style={defaultStyles.textAreaInput}
+            <BottomSheetTextInput
+              style={defaultStyles.textInputWithHeight}
               defaultValue={exerciseNotes}
               placeholder={'Notes (ex: Machine height 5)'}
               onChangeText={setExerciseNotes}
               maxLength={Constants.TEXT_AREA_MAX_LENGTH}
-              multiline
             />
           </CustomBottomSheet>
           <CustomBottomSheet
