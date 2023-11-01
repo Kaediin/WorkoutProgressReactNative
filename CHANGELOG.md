@@ -1,3 +1,16 @@
+## [v0.1.3]
+
+### Added
+
+- #14: FAB library to allow for a selection of options after interacting
+- #14: Added timer function
+- #14: Added preference to set a default timer duration
+- #14: Added preference to set auto start the timer after logging
+
+### Changed
+
+- #49: Made the weight selector for the log exercise field expandable
+
 ## [v0.1.2]
 
 ### Added
