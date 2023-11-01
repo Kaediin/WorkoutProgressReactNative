@@ -29,6 +29,7 @@ const SinglePicker: React.FC<SinglePickerProps> = props => {
         <CustomBottomSheet
           ref={bottomSheetModalRefMain}
           onRightTextClicked={props.onDismiss}
+          onDismissClicked={props.onDismiss}
           index={50}
           rightText={'Select'}>
           <Picker
