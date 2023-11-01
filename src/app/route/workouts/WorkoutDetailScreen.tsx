@@ -424,14 +424,15 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
                   }}
                   onRemoveLog={setDeleteLogId}
                   onLogPress={log => {
-                    setExerciseLog(prevState => ({
-                      ...prevState,
-                      repetitions: log.repetitions,
+                    setEditExistingExercise(log);
+                    setExerciseLog({
+                      zonedDateTimeString: log.logDateTime,
                       exerciseId: log.exercise.id,
+                      repetitions: log.repetitions,
                       logValue: log.logValue,
                       warmup: log.warmup || false,
                       remark: log.remark,
-                    }));
+                    });
                     toggleBottomSheetRef(true);
                   }}
                 />
