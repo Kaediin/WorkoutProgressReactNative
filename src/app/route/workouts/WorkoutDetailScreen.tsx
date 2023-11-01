@@ -6,7 +6,6 @@ import {
   StyleSheet,
   Switch,
   Text,
-  TextInput,
   TouchableOpacity,
   View,
 } from 'react-native';
@@ -30,7 +29,11 @@ import {defaultStyles} from '../../utils/DefaultStyles';
 import MuscleGroupList from '../../components/workouts/MuscleGroupList';
 import FloatingButton from '../../components/common/FloatingButton';
 import {WorkoutStackParamList} from '../../stacks/WorkoutStack';
-import {BottomSheetModal, BottomSheetModalProvider} from '@gorhom/bottom-sheet';
+import {
+  BottomSheetModal,
+  BottomSheetModalProvider,
+  BottomSheetTextInput,
+} from '@gorhom/bottom-sheet';
 import {CustomBottomSheet} from '../../components/bottomSheet/CustomBottomSheet';
 import SelectExercises from '../../components/workouts/SelectExercises';
 import Constants from '../../utils/Constants';
@@ -111,6 +114,7 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
     useLatestLogsByExerciseIdLazyQuery({
       fetchPolicy: 'no-cache',
       onCompleted: data => {
+        // If available, set the last log
         if (data?.latestLogsByExerciseId) {
           setLatestLogs(
             data.latestLogsByExerciseId
@@ -122,6 +126,12 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
               ),
           );
         } else {
+          // Reset log value
+          setExerciseLog(prevState => ({
+            ...prevState,
+            logValue: initialLog.logValue,
+            repetitions: initialLog.repetitions,
+          }));
           setLatestLogs([]);
         }
       },
@@ -289,10 +299,10 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
     );
   };
 
-  const getLatestLogByExerciseId = (
+  const getLatestLoggedExerciseInCurrentWorkout = (
     id: string,
   ): ExerciseLogFragment | undefined => {
-    if (!workout) {
+    if (!workout || !workout.groupedExerciseLogs) {
       return;
     }
     const logs = workout.groupedExerciseLogs.find(
@@ -347,7 +357,12 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
             : Constants.FAB_ACTION_COLOR,
       },
     ];
-    if (workout && workout.active) {
+    if (
+      workout &&
+      workout.active &&
+      workout.groupedExerciseLogs &&
+      workout.groupedExerciseLogs.length > 0
+    ) {
       actions.push({
         text: 'Re-log latest log',
         icon: <Retry />,
@@ -370,7 +385,7 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
       endWorkoutLoading ||
       removeExerciseLogLoading ||
       reLogLoading ? (
-        <Loader />
+        <Loader style={defaultStyles.container} />
       ) : workout ? (
         <View style={defaultStyles.container}>
           {workout.groupedExerciseLogs.length === 0 ? (
@@ -482,34 +497,29 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
         </TouchableOpacity>
       )}
       {workout && (
-        <>
-          {workout.groupedExerciseLogs &&
-            workout.groupedExerciseLogs.length > 0 && (
-              <FloatingButton
-                actions={getFabActions()}
-                onPressAction={name => {
-                  switch (name) {
-                    case Fab.TIMER:
-                      toggleTimer();
-                      break;
-                    case Fab.RELOG:
-                      reLogLatestLog({
-                        variables: {
-                          workoutId: workout.id,
-                          zonedDateTimeString: moment().toISOString(true),
-                          autoAdjust,
-                        },
-                      });
-                      break;
-                    case Fab.NEWLOG:
-                      setExerciseLog(initialLog);
-                      toggleBottomSheetRef(true);
-                      break;
-                  }
-                }}
-              />
-            )}
-        </>
+        <FloatingButton
+          actions={getFabActions()}
+          onPressAction={name => {
+            switch (name) {
+              case Fab.TIMER:
+                toggleTimer();
+                break;
+              case Fab.RELOG:
+                reLogLatestLog({
+                  variables: {
+                    workoutId: workout.id,
+                    zonedDateTimeString: moment().toISOString(true),
+                    autoAdjust,
+                  },
+                });
+                break;
+              case Fab.NEWLOG:
+                setExerciseLog(initialLog);
+                toggleBottomSheetRef(true);
+                break;
+            }
+          }}
+        />
       )}
       <BottomSheetModalProvider>
         <CreateExerciseModalContent
@@ -521,7 +531,6 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
           ref={bottomSheetRef}
           onDismissClicked={() => toggleBottomSheetRef(false)}
           onLeftTextClicked={() => setCreateExerciseModal(true)}
-          index={90}
           rightText={editExistingExercise ? 'Adjust' : 'Log'}
           disableRightText={
             !workout?.id ||
@@ -532,21 +541,23 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
           onRightTextClicked={doLogExercise}
           leftText={'Create new exercise'}>
           {myExercisesLoading || logExeciseLoading || updateExeciseLoading ? (
-            <Loader dark />
+            <Loader style={defaultStyles.container} dark />
           ) : (
             <>
               {!editExistingExercise && (
                 <View style={styles.border}>
                   <SelectExercises
                     onSelect={exercise => {
+                      // Set only id
                       setExerciseLog(prevState => ({
                         ...prevState,
                         exerciseId: exercise.id,
                       }));
-                      const latestLogged = getLatestLogByExerciseId(
-                        exercise.id,
-                      );
+                      // Check if we have a log of this id in the workout already
+                      const latestLogged =
+                        getLatestLoggedExerciseInCurrentWorkout(exercise.id);
                       if (latestLogged) {
+                        // Load the last log
                         setLatestLogs([]);
                         setExerciseLog(prevState => ({
                           ...prevState,
@@ -554,18 +565,12 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
                           repetitions: latestLogged.repetitions,
                         }));
                       } else {
+                        // Fetch the last log
                         latestLogQuery({
                           variables: {
                             id: exercise.id,
                           },
                         });
-                        setExerciseLog(prevState => ({
-                          ...prevState,
-                          logValue: initialLog.logValue,
-                          repetitions:
-                            preference?.defaultRepetitions ||
-                            Constants.DEFAULT_REPETITIONS,
-                        }));
                       }
                       setShowPicker(true);
                     }}
@@ -642,12 +647,12 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
                               </Text>
                               <Picker
                                 selectedValue={exerciseLog.repetitions}
-                                onValueChange={value =>
+                                onValueChange={value => {
                                   setExerciseLog(prevState => ({
                                     ...prevState,
                                     repetitions: value,
-                                  }))
-                                }
+                                  }));
+                                }}
                                 itemStyle={styles.fontSizeSmall}>
                                 {Object.keys(Constants.BOTTOM_SHEET_SNAPPOINTS)
                                   .splice(1, 100)
@@ -660,15 +665,20 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
                                   ))}
                               </Picker>
                             </View>
-                            {/* eslint-disable-next-line react-native/no-inline-styles */}
-                            <View style={{flex: hideUnitSelector ? 2 : 3}}>
+                            <View
+                              style={{flex: hideUnitSelector ? 2 : 3}}
+                              key={
+                                'logvalue_select_' +
+                                  exerciseLog.logValue.base +
+                                  exerciseLog.logValue?.fraction ?? 0
+                              }>
                               <LogValueSelect
-                                onWeightSelected={logValue =>
+                                onWeightSelected={logValue => {
                                   setExerciseLog(prevState => ({
                                     ...prevState,
                                     logValue: logValue,
-                                  }))
-                                }
+                                  }));
+                                }}
                                 logValue={exerciseLog.logValue}
                                 hideLabel
                               />
@@ -680,7 +690,7 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
                   )}
                 </>
               )}
-              <TextInput
+              <BottomSheetTextInput
                 defaultValue={exerciseLog?.remark || ''}
                 onChangeText={text =>
                   setExerciseLog(prevState => ({
@@ -688,9 +698,8 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
                     remark: text,
                   }))
                 }
-                style={defaultStyles.textAreaInput}
+                style={defaultStyles.textInputWithHeight}
                 placeholder={'Remarks for this log'}
-                multiline
               />
             </>
           )}

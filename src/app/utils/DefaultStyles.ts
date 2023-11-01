@@ -73,6 +73,13 @@ export const defaultStyles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
+  textInputWithHeight: {
+    backgroundColor: 'lightgrey',
+    margin: 2,
+    padding: Constants.CONTAINER_PADDING_MARGIN,
+    borderRadius: Constants.BORDER_RADIUS_SMALL,
+    marginTop: Constants.CONTAINER_PADDING_MARGIN,
+  },
   textAreaInput: {
     backgroundColor: 'lightgrey',
     margin: 2,

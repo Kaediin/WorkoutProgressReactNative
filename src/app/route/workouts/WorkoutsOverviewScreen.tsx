@@ -11,7 +11,11 @@ import {
   WorkoutShortFragment,
 } from '../../graphql/operations';
 import FloatingButton from '../../components/common/FloatingButton';
-import {BottomSheetModal, BottomSheetModalProvider} from '@gorhom/bottom-sheet';
+import {
+  BottomSheetModal,
+  BottomSheetModalProvider,
+  BottomSheetTextInput,
+} from '@gorhom/bottom-sheet';
 import {CustomBottomSheet} from '../../components/bottomSheet/CustomBottomSheet';
 import SelectMuscleGroups from '../../components/workouts/SelectMuscleGroups';
 import {
@@ -215,11 +219,11 @@ const WorkoutsOverviewScreen: React.FC<Props> = ({navigation}) => {
           renderItem={({item}) => (
             <ContextMenu
               actions={[
-                {title: ContextMenuActions.REMOVE},
+                {title: ContextMenuActions.DELETE},
                 {title: ContextMenuActions.EDIT},
               ]}
               onPress={event => {
-                event.nativeEvent.name === ContextMenuActions.REMOVE
+                event.nativeEvent.name === ContextMenuActions.DELETE
                   ? setDeleteWorkoutId(item.id)
                   : editWorkout(item);
               }}>
@@ -279,14 +283,13 @@ const WorkoutsOverviewScreen: React.FC<Props> = ({navigation}) => {
               />
             </>
           )}
-          <TextInput
+          <BottomSheetTextInput
             defaultValue={newWorkout.remark || ''}
             onChangeText={remark =>
               setNewWorkout(prevState => ({...prevState, remark}))
             }
-            style={defaultStyles.textAreaInput}
+            style={defaultStyles.textInputWithHeight}
             placeholder={'Remarks for this workout'}
-            multiline
           />
         </CustomBottomSheet>
         <CustomBottomSheet
