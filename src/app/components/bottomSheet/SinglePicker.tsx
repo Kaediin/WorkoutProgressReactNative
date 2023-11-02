@@ -10,6 +10,7 @@ interface SinglePickerProps {
   pickerOptions: string[] | number[];
   pickerValue: string | number;
   onPickerSelect: (value: string | number) => void;
+  hideRightText?: boolean;
 }
 
 const SinglePicker: React.FC<SinglePickerProps> = props => {
@@ -23,6 +24,10 @@ const SinglePicker: React.FC<SinglePickerProps> = props => {
     }
   }, [props.active]);
 
+  // useEffect(() => {
+  //   console.log(props.pickerValue);
+  // }, [props.pickerValue]);
+
   return (
     <BottomSheetModalProvider>
       <View style={styles.absolute}>
@@ -31,7 +36,7 @@ const SinglePicker: React.FC<SinglePickerProps> = props => {
           onRightTextClicked={props.onDismiss}
           onDismissClicked={props.onDismiss}
           index={50}
-          rightText={'Select'}>
+          rightText={props.hideRightText ? '' : 'Select'}>
           <Picker
             selectedValue={props.pickerValue}
             onValueChange={props.onPickerSelect}>

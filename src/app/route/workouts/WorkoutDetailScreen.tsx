@@ -58,6 +58,7 @@ import {
   CountdownCircleTimer,
 } from 'react-native-countdown-circle-timer';
 import {IActionProps} from 'react-native-floating-action';
+import RNReactNativeHapticFeedback from 'react-native-haptic-feedback';
 
 type Props = NativeStackScreenProps<WorkoutStackParamList, 'WorkoutDetail'>;
 
@@ -348,7 +349,7 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
   const getFabActions = (): IActionProps[] => {
     const actions: IActionProps[] = [
       {
-        text: countdown > 0 ? 'Clear timer' : 'Timer',
+        text: countdown > 0 ? 'Clear timer' : 'Start timer',
         icon: <Timer />,
         name: Fab.TIMER,
         color:
@@ -377,6 +378,27 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
       color: Constants.FAB_ACTION_COLOR,
     });
     return actions;
+  };
+
+  const getLatestLogByWorkoutOrFetch = (exerciseId: string): void => {
+    // Check if we have a log of this id in the workout already
+    const latestLogged = getLatestLoggedExerciseInCurrentWorkout(exerciseId);
+    if (latestLogged) {
+      // Load the last log
+      setLatestLogs([]);
+      setExerciseLog(prevState => ({
+        ...prevState,
+        logValue: latestLogged.logValue,
+        repetitions: latestLogged.repetitions,
+      }));
+    } else {
+      // Fetch the last log
+      latestLogQuery({
+        variables: {
+          id: exerciseId,
+        },
+      });
+    }
   };
 
   return (
@@ -411,6 +433,7 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
                   groupedExercise={item}
                   key={dimensions.screen.width + item.exercise.id}
                   onEditLog={log => {
+                    getLatestLogByWorkoutOrFetch(item.exercise.id);
                     setEditExistingExercise(log);
                     setExerciseLog({
                       zonedDateTimeString: log.logDateTime,
@@ -424,6 +447,7 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
                   }}
                   onRemoveLog={setDeleteLogId}
                   onLogPress={log => {
+                    getLatestLogByWorkoutOrFetch(item.exercise.id);
                     setEditExistingExercise(log);
                     setExerciseLog({
                       zonedDateTimeString: log.logDateTime,
@@ -481,7 +505,13 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
             size={58}
             strokeWidth={5}
             trailColor={Constants.PRIMARY_GRADIENT[0] as ColorFormat}
-            onComplete={() => setCountdown(0)}
+            onComplete={() => {
+              setCountdown(0);
+              RNReactNativeHapticFeedback.trigger('impactMedium', {
+                enableVibrateFallback: true,
+                ignoreAndroidSystemSettings: true,
+              });
+            }}
             isPlaying={countdownIsPlaying}>
             {({remainingTime}) => (
               <View style={styles.innerCircleCountdown}>
@@ -513,6 +543,7 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
                     autoAdjust,
                   },
                 });
+                toggleTimer();
                 break;
               case Fab.NEWLOG:
                 setExerciseLog(initialLog);
@@ -554,25 +585,7 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
                         ...prevState,
                         exerciseId: exercise.id,
                       }));
-                      // Check if we have a log of this id in the workout already
-                      const latestLogged =
-                        getLatestLoggedExerciseInCurrentWorkout(exercise.id);
-                      if (latestLogged) {
-                        // Load the last log
-                        setLatestLogs([]);
-                        setExerciseLog(prevState => ({
-                          ...prevState,
-                          logValue: latestLogged.logValue,
-                          repetitions: latestLogged.repetitions,
-                        }));
-                      } else {
-                        // Fetch the last log
-                        latestLogQuery({
-                          variables: {
-                            id: exercise.id,
-                          },
-                        });
-                      }
+                      getLatestLogByWorkoutOrFetch(exercise.id);
                       setShowPicker(true);
                     }}
                     selectedId={exerciseLog.exerciseId}

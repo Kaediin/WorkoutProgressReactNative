@@ -4,9 +4,13 @@ import ProfileScreen from '../route/profile/ProfileScreen';
 import useUserStore from '../stores/userStore';
 import HeaderLabel from '../components/nav/headerComponents/EndWorkout';
 import useAuth from '../hooks/useAuth';
+import PreferencesScreen from '../route/profile/PreferencesScreen';
+import ExercisesScreen from '../route/profile/ExercisesScreen';
 
 export type ProfileStackParamList = {
   ProfileScreen: undefined;
+  PreferencesScreen: undefined;
+  ExercisesScreen: undefined;
 };
 
 const ProfileStackNavigator =
@@ -26,6 +30,20 @@ const ProfileStack: React.FC = () => {
           headerRight: () => (
             <HeaderLabel label={'Log out'} color={'red'} onPress={signOut} />
           ),
+        }}
+      />
+      <ProfileStackNavigator.Screen
+        name={'PreferencesScreen'}
+        component={PreferencesScreen}
+        options={{
+          headerTitle: 'Preferences',
+        }}
+      />
+      <ProfileStackNavigator.Screen
+        name={'ExercisesScreen'}
+        component={ExercisesScreen}
+        options={{
+          headerTitle: 'Exercises',
         }}
       />
     </ProfileStackNavigator.Navigator>

@@ -24,7 +24,7 @@ const stylesGrad = StyleSheet.create({
     color: 'black',
   },
   linearGradient: {
-    height: 44,
+    height: 38,
     width: '100%',
     justifyContent: 'center',
     alignSelf: 'center',
