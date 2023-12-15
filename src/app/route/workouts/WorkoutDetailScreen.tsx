@@ -713,6 +713,7 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
                   }))
                 }
                 style={defaultStyles.textInputWithHeight}
+                placeholderTextColor={'darkgrey'}
                 placeholder={'Remarks for this log'}
               />
             </>

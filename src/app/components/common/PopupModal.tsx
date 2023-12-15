@@ -40,7 +40,7 @@ const PopupModal: React.FC<PopupModalProps> = props => {
         {props.type !== 'ERROR' && (
           <View style={[defaultStyles.spaceBetween, defaultStyles.marginTop]}>
             <GradientButton
-              title={props.onConfirm ? 'Dismiss' : 'Understood'}
+              title={props.onConfirm ? 'Cancel' : 'Understood'}
               onClick={props.onDismiss}
               gradients={Constants.TERTIARY_GRADIENT}
               styles={[defaultStyles.flex1, styles.margin]}

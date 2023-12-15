@@ -281,6 +281,7 @@ const WorkoutsOverviewScreen: React.FC<Props> = ({navigation}) => {
             <TextInput
               style={styles.heading2}
               value={newWorkout.name}
+              placeholderTextColor={'darkgrey'}
               placeholder="Workout name"
               onChangeText={name =>
                 setNewWorkout(prevState => ({...prevState, name}))
@@ -318,6 +319,7 @@ const WorkoutsOverviewScreen: React.FC<Props> = ({navigation}) => {
               setNewWorkout(prevState => ({...prevState, remark}))
             }
             style={defaultStyles.textInputWithHeight}
+            placeholderTextColor={'darkgrey'}
             placeholder={'Remarks for this workout'}
           />
         </CustomBottomSheet>

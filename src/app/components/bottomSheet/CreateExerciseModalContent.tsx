@@ -146,6 +146,7 @@ const CreateExerciseModalContent: React.FC<
             )}
             <TextInput
               style={defaultStyles.textInput}
+              placeholderTextColor={'darkgrey'}
               placeholder={'Name'}
               value={exerciseName}
               onChangeText={setExerciseName}
@@ -197,6 +198,7 @@ const CreateExerciseModalContent: React.FC<
             <BottomSheetTextInput
               style={defaultStyles.textInputWithHeight}
               defaultValue={exerciseNotes}
+              placeholderTextColor={'darkgrey'}
               placeholder={'Notes (ex: Machine height 5)'}
               onChangeText={setExerciseNotes}
               maxLength={Constants.TEXT_AREA_MAX_LENGTH}
