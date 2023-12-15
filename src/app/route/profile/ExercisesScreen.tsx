@@ -12,8 +12,13 @@ import {ContextMenuActions} from '../../types/ContextMenuActions';
 import ExerciseProfileListItem from '../../components/exercise/ExerciseProfileListItem';
 import CreateExerciseModal from '../../components/bottomSheet/CreateExerciseModal';
 import PopupModal from '../../components/common/PopupModal';
+import HeaderLabel from '../../components/nav/headerComponents/EndWorkout';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {ProfileStackParamList} from '../../stacks/ProfileStack';
 
-const ExercisesScreen: React.FC = () => {
+type Props = NativeStackScreenProps<ProfileStackParamList, 'ExercisesScreen'>;
+
+const ExercisesScreen: React.FC<Props> = props => {
   const [deleteExerciseId, setDeleteExerciseId] = useState('');
   const [createExerciseModalActive, setCreateExerciseModalActive] =
     useState(false);
@@ -48,13 +53,28 @@ const ExercisesScreen: React.FC = () => {
     }
   }, [editExercise]);
 
+  props.navigation.setOptions({
+    headerRight: () => (
+      <HeaderLabel
+        label={'Create'}
+        onPress={() => setCreateExerciseModalActive(true)}
+      />
+    ),
+  });
+
   return (
     <GradientBackground>
       {exercisesDataLoading || deleteExerciseLoading ? (
         <Loader />
       ) : (
         <FlatList
-          data={exercisesData?.myExercises || []}
+          data={
+            exercisesData?.myExercises
+              ? exercisesData.myExercises.sort((a, b) =>
+                  a.name.localeCompare(b.name),
+                )
+              : []
+          }
           renderItem={({item}) => {
             return (
               <ContextMenu

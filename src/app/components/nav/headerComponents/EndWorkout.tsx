@@ -3,7 +3,7 @@ import {Button} from 'react-native';
 
 interface EndWorkoutProps {
   label: string;
-  color: string;
+  color?: string;
   onPress: () => void;
 }
 
