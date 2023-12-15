@@ -546,7 +546,7 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
                 toggleTimer();
                 break;
               case Fab.NEWLOG:
-                setExerciseLog(initialLog);
+                setExerciseLog(exerciseLog);
                 toggleBottomSheetRef(true);
                 break;
             }
