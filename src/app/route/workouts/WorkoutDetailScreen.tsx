@@ -72,6 +72,7 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
 
   const bottomSheetRef = useRef<BottomSheetModal>(null);
 
+  const [disableLogButton, setDisableLogButton] = useState(false);
   const [clearCountdown, setClearCountdown] = useState(false);
   const [countdown, setCountdown] = useState<number>(0);
   const [countdownIsPlaying, setCountdownIsPlaying] = useState(false);
@@ -249,6 +250,8 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
     ) {
       return;
     }
+
+    setDisableLogButton(true);
 
     if (editExistingExercise) {
       updateExerciseLog({
@@ -546,6 +549,7 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
                 toggleTimer();
                 break;
               case Fab.NEWLOG:
+                setDisableLogButton(false);
                 setExerciseLog(exerciseLog);
                 toggleBottomSheetRef(true);
                 break;
@@ -568,7 +572,8 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
             !workout?.id ||
             !exerciseLog.exerciseId ||
             !exerciseLog.logValue ||
-            !exerciseLog.repetitions
+            !exerciseLog.repetitions ||
+            disableLogButton
           }
           onRightTextClicked={doLogExercise}
           leftText={'Create new exercise'}>
