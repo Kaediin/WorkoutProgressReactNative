@@ -3,6 +3,7 @@ import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import GradientBackground from '../../components/common/GradientBackground';
 import {
   useDeleteWorkoutMutation,
+  useEndWorkoutMutation,
   useHasActiveWorkoutQuery,
   useStartWorkoutMutation,
   useUpdateWorkoutMutation,
@@ -35,7 +36,7 @@ import WorkoutListItem from '../../components/workouts/WorkoutListItem';
 import PopupModal from '../../components/common/PopupModal';
 import {WorkoutStackParamList} from '../../stacks/WorkoutStack';
 import {ContextMenuActions} from '../../types/ContextMenuActions';
-import ContextMenu from 'react-native-context-menu-view';
+import ContextMenu, {ContextMenuAction} from 'react-native-context-menu-view';
 import {defaultStyles} from '../../utils/DefaultStyles';
 import ClickableText from '../../components/common/ClickableText';
 import MuscleGroupList from '../../components/workouts/MuscleGroupList';
@@ -80,6 +81,7 @@ const WorkoutsOverviewScreen: React.FC<Props> = ({navigation}) => {
   } = useWorkoutsQuery({
     fetchPolicy: 'no-cache',
   });
+  const [endWorkout, {loading: endWorkoutLoading}] = useEndWorkoutMutation();
   const [updateWorkout] = useUpdateWorkoutMutation({fetchPolicy: 'no-cache'});
 
   const doStartWorkout = (): void => {
@@ -148,7 +150,8 @@ const WorkoutsOverviewScreen: React.FC<Props> = ({navigation}) => {
     }
   }, [isFocussed]);
 
-  const loading = startWorkoutLoading || getWorkoutsLoading;
+  const loading =
+    startWorkoutLoading || getWorkoutsLoading || endWorkoutLoading;
 
   const onFloatingButtonClicked = (): void => {
     setNewWorkout(initialWorkout);
@@ -192,6 +195,31 @@ const WorkoutsOverviewScreen: React.FC<Props> = ({navigation}) => {
     bottomSheetModalRef.current?.present();
   };
 
+  const getActions = (
+    workout: WorkoutShortFragment,
+  ): Array<ContextMenuAction> => {
+    const actions: Array<ContextMenuAction> = [
+      {title: ContextMenuActions.DELETE},
+      {title: ContextMenuActions.EDIT},
+    ];
+    if (workout.active) {
+      actions.push({title: ContextMenuActions.END_WORKOUT});
+    }
+    return actions;
+  };
+
+  const doEndWorkout = (workout: WorkoutShortFragment): void => {
+    endWorkout({
+      fetchPolicy: 'no-cache',
+      variables: {
+        workoutId: workout.id,
+        zonedDateTimeString: moment().toISOString(true),
+      },
+    });
+    refetchActiveWorkout();
+    refetchWorkouts();
+  };
+
   return (
     <GradientBackground>
       {getWorkoutsError?.message ? (
@@ -218,14 +246,15 @@ const WorkoutsOverviewScreen: React.FC<Props> = ({navigation}) => {
           }
           renderItem={({item}) => (
             <ContextMenu
-              actions={[
-                {title: ContextMenuActions.DELETE},
-                {title: ContextMenuActions.EDIT},
-              ]}
+              actions={getActions(item)}
               onPress={event => {
                 event.nativeEvent.name === ContextMenuActions.DELETE
                   ? setDeleteWorkoutId(item.id)
-                  : editWorkout(item);
+                  : event.nativeEvent.name === ContextMenuActions.EDIT
+                  ? editWorkout(item)
+                  : event.nativeEvent.name === ContextMenuActions.END_WORKOUT
+                  ? doEndWorkout(item)
+                  : undefined;
               }}>
               <WorkoutListItem
                 key={item.id}
