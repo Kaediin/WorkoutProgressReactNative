@@ -23,8 +23,8 @@ export const AuthProvider: React.FC<PropsWithChildren> = props => {
         console.log(
           'AuthProvider: getAndUpdateAuthToken: Setting AUTHENTICATED',
         );
-        setState(AuthState.AUTHENTICATED);
         setAuthToken(token);
+        setState(AuthState.AUTHENTICATED);
       } else {
         setState(AuthState.UNAUTHENTICATED);
         // Unlocking to show login screen underneath the PIN lock overlay

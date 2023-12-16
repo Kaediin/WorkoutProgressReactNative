@@ -20,6 +20,7 @@ const AppRoute: React.FC = () => {
   const authState: AuthState = useAuthStore(state => state.state);
   const navRef = useRef();
   const setRouteName = useRouteStore(state => state.setRouteName);
+  const authToken = useAuthStore(state => state.authToken);
 
   return (
     <NavigationContainer
@@ -29,7 +30,7 @@ const AppRoute: React.FC = () => {
         // @ts-ignore
         setRouteName(navRef.current?.getCurrentRoute().name || '');
       }}>
-      {authState === AuthState.AUTHENTICATED ? (
+      {authState === AuthState.AUTHENTICATED && authToken ? (
         <TabNavigator />
       ) : [AuthState.UNAUTHENTICATED, AuthState.USER_NOT_CONFIRMED].includes(
           authState,
