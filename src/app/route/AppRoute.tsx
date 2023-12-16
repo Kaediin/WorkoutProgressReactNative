@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useRef} from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import LoginScreen from './auth/LoginScreen';
@@ -6,6 +6,7 @@ import SignupScreen from './auth/SignupScreen';
 import useAuthStore, {AuthState} from '../stores/authStore';
 import ConfirmUserScreen from './auth/ConfirmUserScreen';
 import TabNavigator from '../components/nav/TabNavigator';
+import useRouteStore from '../stores/routeStore';
 
 export type AuthStackParamList = {
   Login: undefined;
@@ -17,9 +18,17 @@ const AuthStackNavigator = createNativeStackNavigator<AuthStackParamList>();
 
 const AppRoute: React.FC = () => {
   const authState: AuthState = useAuthStore(state => state.state);
+  const navRef = useRef();
+  const setRouteName = useRouteStore(state => state.setRouteName);
 
   return (
-    <NavigationContainer>
+    <NavigationContainer
+      // @ts-ignore
+      ref={navRef}
+      onStateChange={() => {
+        // @ts-ignore
+        setRouteName(navRef.current?.getCurrentRoute().name || '');
+      }}>
       {authState === AuthState.AUTHENTICATED ? (
         <TabNavigator />
       ) : [AuthState.UNAUTHENTICATED, AuthState.USER_NOT_CONFIRMED].includes(

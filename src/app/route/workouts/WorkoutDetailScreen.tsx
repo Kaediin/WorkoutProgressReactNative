@@ -51,14 +51,10 @@ import {stripTypenames} from '../../utils/GrahqlUtils';
 import {nonNullable} from '../../utils/List';
 import PopupModal from '../../components/common/PopupModal';
 import ExpandableView from '../../components/common/ExpandableView';
-import {Add, Pause, Retry, Timer} from '../../icons/svg';
+import {Add, Retry, Timer} from '../../icons/svg';
 import {Fab} from '../../utils/Fab';
-import {
-  ColorFormat,
-  CountdownCircleTimer,
-} from 'react-native-countdown-circle-timer';
 import {IActionProps} from 'react-native-floating-action';
-import RNReactNativeHapticFeedback from 'react-native-haptic-feedback';
+import useTimerStore from '../../stores/timerStore';
 
 type Props = NativeStackScreenProps<WorkoutStackParamList, 'WorkoutDetail'>;
 
@@ -66,6 +62,8 @@ const windowDimensions = Dimensions.get('window');
 const screenDimensions = Dimensions.get('screen');
 
 const WorkoutDetailScreen: React.FC<Props> = props => {
+  const timerActive = useTimerStore(state => state.timerActive);
+  const startTimer = useTimerStore(state => state.startTimer);
   const preference = usePreferenceStore(state => state.preference);
   const hideUnitSelector = preference?.hideUnitSelector || false;
   const autoAdjust = preference?.autoAdjustWorkoutMuscleGroups || false;
@@ -73,9 +71,6 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
   const bottomSheetRef = useRef<BottomSheetModal>(null);
 
   const [disableLogButton, setDisableLogButton] = useState(false);
-  const [clearCountdown, setClearCountdown] = useState(false);
-  const [countdown, setCountdown] = useState<number>(0);
-  const [countdownIsPlaying, setCountdownIsPlaying] = useState(false);
   const [showPicker, setShowPicker] = useState(false);
   const [deleteLogId, setDeleteLogId] = useState('');
   const [createExerciseModal, setCreateExerciseModal] = useState(false);
@@ -203,7 +198,7 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
       toggleBottomSheetRef(false);
       setWorkout(logExerciseData?.addExerciseLog);
       if (preference?.autoStartTimer) {
-        toggleTimer();
+        toggleTimer(true);
       }
     }
   }, [logExerciseData?.addExerciseLog]);
@@ -339,26 +334,15 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
     return () => subscription?.remove();
   });
 
-  const toggleTimer = (): void => {
-    if (countdown) {
-      setCountdown(0);
-      setCountdownIsPlaying(false);
-    } else {
-      setCountdown(preference?.timerDuration || Constants.DEFAULT_DURATION);
-      setCountdownIsPlaying(true);
-    }
-  };
-
   const getFabActions = (): IActionProps[] => {
     const actions: IActionProps[] = [
       {
-        text: countdown > 0 ? 'Clear timer' : 'Start timer',
+        text: timerActive ? 'Clear timer' : 'Start timer',
         icon: <Timer />,
         name: Fab.TIMER,
-        color:
-          countdown > 0
-            ? Constants.ERROR_GRADIENT[0]
-            : Constants.FAB_ACTION_COLOR,
+        color: timerActive
+          ? Constants.ERROR_GRADIENT[0]
+          : Constants.FAB_ACTION_COLOR,
       },
     ];
     if (
@@ -402,6 +386,10 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
         },
       });
     }
+  };
+
+  const toggleTimer = (active: boolean): void => {
+    startTimer(active);
   };
 
   return (
@@ -485,58 +473,14 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
       ) : (
         <></>
       )}
-      <PopupModal
-        message={'Are you sure you want to clear the countdown?'}
-        isOpen={clearCountdown}
-        type={'WARNING'}
-        onDismiss={() => setClearCountdown(false)}
-        onConfirm={() => {
-          setCountdown(0);
-          setCountdownIsPlaying(false);
-          setClearCountdown(false);
-        }}
-      />
-      {countdown > 0 && (
-        <TouchableOpacity
-          style={styles.countDownCircle}
-          onPress={() => setCountdownIsPlaying(!countdownIsPlaying)}
-          onLongPress={() => setClearCountdown(true)}>
-          <CountdownCircleTimer
-            duration={countdown}
-            // @ts-ignore
-            colors={Constants.TIMER_GRADIENT}
-            size={58}
-            strokeWidth={5}
-            trailColor={Constants.PRIMARY_GRADIENT[0] as ColorFormat}
-            onComplete={() => {
-              setCountdown(0);
-              RNReactNativeHapticFeedback.trigger('impactMedium', {
-                enableVibrateFallback: true,
-                ignoreAndroidSystemSettings: true,
-              });
-            }}
-            isPlaying={countdownIsPlaying}>
-            {({remainingTime}) => (
-              <View style={styles.innerCircleCountdown}>
-                {countdownIsPlaying ? (
-                  <Text style={defaultStyles.whiteTextColor}>
-                    {remainingTime}
-                  </Text>
-                ) : (
-                  <Pause />
-                )}
-              </View>
-            )}
-          </CountdownCircleTimer>
-        </TouchableOpacity>
-      )}
+
       {workout && (
         <FloatingButton
           actions={getFabActions()}
           onPressAction={name => {
             switch (name) {
               case Fab.TIMER:
-                toggleTimer();
+                toggleTimer(!timerActive);
                 break;
               case Fab.RELOG:
                 reLogLatestLog({
@@ -546,7 +490,9 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
                     autoAdjust,
                   },
                 });
-                toggleTimer();
+                if (preference?.autoStartTimer) {
+                  toggleTimer(true);
+                }
                 break;
               case Fab.NEWLOG:
                 setDisableLogButton(false);
@@ -768,19 +714,6 @@ const styles = StyleSheet.create({
   },
   flatlist: {
     height: '100%',
-  },
-  countDownCircle: {
-    position: 'absolute',
-    bottom: 100,
-    right: 30,
-  },
-  innerCircleCountdown: {
-    backgroundColor: Constants.PRIMARY_GRADIENT[0],
-    width: 50,
-    height: 50,
-    borderRadius: 9999,
-    justifyContent: 'center',
-    alignItems: 'center',
   },
   border: {
     borderWidth: 3,

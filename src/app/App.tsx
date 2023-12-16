@@ -17,6 +17,7 @@ import * as Sentry from '@sentry/react-native';
 import Config from 'react-native-config';
 import {StyleSheet} from 'react-native';
 import NetworkProvider from './providers/NetworkProvider';
+import WorkoutTimerProvider from './providers/WorkoutTimerProvider';
 
 export const routingInstrumentation =
   new Sentry.ReactNavigationInstrumentation();
@@ -44,7 +45,9 @@ const App: React.FC = () => {
             <UserProvider>
               <SafeAreaProvider>
                 <GradientBackground>
-                  <AppRoute />
+                  <WorkoutTimerProvider>
+                    <AppRoute />
+                  </WorkoutTimerProvider>
                 </GradientBackground>
               </SafeAreaProvider>
             </UserProvider>
