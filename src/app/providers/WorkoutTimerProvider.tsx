@@ -37,7 +37,6 @@ const WorkoutTimerProvider: React.FC<PropsWithChildren> = props => {
   }, [timerActive]);
 
   useEffect(() => {
-    // console.log(routeName, timerActive, countdown);
     if (routeName && timerActive) {
       switch (routeName.toLowerCase()) {
         case 'workoutdetail':
@@ -51,7 +50,30 @@ const WorkoutTimerProvider: React.FC<PropsWithChildren> = props => {
     }
   }, [routeName]);
 
-  // const playSound = (): void => {};
+  const playSound = (): void => {
+    const Sound = require('react-native-sound');
+    Sound.setCategory('Playback');
+    // @ts-ignore
+    const completeSound = new Sound('done.mp3', Sound.MAIN_BUNDLE, error => {
+      if (error) {
+        console.log('failed to load the sound', error);
+        return;
+      }
+
+      completeSound.setVolume(1);
+
+      // @ts-ignore
+      completeSound.play(success => {
+        if (success) {
+          console.log('successfully finished playing');
+        } else {
+          console.log('playback failed due to audio decoding errors');
+        }
+      });
+    });
+
+    completeSound.release();
+  };
 
   return (
     <>
@@ -86,6 +108,7 @@ const WorkoutTimerProvider: React.FC<PropsWithChildren> = props => {
                 enableVibrateFallback: true,
                 ignoreAndroidSystemSettings: true,
               });
+              playSound();
             }}
             isPlaying={countdownIsPlaying}>
             {({remainingTime}) => (
