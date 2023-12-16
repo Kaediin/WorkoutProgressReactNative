@@ -545,116 +545,113 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
                   />
                 </View>
               )}
-              {latestLogsLoading ? (
-                <Loader dark />
-              ) : (
-                <>
-                  {latestLogs && latestLogs.length > 0 ? (
-                    <View style={defaultStyles.container}>
-                      <Text style={defaultStyles.footnote}>
-                        Last set {latestLogs[0].exercise.name} (
-                        {moment
-                          .utc(latestLogs[0].logDateTime)
-                          .format(DATE_TIME_FORMAT)}
-                        ):
+              <View pointerEvents={latestLogsLoading ? 'none' : 'auto'}>
+                <Loader dark isLoading={latestLogsLoading} />
+                {latestLogs && latestLogs.length > 0 ? (
+                  <View style={defaultStyles.container}>
+                    <Text style={defaultStyles.footnote}>
+                      Last set {latestLogs[0].exercise.name} (
+                      {moment
+                        .utc(latestLogs[0].logDateTime)
+                        .format(DATE_TIME_FORMAT)}
+                      ):
+                    </Text>
+                    {latestLogs.map(log => (
+                      <Text style={defaultStyles.footnote} key={log.id}>
+                        - {log.repetitions} x {logValueToString(log.logValue)}
+                        {log.warmup && ' (warmup)'}
                       </Text>
-                      {latestLogs.map(log => (
-                        <Text style={defaultStyles.footnote} key={log.id}>
-                          - {log.repetitions} x {logValueToString(log.logValue)}
-                          {log.warmup && ' (warmup)'}
+                    ))}
+                  </View>
+                ) : (
+                  <View style={styles.marginTop} />
+                )}
+                {exerciseLog?.exerciseId && (
+                  <>
+                    <View style={[styles.border]}>
+                      <TouchableOpacity
+                        style={[
+                          defaultStyles.spaceEvenly,
+                          styles.expandableWeightSelectorLabel,
+                        ]}
+                        onPress={() => setShowPicker(!showPicker)}>
+                        <Text style={styles.selectedWeightLabel}>
+                          {exerciseLog.repetitions} x{' '}
+                          {logValueToString(exerciseLog.logValue)}
                         </Text>
-                      ))}
-                    </View>
-                  ) : (
-                    <View style={styles.marginTop} />
-                  )}
-                  {exerciseLog?.exerciseId && (
-                    <>
-                      <View style={[styles.border]}>
-                        <TouchableOpacity
-                          style={[
-                            defaultStyles.spaceEvenly,
-                            styles.expandableWeightSelectorLabel,
-                          ]}
-                          onPress={() => setShowPicker(!showPicker)}>
-                          <Text style={styles.selectedWeightLabel}>
-                            {exerciseLog.repetitions} x{' '}
-                            {logValueToString(exerciseLog.logValue)}
+                        <View style={defaultStyles.row}>
+                          <Text
+                            style={[styles.fontSizeSmall, styles.warmupText]}>
+                            Warmup
                           </Text>
-                          <View style={defaultStyles.row}>
+                          <Switch
+                            value={exerciseLog.warmup}
+                            onValueChange={value =>
+                              setExerciseLog(prevState => ({
+                                ...prevState,
+                                warmup: value,
+                              }))
+                            }
+                            ios_backgroundColor={Constants.ERROR_GRADIENT[0]}
+                          />
+                        </View>
+                      </TouchableOpacity>
+                      <ExpandableView
+                        showChildren={showPicker}
+                        contentHeight={225}>
+                        <View style={styles.pickerContainer}>
+                          <View style={styles.repetition}>
                             <Text
-                              style={[styles.fontSizeSmall, styles.warmupText]}>
-                              Warmup
+                              style={[
+                                defaultStyles.footnote,
+                                styles.pickerLabel,
+                              ]}>
+                              Repetition
                             </Text>
-                            <Switch
-                              value={exerciseLog.warmup}
-                              onValueChange={value =>
+                            <Picker
+                              selectedValue={exerciseLog.repetitions}
+                              onValueChange={value => {
                                 setExerciseLog(prevState => ({
                                   ...prevState,
-                                  warmup: value,
-                                }))
-                              }
-                              ios_backgroundColor={Constants.ERROR_GRADIENT[0]}
+                                  repetitions: value,
+                                }));
+                              }}
+                              itemStyle={styles.fontSizeSmall}>
+                              {Object.keys(Constants.BOTTOM_SHEET_SNAPPOINTS)
+                                .splice(1, 100)
+                                .map(repetition => (
+                                  <Picker.Item
+                                    label={repetition}
+                                    value={+repetition}
+                                    key={`rep_${repetition}`}
+                                  />
+                                ))}
+                            </Picker>
+                          </View>
+                          <View
+                            style={{flex: hideUnitSelector ? 2 : 3}}
+                            key={
+                              'logvalue_select_' +
+                                exerciseLog.logValue.base +
+                                exerciseLog.logValue?.fraction ?? 0
+                            }>
+                            <LogValueSelect
+                              onWeightSelected={logValue => {
+                                setExerciseLog(prevState => ({
+                                  ...prevState,
+                                  logValue: logValue,
+                                }));
+                              }}
+                              logValue={exerciseLog.logValue}
+                              hideLabel
                             />
                           </View>
-                        </TouchableOpacity>
-                        <ExpandableView
-                          showChildren={showPicker}
-                          contentHeight={225}>
-                          <View style={styles.pickerContainer}>
-                            <View style={styles.repetition}>
-                              <Text
-                                style={[
-                                  defaultStyles.footnote,
-                                  styles.pickerLabel,
-                                ]}>
-                                Repetition
-                              </Text>
-                              <Picker
-                                selectedValue={exerciseLog.repetitions}
-                                onValueChange={value => {
-                                  setExerciseLog(prevState => ({
-                                    ...prevState,
-                                    repetitions: value,
-                                  }));
-                                }}
-                                itemStyle={styles.fontSizeSmall}>
-                                {Object.keys(Constants.BOTTOM_SHEET_SNAPPOINTS)
-                                  .splice(1, 100)
-                                  .map(repetition => (
-                                    <Picker.Item
-                                      label={repetition}
-                                      value={+repetition}
-                                      key={`rep_${repetition}`}
-                                    />
-                                  ))}
-                              </Picker>
-                            </View>
-                            <View
-                              style={{flex: hideUnitSelector ? 2 : 3}}
-                              key={
-                                'logvalue_select_' +
-                                  exerciseLog.logValue.base +
-                                  exerciseLog.logValue?.fraction ?? 0
-                              }>
-                              <LogValueSelect
-                                onWeightSelected={logValue => {
-                                  setExerciseLog(prevState => ({
-                                    ...prevState,
-                                    logValue: logValue,
-                                  }));
-                                }}
-                                logValue={exerciseLog.logValue}
-                                hideLabel
-                              />
-                            </View>
-                          </View>
-                        </ExpandableView>
-                      </View>
-                    </>
-                  )}
-                </>
-              )}
+                        </View>
+                      </ExpandableView>
+                    </View>
+                  </>
+                )}
+              </View>
               <BottomSheetTextInput
                 defaultValue={exerciseLog?.remark || ''}
                 onChangeText={text =>
