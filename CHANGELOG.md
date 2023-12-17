@@ -1,3 +1,26 @@
+## [v0.1.4]
+
+### Added
+
+- #56: Media plays when on timer complete
+
+### Changed
+
+- #54: Preset the last logged exercise when tapping on new log
+- #54: No Create exercise button
+- #54: Sort exercises alphabetically
+- #54: Add 'end workout' to context menu in overview if the workout is still active
+- #54: Reword 'dismiss' to cancel
+- #54: Make placeholder text more visible
+- #56: Timer now runs on all activities
+- #56: Stronger haptic feedback on timer complete
+- #57: Increased performance in weight select
+
+### Fixed:
+
+- #55: Bugs after release 0.1.3
+- #58: Access denied after fresh login
+
 ## [v0.1.3]
 
 ### Added
