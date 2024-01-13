@@ -196,6 +196,7 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
 
   useEffect(() => {
     if (logExerciseData?.addExerciseLog) {
+      setDisableLogButton(false);
       toggleBottomSheetRef(false);
       setWorkout(logExerciseData?.addExerciseLog);
       if (preference?.autoStartTimer) {
@@ -206,6 +207,7 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
 
   useEffect(() => {
     if (updateExerciseLogData?.updateExerciseLog) {
+      setDisableLogButton(false);
       toggleBottomSheetRef(false);
       setWorkout(updateExerciseLogData?.updateExerciseLog);
     }
