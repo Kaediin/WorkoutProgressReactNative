@@ -15,6 +15,7 @@ import useRouteStore from '../stores/routeStore';
 
 const WorkoutTimerProvider: React.FC<PropsWithChildren> = props => {
   const preference = usePreferenceStore(state => state.preference);
+  const hideTimer = useTimerStore(state => state.timerHidden);
   const startTimer = useTimerStore(state => state.startTimer);
   const timerActive = useTimerStore(state => state.timerActive);
   const [countdown, setCountdown] = useState<number>(0);
@@ -91,7 +92,10 @@ const WorkoutTimerProvider: React.FC<PropsWithChildren> = props => {
       />
       {timerActive && (
         <TouchableOpacity
-          style={[styles.countDownCircle, {bottom: height}]}
+          style={[
+            styles.countDownCircle,
+            {bottom: height, opacity: hideTimer ? 0 : 1},
+          ]}
           onPress={() => setCountdownIsPlaying(!countdownIsPlaying)}
           onLongPress={() => setShowClearCountdownPopup(true)}>
           <CountdownCircleTimer
