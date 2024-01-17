@@ -53,7 +53,7 @@ const WorkoutTimerProvider: React.FC<PropsWithChildren> = props => {
 
   const playSound = (): void => {
     const Sound = require('react-native-sound');
-    Sound.setCategory('Playback');
+    Sound.setCategory('Ambient', true);
     // @ts-ignore
     const completeSound = new Sound('done.mp3', Sound.MAIN_BUNDLE, error => {
       if (error) {
