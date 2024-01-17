@@ -7,6 +7,7 @@ import {useApolloClient} from '@apollo/client';
 import {NativeModules, Platform} from 'react-native';
 
 export enum CognitoResponse {
+  CODE_MISMATCH_EXCEPTION = 'CodeMismatchException',
   USERNAME_EXISTS = 'UsernameExistsException',
   EXPIRED_CODE = 'ExpiredCodeException',
   SUCCESS = 'SUCCESS',
@@ -38,6 +39,17 @@ const useAuth = (): {
   ) => Promise<{error?: string; success?: boolean}>;
   signOut: () => void;
   requestNewCode: (email: string) => Promise<{error?: string}>;
+  handleResetPassword: (
+    email: string,
+  ) => Promise<{success?: any; error?: string}>;
+  handleResetPasswordSubmit: (
+    email: string,
+    verificationCode: string,
+    password: string,
+  ) => Promise<{
+    success?: any;
+    error?: string;
+  }>;
 } => {
   const setAuthToken = useAuthStore(state => state.setAuthToken);
   const setState = useAuthStore(state => state.setState);
@@ -50,6 +62,8 @@ const useAuth = (): {
         return 'An account with this email already exists.';
       case CognitoResponse.EXPIRED_CODE:
         return 'Your confirmation code has expired. Please request a new one.';
+      case CognitoResponse.CODE_MISMATCH_EXCEPTION:
+        return 'Invalid verification code provided.';
       default:
         return 'Something went wrong.';
     }
@@ -205,6 +219,39 @@ const useAuth = (): {
     }
   };
 
+  const handleResetPassword = async (
+    email: string,
+  ): Promise<{success?: any; error?: string}> => {
+    try {
+      return {success: await Auth.forgotPassword(email)};
+    } catch (error) {
+      console.log(error);
+      return {error: getErrorMessageFromCode(error.code)};
+    }
+  };
+
+  const handleResetPasswordSubmit = async (
+    email: string,
+    verificationCode: string,
+    password: string,
+  ): Promise<{
+    success?: any;
+    error?: string;
+  }> => {
+    try {
+      return {
+        success: await Auth.forgotPasswordSubmit(
+          email,
+          verificationCode,
+          password,
+        ),
+      };
+    } catch (error) {
+      console.log(error);
+      return {error: getErrorMessageFromCode(error.code)};
+    }
+  };
+
   return {
     getToken,
     signIn,
@@ -213,6 +260,8 @@ const useAuth = (): {
     confirmSignUp,
     signOut,
     requestNewCode,
+    handleResetPassword,
+    handleResetPasswordSubmit,
   };
 };
 

@@ -68,6 +68,8 @@ export const AuthProvider: React.FC<PropsWithChildren> = props => {
       case 'autoSignIn_failure':
         console.log('[AuthProvider] Auto sign in failed');
         break;
+      case 'forgotPassword':
+        break;
     }
   };
 

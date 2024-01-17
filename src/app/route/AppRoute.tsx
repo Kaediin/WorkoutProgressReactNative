@@ -7,11 +7,13 @@ import useAuthStore, {AuthState} from '../stores/authStore';
 import ConfirmUserScreen from './auth/ConfirmUserScreen';
 import TabNavigator from '../components/nav/TabNavigator';
 import useRouteStore from '../stores/routeStore';
+import ForgotPasswordScreen from './auth/ForgotPasswordScreen';
 
 export type AuthStackParamList = {
   Login: undefined;
   Signup: undefined;
   ConfirmUser: {email: string};
+  ForgotPassword: undefined;
 };
 
 const AuthStackNavigator = createNativeStackNavigator<AuthStackParamList>();
@@ -27,8 +29,16 @@ const AppRoute: React.FC = () => {
       // @ts-ignore
       ref={navRef}
       onStateChange={() => {
-        // @ts-ignore
-        setRouteName(navRef.current?.getCurrentRoute().name || '');
+        if (
+          navRef.current &&
+          // @ts-ignore
+          navRef.current?.getCurrentRoute() &&
+          // @ts-ignore
+          navRef.current?.getCurrentRoute().name
+        ) {
+          // @ts-ignore
+          setRouteName(navRef.current?.getCurrentRoute().name || '');
+        }
       }}>
       {authState === AuthState.AUTHENTICATED && authToken ? (
         <TabNavigator />
@@ -49,6 +59,11 @@ const AppRoute: React.FC = () => {
           <AuthStackNavigator.Screen
             name={'ConfirmUser'}
             component={ConfirmUserScreen}
+            options={{headerShown: false}}
+          />
+          <AuthStackNavigator.Screen
+            name={'ForgotPassword'}
+            component={ForgotPasswordScreen}
             options={{headerShown: false}}
           />
         </AuthStackNavigator.Navigator>

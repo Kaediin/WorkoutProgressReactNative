@@ -10,6 +10,7 @@ import GradientBackground from '../../components/common/GradientBackground';
 import Constants from '../../utils/Constants';
 import {defaultStyles} from '../../utils/DefaultStyles';
 import {errorCodeToMessage} from '../../utils/String';
+import ClickableText from '../../components/common/ClickableText';
 
 type Props = NativeStackScreenProps<AuthStackParamList, 'Login'>;
 
@@ -83,6 +84,12 @@ const LoginScreen: React.FC<Props> = props => {
                     }
                     setLoading(false);
                   }}
+                />
+              </View>
+              <View style={defaultStyles.marginTop}>
+                <ClickableText
+                  text={'Forgot your password? Click here!'}
+                  onPress={() => props.navigation.navigate('ForgotPassword')}
                 />
               </View>
             </View>
