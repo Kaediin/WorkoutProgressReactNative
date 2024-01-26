@@ -11,8 +11,8 @@ interface TimerStore {
 const useTimerStore = create<TimerStore>()(set => ({
   timerActive: false,
   timerHidden: false,
-  toggleVisibility: (toggleVisibility): void => {
-    set({timerHidden: toggleVisibility});
+  toggleVisibility: (hideTimer): void => {
+    set({timerHidden: hideTimer});
   },
   startTimer: (timerActive): void => {
     set({timerActive});

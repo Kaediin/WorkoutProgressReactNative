@@ -90,10 +90,8 @@ const WorkoutTimerProvider: React.FC<PropsWithChildren> = props => {
       />
       {timerActive && (
         <TouchableOpacity
-          style={[
-            styles.countDownCircle,
-            {bottom: height, opacity: hideTimer ? 0 : 1},
-          ]}
+          // Conditionally hide button offscreen
+          style={[styles.countDownCircle, {bottom: hideTimer ? -100 : height}]}
           onPress={() => setIsPaused(!isPaused)}
           onLongPress={() => setShowClearCountdownPopup(true)}>
           <CountdownCircleTimer

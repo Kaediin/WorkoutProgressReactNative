@@ -62,7 +62,7 @@ const windowDimensions = Dimensions.get('window');
 const screenDimensions = Dimensions.get('screen');
 
 const WorkoutDetailScreen: React.FC<Props> = props => {
-  const toggleVisibility = useTimerStore(state => state.toggleVisibility);
+  const toggleTimerVisibility = useTimerStore(state => state.toggleVisibility);
   const timerActive = useTimerStore(state => state.timerActive);
   const startTimer = useTimerStore(state => state.startTimer);
   const preference = usePreferenceStore(state => state.preference);
@@ -483,10 +483,10 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
         <FloatingButton
           actions={getFabActions()}
           onClose={() => {
-            toggleVisibility(false);
+            toggleTimerVisibility(false);
           }}
           onOpen={() => {
-            toggleVisibility(true);
+            toggleTimerVisibility(true);
           }}
           onPressAction={name => {
             switch (name) {
