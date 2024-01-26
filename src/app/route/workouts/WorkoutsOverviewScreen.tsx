@@ -327,7 +327,11 @@ const WorkoutsOverviewScreen: React.FC<Props> = ({navigation}) => {
           ref={bottomSheetModalRefMuscleSelect}
           onDismissClicked={() =>
             bottomSheetModalRefMuscleSelect?.current?.dismiss()
-          }>
+          }
+          rightText={'Select'}
+          onRightTextClicked={() => {
+            bottomSheetModalRefMuscleSelect?.current?.dismiss();
+          }}>
           <SelectMuscleGroups
             preselected={newWorkout.muscleGroups}
             onSelected={groups => {
@@ -335,9 +339,6 @@ const WorkoutsOverviewScreen: React.FC<Props> = ({navigation}) => {
                 ...prevState,
                 muscleGroups: groups,
               }));
-              // setSelectedMuscleGroups(groups);
-              bottomSheetModalRefMuscleSelect?.current?.dismiss();
-              bottomSheetModalRef?.current?.present();
             }}
             buttonText={'Select'}
           />

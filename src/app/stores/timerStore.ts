@@ -2,12 +2,18 @@ import {create} from 'zustand';
 
 interface TimerStore {
   timerActive?: boolean;
+  timerHidden?: boolean;
+  toggleVisibility: (toggleVisibility: boolean) => void;
   startTimer: (timerActive: boolean) => void;
   resetStore: () => void;
 }
 
 const useTimerStore = create<TimerStore>()(set => ({
   timerActive: false,
+  timerHidden: false,
+  toggleVisibility: (toggleVisibility): void => {
+    set({timerHidden: toggleVisibility});
+  },
   startTimer: (timerActive): void => {
     set({timerActive});
   },
