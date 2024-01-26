@@ -19,15 +19,7 @@ import {
 } from '@gorhom/bottom-sheet';
 import {CustomBottomSheet} from '../../components/bottomSheet/CustomBottomSheet';
 import SelectMuscleGroups from '../../components/workouts/SelectMuscleGroups';
-import {
-  Button,
-  FlatList,
-  RefreshControl,
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
-} from 'react-native';
+import {FlatList, RefreshControl, StyleSheet, Text, View} from 'react-native';
 import moment from 'moment';
 import Constants from '../../utils/Constants';
 import {nonNullable} from '../../utils/List';
@@ -275,37 +267,41 @@ const WorkoutsOverviewScreen: React.FC<Props> = ({navigation}) => {
           onRightTextClicked={() =>
             editingExistingWorkoutId ? doEditWorkout() : doStartWorkout()
           }
-          index={50}>
-          <Text style={styles.header}>Name</Text>
-          <View style={styles.containerTitle}>
-            <TextInput
-              style={styles.heading2}
-              value={newWorkout.name}
-              placeholderTextColor={'darkgrey'}
-              placeholder="Workout name"
-              onChangeText={name =>
-                setNewWorkout(prevState => ({...prevState, name}))
-              }
-              maxLength={Constants.TEXT_INPUT_MAX_LENGTH}
-            />
-            <Button
-              title={'Use current date'}
+          index={50}
+          disableRightText={!newWorkout.name}>
+          <View style={defaultStyles.spaceBetween}>
+            <Text style={styles.header}>Name</Text>
+            <ClickableText
+              text={'Use current date'}
               onPress={(): void => {
                 setNewWorkout(prevState => ({
                   ...prevState,
                   name: moment().format('dddd, DD MMM yyyy'),
                 }));
               }}
+              textAlignCenter
             />
           </View>
+          <BottomSheetTextInput
+            style={defaultStyles.textInputWithHeight}
+            defaultValue={newWorkout.name || ''}
+            placeholderTextColor={'darkgrey'}
+            placeholder="Workout name"
+            onChangeText={name =>
+              setNewWorkout(prevState => ({...prevState, name}))
+            }
+            maxLength={Constants.TEXT_INPUT_MAX_LENGTH}
+          />
           {!autoSelectMuscleGroups && (
             <>
-              <Text style={styles.header}>Muscle groups</Text>
-              <ClickableText
-                text={'Select'}
-                onPress={bottomSheetModalRefMuscleSelect?.current?.present}
-                styles={defaultStyles.textAlignCenter}
-              />
+              <View style={defaultStyles.spaceBetween}>
+                <Text style={styles.header}>Muscle groups</Text>
+                <ClickableText
+                  text={'Select'}
+                  onPress={bottomSheetModalRefMuscleSelect?.current?.present}
+                  styles={defaultStyles.textAlignCenter}
+                />
+              </View>
               <MuscleGroupList
                 muscleGroups={newWorkout.muscleGroups}
                 pillColor="#00C5ED"
@@ -313,6 +309,7 @@ const WorkoutsOverviewScreen: React.FC<Props> = ({navigation}) => {
               />
             </>
           )}
+          <Text style={styles.header}>Remarks</Text>
           <BottomSheetTextInput
             defaultValue={newWorkout.remark || ''}
             onChangeText={remark =>
@@ -371,14 +368,12 @@ const styles = StyleSheet.create({
   header: {
     fontSize: 14,
     margin: Constants.CONTAINER_PADDING_MARGIN,
-    textAlign: 'center',
     fontWeight: 'bold',
     color: 'grey',
   },
   heading2: {
     fontSize: 18,
     margin: Constants.CONTAINER_PADDING_MARGIN,
-    textAlign: 'center',
     fontWeight: 'bold',
   },
   centerContent: {
@@ -389,7 +384,7 @@ const styles = StyleSheet.create({
   containerTitle: {
     backgroundColor: 'lightgrey',
     padding: Constants.CONTAINER_PADDING_MARGIN,
-    margin: 2,
+    marginTop: Constants.CONTAINER_PADDING_MARGIN,
     borderRadius: Constants.BORDER_RADIUS_SMALL,
   },
   button: {

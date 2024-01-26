@@ -1,5 +1,5 @@
 import React from 'react';
-import {Text, TouchableOpacity} from 'react-native';
+import {Insets, Text, TouchableOpacity} from 'react-native';
 import {defaultStyles} from '../../utils/DefaultStyles';
 import {StyleProp} from 'react-native/Libraries/StyleSheet/StyleSheet';
 import {
@@ -14,6 +14,7 @@ interface ClickableTextProps {
   styles?: StyleProp<TextStyle>;
   textAlignCenter?: boolean;
   disabled?: boolean;
+  hitSlop?: Insets | number;
 }
 
 const ClickableText: React.FC<ClickableTextProps> = props => {
@@ -21,7 +22,8 @@ const ClickableText: React.FC<ClickableTextProps> = props => {
     <TouchableOpacity
       style={props.containerStyles}
       disabled={props.disabled}
-      onPress={props.onPress}>
+      onPress={props.onPress}
+      hitSlop={props.hitSlop}>
       <Text
         style={[
           defaultStyles.clickableText,
