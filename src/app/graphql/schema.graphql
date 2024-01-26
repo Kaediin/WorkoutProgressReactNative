@@ -105,6 +105,7 @@ type Mutation {
   endWorkout(workoutId: ID!, zonedDateTimeString: String!): Workout
   meStartWorkout(input: WorkoutInput!): Workout
   reLogLatestLog(autoAdjust: Boolean!, workoutId: ID!, zonedDateTimeString: String!): Workout
+  reLogLog(input: ExerciseLogInput!, workoutId: ID!): Workout
   removeExerciseLog(autoAdjust: Boolean!, exerciseLogId: String!): Boolean!
   runFetchWorkoutsTask: Boolean
   updateExercise(id: ID!, input: ExerciseInput): Exercise
@@ -120,7 +121,6 @@ type Preference {
   distanceUnit: LogUnit
   hideUnitSelector: Boolean
   timerDuration: Int
-  unit: LogUnit @deprecated
   weightUnit: LogUnit
 }
 
@@ -131,7 +131,6 @@ input PreferenceInput {
   distanceUnit: LogUnit
   hideUnitSelector: Boolean
   timerDuration: Int
-  unit: LogUnit
   weightUnit: LogUnit
 }
 

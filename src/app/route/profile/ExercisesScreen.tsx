@@ -81,7 +81,7 @@ const ExercisesScreen: React.FC<Props> = props => {
                 key={item.id}
                 actions={[
                   {title: ContextMenuActions.EDIT},
-                  {title: ContextMenuActions.REMOVE},
+                  {title: ContextMenuActions.REMOVE, destructive: true},
                 ]}
                 onPress={e =>
                   e.nativeEvent.name === ContextMenuActions.EDIT
