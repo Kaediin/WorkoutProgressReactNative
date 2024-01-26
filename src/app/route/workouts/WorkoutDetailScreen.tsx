@@ -20,6 +20,7 @@ import {
   useLatestLogsByExerciseIdLazyQuery,
   useMyExercisesQuery,
   useReLogLatestLogMutation,
+  useReLogLogMutation,
   useRemoveExerciseLogMutation,
   useUpdateExerciseLogMutation,
   useWorkoutByIdLazyQuery,
@@ -137,7 +138,15 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
     fetchPolicy: 'no-cache',
     onCompleted: data => {
       if (data?.reLogLatestLog) {
-        setWorkout(data?.reLogLatestLog);
+        setWorkout(data.reLogLatestLog);
+      }
+    },
+  });
+  const [reLogLog, {loading: reLogLogLoading}] = useReLogLogMutation({
+    fetchPolicy: 'no-cache',
+    onCompleted: data => {
+      if (data?.reLogLog) {
+        setWorkout(data.reLogLog);
       }
     },
   });
@@ -397,8 +406,9 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
       {workoutLoading ||
       endWorkoutLoading ||
       removeExerciseLogLoading ||
-      reLogLoading ? (
-        <Loader style={defaultStyles.container} />
+      reLogLoading ||
+      reLogLogLoading ? (
+        <Loader />
       ) : workout ? (
         <View style={defaultStyles.container}>
           {workout.groupedExerciseLogs.length === 0 ? (
@@ -435,6 +445,23 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
                       remark: log.remark,
                     });
                     toggleBottomSheetRef(true);
+                  }}
+                  onRepeatLog={log => {
+                    if (workout?.id) {
+                      reLogLog({
+                        variables: {
+                          workoutId: workout?.id,
+                          input: {
+                            exerciseId: log.exercise.id,
+                            logValue: stripTypenames(log.logValue),
+                            warmup: log.warmup || false,
+                            remark: log.remark,
+                            repetitions: log.repetitions,
+                            zonedDateTimeString: moment().toISOString(true),
+                          },
+                        },
+                      });
+                    }
                   }}
                   onRemoveLog={setDeleteLogId}
                   onLogPress={log => {

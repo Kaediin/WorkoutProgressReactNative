@@ -128,8 +128,6 @@ export type Preference = {
   distanceUnit?: Maybe<LogUnit>;
   hideUnitSelector?: Maybe<Scalars['Boolean']>;
   timerDuration?: Maybe<Scalars['Int']>;
-  /** @deprecated No longer supported */
-  unit?: Maybe<LogUnit>;
   weightUnit?: Maybe<LogUnit>;
 };
 
@@ -162,6 +160,7 @@ export type Mutation = {
   endWorkout?: Maybe<Workout>;
   meStartWorkout?: Maybe<Workout>;
   reLogLatestLog?: Maybe<Workout>;
+  reLogLog?: Maybe<Workout>;
   removeExerciseLog: Scalars['Boolean'];
   runFetchWorkoutsTask?: Maybe<Scalars['Boolean']>;
   updateExercise?: Maybe<Exercise>;
@@ -213,6 +212,12 @@ export type MutationReLogLatestLogArgs = {
   autoAdjust: Scalars['Boolean'];
   workoutId: Scalars['ID'];
   zonedDateTimeString: Scalars['String'];
+};
+
+
+export type MutationReLogLogArgs = {
+  input: ExerciseLogInput;
+  workoutId: Scalars['ID'];
 };
 
 
@@ -289,6 +294,5 @@ export type PreferenceInput = {
   distanceUnit?: InputMaybe<LogUnit>;
   hideUnitSelector?: InputMaybe<Scalars['Boolean']>;
   timerDuration?: InputMaybe<Scalars['Int']>;
-  unit?: InputMaybe<LogUnit>;
   weightUnit?: InputMaybe<LogUnit>;
 };

@@ -17,6 +17,7 @@ import {logValueToString} from '../../utils/String';
 interface ExerciseLogListItemProps {
   groupedExercise: GroupedExerciseLogFragment;
   onEditLog: (log: ExerciseLogFragment) => void;
+  onRepeatLog: (log: ExerciseLogFragment) => void;
   onRemoveLog: (id: string) => void;
   onLogPress: (log: ExerciseLogFragment) => void;
 }
@@ -26,6 +27,7 @@ const GroupedExerciseLogListItem: React.FC<ExerciseLogListItemProps> = ({
   onEditLog,
   onRemoveLog,
   onLogPress,
+  onRepeatLog,
 }) => {
   return (
     <GradientBackground
@@ -54,12 +56,15 @@ const GroupedExerciseLogListItem: React.FC<ExerciseLogListItemProps> = ({
               <ContextMenu
                 actions={[
                   {title: ContextMenuActions.EDIT},
-                  {title: ContextMenuActions.REMOVE},
+                  {title: ContextMenuActions.REPEAT},
+                  {title: ContextMenuActions.REMOVE, destructive: true},
                 ]}
                 onPress={e =>
                   e.nativeEvent.name === ContextMenuActions.EDIT
                     ? onEditLog(item as ExerciseLogFragment)
-                    : onRemoveLog(item.id)
+                    : e.nativeEvent.name === ContextMenuActions.REMOVE
+                    ? onRemoveLog(item.id)
+                    : onRepeatLog(item as ExerciseLogFragment)
                 }>
                 <LinearGradient
                   colors={

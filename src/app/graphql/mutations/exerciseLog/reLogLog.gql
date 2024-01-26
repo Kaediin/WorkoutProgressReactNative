@@ -1,0 +1,5 @@
+mutation reLogLog($workoutId: ID!, $input: ExerciseLogInput!) {
+    reLogLog(workoutId: $workoutId, input: $input) {
+        ...WorkoutLong
+    }
+}
