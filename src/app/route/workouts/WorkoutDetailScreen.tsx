@@ -55,6 +55,7 @@ import {Add, Retry, Timer} from '../../icons/svg';
 import {Fab} from '../../utils/Fab';
 import {IActionProps} from 'react-native-floating-action';
 import useTimerStore from '../../stores/timerStore';
+import useRouteStore from '../../stores/routeStore';
 
 type Props = NativeStackScreenProps<WorkoutStackParamList, 'WorkoutDetail'>;
 
@@ -70,7 +71,7 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
   const autoAdjust = preference?.autoAdjustWorkoutMuscleGroups || false;
 
   const bottomSheetRef = useRef<BottomSheetModal>(null);
-
+  const setRouteName = useRouteStore(state => state.setRouteName);
   const [disableLogButton, setDisableLogButton] = useState(false);
   const [showPicker, setShowPicker] = useState(false);
   const [deleteLogId, setDeleteLogId] = useState('');
@@ -317,8 +318,10 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
 
   const toggleBottomSheetRef = (show: boolean): void => {
     if (show) {
+      setRouteName('draggableBottomOpen');
       bottomSheetRef.current?.present();
     } else {
+      setRouteName('draggableBottomClose');
       bottomSheetRef.current?.dismiss();
       setEditExistingExercise(undefined);
     }

@@ -35,8 +35,13 @@ const WorkoutTimerProvider: React.FC<PropsWithChildren> = props => {
   }, [timerActive]);
 
   useEffect(() => {
+    console.log(routeName, timerActive);
     if (routeName && timerActive) {
       switch (routeName.toLowerCase()) {
+        case 'draggablebottomopen':
+          setHeight(-100);
+          return;
+        case 'draggablebottomclose':
         case 'workoutdetail':
         case 'workoutsoverview':
           setHeight(210);
@@ -46,12 +51,12 @@ const WorkoutTimerProvider: React.FC<PropsWithChildren> = props => {
           return;
       }
     }
-  }, [routeName]);
+  }, [routeName, timerActive]);
 
   const playSound = (): void => {
     const Sound = require('react-native-sound');
     // try alarm instead, see if that works.
-    Sound.setCategory('Ambient', true);
+    Sound.setCategory('Alarm', true);
     // @ts-ignore
     const completeSound = new Sound('done.mp3', Sound.MAIN_BUNDLE, error => {
       if (error) {
@@ -134,8 +139,7 @@ const styles = StyleSheet.create({
   countDownCircle: {
     position: 'absolute',
     right: 30,
-    // bottom: 210,
-    zIndex: 99999,
+    zIndex: 100,
   },
   innerCircleCountdown: {
     backgroundColor: Constants.PRIMARY_GRADIENT[0],
