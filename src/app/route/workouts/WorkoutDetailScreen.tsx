@@ -55,6 +55,7 @@ import {Add, Retry, Timer} from '../../icons/svg';
 import {Fab} from '../../utils/Fab';
 import {IActionProps} from 'react-native-floating-action';
 import useTimerStore from '../../stores/timerStore';
+import useRouteStore from '../../stores/routeStore';
 
 type Props = NativeStackScreenProps<WorkoutStackParamList, 'WorkoutDetail'>;
 
@@ -62,7 +63,7 @@ const windowDimensions = Dimensions.get('window');
 const screenDimensions = Dimensions.get('screen');
 
 const WorkoutDetailScreen: React.FC<Props> = props => {
-  const toggleVisibility = useTimerStore(state => state.toggleVisibility);
+  const toggleTimerVisibility = useTimerStore(state => state.toggleVisibility);
   const timerActive = useTimerStore(state => state.timerActive);
   const startTimer = useTimerStore(state => state.startTimer);
   const preference = usePreferenceStore(state => state.preference);
@@ -70,7 +71,7 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
   const autoAdjust = preference?.autoAdjustWorkoutMuscleGroups || false;
 
   const bottomSheetRef = useRef<BottomSheetModal>(null);
-
+  const setRouteName = useRouteStore(state => state.setRouteName);
   const [disableLogButton, setDisableLogButton] = useState(false);
   const [showPicker, setShowPicker] = useState(false);
   const [deleteLogId, setDeleteLogId] = useState('');
@@ -293,12 +294,14 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
         workoutId: id,
         zonedDateTimeString: moment().toISOString(true),
       },
-    }).finally(() =>
+    }).finally(() => {
+      toggleTimer(false);
+
       // @ts-ignore
       props.navigation.navigate('WorkoutsOverview', {
         cameFrom: moment().toISOString(true),
-      }),
-    );
+      });
+    });
   };
 
   const getLatestLoggedExerciseInCurrentWorkout = (
@@ -315,8 +318,10 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
 
   const toggleBottomSheetRef = (show: boolean): void => {
     if (show) {
+      setRouteName('draggableBottomOpen');
       bottomSheetRef.current?.present();
     } else {
+      setRouteName('draggableBottomClose');
       bottomSheetRef.current?.dismiss();
       setEditExistingExercise(undefined);
     }
@@ -481,10 +486,10 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
         <FloatingButton
           actions={getFabActions()}
           onClose={() => {
-            toggleVisibility(false);
+            toggleTimerVisibility(false);
           }}
           onOpen={() => {
-            toggleVisibility(true);
+            toggleTimerVisibility(true);
           }}
           onPressAction={name => {
             switch (name) {

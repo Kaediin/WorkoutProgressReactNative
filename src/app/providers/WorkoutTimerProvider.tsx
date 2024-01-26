@@ -19,7 +19,7 @@ const WorkoutTimerProvider: React.FC<PropsWithChildren> = props => {
   const startTimer = useTimerStore(state => state.startTimer);
   const timerActive = useTimerStore(state => state.timerActive);
   const [countdown, setCountdown] = useState<number>(0);
-  const [countdownIsPlaying, setCountdownIsPlaying] = useState(false);
+  const [isPaused, setIsPaused] = useState(false);
   const [showClearCountdownPopup, setShowClearCountdownPopup] = useState(false);
   const routeName = useRouteStore(state => state.routeName);
 
@@ -27,19 +27,21 @@ const WorkoutTimerProvider: React.FC<PropsWithChildren> = props => {
 
   useEffect(() => {
     if (timerActive) {
-      if (countdown) {
-        setCountdown(0);
-        setCountdownIsPlaying(false);
-      } else {
-        setCountdown(preference?.timerDuration || Constants.DEFAULT_DURATION);
-        setCountdownIsPlaying(true);
-      }
+      setCountdown(preference?.timerDuration || Constants.DEFAULT_DURATION);
+      setIsPaused(false);
+    } else {
+      setCountdown(0);
     }
   }, [timerActive]);
 
   useEffect(() => {
+    console.log(routeName, timerActive);
     if (routeName && timerActive) {
       switch (routeName.toLowerCase()) {
+        case 'draggablebottomopen':
+          setHeight(-100);
+          return;
+        case 'draggablebottomclose':
         case 'workoutdetail':
         case 'workoutsoverview':
           setHeight(210);
@@ -49,12 +51,12 @@ const WorkoutTimerProvider: React.FC<PropsWithChildren> = props => {
           return;
       }
     }
-  }, [routeName]);
+  }, [routeName, timerActive]);
 
   const playSound = (): void => {
     const Sound = require('react-native-sound');
     // try alarm instead, see if that works.
-    Sound.setCategory('Ambient', true);
+    Sound.setCategory('Alarm', true);
     // @ts-ignore
     const completeSound = new Sound('done.mp3', Sound.MAIN_BUNDLE, error => {
       if (error) {
@@ -87,17 +89,15 @@ const WorkoutTimerProvider: React.FC<PropsWithChildren> = props => {
         onConfirm={() => {
           startTimer(false);
           setCountdown(0);
-          setCountdownIsPlaying(false);
+          setIsPaused(false);
           setShowClearCountdownPopup(false);
         }}
       />
       {timerActive && (
         <TouchableOpacity
-          style={[
-            styles.countDownCircle,
-            {bottom: height, opacity: hideTimer ? 0 : 1},
-          ]}
-          onPress={() => setCountdownIsPlaying(!countdownIsPlaying)}
+          // Conditionally hide button offscreen
+          style={[styles.countDownCircle, {bottom: hideTimer ? -100 : height}]}
+          onPress={() => setIsPaused(!isPaused)}
           onLongPress={() => setShowClearCountdownPopup(true)}>
           <CountdownCircleTimer
             duration={countdown}
@@ -115,10 +115,10 @@ const WorkoutTimerProvider: React.FC<PropsWithChildren> = props => {
               });
               playSound();
             }}
-            isPlaying={countdownIsPlaying}>
+            isPlaying={!isPaused}>
             {({remainingTime}) => (
               <View style={styles.innerCircleCountdown}>
-                {countdownIsPlaying ? (
+                {!isPaused ? (
                   <Text style={defaultStyles.whiteTextColor}>
                     {remainingTime}
                   </Text>
@@ -139,8 +139,7 @@ const styles = StyleSheet.create({
   countDownCircle: {
     position: 'absolute',
     right: 30,
-    // bottom: 210,
-    zIndex: 99999,
+    zIndex: 100,
   },
   innerCircleCountdown: {
     backgroundColor: Constants.PRIMARY_GRADIENT[0],
