@@ -37,6 +37,7 @@ export const CustomBottomSheet = React.forwardRef<
     },
     ref,
   ) => {
+    const HITSLOP = 20;
     const modalRef = useMemo(
       () => ref as React.RefObject<BottomSheetModal>,
       [ref],
@@ -69,6 +70,7 @@ export const CustomBottomSheet = React.forwardRef<
               styles={styles.leftText}
               text={leftText}
               onPress={onLeftTextClicked}
+              hitSlop={HITSLOP}
             />
           ) : (
             <View />
@@ -79,6 +81,7 @@ export const CustomBottomSheet = React.forwardRef<
               text={rightText}
               onPress={onRightTextClicked}
               disabled={disableRightText}
+              hitSlop={HITSLOP}
             />
           )}
         </View>
