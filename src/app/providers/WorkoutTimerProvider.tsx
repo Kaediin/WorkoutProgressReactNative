@@ -18,7 +18,7 @@ const WorkoutTimerProvider: React.FC<PropsWithChildren> = props => {
   const startTimer = useTimerStore(state => state.startTimer);
   const timerActive = useTimerStore(state => state.timerActive);
   const [countdown, setCountdown] = useState<number>(0);
-  const [countdownIsPlaying, setCountdownIsPlaying] = useState(false);
+  const [isPaused, setIsPaused] = useState(false);
   const [showClearCountdownPopup, setShowClearCountdownPopup] = useState(false);
   const routeName = useRouteStore(state => state.routeName);
 
@@ -26,13 +26,10 @@ const WorkoutTimerProvider: React.FC<PropsWithChildren> = props => {
 
   useEffect(() => {
     if (timerActive) {
-      if (countdown) {
-        setCountdown(0);
-        setCountdownIsPlaying(false);
-      } else {
-        setCountdown(preference?.timerDuration || Constants.DEFAULT_DURATION);
-        setCountdownIsPlaying(true);
-      }
+      setCountdown(preference?.timerDuration || Constants.DEFAULT_DURATION);
+      setIsPaused(false);
+    } else {
+      setCountdown(0);
     }
   }, [timerActive]);
 
@@ -85,14 +82,14 @@ const WorkoutTimerProvider: React.FC<PropsWithChildren> = props => {
         onConfirm={() => {
           startTimer(false);
           setCountdown(0);
-          setCountdownIsPlaying(false);
+          setIsPaused(false);
           setShowClearCountdownPopup(false);
         }}
       />
       {timerActive && (
         <TouchableOpacity
           style={[styles.countDownCircle, {bottom: height}]}
-          onPress={() => setCountdownIsPlaying(!countdownIsPlaying)}
+          onPress={() => setIsPaused(!isPaused)}
           onLongPress={() => setShowClearCountdownPopup(true)}>
           <CountdownCircleTimer
             duration={countdown}
@@ -110,10 +107,10 @@ const WorkoutTimerProvider: React.FC<PropsWithChildren> = props => {
               });
               playSound();
             }}
-            isPlaying={countdownIsPlaying}>
+            isPlaying={!isPaused}>
             {({remainingTime}) => (
               <View style={styles.innerCircleCountdown}>
-                {countdownIsPlaying ? (
+                {!isPaused ? (
                   <Text style={defaultStyles.whiteTextColor}>
                     {remainingTime}
                   </Text>

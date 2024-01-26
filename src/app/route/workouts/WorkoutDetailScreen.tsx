@@ -290,12 +290,14 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
         workoutId: id,
         zonedDateTimeString: moment().toISOString(true),
       },
-    }).finally(() =>
+    }).finally(() => {
+      toggleTimer(false);
+
       // @ts-ignore
       props.navigation.navigate('WorkoutsOverview', {
         cameFrom: moment().toISOString(true),
-      }),
-    );
+      });
+    });
   };
 
   const getLatestLoggedExerciseInCurrentWorkout = (
