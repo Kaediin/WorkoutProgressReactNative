@@ -1,3 +1,23 @@
+## [v0.1.5]
+
+### Added
+
+- #60: Add forgot password logic
+- #62: Increase hitslop on bottomsheet buttons
+- #64: Add repeat log to action button
+
+### Changed
+
+- #63: Timer stops when end workout is pressed
+- #63: Timer doesn't overlay the bottom sheet
+
+### Fixed
+
+- #59: Timer doesn't overlap FAB actions anymore
+- #59: Now able to edit logged workout that is marked as a warmup log
+- #59: Popup doesn't auto close after selection muscles
+- #59: When the timer goes off, music isn't paused
+
 ## [v0.1.4]
 
 ### Added
