@@ -62,6 +62,7 @@ const windowDimensions = Dimensions.get('window');
 const screenDimensions = Dimensions.get('screen');
 
 const WorkoutDetailScreen: React.FC<Props> = props => {
+  const toggleVisibility = useTimerStore(state => state.toggleVisibility);
   const timerActive = useTimerStore(state => state.timerActive);
   const startTimer = useTimerStore(state => state.startTimer);
   const preference = usePreferenceStore(state => state.preference);
@@ -195,6 +196,7 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
 
   useEffect(() => {
     if (logExerciseData?.addExerciseLog) {
+      setDisableLogButton(false);
       toggleBottomSheetRef(false);
       setWorkout(logExerciseData?.addExerciseLog);
       if (preference?.autoStartTimer) {
@@ -205,6 +207,7 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
 
   useEffect(() => {
     if (updateExerciseLogData?.updateExerciseLog) {
+      setDisableLogButton(false);
       toggleBottomSheetRef(false);
       setWorkout(updateExerciseLogData?.updateExerciseLog);
     }
@@ -479,6 +482,12 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
       {workout && (
         <FloatingButton
           actions={getFabActions()}
+          onClose={() => {
+            toggleVisibility(false);
+          }}
+          onOpen={() => {
+            toggleVisibility(true);
+          }}
           onPressAction={name => {
             switch (name) {
               case Fab.TIMER:

@@ -4,6 +4,8 @@ import Constants from '../../utils/Constants';
 
 interface FloatingButtonProps {
   onClick?: () => void;
+  onOpen?: () => void;
+  onClose?: () => void;
   secondary?: boolean;
   actions?: IActionProps[];
   onPressAction?: (name: string | undefined) => void;
@@ -11,6 +13,8 @@ interface FloatingButtonProps {
 
 const FloatingButton: React.FC<FloatingButtonProps> = ({
   onClick,
+  onOpen,
+  onClose,
   actions,
   onPressAction,
 }) => {
@@ -24,7 +28,15 @@ const FloatingButton: React.FC<FloatingButtonProps> = ({
           onClick();
         }
       }}
+      onClose={() => {
+        if (onClose) {
+          onClose();
+        }
+      }}
       onOpen={() => {
+        if (onOpen) {
+          onOpen();
+        }
         if (!actions) {
           // @ts-ignore
           refFLoat?.current?.animateButton();
