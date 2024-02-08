@@ -109,7 +109,7 @@ const WorkoutTimerProvider: React.FC<PropsWithChildren> = props => {
             onComplete={() => {
               startTimer(false);
               setCountdown(0);
-              RNReactNativeHapticFeedback.trigger('notificationSuccess', {
+              RNReactNativeHapticFeedback.trigger('impactHeavy', {
                 enableVibrateFallback: true,
                 ignoreAndroidSystemSettings: true,
               });
