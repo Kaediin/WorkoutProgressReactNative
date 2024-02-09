@@ -4,17 +4,18 @@ import Constants from '../utils/Constants';
 import {
   NativeModules,
   StyleSheet,
-  Text,
   TouchableOpacity,
+  Vibration,
   View,
 } from 'react-native';
 import usePreferenceStore from '../stores/preferenceStore';
 import PopupModal from '../components/common/PopupModal';
 import useRouteStore from '../stores/routeStore';
+// @ts-ignore
 import BackgroundTimer from 'react-native-background-timer';
-import Sound from 'react-native-sound';
-import {defaultStyles} from '../utils/DefaultStyles';
 import {Pause} from '../icons/svg';
+import CircularProgress from 'react-native-circular-progress-indicator';
+import Sound from 'react-native-sound';
 
 const {AudioSessionManager} = NativeModules;
 
@@ -35,22 +36,31 @@ const WorkoutTimerProvider: React.FC<PropsWithChildren> = props => {
     BackgroundTimer.runBackgroundTimer(() => {
       setCountdown(secs => {
         // Decrement every second
-        if (secs > 0) {
+        if (!isPaused && secs > 0) {
           return secs - 1;
         } else if (secs === 0) {
           // Set to a negative to 'disable the timer'
           return -1;
         }
-        return -1;
+        return secs;
       });
     }, 1000);
   };
+
+  useEffect(() => {
+    if (isPaused) {
+      BackgroundTimer.stopBackgroundTimer();
+    } else if (timerActive) {
+      toggleTimer();
+    }
+  }, [isPaused]);
 
   // Checks if countdown = 0 and stop timer if so
   useEffect(() => {
     if (countdown === -1) {
       BackgroundTimer.stopBackgroundTimer();
       startTimer(false);
+      Vibration.vibrate(10, false);
       playSound();
     }
   }, [countdown]);
@@ -75,10 +85,10 @@ const WorkoutTimerProvider: React.FC<PropsWithChildren> = props => {
         case 'draggablebottomclose':
         case 'workoutdetail':
         case 'workoutsoverview':
-          setHeight(210);
+          setHeight(220);
           return;
         default:
-          setHeight(150);
+          setHeight(160);
           return;
       }
     }
@@ -126,11 +136,19 @@ const WorkoutTimerProvider: React.FC<PropsWithChildren> = props => {
         <TouchableOpacity
           // Conditionally hide button offscreen
           style={[styles.countDownCircle, {bottom: hideTimer ? -100 : height}]}
-          onPress={() => setIsPaused(!isPaused)}
+          onPress={() => {
+            setIsPaused(!isPaused);
+          }}
           onLongPress={() => setShowClearCountdownPopup(true)}>
           <View style={styles.innerCircleCountdown}>
             {!isPaused ? (
-              <Text style={defaultStyles.whiteTextColor}>{countdown}</Text>
+              <CircularProgress
+                value={countdown}
+                maxValue={
+                  preference?.timerDuration || Constants.DEFAULT_DURATION
+                }
+                radius={30}
+              />
             ) : (
               <Pause />
             )}
@@ -145,13 +163,13 @@ const WorkoutTimerProvider: React.FC<PropsWithChildren> = props => {
 const styles = StyleSheet.create({
   countDownCircle: {
     position: 'absolute',
-    right: 30,
+    right: 35,
     zIndex: 100,
   },
   innerCircleCountdown: {
     backgroundColor: Constants.PRIMARY_GRADIENT[0],
-    width: 50,
-    height: 50,
+    width: 45,
+    height: 45,
     borderRadius: 9999,
     justifyContent: 'center',
     alignItems: 'center',
