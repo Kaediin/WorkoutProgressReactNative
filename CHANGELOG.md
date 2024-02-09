@@ -1,3 +1,9 @@
+## [0.1.6]
+
+### Changed
+
+- #66: Timer now runs in the background with improved audio performance
+
 ## [v0.1.5]
 
 ### Added
