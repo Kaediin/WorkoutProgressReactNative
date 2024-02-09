@@ -11,6 +11,14 @@
   // They will be passed down to the ViewController used by React Native.
   self.initialProps = @{};
 
+   NSError *sessionError = nil;
+      [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback
+                                       withOptions:AVAudioSessionCategoryOptionDuckOthers
+                                             error:&sessionError];
+      if (sessionError) {
+          NSLog(@"Error setting audio session category: %@", sessionError);
+      }
+
   return [super application:application didFinishLaunchingWithOptions:launchOptions];
 }
 

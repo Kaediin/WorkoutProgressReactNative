@@ -1,17 +1,22 @@
 import React, {PropsWithChildren, useEffect, useState} from 'react';
 import useTimerStore from '../stores/timerStore';
 import Constants from '../utils/Constants';
-import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {
-  ColorFormat,
-  CountdownCircleTimer,
-} from 'react-native-countdown-circle-timer';
-import RNReactNativeHapticFeedback from 'react-native-haptic-feedback';
-import {defaultStyles} from '../utils/DefaultStyles';
-import {Pause} from '../icons/svg';
+  NativeModules,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import usePreferenceStore from '../stores/preferenceStore';
 import PopupModal from '../components/common/PopupModal';
 import useRouteStore from '../stores/routeStore';
+import BackgroundTimer from 'react-native-background-timer';
+import Sound from 'react-native-sound';
+import {defaultStyles} from '../utils/DefaultStyles';
+import {Pause} from '../icons/svg';
+
+const {AudioSessionManager} = NativeModules;
 
 const WorkoutTimerProvider: React.FC<PropsWithChildren> = props => {
   const preference = usePreferenceStore(state => state.preference);
@@ -19,23 +24,49 @@ const WorkoutTimerProvider: React.FC<PropsWithChildren> = props => {
   const startTimer = useTimerStore(state => state.startTimer);
   const timerActive = useTimerStore(state => state.timerActive);
   const [countdown, setCountdown] = useState<number>(0);
-  const [isPaused, setIsPaused] = useState(false);
   const [showClearCountdownPopup, setShowClearCountdownPopup] = useState(false);
   const routeName = useRouteStore(state => state.routeName);
 
   const [height, setHeight] = useState<number>(220);
 
+  const [isPaused, setIsPaused] = useState(false);
+
+  const toggleTimer = () => {
+    BackgroundTimer.runBackgroundTimer(() => {
+      setCountdown(secs => {
+        // Decrement every second
+        if (secs > 0) {
+          return secs - 1;
+        } else if (secs === 0) {
+          // Set to a negative to 'disable the timer'
+          return -1;
+        }
+        return -1;
+      });
+    }, 1000);
+  };
+
+  // Checks if countdown = 0 and stop timer if so
+  useEffect(() => {
+    if (countdown === -1) {
+      BackgroundTimer.stopBackgroundTimer();
+      startTimer(false);
+      playSound();
+    }
+  }, [countdown]);
+
   useEffect(() => {
     if (timerActive) {
       setCountdown(preference?.timerDuration || Constants.DEFAULT_DURATION);
       setIsPaused(false);
+      toggleTimer();
     } else {
+      BackgroundTimer.stopBackgroundTimer();
       setCountdown(0);
     }
   }, [timerActive]);
 
   useEffect(() => {
-    console.log(routeName, timerActive);
     if (routeName && timerActive) {
       switch (routeName.toLowerCase()) {
         case 'draggablebottomopen':
@@ -54,29 +85,28 @@ const WorkoutTimerProvider: React.FC<PropsWithChildren> = props => {
   }, [routeName, timerActive]);
 
   const playSound = (): void => {
-    const Sound = require('react-native-sound');
-    // try alarm instead, see if that works.
-    Sound.setCategory('Ambient', true);
-    // @ts-ignore
-    const completeSound = new Sound('done.mp3', Sound.MAIN_BUNDLE, error => {
+    // Activate the audio session before playing the sound. This ducks the volume of media currently playing
+    AudioSessionManager.activateAudioSession();
+
+    Sound.setCategory('Playback', true);
+    const sound = new Sound('done.mp3', Sound.MAIN_BUNDLE, error => {
       if (error) {
-        console.log('failed to load the sound', error);
+        console.log('Failed to load the sound', error);
         return;
       }
-
-      completeSound.setVolume(1);
-
-      // @ts-ignore
-      completeSound.play(success => {
+      // Play the sound with an option to mix with other sounds
+      sound.play(success => {
         if (success) {
-          console.log('successfully finished playing');
+          console.log('Successfully finished playing');
         } else {
-          console.log('playback failed due to audio decoding errors');
+          console.log('Playback failed due to audio decoding errors');
         }
+        sound.release(); // Release the audio player resource once the sound is finished
+
+        // Deactivate the audio session after the sound finishes playing. This highers the volume of the media playing
+        AudioSessionManager.deactivateAudioSession();
       });
     });
-
-    completeSound.release();
   };
 
   return (
@@ -89,7 +119,6 @@ const WorkoutTimerProvider: React.FC<PropsWithChildren> = props => {
         onConfirm={() => {
           startTimer(false);
           setCountdown(0);
-          setIsPaused(false);
           setShowClearCountdownPopup(false);
         }}
       />
@@ -99,35 +128,13 @@ const WorkoutTimerProvider: React.FC<PropsWithChildren> = props => {
           style={[styles.countDownCircle, {bottom: hideTimer ? -100 : height}]}
           onPress={() => setIsPaused(!isPaused)}
           onLongPress={() => setShowClearCountdownPopup(true)}>
-          <CountdownCircleTimer
-            duration={countdown}
-            // @ts-ignore
-            colors={Constants.TIMER_GRADIENT}
-            size={58}
-            strokeWidth={5}
-            trailColor={Constants.PRIMARY_GRADIENT[0] as ColorFormat}
-            onComplete={() => {
-              startTimer(false);
-              setCountdown(0);
-              RNReactNativeHapticFeedback.trigger('impactHeavy', {
-                enableVibrateFallback: true,
-                ignoreAndroidSystemSettings: true,
-              });
-              playSound();
-            }}
-            isPlaying={!isPaused}>
-            {({remainingTime}) => (
-              <View style={styles.innerCircleCountdown}>
-                {!isPaused ? (
-                  <Text style={defaultStyles.whiteTextColor}>
-                    {remainingTime}
-                  </Text>
-                ) : (
-                  <Pause />
-                )}
-              </View>
+          <View style={styles.innerCircleCountdown}>
+            {!isPaused ? (
+              <Text style={defaultStyles.whiteTextColor}>{countdown}</Text>
+            ) : (
+              <Pause />
             )}
-          </CountdownCircleTimer>
+          </View>
         </TouchableOpacity>
       )}
       {props.children}

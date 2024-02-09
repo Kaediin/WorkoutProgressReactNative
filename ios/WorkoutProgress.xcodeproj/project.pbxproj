@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		00E356F31AD99517003FC87E /* WorkoutProgressTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* WorkoutProgressTests.m */; };
 		01017B2A2B2DBF75006FBDA5 /* done.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 01017B292B2DBF75006FBDA5 /* done.mp3 */; };
+		014D687C2B7522F30016E83B /* AudioSessionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 014D687B2B7522F30016E83B /* AudioSessionManager.m */; };
+		014D687D2B7522F30016E83B /* AudioSessionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 014D687B2B7522F30016E83B /* AudioSessionManager.m */; };
 		01DDD6C52A60017C002AB598 /* assets in Resources */ = {isa = PBXBuildFile; fileRef = 01DDD6C32A60017C002AB598 /* assets */; };
 		01DDD6C62A60017C002AB598 /* main.jsbundle in Resources */ = {isa = PBXBuildFile; fileRef = 01DDD6C42A60017C002AB598 /* main.jsbundle */; };
 		0C80B921A6F3F58F76C31292 /* libPods-WorkoutProgress.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5DCACB8F33CDC322A6C60F78 /* libPods-WorkoutProgress.a */; };
@@ -34,6 +36,8 @@
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		00E356F21AD99517003FC87E /* WorkoutProgressTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = WorkoutProgressTests.m; sourceTree = "<group>"; };
 		01017B292B2DBF75006FBDA5 /* done.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = done.mp3; sourceTree = "<group>"; };
+		014D687A2B7522AF0016E83B /* AudioSessionManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AudioSessionManager.h; sourceTree = "<group>"; };
+		014D687B2B7522F30016E83B /* AudioSessionManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AudioSessionManager.m; sourceTree = "<group>"; };
 		01DDD6C32A60017C002AB598 /* assets */ = {isa = PBXFileReference; lastKnownFileType = folder; path = assets; sourceTree = "<group>"; };
 		01DDD6C42A60017C002AB598 /* main.jsbundle */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = main.jsbundle; sourceTree = "<group>"; };
 		13B07F961A680F5B00A75B9A /* WorkoutProgress.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WorkoutProgress.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -122,6 +126,8 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				014D687B2B7522F30016E83B /* AudioSessionManager.m */,
+				014D687A2B7522AF0016E83B /* AudioSessionManager.h */,
 				01017B292B2DBF75006FBDA5 /* done.mp3 */,
 				01DDD6C32A60017C002AB598 /* assets */,
 				01DDD6C42A60017C002AB598 /* main.jsbundle */,
@@ -432,6 +438,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				00E356F31AD99517003FC87E /* WorkoutProgressTests.m in Sources */,
+				014D687D2B7522F30016E83B /* AudioSessionManager.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -441,6 +448,7 @@
 			files = (
 				13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
+				014D687C2B7522F30016E83B /* AudioSessionManager.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
