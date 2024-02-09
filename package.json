@@ -1,11 +1,11 @@
 {
   "name": "workoutprogress",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "private": true,
   "scripts": {
     "android": "ENVFILE=.env.development react-native run-android",
     "ios": "ENVFILE=.env.development react-native run-ios --simulator=\"iPhone 14 Pro Max\"",
-    "ios-dev": "ENVFILE=.env.development react-native run-ios --scheme \"WorkoutProgressDev\" --simulator=\"iPhone 14 Pro Max\"",
+    "ios-dev": "ENVFILE=.env.development react-native run-ios --scheme \"WorkoutProgressDev\" --device=\"Kaedin\"",
     "lint": "eslint .",
     "start": "react-native start",
     "test": "jest",
@@ -36,6 +36,8 @@
     "moment": "^2.29.4",
     "react": "18.2.0",
     "react-native": "0.71.7",
+    "react-native-background-timer": "^2.4.1",
+    "react-native-circular-progress-indicator": "^4.4.2",
     "react-native-config": "^1.5.1",
     "react-native-context-menu-view": "^1.9.2",
     "react-native-countdown-circle-timer": "^3.2.1",
