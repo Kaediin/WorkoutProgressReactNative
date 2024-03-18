@@ -6,4 +6,5 @@ fragment Preference on Preference {
     autoAdjustWorkoutMuscleGroups
     timerDuration
     autoStartTimer
+    playTimerCompletionSound
 }

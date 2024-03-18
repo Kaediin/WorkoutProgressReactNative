@@ -127,6 +127,7 @@ export type Preference = {
   defaultRepetitions?: Maybe<Scalars['Int']>;
   distanceUnit?: Maybe<LogUnit>;
   hideUnitSelector?: Maybe<Scalars['Boolean']>;
+  playTimerCompletionSound?: Maybe<Scalars['Boolean']>;
   timerDuration?: Maybe<Scalars['Int']>;
   weightUnit?: Maybe<LogUnit>;
 };
@@ -293,6 +294,7 @@ export type PreferenceInput = {
   defaultRepetitions?: InputMaybe<Scalars['Int']>;
   distanceUnit?: InputMaybe<LogUnit>;
   hideUnitSelector?: InputMaybe<Scalars['Boolean']>;
+  playTimerCompletionSound?: InputMaybe<Scalars['Boolean']>;
   timerDuration?: InputMaybe<Scalars['Int']>;
   weightUnit?: InputMaybe<LogUnit>;
 };

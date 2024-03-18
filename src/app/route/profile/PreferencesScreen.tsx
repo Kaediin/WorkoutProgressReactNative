@@ -40,6 +40,7 @@ const PreferencesScreen: React.FC = () => {
         autoAdjustWorkoutMuscleGroups: preference.autoAdjustWorkoutMuscleGroups,
         timerDuration: preference.timerDuration,
         autoStartTimer: preference.autoStartTimer,
+        playTimerCompletionSound: preference.playTimerCompletionSound,
       });
     }
   }, [preference]);
@@ -314,6 +315,42 @@ const PreferencesScreen: React.FC = () => {
                       input: {
                         ...preferenceInput,
                         autoStartTimer: value,
+                      },
+                    },
+                  });
+                }}
+                ios_backgroundColor={'red'}
+              />
+            </View>
+          </View>
+          <View
+            style={[
+              defaultStyles.spaceBetween,
+              styles.padding,
+              styles.marginTop,
+            ]}>
+            <View style={styles.labelContainer}>
+              <Text style={defaultStyles.whiteTextColor}>
+                Play sound after timer completes
+              </Text>
+              <Text style={defaultStyles.footnote}>
+                Automatically play a sound through media that marks the
+                completion of the timer which is active in the background
+              </Text>
+            </View>
+            <View style={styles.controlContainer}>
+              <Switch
+                value={preferenceInput?.playTimerCompletionSound ?? true}
+                onValueChange={value => {
+                  setPreferenceInput(prevState => ({
+                    ...prevState,
+                    playTimerCompletionSound: value,
+                  }));
+                  updateMyPreferences({
+                    variables: {
+                      input: {
+                        ...preferenceInput,
+                        playTimerCompletionSound: value,
                       },
                     },
                   });

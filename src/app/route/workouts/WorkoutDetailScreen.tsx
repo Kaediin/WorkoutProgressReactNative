@@ -469,6 +469,9 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
                           },
                         },
                       });
+                      if (preference?.autoStartTimer) {
+                        toggleTimer(true);
+                      }
                     }
                   }}
                   onRemoveLog={setDeleteLogId}

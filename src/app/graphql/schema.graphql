@@ -120,6 +120,7 @@ type Preference {
   defaultRepetitions: Int
   distanceUnit: LogUnit
   hideUnitSelector: Boolean
+  playTimerCompletionSound: Boolean
   timerDuration: Int
   weightUnit: LogUnit
 }
@@ -130,6 +131,7 @@ input PreferenceInput {
   defaultRepetitions: Int
   distanceUnit: LogUnit
   hideUnitSelector: Boolean
+  playTimerCompletionSound: Boolean
   timerDuration: Int
   weightUnit: LogUnit
 }
