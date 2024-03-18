@@ -165,6 +165,7 @@ export type Mutation = {
   reLogLatestLog?: Maybe<Workout>;
   reLogLog?: Maybe<Workout>;
   removeExerciseLog: Scalars['Boolean'];
+  restartWorkout: Workout;
   runFetchWorkoutsTask?: Maybe<Scalars['Boolean']>;
   updateExercise?: Maybe<Exercise>;
   updateExerciseLog?: Maybe<Workout>;
@@ -227,6 +228,11 @@ export type MutationReLogLogArgs = {
 export type MutationRemoveExerciseLogArgs = {
   autoAdjust: Scalars['Boolean'];
   exerciseLogId: Scalars['String'];
+};
+
+
+export type MutationRestartWorkoutArgs = {
+  id: Scalars['ID'];
 };
 
 
@@ -410,6 +416,13 @@ export type EndWorkoutMutationVariables = Exact<{
 
 
 export type EndWorkoutMutation = { __typename?: 'Mutation', endWorkout?: { __typename?: 'Workout', id: string, name: string, muscleGroups: Array<MuscleGroup>, startDateTime?: any | null, endDateTime?: any | null, active?: boolean | null, remark?: string | null } | null };
+
+export type RestartWorkoutMutationVariables = Exact<{
+  workoutId: Scalars['ID'];
+}>;
+
+
+export type RestartWorkoutMutation = { __typename?: 'Mutation', restartWorkout: { __typename?: 'Workout', id: string, name: string, muscleGroups: Array<MuscleGroup>, startDateTime?: any | null, endDateTime?: any | null, active?: boolean | null, remark?: string | null } };
 
 export type StartWorkoutMutationVariables = Exact<{
   input: WorkoutInput;
@@ -807,6 +820,33 @@ export function useEndWorkoutMutation(baseOptions?: Apollo.MutationHookOptions<E
 export type EndWorkoutMutationHookResult = ReturnType<typeof useEndWorkoutMutation>;
 export type EndWorkoutMutationResult = Apollo.MutationResult<EndWorkoutMutation>;
 export type EndWorkoutMutationOptions = Apollo.BaseMutationOptions<EndWorkoutMutation, EndWorkoutMutationVariables>;
+export const RestartWorkoutDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"restartWorkout"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"workoutId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"restartWorkout"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"workoutId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"WorkoutShort"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"WorkoutShort"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Workout"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"muscleGroups"}},{"kind":"Field","name":{"kind":"Name","value":"startDateTime"}},{"kind":"Field","name":{"kind":"Name","value":"endDateTime"}},{"kind":"Field","name":{"kind":"Name","value":"active"}},{"kind":"Field","name":{"kind":"Name","value":"remark"}}]}}]} as unknown as DocumentNode;
+export type RestartWorkoutMutationFn = Apollo.MutationFunction<RestartWorkoutMutation, RestartWorkoutMutationVariables>;
+
+/**
+ * __useRestartWorkoutMutation__
+ *
+ * To run a mutation, you first call `useRestartWorkoutMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRestartWorkoutMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [restartWorkoutMutation, { data, loading, error }] = useRestartWorkoutMutation({
+ *   variables: {
+ *      workoutId: // value for 'workoutId'
+ *   },
+ * });
+ */
+export function useRestartWorkoutMutation(baseOptions?: Apollo.MutationHookOptions<RestartWorkoutMutation, RestartWorkoutMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<RestartWorkoutMutation, RestartWorkoutMutationVariables>(RestartWorkoutDocument, options);
+      }
+export type RestartWorkoutMutationHookResult = ReturnType<typeof useRestartWorkoutMutation>;
+export type RestartWorkoutMutationResult = Apollo.MutationResult<RestartWorkoutMutation>;
+export type RestartWorkoutMutationOptions = Apollo.BaseMutationOptions<RestartWorkoutMutation, RestartWorkoutMutationVariables>;
 export const StartWorkoutDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"startWorkout"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"WorkoutInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"meStartWorkout"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"WorkoutShort"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"WorkoutShort"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Workout"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"muscleGroups"}},{"kind":"Field","name":{"kind":"Name","value":"startDateTime"}},{"kind":"Field","name":{"kind":"Name","value":"endDateTime"}},{"kind":"Field","name":{"kind":"Name","value":"active"}},{"kind":"Field","name":{"kind":"Name","value":"remark"}}]}}]} as unknown as DocumentNode;
 export type StartWorkoutMutationFn = Apollo.MutationFunction<StartWorkoutMutation, StartWorkoutMutationVariables>;
 

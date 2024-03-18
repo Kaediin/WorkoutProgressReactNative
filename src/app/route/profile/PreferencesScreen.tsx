@@ -218,51 +218,6 @@ const PreferencesScreen: React.FC = () => {
               />
             </View>
           </View>
-          <Text
-            style={[
-              defaultStyles.container,
-              defaultStyles.marginTop,
-              defaultStyles.whiteTextColor,
-              defaultStyles.h4,
-            ]}>
-            Workouts
-          </Text>
-          <View
-            style={[
-              defaultStyles.spaceBetween,
-              styles.padding,
-              defaultStyles.marginBottom,
-            ]}>
-            <View style={styles.labelContainer}>
-              <Text style={defaultStyles.whiteTextColor}>
-                Auto adjust workout muscle groups
-              </Text>
-              <Text style={defaultStyles.footnote}>
-                Automatically determine the muscle groups based on the logged
-                exercises
-              </Text>
-            </View>
-            <View style={styles.controlContainer}>
-              <Switch
-                value={preferenceInput?.autoAdjustWorkoutMuscleGroups ?? false}
-                onValueChange={value => {
-                  setPreferenceInput(prevState => ({
-                    ...prevState,
-                    autoAdjustWorkoutMuscleGroups: value,
-                  }));
-                  updateMyPreferences({
-                    variables: {
-                      input: {
-                        ...preferenceInput,
-                        autoAdjustWorkoutMuscleGroups: value,
-                      },
-                    },
-                  });
-                }}
-                ios_backgroundColor={'red'}
-              />
-            </View>
-          </View>
           <Text style={[defaultStyles.whiteTextColor, defaultStyles.h4]}>
             Timer
           </Text>

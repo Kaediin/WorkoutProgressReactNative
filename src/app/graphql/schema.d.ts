@@ -162,6 +162,7 @@ export type Mutation = {
   reLogLatestLog?: Maybe<Workout>;
   reLogLog?: Maybe<Workout>;
   removeExerciseLog: Scalars['Boolean'];
+  restartWorkout: Workout;
   runFetchWorkoutsTask?: Maybe<Scalars['Boolean']>;
   updateExercise?: Maybe<Exercise>;
   updateExerciseLog?: Maybe<Workout>;
@@ -224,6 +225,11 @@ export type MutationReLogLogArgs = {
 export type MutationRemoveExerciseLogArgs = {
   autoAdjust: Scalars['Boolean'];
   exerciseLogId: Scalars['String'];
+};
+
+
+export type MutationRestartWorkoutArgs = {
+  id: Scalars['ID'];
 };
 
 
