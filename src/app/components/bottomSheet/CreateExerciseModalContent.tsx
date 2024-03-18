@@ -31,10 +31,10 @@ const CreateExerciseModalContent: React.FC<
 > = props => {
   const [loading, setLoading] = useState(false);
   const [exerciseName, setExerciseName] = useState(
-    props.existingExercise?.name || '',
+    props.existingExercise?.name ?? '',
   );
   const [exerciseNotes, setExerciseNotes] = useState(
-    props.existingExercise?.notes || '',
+    props.existingExercise?.notes ?? '',
   );
   const [primaryMuscleGroups, setPrimaryMuscleGroups] = useState<MuscleGroup[]>(
     props.existingExercise?.primaryMuscles?.filter(nonNullable) || [],
@@ -119,6 +119,7 @@ const CreateExerciseModalContent: React.FC<
       setDefaultAppliedWeight(
         props.existingExercise.defaultAppliedWeight || undefined,
       );
+      setExerciseNotes(props.existingExercise?.notes ?? '');
     } else {
       setExerciseName('');
       setPrimaryMuscleGroups([]);
@@ -148,7 +149,7 @@ const CreateExerciseModalContent: React.FC<
               style={defaultStyles.textInput}
               placeholderTextColor={'darkgrey'}
               placeholder={'Name'}
-              value={exerciseName}
+              defaultValue={exerciseName}
               onChangeText={setExerciseName}
               maxLength={Constants.TEXT_INPUT_MAX_LENGTH}
             />
