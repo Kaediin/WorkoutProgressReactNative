@@ -35,6 +35,8 @@ const WorkoutTimerProvider: React.FC<PropsWithChildren> = props => {
   const toggleTimer = () => {
     BackgroundTimer.runBackgroundTimer(() => {
       setCountdown(secs => {
+        // Needed to keep the app active in background
+        playSilence();
         // Decrement every second
         if (!isPaused && secs > 0) {
           return secs - 1;
@@ -93,6 +95,26 @@ const WorkoutTimerProvider: React.FC<PropsWithChildren> = props => {
       }
     }
   }, [routeName, timerActive]);
+
+  const playSilence = (): void => {
+    Sound.setCategory('Playback', true);
+    const sound = new Sound('silence.mp3', Sound.MAIN_BUNDLE, error => {
+      if (error) {
+        console.log('Failed to load the sound', error);
+        return;
+      }
+      // Play the sound with an option to mix with other sounds
+      sound.play(success => {
+        // AudioSessionManager.deactivateAudioSession();
+        if (success) {
+          console.log('Successfully finished playing silence');
+        } else {
+          console.log('Playback failed due to audio decoding errors');
+        }
+        sound.release(); // Release the audio player resource once the sound is finished
+      });
+    });
+  };
 
   const playSound = (): void => {
     // Activate the audio session before playing the sound. This ducks the volume of media currently playing

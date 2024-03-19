@@ -13,7 +13,7 @@
 
    NSError *sessionError = nil;
       [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback
-                                       withOptions:AVAudioSessionCategoryOptionDuckOthers
+                                       withOptions:AVAudioSessionCategoryOptionMixWithOthers
                                              error:&sessionError];
       if (sessionError) {
           NSLog(@"Error setting audio session category: %@", sessionError);
