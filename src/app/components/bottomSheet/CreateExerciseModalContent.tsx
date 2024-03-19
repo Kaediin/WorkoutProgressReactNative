@@ -210,7 +210,8 @@ const CreateExerciseModalContent: React.FC<
               bottomSheetModalRefMuscleSelect?.current?.dismiss();
               bottomSheetModalRefMain?.current?.present();
             }}
-            rightText={'Select'}>
+            rightText={'Select'}
+            index={70}>
             <SelectMuscleGroups
               preselected={
                 muscleSelectType === 'PRIMARY'
