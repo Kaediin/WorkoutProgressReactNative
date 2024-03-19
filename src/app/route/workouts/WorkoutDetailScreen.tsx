@@ -79,6 +79,7 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
   const [disableLogButton, setDisableLogButton] = useState(false);
   const [showPicker, setShowPicker] = useState(true);
   const [deleteLogId, setDeleteLogId] = useState('');
+  const [endWorkoutClicked, setEndWorkoutClicked] = useState(false);
   const [createExerciseModal, setCreateExerciseModal] = useState(false);
   const [workout, setWorkout] = useState<WorkoutLongFragment>();
   const [latestLogs, setLatestLogs] = useState<ExerciseLogFragment[]>([]);
@@ -187,7 +188,7 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
             <EndWorkout
               label={'End Workout'}
               color={'red'}
-              onPress={() => doEndWorkout(workoutData?.workoutById?.id)}
+              onPress={() => setEndWorkoutClicked(true)}
             />
           ),
         });
@@ -516,68 +517,78 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
               });
             }}
           />
+          <PopupModal
+            overrideTitle={'End workout'}
+            message={'Are you sure you want to end this workout?'}
+            isOpen={Boolean(endWorkoutClicked)}
+            type={'WARNING'}
+            onDismiss={() => setEndWorkoutClicked(false)}
+            onConfirm={() => doEndWorkout(workoutData?.workoutById?.id)}
+          />
         </View>
       ) : (
         <></>
       )}
 
-      {workout && (
-        <FloatingButton
-          actions={getFabActions()}
-          onClose={() => {
-            toggleTimerVisibility(false);
-          }}
-          onOpen={() => {
-            toggleTimerVisibility(true);
-          }}
-          onPressAction={name => {
-            switch (name) {
-              case Fab.TIMER:
-                toggleTimer(!timerActive);
-                break;
-              case Fab.RELOG:
-                reLogLatestLog({
-                  variables: {
-                    workoutId: workout.id,
-                    zonedDateTimeString: moment().toISOString(true),
-                    autoAdjust,
-                  },
-                });
-                if (preference?.autoStartTimer) {
-                  toggleTimer(true);
-                }
-                break;
-              case Fab.NEWLOG:
-                // Enable log button
-                setDisableLogButton(false);
-
-                // Set the exercise log to be the last logged exercise of this workout
-                const lastLogged = getLatestCurrentLog();
-                if (lastLogged) {
-                  setExerciseLog({
-                    zonedDateTimeString: lastLogged.logDateTime,
-                    exerciseId: lastLogged.exercise.id,
-                    repetitions: lastLogged.repetitions,
-                    logValue: lastLogged.logValue,
-                    warmup: lastLogged.warmup ?? false,
-                    remark: lastLogged.remark,
+      {workout &&
+        workoutData?.workoutById?.active &&
+        workoutData?.workoutById?.id && (
+          <FloatingButton
+            actions={getFabActions()}
+            onClose={() => {
+              toggleTimerVisibility(false);
+            }}
+            onOpen={() => {
+              toggleTimerVisibility(true);
+            }}
+            onPressAction={name => {
+              switch (name) {
+                case Fab.TIMER:
+                  toggleTimer(!timerActive);
+                  break;
+                case Fab.RELOG:
+                  reLogLatestLog({
+                    variables: {
+                      workoutId: workout.id,
+                      zonedDateTimeString: moment().toISOString(true),
+                      autoAdjust,
+                    },
                   });
-                }
+                  if (preference?.autoStartTimer) {
+                    toggleTimer(true);
+                  }
+                  break;
+                case Fab.NEWLOG:
+                  // Enable log button
+                  setDisableLogButton(false);
 
-                if (lastLogged?.exercise?.id) {
-                  // Get latest logs from previous workout
-                  presetExerciseLogWithThisWorkoutAndUpdateLastLogged(
-                    lastLogged.exercise.id,
-                  );
-                }
-                // Show bottom sheet
-                toggleBottomSheetRef(true);
+                  // Set the exercise log to be the last logged exercise of this workout
+                  const lastLogged = getLatestCurrentLog();
+                  if (lastLogged) {
+                    setExerciseLog({
+                      zonedDateTimeString: lastLogged.logDateTime,
+                      exerciseId: lastLogged.exercise.id,
+                      repetitions: lastLogged.repetitions,
+                      logValue: lastLogged.logValue,
+                      warmup: lastLogged.warmup ?? false,
+                      remark: lastLogged.remark,
+                    });
+                  }
 
-                break;
-            }
-          }}
-        />
-      )}
+                  if (lastLogged?.exercise?.id) {
+                    // Get latest logs from previous workout
+                    presetExerciseLogWithThisWorkoutAndUpdateLastLogged(
+                      lastLogged.exercise.id,
+                    );
+                  }
+                  // Show bottom sheet
+                  toggleBottomSheetRef(true);
+
+                  break;
+              }
+            }}
+          />
+        )}
       <BottomSheetModalProvider>
         <CreateExerciseModalContent
           active={createExerciseModal}

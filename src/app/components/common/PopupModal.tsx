@@ -14,6 +14,7 @@ interface PopupModalProps {
   onConfirm?: () => void;
   onDismiss: () => void;
   overrideGradient?: (string | number)[];
+  overrideTitle?: string;
 }
 
 const PopupModal: React.FC<PopupModalProps> = props => {
@@ -33,7 +34,11 @@ const PopupModal: React.FC<PopupModalProps> = props => {
             ? Constants.ERROR_GRADIENT
             : ['#ffffff', '#cccccc']
         }>
-        <Text style={defaultStyles.h1}>{enumToReadableString(props.type)}</Text>
+        <Text style={defaultStyles.h1}>
+          {props.overrideTitle
+            ? props.overrideTitle
+            : enumToReadableString(props.type)}
+        </Text>
         <Text style={[defaultStyles.whiteTextColor, defaultStyles.container]}>
           {props.message}
         </Text>
