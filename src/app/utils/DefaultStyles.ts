@@ -115,4 +115,7 @@ export const defaultStyles = StyleSheet.create({
     shadowRadius: 2,
     elevation: 5,
   },
+  blackTextColor: {
+    color: 'black',
+  },
 });

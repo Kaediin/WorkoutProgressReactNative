@@ -1,0 +1,5 @@
+query latestLogsByExerciseIdAndNotWorkoutId($id: ID!, $workoutId: String!) {
+    latestLogsByExerciseIdAndNotWorkoutId(exerciseId: $id, workoutId: $workoutId) {
+        ...ExerciseLog
+    }
+}
