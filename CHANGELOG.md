@@ -1,3 +1,28 @@
+## [0.1.7]
+
+### Added
+
+- #68: When logging an exercise there are now buttons representing the logs of the previous sets allowing the user to
+  easily log
+- #68: FAB only appears on active workouts
+- #68: Exercise notes appear when logging and on details page
+- #68: Confirmation popup now shows when ending workout
+- #69: Filter button to filter exercises on muscle groups
+- #70: Preference entry for playing sound on timer completion
+- #71: Endpoint to restart workout
+
+### Changed
+
+- #68: Last logged data on logging bottom sheet stays even after logging in the current workout
+- #68: The last logged exercise is automatically preset when navigating through the picker
+- #71: Auto adjust workout muscle groups is now enabled by default and cannot be disabled
+
+### Fixed
+
+- #70: Timer not auto starting when logging through repeat button in context action
+- #72: Exercise not showing notes when editing
+- #74: App no longer terminates in background
+
 ## [0.1.6]
 
 ### Changed

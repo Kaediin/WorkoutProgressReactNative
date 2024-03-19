@@ -191,7 +191,6 @@ const WorkoutsOverviewScreen: React.FC<Props> = ({navigation}) => {
     workout: WorkoutShortFragment,
   ): Array<ContextMenuAction> => {
     const actions: Array<ContextMenuAction> = [
-      {title: ContextMenuActions.DELETE},
       {title: ContextMenuActions.EDIT},
     ];
     if (!hasActiveWorkout) {
@@ -200,6 +199,7 @@ const WorkoutsOverviewScreen: React.FC<Props> = ({navigation}) => {
     if (workout.active) {
       actions.push({destructive: true, title: ContextMenuActions.END_WORKOUT});
     }
+    actions.push({destructive: true, title: ContextMenuActions.DELETE});
     return actions;
   };
 

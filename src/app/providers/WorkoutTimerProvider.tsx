@@ -63,7 +63,9 @@ const WorkoutTimerProvider: React.FC<PropsWithChildren> = props => {
       BackgroundTimer.stopBackgroundTimer();
       startTimer(false);
       Vibration.vibrate(10, false);
-      playSound();
+      if (preference?.playTimerCompletionSound) {
+        playSound();
+      }
     }
   }, [countdown]);
 
