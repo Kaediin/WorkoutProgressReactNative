@@ -16,6 +16,7 @@ export type Scalars = {
 export type Query = {
   __typename?: 'Query';
   latestLogsByExerciseId?: Maybe<Array<Maybe<ExerciseLog>>>;
+  latestLogsByExerciseIdAndNotWorkoutId?: Maybe<Array<Maybe<ExerciseLog>>>;
   me?: Maybe<User>;
   meHasActiveWorkout: Scalars['Boolean'];
   myExercises?: Maybe<Array<Exercise>>;
@@ -29,6 +30,12 @@ export type Query = {
 
 export type QueryLatestLogsByExerciseIdArgs = {
   exerciseId: Scalars['ID'];
+};
+
+
+export type QueryLatestLogsByExerciseIdAndNotWorkoutIdArgs = {
+  exerciseId: Scalars['ID'];
+  workoutId: Scalars['String'];
 };
 
 

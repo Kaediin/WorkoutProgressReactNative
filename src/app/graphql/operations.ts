@@ -19,6 +19,7 @@ export type Scalars = {
 export type Query = {
   __typename?: 'Query';
   latestLogsByExerciseId?: Maybe<Array<Maybe<ExerciseLog>>>;
+  latestLogsByExerciseIdAndNotWorkoutId?: Maybe<Array<Maybe<ExerciseLog>>>;
   me?: Maybe<User>;
   meHasActiveWorkout: Scalars['Boolean'];
   myExercises?: Maybe<Array<Exercise>>;
@@ -32,6 +33,12 @@ export type Query = {
 
 export type QueryLatestLogsByExerciseIdArgs = {
   exerciseId: Scalars['ID'];
+};
+
+
+export type QueryLatestLogsByExerciseIdAndNotWorkoutIdArgs = {
+  exerciseId: Scalars['ID'];
+  workoutId: Scalars['String'];
 };
 
 
@@ -452,6 +459,14 @@ export type LatestLogsByExerciseIdQueryVariables = Exact<{
 
 
 export type LatestLogsByExerciseIdQuery = { __typename?: 'Query', latestLogsByExerciseId?: Array<{ __typename?: 'ExerciseLog', id: string, logDateTime: any, repetitions: number, warmup?: boolean | null, remark?: string | null, exercise: { __typename?: 'Exercise', id: string, name: string, primaryMuscles?: Array<MuscleGroup | null> | null, secondaryMuscles?: Array<MuscleGroup | null> | null, notes?: string | null, defaultAppliedWeight?: { __typename?: 'LogValue', unit: LogUnit, base: number, fraction?: number | null } | null }, logValue: { __typename?: 'LogValue', unit: LogUnit, base: number, fraction?: number | null } } | null> | null };
+
+export type LatestLogsByExerciseIdAndNotWorkoutIdQueryVariables = Exact<{
+  id: Scalars['ID'];
+  workoutId: Scalars['String'];
+}>;
+
+
+export type LatestLogsByExerciseIdAndNotWorkoutIdQuery = { __typename?: 'Query', latestLogsByExerciseIdAndNotWorkoutId?: Array<{ __typename?: 'ExerciseLog', id: string, logDateTime: any, repetitions: number, warmup?: boolean | null, remark?: string | null, exercise: { __typename?: 'Exercise', id: string, name: string, primaryMuscles?: Array<MuscleGroup | null> | null, secondaryMuscles?: Array<MuscleGroup | null> | null, notes?: string | null, defaultAppliedWeight?: { __typename?: 'LogValue', unit: LogUnit, base: number, fraction?: number | null } | null }, logValue: { __typename?: 'LogValue', unit: LogUnit, base: number, fraction?: number | null } } | null> | null };
 
 export type MyPreferenceQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -961,6 +976,36 @@ export function useLatestLogsByExerciseIdLazyQuery(baseOptions?: Apollo.LazyQuer
 export type LatestLogsByExerciseIdQueryHookResult = ReturnType<typeof useLatestLogsByExerciseIdQuery>;
 export type LatestLogsByExerciseIdLazyQueryHookResult = ReturnType<typeof useLatestLogsByExerciseIdLazyQuery>;
 export type LatestLogsByExerciseIdQueryResult = Apollo.QueryResult<LatestLogsByExerciseIdQuery, LatestLogsByExerciseIdQueryVariables>;
+export const LatestLogsByExerciseIdAndNotWorkoutIdDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"latestLogsByExerciseIdAndNotWorkoutId"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"workoutId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"latestLogsByExerciseIdAndNotWorkoutId"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"exerciseId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}},{"kind":"Argument","name":{"kind":"Name","value":"workoutId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"workoutId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"ExerciseLog"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"Exercise"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Exercise"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"primaryMuscles"}},{"kind":"Field","name":{"kind":"Name","value":"secondaryMuscles"}},{"kind":"Field","name":{"kind":"Name","value":"defaultAppliedWeight"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"LogValue"}}]}},{"kind":"Field","name":{"kind":"Name","value":"notes"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"ExerciseLog"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"ExerciseLog"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"exercise"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"Exercise"}}]}},{"kind":"Field","name":{"kind":"Name","value":"logDateTime"}},{"kind":"Field","name":{"kind":"Name","value":"repetitions"}},{"kind":"Field","name":{"kind":"Name","value":"logValue"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"LogValue"}}]}},{"kind":"Field","name":{"kind":"Name","value":"warmup"}},{"kind":"Field","name":{"kind":"Name","value":"remark"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"LogValue"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"LogValue"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"unit"}},{"kind":"Field","name":{"kind":"Name","value":"base"}},{"kind":"Field","name":{"kind":"Name","value":"fraction"}}]}}]} as unknown as DocumentNode;
+
+/**
+ * __useLatestLogsByExerciseIdAndNotWorkoutIdQuery__
+ *
+ * To run a query within a React component, call `useLatestLogsByExerciseIdAndNotWorkoutIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useLatestLogsByExerciseIdAndNotWorkoutIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useLatestLogsByExerciseIdAndNotWorkoutIdQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *      workoutId: // value for 'workoutId'
+ *   },
+ * });
+ */
+export function useLatestLogsByExerciseIdAndNotWorkoutIdQuery(baseOptions: Apollo.QueryHookOptions<LatestLogsByExerciseIdAndNotWorkoutIdQuery, LatestLogsByExerciseIdAndNotWorkoutIdQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<LatestLogsByExerciseIdAndNotWorkoutIdQuery, LatestLogsByExerciseIdAndNotWorkoutIdQueryVariables>(LatestLogsByExerciseIdAndNotWorkoutIdDocument, options);
+      }
+export function useLatestLogsByExerciseIdAndNotWorkoutIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<LatestLogsByExerciseIdAndNotWorkoutIdQuery, LatestLogsByExerciseIdAndNotWorkoutIdQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<LatestLogsByExerciseIdAndNotWorkoutIdQuery, LatestLogsByExerciseIdAndNotWorkoutIdQueryVariables>(LatestLogsByExerciseIdAndNotWorkoutIdDocument, options);
+        }
+export type LatestLogsByExerciseIdAndNotWorkoutIdQueryHookResult = ReturnType<typeof useLatestLogsByExerciseIdAndNotWorkoutIdQuery>;
+export type LatestLogsByExerciseIdAndNotWorkoutIdLazyQueryHookResult = ReturnType<typeof useLatestLogsByExerciseIdAndNotWorkoutIdLazyQuery>;
+export type LatestLogsByExerciseIdAndNotWorkoutIdQueryResult = Apollo.QueryResult<LatestLogsByExerciseIdAndNotWorkoutIdQuery, LatestLogsByExerciseIdAndNotWorkoutIdQueryVariables>;
 export const MyPreferenceDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"myPreference"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"myPreference"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"Preference"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"Preference"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Preference"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"weightUnit"}},{"kind":"Field","name":{"kind":"Name","value":"distanceUnit"}},{"kind":"Field","name":{"kind":"Name","value":"defaultRepetitions"}},{"kind":"Field","name":{"kind":"Name","value":"hideUnitSelector"}},{"kind":"Field","name":{"kind":"Name","value":"autoAdjustWorkoutMuscleGroups"}},{"kind":"Field","name":{"kind":"Name","value":"timerDuration"}},{"kind":"Field","name":{"kind":"Name","value":"autoStartTimer"}},{"kind":"Field","name":{"kind":"Name","value":"playTimerCompletionSound"}}]}}]} as unknown as DocumentNode;
 
 /**

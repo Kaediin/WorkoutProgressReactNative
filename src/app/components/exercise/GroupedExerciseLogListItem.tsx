@@ -34,16 +34,29 @@ const GroupedExerciseLogListItem: React.FC<ExerciseLogListItemProps> = ({
       gradient={Constants.SECONDARY_GRADIENT}
       styles={styles.container}>
       <Text style={defaultStyles.h3}>{groupedExercise.exercise.name}</Text>
-      {groupedExercise.exercise.defaultAppliedWeight && (
-        <Text
-          style={[
-            defaultStyles.p11,
-            defaultStyles.textAlignCenter,
-            styles.marginSmall,
-          ]}>
-          +{logValueToString(groupedExercise.exercise.defaultAppliedWeight)}
-        </Text>
-      )}
+      <View>
+        {groupedExercise.exercise.notes && (
+          <Text
+            style={[
+              defaultStyles.p11,
+              defaultStyles.textAlignCenter,
+              styles.marginSmall,
+            ]}>
+            {groupedExercise.exercise.notes}
+          </Text>
+        )}
+        {groupedExercise.exercise.defaultAppliedWeight && (
+          <Text
+            style={[
+              defaultStyles.p11,
+              defaultStyles.textAlignCenter,
+              styles.marginSmall,
+            ]}>
+            +{logValueToString(groupedExercise.exercise.defaultAppliedWeight)}
+          </Text>
+        )}
+      </View>
+
       <FlatList
         data={groupedExercise.logs.sort(
           (a, b) =>

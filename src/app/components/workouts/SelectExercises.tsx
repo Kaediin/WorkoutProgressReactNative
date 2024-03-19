@@ -41,8 +41,9 @@ const SelectExercises: React.FC<SelectExerciseProps> = props => {
         <Text
           style={[
             defaultStyles.textAlignCenter,
-            defaultStyles.footnote,
+            defaultStyles.p11,
             defaultStyles.container,
+            defaultStyles.blackTextColor,
           ]}>
           {selected.notes}
         </Text>

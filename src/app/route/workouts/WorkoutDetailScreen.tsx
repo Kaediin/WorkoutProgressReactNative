@@ -3,6 +3,7 @@ import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {
   Dimensions,
   FlatList,
+  ScrollView,
   StyleSheet,
   Switch,
   Text,
@@ -14,10 +15,11 @@ import {
   ExerciseFragment,
   ExerciseLogFragment,
   ExerciseLogInput,
+  LatestLogsByExerciseIdAndNotWorkoutIdQuery,
   LogUnit,
   useAddExerciseLogMutation,
   useEndWorkoutMutation,
-  useLatestLogsByExerciseIdLazyQuery,
+  useLatestLogsByExerciseIdAndNotWorkoutIdLazyQuery,
   useMyExercisesQuery,
   useReLogLatestLogMutation,
   useReLogLogMutation,
@@ -47,7 +49,6 @@ import LogValueSelect from '../../components/common/LogValueSelect';
 import {Picker} from '@react-native-picker/picker';
 import {logValueToString} from '../../utils/String';
 import Loader from '../../components/common/Loader';
-import {DATE_TIME_FORMAT} from '../../utils/Date';
 import {stripTypenames} from '../../utils/GrahqlUtils';
 import {nonNullable} from '../../utils/List';
 import PopupModal from '../../components/common/PopupModal';
@@ -57,6 +58,7 @@ import {Fab} from '../../utils/Fab';
 import {IActionProps} from 'react-native-floating-action';
 import useTimerStore from '../../stores/timerStore';
 import useRouteStore from '../../stores/routeStore';
+import {DATE_TIME_FORMAT} from '../../utils/Date';
 
 type Props = NativeStackScreenProps<WorkoutStackParamList, 'WorkoutDetail'>;
 
@@ -73,9 +75,11 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
 
   const bottomSheetRef = useRef<BottomSheetModal>(null);
   const setRouteName = useRouteStore(state => state.setRouteName);
+  const [hasLogInThisWorkout, setHasLogInThisWorkout] = useState(false);
   const [disableLogButton, setDisableLogButton] = useState(false);
-  const [showPicker, setShowPicker] = useState(false);
+  const [showPicker, setShowPicker] = useState(true);
   const [deleteLogId, setDeleteLogId] = useState('');
+  const [endWorkoutClicked, setEndWorkoutClicked] = useState(false);
   const [createExerciseModal, setCreateExerciseModal] = useState(false);
   const [workout, setWorkout] = useState<WorkoutLongFragment>();
   const [latestLogs, setLatestLogs] = useState<ExerciseLogFragment[]>([]);
@@ -111,13 +115,14 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
     },
   });
   const [latestLogQuery, {loading: latestLogsLoading}] =
-    useLatestLogsByExerciseIdLazyQuery({
+    useLatestLogsByExerciseIdAndNotWorkoutIdLazyQuery({
       fetchPolicy: 'no-cache',
-      onCompleted: data => {
+      onCompleted: (data: LatestLogsByExerciseIdAndNotWorkoutIdQuery) => {
         // If available, set the last log
-        if (data?.latestLogsByExerciseId) {
+        if (data?.latestLogsByExerciseIdAndNotWorkoutId) {
+          setHasLogInThisWorkout(true);
           setLatestLogs(
-            data.latestLogsByExerciseId
+            data.latestLogsByExerciseIdAndNotWorkoutId
               .filter(nonNullable)
               .sort(
                 (a, b) =>
@@ -126,12 +131,12 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
               ),
           );
         } else {
-          // Reset log value
-          setExerciseLog(prevState => ({
-            ...prevState,
-            logValue: initialLog.logValue,
-            repetitions: initialLog.repetitions,
-          }));
+          if (!hasLogInThisWorkout) {
+            setExerciseLog(prevState => ({
+              ...initialLog,
+              exerciseId: prevState.exerciseId,
+            }));
+          }
           setLatestLogs([]);
         }
       },
@@ -152,19 +157,6 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
       }
     },
   });
-
-  useEffect(() => {
-    if (latestLogs && latestLogs.length > 0) {
-      setExerciseLog({
-        exerciseId: latestLogs[0].exercise.id,
-        warmup: latestLogs[0].warmup || false,
-        remark: '',
-        repetitions: latestLogs[0].repetitions,
-        logValue: latestLogs[0].logValue,
-        zonedDateTimeString: '',
-      });
-    }
-  }, [latestLogs]);
 
   useEffect(() => {
     if (!workoutData?.workoutById) {
@@ -196,7 +188,7 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
             <EndWorkout
               label={'End Workout'}
               color={'red'}
-              onPress={() => doEndWorkout(workoutData?.workoutById?.id)}
+              onPress={() => setEndWorkoutClicked(true)}
             />
           ),
         });
@@ -271,7 +263,7 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
             logValue: stripTypenames(exerciseLog.logValue),
             remark: exerciseLog.remark,
             warmup: exerciseLog.warmup,
-            zonedDateTimeString: exerciseLog.zonedDateTimeString,
+            zonedDateTimeString: editExistingExercise.logDateTime,
           },
         },
       });
@@ -313,18 +305,6 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
     });
   };
 
-  const getLatestLoggedExerciseInCurrentWorkout = (
-    id: string,
-  ): ExerciseLogFragment | undefined => {
-    if (!workout || !workout.groupedExerciseLogs) {
-      return;
-    }
-    const logs = workout.groupedExerciseLogs.find(
-      x => x.exercise.id === id,
-    )?.logs;
-    return logs ? logs[logs.length - 1] : undefined;
-  };
-
   const toggleBottomSheetRef = (show: boolean): void => {
     if (show) {
       setRouteName('draggableBottomOpen');
@@ -341,6 +321,7 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
     screen: screenDimensions,
   });
 
+  // Listen to orientation change
   useEffect(() => {
     const subscription = Dimensions.addEventListener(
       'change',
@@ -351,6 +332,7 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
     return () => subscription?.remove();
   });
 
+  // Define FAB actions
   const getFabActions = (): IActionProps[] => {
     const actions: IActionProps[] = [
       {
@@ -384,29 +366,59 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
     return actions;
   };
 
-  const getLatestLogByWorkoutOrFetch = (exerciseId: string): void => {
-    // Check if we have a log of this id in the workout already
-    const latestLogged = getLatestLoggedExerciseInCurrentWorkout(exerciseId);
-    if (latestLogged) {
-      // Load the last log
-      setLatestLogs([]);
-      setExerciseLog(prevState => ({
-        ...prevState,
-        logValue: latestLogged.logValue,
-        repetitions: latestLogged.repetitions,
-      }));
-    } else {
-      // Fetch the last log
-      latestLogQuery({
-        variables: {
-          id: exerciseId,
-        },
+  const presetExerciseLogWithThisWorkoutAndUpdateLastLogged = (
+    exerciseId: string,
+  ): void => {
+    if (!workout?.id || !workout?.groupedExerciseLogs) {
+      return;
+    }
+
+    // Get last logged from this workout
+    const latestCurrentLogById = [...workout.groupedExerciseLogs]
+      .flatMap(it => it.logs)
+      .filter(it => it.exercise.id.toLowerCase() === exerciseId.toLowerCase())
+      .sort(
+        (a, b) =>
+          new Date(b.logDateTime).getTime() - new Date(a.logDateTime).getTime(),
+      )[0];
+
+    setHasLogInThisWorkout(!!latestCurrentLogById);
+
+    // If found, preset it
+    if (latestCurrentLogById) {
+      setExerciseLog({
+        exerciseId: latestCurrentLogById.exercise.id,
+        warmup: latestCurrentLogById.warmup ?? false,
+        zonedDateTimeString: moment().toISOString(true),
+        remark: latestCurrentLogById.remark,
+        logValue: latestCurrentLogById.logValue,
+        repetitions: latestCurrentLogById.repetitions,
       });
     }
+
+    // Update text with stats from last workout that is not this but same exercise
+    latestLogQuery({
+      variables: {
+        id: exerciseId,
+        workoutId: workout.id,
+      },
+    });
   };
 
   const toggleTimer = (active: boolean): void => {
     startTimer(active);
+  };
+
+  const getLatestCurrentLog = (): ExerciseLogFragment | null => {
+    if (!workout?.groupedExerciseLogs) {
+      return null;
+    }
+    return [...workout.groupedExerciseLogs]
+      .flatMap(it => it.logs)
+      .sort(
+        (a, b) =>
+          new Date(b.logDateTime).getTime() - new Date(a.logDateTime).getTime(),
+      )[0];
   };
 
   return (
@@ -442,7 +454,9 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
                   groupedExercise={item}
                   key={dimensions.screen.width + item.exercise.id}
                   onEditLog={log => {
-                    getLatestLogByWorkoutOrFetch(item.exercise.id);
+                    presetExerciseLogWithThisWorkoutAndUpdateLastLogged(
+                      item.exercise.id,
+                    );
                     setEditExistingExercise(log);
                     setExerciseLog({
                       zonedDateTimeString: log.logDateTime,
@@ -476,7 +490,6 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
                   }}
                   onRemoveLog={setDeleteLogId}
                   onLogPress={log => {
-                    getLatestLogByWorkoutOrFetch(item.exercise.id);
                     setEditExistingExercise(log);
                     setExerciseLog({
                       zonedDateTimeString: log.logDateTime,
@@ -507,46 +520,78 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
               });
             }}
           />
+          <PopupModal
+            overrideTitle={'End workout'}
+            message={'Are you sure you want to end this workout?'}
+            isOpen={Boolean(endWorkoutClicked)}
+            type={'WARNING'}
+            onDismiss={() => setEndWorkoutClicked(false)}
+            onConfirm={() => doEndWorkout(workoutData?.workoutById?.id)}
+          />
         </View>
       ) : (
         <></>
       )}
 
-      {workout && (
-        <FloatingButton
-          actions={getFabActions()}
-          onClose={() => {
-            toggleTimerVisibility(false);
-          }}
-          onOpen={() => {
-            toggleTimerVisibility(true);
-          }}
-          onPressAction={name => {
-            switch (name) {
-              case Fab.TIMER:
-                toggleTimer(!timerActive);
-                break;
-              case Fab.RELOG:
-                reLogLatestLog({
-                  variables: {
-                    workoutId: workout.id,
-                    zonedDateTimeString: moment().toISOString(true),
-                    autoAdjust,
-                  },
-                });
-                if (preference?.autoStartTimer) {
-                  toggleTimer(true);
-                }
-                break;
-              case Fab.NEWLOG:
-                setDisableLogButton(false);
-                setExerciseLog(exerciseLog);
-                toggleBottomSheetRef(true);
-                break;
-            }
-          }}
-        />
-      )}
+      {workout &&
+        workoutData?.workoutById?.active &&
+        workoutData?.workoutById?.id && (
+          <FloatingButton
+            actions={getFabActions()}
+            onClose={() => {
+              toggleTimerVisibility(false);
+            }}
+            onOpen={() => {
+              toggleTimerVisibility(true);
+            }}
+            onPressAction={name => {
+              switch (name) {
+                case Fab.TIMER:
+                  toggleTimer(!timerActive);
+                  break;
+                case Fab.RELOG:
+                  reLogLatestLog({
+                    variables: {
+                      workoutId: workout.id,
+                      zonedDateTimeString: moment().toISOString(true),
+                      autoAdjust,
+                    },
+                  });
+                  if (preference?.autoStartTimer) {
+                    toggleTimer(true);
+                  }
+                  break;
+                case Fab.NEWLOG:
+                  // Enable log button
+                  setDisableLogButton(false);
+
+                  // Set the exercise log to be the last logged exercise of this workout
+                  const lastLogged = getLatestCurrentLog();
+                  if (lastLogged) {
+                    setExerciseLog({
+                      zonedDateTimeString: lastLogged.logDateTime,
+                      exerciseId: lastLogged.exercise.id,
+                      repetitions: lastLogged.repetitions,
+                      logValue: lastLogged.logValue,
+                      warmup: lastLogged.warmup ?? false,
+                      remark: lastLogged.remark,
+                    });
+                  }
+
+                  if (lastLogged?.exercise?.id) {
+                    // Get latest logs from previous workout
+                    presetExerciseLogWithThisWorkoutAndUpdateLastLogged(
+                      lastLogged.exercise.id,
+                    );
+                  }
+                  // Show bottom sheet
+                  toggleBottomSheetRef(true);
+
+                  break;
+              }
+            }}
+          />
+        )}
       <BottomSheetModalProvider>
         <CreateExerciseModalContent
           active={createExerciseModal}
@@ -580,7 +625,9 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
                         ...prevState,
                         exerciseId: exercise.id,
                       }));
-                      getLatestLogByWorkoutOrFetch(exercise.id);
+                      presetExerciseLogWithThisWorkoutAndUpdateLastLogged(
+                        exercise.id,
+                      );
                       setShowPicker(true);
                     }}
                     selectedId={exerciseLog.exerciseId}
@@ -592,27 +639,51 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
               <View pointerEvents={latestLogsLoading ? 'none' : 'auto'}>
                 <Loader dark isLoading={latestLogsLoading} />
                 {latestLogs && latestLogs.length > 0 ? (
-                  <View style={defaultStyles.container}>
-                    <Text style={defaultStyles.footnote}>
-                      Last set {latestLogs[0].exercise.name} (
-                      {moment
-                        .utc(latestLogs[0].logDateTime)
-                        .format(DATE_TIME_FORMAT)}
-                      ):
-                    </Text>
-                    {latestLogs.map(log => (
-                      <Text style={defaultStyles.footnote} key={log.id}>
-                        - {log.repetitions} x {logValueToString(log.logValue)}
-                        {log.warmup && ' (warmup)'}
+                  <View
+                    style={[
+                      defaultStyles.marginTop,
+                      defaultStyles.marginBottom,
+                    ]}>
+                    <View style={defaultStyles.marginBottom}>
+                      <Text>
+                        Last set {latestLogs[0].exercise.name} on{' '}
+                        {moment
+                          .utc(latestLogs[0].logDateTime)
+                          .format(DATE_TIME_FORMAT)}
                       </Text>
-                    ))}
+                    </View>
+
+                    <View>
+                      <ScrollView style={defaultStyles.marginBottom} horizontal>
+                        {latestLogs.map(log => (
+                          <TouchableOpacity
+                            key={log.id}
+                            style={styles.lastLoggedButtonsView}
+                            onPress={() => {
+                              setExerciseLog({
+                                exerciseId: log.exercise.id,
+                                warmup: log.warmup ?? false,
+                                zonedDateTimeString: moment().toISOString(true),
+                                remark: log.remark,
+                                logValue: log.logValue,
+                                repetitions: log.repetitions,
+                              });
+                            }}>
+                            <Text style={styles.lastLoggedButtons}>
+                              {log.repetitions} x{' '}
+                              {logValueToString(log.logValue)}
+                            </Text>
+                          </TouchableOpacity>
+                        ))}
+                      </ScrollView>
+                    </View>
                   </View>
                 ) : (
                   <View style={styles.marginTop} />
                 )}
                 {exerciseLog?.exerciseId && (
                   <>
-                    <View style={[styles.border]}>
+                    <View style={styles.border}>
                       <TouchableOpacity
                         style={[
                           defaultStyles.spaceEvenly,
@@ -766,6 +837,17 @@ const styles = StyleSheet.create({
   expandableWeightSelectorLabel: {
     padding: Constants.CONTAINER_PADDING_MARGIN,
     backgroundColor: Constants.QUATERNARY_GRADIENT[1],
+  },
+  lastLoggedButtonsView: {
+    borderRadius: Constants.BORDER_RADIUS_SMALL,
+    width: 80,
+    padding: 5,
+    backgroundColor: Constants.QUATERNARY_GRADIENT[1],
+    marginRight: 5,
+  },
+  lastLoggedButtons: {
+    color: 'white',
+    textAlign: 'center',
   },
 });
 
