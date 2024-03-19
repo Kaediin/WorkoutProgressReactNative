@@ -5,6 +5,7 @@ import {
   useDeleteWorkoutMutation,
   useEndWorkoutMutation,
   useHasActiveWorkoutQuery,
+  useRestartWorkoutMutation,
   useStartWorkoutMutation,
   useUpdateWorkoutMutation,
   useWorkoutsQuery,
@@ -31,8 +32,6 @@ import {ContextMenuActions} from '../../types/ContextMenuActions';
 import ContextMenu, {ContextMenuAction} from 'react-native-context-menu-view';
 import {defaultStyles} from '../../utils/DefaultStyles';
 import ClickableText from '../../components/common/ClickableText';
-import MuscleGroupList from '../../components/workouts/MuscleGroupList';
-import usePreferenceStore from '../../stores/preferenceStore';
 import Loader from '../../components/common/Loader';
 import {useIsFocused} from '@react-navigation/native';
 import useAuth from '../../hooks/useAuth';
@@ -41,10 +40,6 @@ type Props = NativeStackScreenProps<WorkoutStackParamList, 'WorkoutsOverview'>;
 
 const WorkoutsOverviewScreen: React.FC<Props> = ({navigation}) => {
   const {getToken} = useAuth();
-
-  const autoSelectMuscleGroups = usePreferenceStore(
-    state => state.preference,
-  )?.autoAdjustWorkoutMuscleGroups;
 
   const isFocussed = useIsFocused();
   const [deleteWorkoutId, setDeleteWorkoutId] = useState<string>('');
@@ -74,6 +69,8 @@ const WorkoutsOverviewScreen: React.FC<Props> = ({navigation}) => {
     fetchPolicy: 'no-cache',
   });
   const [endWorkout, {loading: endWorkoutLoading}] = useEndWorkoutMutation();
+  const [reactivateWorkout, {loading: reactivateLoading}] =
+    useRestartWorkoutMutation();
   const [updateWorkout] = useUpdateWorkoutMutation({fetchPolicy: 'no-cache'});
 
   const doStartWorkout = (): void => {
@@ -143,7 +140,10 @@ const WorkoutsOverviewScreen: React.FC<Props> = ({navigation}) => {
   }, [isFocussed]);
 
   const loading =
-    startWorkoutLoading || getWorkoutsLoading || endWorkoutLoading;
+    startWorkoutLoading ||
+    getWorkoutsLoading ||
+    endWorkoutLoading ||
+    reactivateLoading;
 
   const onFloatingButtonClicked = (): void => {
     setNewWorkout(initialWorkout);
@@ -194,8 +194,11 @@ const WorkoutsOverviewScreen: React.FC<Props> = ({navigation}) => {
       {title: ContextMenuActions.DELETE},
       {title: ContextMenuActions.EDIT},
     ];
+    if (!hasActiveWorkout) {
+      actions.push({title: ContextMenuActions.REACTIVATE_WORKOUT});
+    }
     if (workout.active) {
-      actions.push({title: ContextMenuActions.END_WORKOUT});
+      actions.push({destructive: true, title: ContextMenuActions.END_WORKOUT});
     }
     return actions;
   };
@@ -206,6 +209,17 @@ const WorkoutsOverviewScreen: React.FC<Props> = ({navigation}) => {
       variables: {
         workoutId: workout.id,
         zonedDateTimeString: moment().toISOString(true),
+      },
+    });
+    refetchActiveWorkout();
+    refetchWorkouts();
+  };
+
+  const doReactivateWorkout = (workout: WorkoutShortFragment): void => {
+    reactivateWorkout({
+      fetchPolicy: 'no-cache',
+      variables: {
+        workoutId: workout.id,
       },
     });
     refetchActiveWorkout();
@@ -246,6 +260,9 @@ const WorkoutsOverviewScreen: React.FC<Props> = ({navigation}) => {
                   ? editWorkout(item)
                   : event.nativeEvent.name === ContextMenuActions.END_WORKOUT
                   ? doEndWorkout(item)
+                  : event.nativeEvent.name ===
+                    ContextMenuActions.REACTIVATE_WORKOUT
+                  ? doReactivateWorkout(item)
                   : undefined;
               }}>
               <WorkoutListItem
@@ -292,23 +309,6 @@ const WorkoutsOverviewScreen: React.FC<Props> = ({navigation}) => {
             }
             maxLength={Constants.TEXT_INPUT_MAX_LENGTH}
           />
-          {!autoSelectMuscleGroups && (
-            <>
-              <View style={defaultStyles.spaceBetween}>
-                <Text style={styles.header}>Muscle groups</Text>
-                <ClickableText
-                  text={'Select'}
-                  onPress={bottomSheetModalRefMuscleSelect?.current?.present}
-                  styles={defaultStyles.textAlignCenter}
-                />
-              </View>
-              <MuscleGroupList
-                muscleGroups={newWorkout.muscleGroups}
-                pillColor="#00C5ED"
-                textColor="white"
-              />
-            </>
-          )}
           <Text style={styles.header}>Remarks</Text>
           <BottomSheetTextInput
             defaultValue={newWorkout.remark || ''}
@@ -340,7 +340,9 @@ const WorkoutsOverviewScreen: React.FC<Props> = ({navigation}) => {
             buttonText={'Select'}
           />
         </CustomBottomSheet>
-        <FloatingButton onClick={onFloatingButtonClicked} />
+        {!hasActiveWorkout && (
+          <FloatingButton onClick={onFloatingButtonClicked} />
+        )}
       </BottomSheetModalProvider>
       <PopupModal
         message={

@@ -1,0 +1,5 @@
+mutation restartWorkout($workoutId: ID!) {
+    restartWorkout(id: $workoutId) {
+        ...WorkoutShort
+    }
+}

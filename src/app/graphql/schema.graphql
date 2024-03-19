@@ -107,6 +107,7 @@ type Mutation {
   reLogLatestLog(autoAdjust: Boolean!, workoutId: ID!, zonedDateTimeString: String!): Workout
   reLogLog(input: ExerciseLogInput!, workoutId: ID!): Workout
   removeExerciseLog(autoAdjust: Boolean!, exerciseLogId: String!): Boolean!
+  restartWorkout(id: ID!): Workout!
   runFetchWorkoutsTask: Boolean
   updateExercise(id: ID!, input: ExerciseInput): Exercise
   updateExerciseLog(exerciseLogId: ID!, input: ExerciseLogInput!): Workout
