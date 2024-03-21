@@ -24,7 +24,11 @@ const WorkoutListItem: React.FC<WorkoutListItemProps> = ({
 }) => {
   return (
     <TouchableOpacity
-      style={styles.touchableOpacity}
+      style={[
+        styles.touchableOpacity,
+        defaultStyles.shadow,
+        hasActiveWorkout ? (workout.active ? defaultStyles.shadow : {}) : {},
+      ]}
       onPress={() => onWorkoutPressed(workout.id)}>
       <LinearGradient
         colors={Constants.SECONDARY_GRADIENT}

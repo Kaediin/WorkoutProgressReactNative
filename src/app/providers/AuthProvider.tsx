@@ -24,6 +24,7 @@ export const AuthProvider: React.FC<PropsWithChildren> = props => {
           'AuthProvider: getAndUpdateAuthToken: Setting AUTHENTICATED',
         );
         setAuthToken(token);
+        console.log(token);
         setState(AuthState.AUTHENTICATED);
       } else {
         setState(AuthState.UNAUTHENTICATED);

@@ -25,6 +25,7 @@ const ExerciseProfileListItem: React.FC<ExerciseProfileListItemProps> = ({
           style={[
             defaultStyles.textAlignCenter,
             defaultStyles.footnote,
+            defaultStyles.marginTop,
             defaultStyles.marginBottom,
           ]}>
           {exercise.notes}

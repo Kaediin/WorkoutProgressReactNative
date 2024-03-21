@@ -3,12 +3,10 @@ import {
   ExerciseLogFragment,
   GroupedExerciseLogFragment,
 } from '../../graphql/operations';
-import GradientBackground from '../common/GradientBackground';
 import {FlatList, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import Constants from '../../utils/Constants';
 import moment from 'moment';
 import {defaultStyles} from '../../utils/DefaultStyles';
-import LinearGradient from 'react-native-linear-gradient';
 import ContextMenu from 'react-native-context-menu-view';
 import {getRelativeTimeIfToday} from '../../utils/Date';
 import {ContextMenuActions} from '../../types/ContextMenuActions';
@@ -30,9 +28,7 @@ const GroupedExerciseLogListItem: React.FC<ExerciseLogListItemProps> = ({
   onRepeatLog,
 }) => {
   return (
-    <GradientBackground
-      gradient={Constants.SECONDARY_GRADIENT}
-      styles={styles.container}>
+    <View style={styles.container}>
       <Text style={defaultStyles.h3}>{groupedExercise.exercise.name}</Text>
       <View>
         {groupedExercise.exercise.notes && (
@@ -79,41 +75,42 @@ const GroupedExerciseLogListItem: React.FC<ExerciseLogListItemProps> = ({
                     ? onRemoveLog(item.id)
                     : onRepeatLog(item as ExerciseLogFragment)
                 }>
-                <LinearGradient
-                  colors={
-                    item.warmup
-                      ? Constants.QUATERNARY_GRADIENT
-                      : Constants.TERTIARY_GRADIENT
-                  }
-                  style={styles.containerLinearGradient}>
+                <View
+                  style={[
+                    styles.containerLinearGradient,
+                    defaultStyles.shadow,
+                  ]}>
                   <View style={styles.containerExerciseLogRow}>
-                    <Text style={styles.textExerciseLogRow}>
-                      {item.repetitions} x {logValueToString(item.logValue)}
-                    </Text>
+                    <View>
+                      <Text style={styles.textExerciseLogRow}>
+                        {item.warmup ? '•' : ''} {item.repetitions} x{' '}
+                        {logValueToString(item.logValue)}{' '}
+                      </Text>
+                      {item.remark && (
+                        <Text style={[defaultStyles.footnote, styles.margin]}>
+                          {item.remark}
+                        </Text>
+                      )}
+                    </View>
                     <Text style={[defaultStyles.footnote, styles.opacity]}>
                       {getRelativeTimeIfToday(
                         moment.utc(item.logDateTime).toISOString(),
                       )}
                     </Text>
                   </View>
-                  {item.remark && (
-                    <Text style={[defaultStyles.footnote, styles.margin]}>
-                      {item.remark}
-                    </Text>
-                  )}
-                </LinearGradient>
+                </View>
               </ContextMenu>
             </TouchableOpacity>
           );
         }}
       />
-    </GradientBackground>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    padding: Constants.CONTAINER_PADDING_MARGIN,
+    padding: Constants.CONTAINER_PADDING_MARGIN * 2,
     borderRadius: Constants.BORDER_RADIUS_SMALL,
     margin: Constants.CONTAINER_PADDING_MARGIN,
   },
@@ -126,19 +123,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   textExerciseLogRow: {
-    padding: Constants.CONTAINER_PADDING_MARGIN,
     color: 'white',
   },
   containerLinearGradient: {
+    backgroundColor: Constants.SECONDARY_GRADIENT[0],
+    padding: Constants.CONTAINER_PADDING_MARGIN,
     marginTop: Constants.CONTAINER_PADDING_MARGIN,
-    paddingHorizontal: Constants.CONTAINER_PADDING_MARGIN,
-    width: 250,
+    width: '100%',
     alignSelf: 'center',
     borderRadius: Constants.BORDER_RADIUS_SMALL,
   },
   margin: {
-    marginTop: (Constants.CONTAINER_PADDING_MARGIN / 2) * -1,
-    marginBottom: Constants.CONTAINER_PADDING_MARGIN / 2,
+    marginVertical: Constants.CONTAINER_PADDING_MARGIN / 2,
   },
   marginSmall: {
     marginTop: Constants.CONTAINER_PADDING_MARGIN / 2,

@@ -110,7 +110,8 @@ const ExercisesScreen: React.FC<Props> = props => {
           data={filteredList.sort((a, b) => a.name.localeCompare(b.name))}
           ListHeaderComponent={() => {
             return (
-              <View style={defaultStyles.container}>
+              <View
+                style={[defaultStyles.container, defaultStyles.spaceEvenly]}>
                 {filteredList && (
                   <GradientButton
                     gradients={Constants.TERTIARY_GRADIENT}
@@ -118,6 +119,7 @@ const ExercisesScreen: React.FC<Props> = props => {
                     onClick={() =>
                       refMuscleGroupFilterSelect?.current?.present()
                     }
+                    styles={{width: 200}}
                   />
                 )}
               </View>
@@ -135,7 +137,8 @@ const ExercisesScreen: React.FC<Props> = props => {
                   e.nativeEvent.name === ContextMenuActions.EDIT
                     ? setEditExercise(item)
                     : setDeleteExerciseId(item.id)
-                }>
+                }
+                style={defaultStyles.shadow}>
                 <ExerciseProfileListItem exercise={item} />
               </ContextMenu>
             );

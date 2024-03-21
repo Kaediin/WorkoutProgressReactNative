@@ -1,5 +1,5 @@
 const Constants = {
-  PRIMARY_GRADIENT: ['#006666', '#00C5ED'],
+  PRIMARY_GRADIENT: ['#006666', '#0891ad'],
   SECONDARY_GRADIENT: ['#124a49', '#114c54'],
   SECONDARY_GRADIENT_FADED: ['rgba(39,154,121,0.5)', 'rgba(79,119,75,0.5)'],
   TERTIARY_GRADIENT: ['#32ccc8', '#29afbe'],
