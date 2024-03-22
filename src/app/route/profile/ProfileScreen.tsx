@@ -58,10 +58,10 @@ const ProfileScreen: React.FC<Props> = ({navigation}) => {
             </TouchableOpacity>
           </View>
         </View>
-        <View style={styles.marginTopLarge}>
+        <View style={[styles.marginTopLarge, styles.containerCalendar]}>
           <WorkoutCalendarView onSelectDay={setSelectedWorkouts} />
         </View>
-        <View style={[styles.marginTopLarge, styles.paddingBottom]}>
+        <View style={styles.paddingBottom}>
           <MuscleGroupDistribution />
         </View>
       </ScrollView>
@@ -103,6 +103,9 @@ const styles = StyleSheet.create({
   },
   paddingBottom: {
     paddingBottom: Constants.CONTAINER_PADDING_MARGIN,
+  },
+  containerCalendar: {
+    height: 300,
   },
 });
 
