@@ -1,6 +1,6 @@
 {
   "name": "workoutprogress",
-  "version": "0.1.7",
+  "version": "0.2.0",
   "private": true,
   "scripts": {
     "android": "ENVFILE=.env.development react-native run-android",

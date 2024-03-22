@@ -840,7 +840,7 @@ const styles = StyleSheet.create({
   },
   lastLoggedButtonsView: {
     borderRadius: Constants.BORDER_RADIUS_SMALL,
-    width: 80,
+    width: 100,
     padding: 5,
     backgroundColor: Constants.QUATERNARY_GRADIENT[1],
     marginRight: 5,

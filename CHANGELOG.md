@@ -1,3 +1,17 @@
+## [0.2.0]
+
+### Added
+
+- #73: Improved UI workout details
+- #73: Added more box shadows to elements
+- #75: Details view of exercises
+- #75: Graphs that plot progress
+- #76: Default text component
+- #76: Insights into workouts stats
+- #76: Calendar view
+- #76: Updated Profile UI
+- #76: Added Muscle group distribution chart
+
 ## [0.1.7]
 
 ### Added
