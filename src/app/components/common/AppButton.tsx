@@ -1,5 +1,5 @@
-import React from 'react';
-import {StyleSheet, Text, View} from 'react-native';
+import React from "react";
+import { StyleSheet, View } from "react-native";
 
 interface AppButtonProps {
   title: string;
@@ -9,28 +9,28 @@ interface AppButtonProps {
 const AppButton: React.FC<AppButtonProps> = props => {
   return (
     <View style={styles.buttonStyles}>
-      <Text style={styles.textStyles} onPress={props.onClick}>
+      <AppText style={styles.textStyles} onPress={props.onClick}>
         {props.title}
-      </Text>
+      </AppText>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   buttonStyles: {
-    backgroundColor: '#1b2f31',
+    backgroundColor: "#1b2f31",
     borderRadius: 50,
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
     height: 50,
     width: 200,
-    fontWeight: '600',
+    fontWeight: "600"
   },
   textStyles: {
-    color: '#1cc49d',
-    fontSize: 20,
-  },
+    color: "#1cc49d",
+    fontSize: 20
+  }
 });
 
 export default AppButton;

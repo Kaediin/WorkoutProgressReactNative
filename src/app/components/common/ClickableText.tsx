@@ -1,11 +1,12 @@
 import React from 'react';
-import {Insets, Text, TouchableOpacity} from 'react-native';
+import {Insets, TouchableOpacity} from 'react-native';
 import {defaultStyles} from '../../utils/DefaultStyles';
 import {StyleProp} from 'react-native/Libraries/StyleSheet/StyleSheet';
 import {
   TextStyle,
   ViewStyle,
 } from 'react-native/Libraries/StyleSheet/StyleSheetTypes';
+import AppText from './AppText';
 
 interface ClickableTextProps {
   text: string | number | undefined;
@@ -24,7 +25,7 @@ const ClickableText: React.FC<ClickableTextProps> = props => {
       disabled={props.disabled}
       onPress={props.onPress}
       hitSlop={props.hitSlop}>
-      <Text
+      <AppText
         style={[
           defaultStyles.clickableText,
           props.styles,
@@ -32,7 +33,7 @@ const ClickableText: React.FC<ClickableTextProps> = props => {
           props.disabled && defaultStyles.disabledText,
         ]}>
         {props.text}
-      </Text>
+      </AppText>
     </TouchableOpacity>
   );
 };

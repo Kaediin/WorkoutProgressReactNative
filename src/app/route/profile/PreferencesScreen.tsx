@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {ScrollView, StyleSheet, Switch, Text, View} from 'react-native';
+import {ScrollView, StyleSheet, Switch, View} from 'react-native';
 import GradientBackground from '../../components/common/GradientBackground';
 import {defaultStyles} from '../../utils/DefaultStyles';
 import DropDownPicker from 'react-native-dropdown-picker';
@@ -12,6 +12,7 @@ import Constants from '../../utils/Constants';
 import usePreferenceStore from '../../stores/preferenceStore';
 import ClickableText from '../../components/common/ClickableText';
 import SinglePicker from '../../components/bottomSheet/SinglePicker';
+import AppText from '../../components/common/AppText';
 
 const PreferencesScreen: React.FC = () => {
   const preference = usePreferenceStore(state => state.preference);
@@ -88,9 +89,7 @@ const PreferencesScreen: React.FC = () => {
     <GradientBackground>
       <ScrollView style={defaultStyles.container}>
         <View style={defaultStyles.container}>
-          <Text style={[defaultStyles.whiteTextColor, defaultStyles.h4]}>
-            Value logging
-          </Text>
+          <AppText style={[defaultStyles.h4]}>Value logging</AppText>
 
           <View
             style={[
@@ -99,10 +98,10 @@ const PreferencesScreen: React.FC = () => {
               defaultStyles.zIndex10,
             ]}>
             <View style={styles.labelContainer}>
-              <Text style={defaultStyles.whiteTextColor}>Unit</Text>
-              <Text style={defaultStyles.footnote}>
+              <AppText>Unit</AppText>
+              <AppText style={defaultStyles.footnote}>
                 Preferred unit (weight, distance)
-              </Text>
+              </AppText>
             </View>
             <View style={styles.controlContainer}>
               <View style={defaultStyles.row}>
@@ -165,12 +164,10 @@ const PreferencesScreen: React.FC = () => {
           </View>
           <View style={[defaultStyles.spaceBetween, styles.padding]}>
             <View style={styles.labelContainer}>
-              <Text style={defaultStyles.whiteTextColor}>
-                Default repetitions
-              </Text>
-              <Text style={defaultStyles.footnote}>
+              <AppText>Default repetitions</AppText>
+              <AppText style={defaultStyles.footnote}>
                 Automatically preset the value for repetitions
-              </Text>
+              </AppText>
             </View>
             <View style={styles.controlContainer}>
               <ClickableText
@@ -191,12 +188,10 @@ const PreferencesScreen: React.FC = () => {
               defaultStyles.marginBottom,
             ]}>
             <View style={styles.labelContainer}>
-              <Text style={defaultStyles.whiteTextColor}>
-                Hide unit selector
-              </Text>
-              <Text style={defaultStyles.footnote}>
+              <AppText>Hide unit selector</AppText>
+              <AppText style={defaultStyles.footnote}>
                 Hide the unit selector when logging any value.
-              </Text>
+              </AppText>
             </View>
             <View style={styles.controlContainer}>
               <Switch
@@ -219,17 +214,13 @@ const PreferencesScreen: React.FC = () => {
               />
             </View>
           </View>
-          <Text style={[defaultStyles.whiteTextColor, defaultStyles.h4]}>
-            Timer
-          </Text>
+          <AppText style={defaultStyles.h4}>Timer</AppText>
           <View style={[defaultStyles.spaceBetween, styles.padding]}>
             <View style={styles.labelContainer}>
-              <Text style={defaultStyles.whiteTextColor}>
-                Default timer duration
-              </Text>
-              <Text style={defaultStyles.footnote}>
+              <AppText>Default timer duration</AppText>
+              <AppText style={defaultStyles.footnote}>
                 Automatically start the timer from the set duration
-              </Text>
+              </AppText>
             </View>
             <View style={styles.controlContainer}>
               <ClickableText
@@ -248,14 +239,12 @@ const PreferencesScreen: React.FC = () => {
               styles.marginTop,
             ]}>
             <View style={styles.labelContainer}>
-              <Text style={defaultStyles.whiteTextColor}>
-                Auto start timer after logging exercise
-              </Text>
-              <Text style={defaultStyles.footnote}>
+              <AppText>Auto start timer after logging exercise</AppText>
+              <AppText style={defaultStyles.footnote}>
                 Automatically start the timer with the duration set in
                 preference, after logging an exercise for a workout. Note: this
                 only applies for you active workout.
-              </Text>
+              </AppText>
             </View>
             <View style={styles.controlContainer}>
               <Switch
@@ -285,13 +274,11 @@ const PreferencesScreen: React.FC = () => {
               styles.marginTop,
             ]}>
             <View style={styles.labelContainer}>
-              <Text style={defaultStyles.whiteTextColor}>
-                Play sound after timer completes
-              </Text>
-              <Text style={defaultStyles.footnote}>
+              <AppText>Play sound after timer completes</AppText>
+              <AppText style={defaultStyles.footnote}>
                 Automatically play a sound through media that marks the
                 completion of the timer which is active in the background
-              </Text>
+              </AppText>
             </View>
             <View style={styles.controlContainer}>
               <Switch

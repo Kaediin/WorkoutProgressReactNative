@@ -2,13 +2,14 @@ import React, {useMemo, useState} from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {AuthStackParamList} from '../AppRoute';
 import GradientBackground from '../../components/common/GradientBackground';
-import {StyleSheet, Text, TextInput, View} from 'react-native';
+import {StyleSheet, TextInput, View} from 'react-native';
 import Constants from '../../utils/Constants';
 import GradientButton from '../../components/common/GradientButton';
 import {defaultStyles} from '../../utils/DefaultStyles';
 import useAuth from '../../hooks/useAuth';
 import Loader from '../../components/common/Loader';
 import {isValidPassword} from '../../utils/String';
+import AppText from '../../components/common/AppText';
 
 type Props = NativeStackScreenProps<AuthStackParamList, 'ForgotPassword'>;
 
@@ -78,9 +79,9 @@ const ForgotPasswordScreen: React.FC<Props> = ({navigation}) => {
         <Loader />
       ) : (
         <View style={styles.centerContainer}>
-          <Text style={[defaultStyles.h2, defaultStyles.marginBottom]}>
+          <AppText style={[defaultStyles.h2, defaultStyles.marginBottom]}>
             Forgot password
-          </Text>
+          </AppText>
           {!showVerificationCode || !email ? (
             <>
               <TextInput
@@ -127,21 +128,21 @@ const ForgotPasswordScreen: React.FC<Props> = ({navigation}) => {
                 secureTextEntry
                 maxLength={Constants.TEXT_INPUT_MAX_LENGTH}
               />
-              <Text style={[defaultStyles.footnote, styles.containerWidth]}>
+              <AppText style={[defaultStyles.footnote, styles.containerWidth]}>
                 Your password should contain at least eight characters: one
                 digit, one upper case, one lower case, and one special
                 character.
-              </Text>
+              </AppText>
             </>
           )}
           {(error || successMessage) &&
             (error ? (
               <View style={styles.containerWidth}>
-                <Text style={styles.errorMessage}>{error}</Text>
+                <AppText style={styles.errorMessage}>{error}</AppText>
               </View>
             ) : (
               <View style={[styles.containerWidth, defaultStyles.marginTop]}>
-                <Text>{successMessage}</Text>
+                <AppText>{successMessage}</AppText>
               </View>
             ))}
           <View>

@@ -3,7 +3,7 @@ import {
   ExerciseLogFragment,
   GroupedExerciseLogFragment,
 } from '../../graphql/operations';
-import {FlatList, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {FlatList, StyleSheet, TouchableOpacity, View} from 'react-native';
 import Constants from '../../utils/Constants';
 import moment from 'moment';
 import {defaultStyles} from '../../utils/DefaultStyles';
@@ -11,6 +11,7 @@ import ContextMenu from 'react-native-context-menu-view';
 import {getRelativeTimeIfToday} from '../../utils/Date';
 import {ContextMenuActions} from '../../types/ContextMenuActions';
 import {logValueToString} from '../../utils/String';
+import AppText from '../common/AppText';
 
 interface ExerciseLogListItemProps {
   groupedExercise: GroupedExerciseLogFragment;
@@ -29,27 +30,29 @@ const GroupedExerciseLogListItem: React.FC<ExerciseLogListItemProps> = ({
 }) => {
   return (
     <View style={styles.container}>
-      <Text style={defaultStyles.h3}>{groupedExercise.exercise.name}</Text>
+      <AppText style={defaultStyles.h3}>
+        {groupedExercise.exercise.name}
+      </AppText>
       <View>
         {groupedExercise.exercise.notes && (
-          <Text
+          <AppText
             style={[
               defaultStyles.p11,
               defaultStyles.textAlignCenter,
               styles.marginSmall,
             ]}>
             {groupedExercise.exercise.notes}
-          </Text>
+          </AppText>
         )}
         {groupedExercise.exercise.defaultAppliedWeight && (
-          <Text
+          <AppText
             style={[
               defaultStyles.p11,
               defaultStyles.textAlignCenter,
               styles.marginSmall,
             ]}>
             +{logValueToString(groupedExercise.exercise.defaultAppliedWeight)}
-          </Text>
+          </AppText>
         )}
       </View>
 
@@ -82,21 +85,22 @@ const GroupedExerciseLogListItem: React.FC<ExerciseLogListItemProps> = ({
                   ]}>
                   <View style={styles.containerExerciseLogRow}>
                     <View>
-                      <Text style={styles.textExerciseLogRow}>
+                      <AppText style={styles.textExerciseLogRow}>
                         {item.warmup ? '•' : ''} {item.repetitions} x{' '}
                         {logValueToString(item.logValue)}{' '}
-                      </Text>
+                      </AppText>
                       {item.remark && (
-                        <Text style={[defaultStyles.footnote, styles.margin]}>
+                        <AppText
+                          style={[defaultStyles.footnote, styles.margin]}>
                           {item.remark}
-                        </Text>
+                        </AppText>
                       )}
                     </View>
-                    <Text style={[defaultStyles.footnote, styles.opacity]}>
+                    <AppText style={[defaultStyles.footnote, styles.opacity]}>
                       {getRelativeTimeIfToday(
                         moment.utc(item.logDateTime).toISOString(),
                       )}
-                    </Text>
+                    </AppText>
                   </View>
                 </View>
               </ContextMenu>

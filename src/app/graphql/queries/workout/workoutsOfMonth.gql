@@ -1,0 +1,5 @@
+query workoutsOfMonth($zonedDateTime: String!) {
+    workoutsOfCurrentMonth(zonedDateTimeString: $zonedDateTime) {
+        ...WorkoutShort
+    }
+}

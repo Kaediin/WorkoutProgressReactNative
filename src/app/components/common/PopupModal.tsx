@@ -1,11 +1,12 @@
 import React from 'react';
 import Modal from 'react-native-modal';
-import {StyleSheet, Text, View} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import Constants from '../../utils/Constants';
 import {enumToReadableString} from '../../utils/String';
 import GradientButton from './GradientButton';
 import {defaultStyles} from '../../utils/DefaultStyles';
+import AppText from './AppText';
 
 interface PopupModalProps {
   message: string;
@@ -34,14 +35,12 @@ const PopupModal: React.FC<PopupModalProps> = props => {
             ? Constants.ERROR_GRADIENT
             : ['#ffffff', '#cccccc']
         }>
-        <Text style={defaultStyles.h1}>
+        <AppText style={defaultStyles.h1}>
           {props.overrideTitle
             ? props.overrideTitle
             : enumToReadableString(props.type)}
-        </Text>
-        <Text style={[defaultStyles.whiteTextColor, defaultStyles.container]}>
-          {props.message}
-        </Text>
+        </AppText>
+        <AppText style={defaultStyles.container}>{props.message}</AppText>
         {props.type !== 'ERROR' && (
           <View style={[defaultStyles.spaceBetween, defaultStyles.marginTop]}>
             <GradientButton

@@ -5,7 +5,6 @@ import {
   Platform,
   ScrollView,
   StyleSheet,
-  Text,
   TextInput,
   View,
 } from 'react-native';
@@ -19,6 +18,7 @@ import useAuth from '../../hooks/useAuth';
 import DropDownPicker from 'react-native-dropdown-picker';
 import {defaultStyles} from '../../utils/DefaultStyles';
 import ClickableText from '../../components/common/ClickableText';
+import AppText from '../../components/common/AppText';
 
 type Props = NativeStackScreenProps<AuthStackParamList, 'Signup'>;
 
@@ -48,7 +48,9 @@ const SignupScreen: React.FC<Props> = props => {
   return (
     <LinearGradient colors={Constants.PRIMARY_GRADIENT}>
       <ScrollView style={styles.signupContainer}>
-        <Text style={[defaultStyles.h1, defaultStyles.container]}>Signup</Text>
+        <AppText style={[defaultStyles.h1, defaultStyles.container]}>
+          Signup
+        </AppText>
         <KeyboardAvoidingView
           behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
           keyboardVerticalOffset={100}>
@@ -104,10 +106,10 @@ const SignupScreen: React.FC<Props> = props => {
             />
           </View>
           <View style={[styles.signupInputContainer, styles.zIndex]}>
-            <Text style={[defaultStyles.footnote, styles.footnote]}>
+            <AppText style={[defaultStyles.footnote, styles.footnote]}>
               Biological gender is only used for personalised content based on
               your tracked workouts
-            </Text>
+            </AppText>
             <DropDownPicker
               setValue={setGender}
               value={gender || ''}
@@ -158,12 +160,12 @@ const SignupScreen: React.FC<Props> = props => {
               maxLength={Constants.TEXT_INPUT_MAX_LENGTH}
             />
           </View>
-          <Text style={[defaultStyles.footnote, styles.footnote]}>
+          <AppText style={[defaultStyles.footnote, styles.footnote]}>
             Your password should contain at least eight characters: one digit,
             one upper case, one lower case, and one special character.
-          </Text>
+          </AppText>
           <View>
-            <Text style={styles.errorMessage}>{errorMessage}</Text>
+            <AppText style={styles.errorMessage}>{errorMessage}</AppText>
           </View>
         </KeyboardAvoidingView>
 

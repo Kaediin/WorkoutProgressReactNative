@@ -1,9 +1,10 @@
 import React from 'react';
-import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {StyleSheet, TouchableOpacity, View} from 'react-native';
 import Constants from '../../utils/Constants';
 import LinearGradient from 'react-native-linear-gradient';
 import {StyleProp} from 'react-native/Libraries/StyleSheet/StyleSheet';
 import {ViewStyle} from 'react-native/Libraries/StyleSheet/StyleSheetTypes';
+import AppText from './AppText';
 
 interface GradientButtonProps {
   title: string;
@@ -49,7 +50,7 @@ const GradientButton: React.FC<GradientButtonProps> = props => {
       colors={props.gradients ?? Constants.SECONDARY_GRADIENT}
       locations={[0, 1]}
       style={[stylesGrad.warmup, stylesGrad.linearGradient, props.styles]}>
-      <Text style={stylesGrad.title}>{props.title}</Text>
+      <AppText style={stylesGrad.title}>{props.title}</AppText>
     </LinearGradient>
   ) : (
     <TouchableOpacity
@@ -66,12 +67,12 @@ const GradientButton: React.FC<GradientButtonProps> = props => {
               stylesGrad.outlineContainer,
               {backgroundColor: props.outlineBackgroundColor},
             ]}>
-            <Text style={[stylesGrad.title, stylesGrad.titleOutline]}>
+            <AppText style={[stylesGrad.title, stylesGrad.titleOutline]}>
               {props.title}
-            </Text>
+            </AppText>
           </View>
         ) : (
-          <Text style={stylesGrad.title}>{props.title}</Text>
+          <AppText style={stylesGrad.title}>{props.title}</AppText>
         )}
       </LinearGradient>
     </TouchableOpacity>

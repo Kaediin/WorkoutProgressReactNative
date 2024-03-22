@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import GradientBackground from '../../components/common/GradientBackground';
-import {StyleSheet, Text, TextInput, View} from 'react-native';
+import {StyleSheet, TextInput, View} from 'react-native';
 import GradientButton from '../../components/common/GradientButton';
 import Constants from '../../utils/Constants';
 import useAuth from '../../hooks/useAuth';
@@ -9,6 +9,7 @@ import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {AuthStackParamList} from '../AppRoute';
 import useAuthStore, {AuthState} from '../../stores/authStore';
 import {defaultStyles} from '../../utils/DefaultStyles';
+import AppText from '../../components/common/AppText';
 
 type Props = NativeStackScreenProps<AuthStackParamList, 'ConfirmUser'>;
 
@@ -61,9 +62,9 @@ const ConfirmUserScreen: React.FC<Props> = props => {
       ) : (
         <View style={styles.loginView}>
           <View>
-            <Text style={[defaultStyles.h4, defaultStyles.container]}>
+            <AppText style={[defaultStyles.h4, defaultStyles.container]}>
               An email has been sent to you containing a confirmation code
-            </Text>
+            </AppText>
             <TextInput
               style={styles.input}
               onChangeText={setConfirmationCode}
@@ -74,12 +75,12 @@ const ConfirmUserScreen: React.FC<Props> = props => {
             />
             <View>
               {timerCount > 0 && (
-                <Text>
+                <AppText>
                   You can request a new code in {timerCount} second
                   {timerCount === 1 ? '' : 's'}
-                </Text>
+                </AppText>
               )}
-              <Text style={styles.errorMessage}>{errorMessage}</Text>
+              <AppText style={styles.errorMessage}>{errorMessage}</AppText>
             </View>
             <View style={styles.actionButtons}>
               <View style={styles.confirmButton}>

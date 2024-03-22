@@ -1,8 +1,9 @@
 import React, {useEffect, useState} from 'react';
 import {ExerciseFragment} from '../../graphql/operations';
-import {StyleSheet, Text, View} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import {defaultStyles} from '../../utils/DefaultStyles';
 import {Picker} from '@react-native-picker/picker';
+import AppText from '../common/AppText';
 
 interface SelectExerciseProps {
   onSelect: (exercise: ExerciseFragment) => void;
@@ -38,7 +39,7 @@ const SelectExercises: React.FC<SelectExerciseProps> = props => {
           ))}
       </Picker>
       {selected?.notes && (
-        <Text
+        <AppText
           style={[
             defaultStyles.textAlignCenter,
             defaultStyles.p11,
@@ -46,7 +47,7 @@ const SelectExercises: React.FC<SelectExerciseProps> = props => {
             defaultStyles.blackTextColor,
           ]}>
           {selected.notes}
-        </Text>
+        </AppText>
       )}
     </View>
   );

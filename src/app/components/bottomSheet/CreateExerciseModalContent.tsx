@@ -8,7 +8,7 @@ import {
 } from '../../graphql/operations';
 import {BottomSheetModal, BottomSheetTextInput} from '@gorhom/bottom-sheet';
 import {CustomBottomSheet} from './CustomBottomSheet';
-import {StyleSheet, Text, TextInput, View} from 'react-native';
+import {StyleSheet, TextInput, View} from 'react-native';
 import MuscleGroupList from '../workouts/MuscleGroupList';
 import Constants from '../../utils/Constants';
 import SelectMuscleGroups from '../workouts/SelectMuscleGroups';
@@ -18,6 +18,7 @@ import LogValueSelect from '../common/LogValueSelect';
 import {logValueToString} from '../../utils/String';
 import {defaultStyles} from '../../utils/DefaultStyles';
 import Loader from '../common/Loader';
+import AppText from '../common/AppText';
 
 interface CreateExerciseModalProps {
   active: boolean;
@@ -143,7 +144,7 @@ const CreateExerciseModalContent: React.FC<
               exerciseName.length === 0 || primaryMuscleGroups.length === 0
             }>
             {!props.existingExercise && (
-              <Text style={styles.label}>New exercise</Text>
+              <AppText style={styles.label}>New exercise</AppText>
             )}
             <TextInput
               style={defaultStyles.textInput}
@@ -154,7 +155,7 @@ const CreateExerciseModalContent: React.FC<
               maxLength={Constants.TEXT_INPUT_MAX_LENGTH}
             />
             <View style={styles.spaceBetween}>
-              <Text>Primary muscle groups</Text>
+              <AppText>Primary muscle groups</AppText>
               <ClickableText
                 text={'Select'}
                 onPress={() => {
@@ -169,7 +170,7 @@ const CreateExerciseModalContent: React.FC<
               textColor="white"
             />
             <View style={styles.spaceBetween}>
-              <Text>Secondary muscle groups</Text>
+              <AppText>Secondary muscle groups</AppText>
               <ClickableText
                 text={'Select'}
                 onPress={() => {
@@ -184,7 +185,7 @@ const CreateExerciseModalContent: React.FC<
               textColor="white"
             />
             <View style={styles.spaceBetween}>
-              <Text>Default applied weight</Text>
+              <AppText>Default applied weight</AppText>
               <ClickableText
                 text={
                   defaultAppliedWeight

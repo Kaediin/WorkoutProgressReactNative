@@ -1,6 +1,6 @@
 import React from 'react';
 import {WorkoutShortFragment} from '../../graphql/operations';
-import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {StyleSheet, TouchableOpacity, View} from 'react-native';
 import Constants from '../../utils/Constants';
 import LinearGradient from 'react-native-linear-gradient';
 import moment from 'moment';
@@ -10,6 +10,7 @@ import {
   DATE_TIME_FORMAT,
   getFormattedHoursMinutesString,
 } from '../../utils/Date';
+import AppText from '../common/AppText';
 
 interface WorkoutListItemProps {
   workout: WorkoutShortFragment;
@@ -37,10 +38,10 @@ const WorkoutListItem: React.FC<WorkoutListItemProps> = ({
           hasActiveWorkout ? (workout.active ? {} : styles.inActive) : {},
         ]}>
         <View style={styles.containerHeader}>
-          <Text style={styles.activeText}>
+          <AppText style={styles.activeText}>
             {workout.active ? '• active' : ''}
-          </Text>
-          <Text style={[defaultStyles.footnote, styles.dateText]}>
+          </AppText>
+          <AppText style={[defaultStyles.footnote, styles.dateText]}>
             {moment.utc(workout.startDateTime).format(DATE_TIME_FORMAT)}
             {workout.endDateTime &&
               ' (' +
@@ -49,13 +50,14 @@ const WorkoutListItem: React.FC<WorkoutListItemProps> = ({
                   workout.endDateTime,
                 ) +
                 ')'}
-          </Text>
+          </AppText>
         </View>
-        <Text style={styles.headerText}>{workout.name}</Text>
+        <AppText style={styles.headerText}>{workout.name}</AppText>
         {workout.remark && (
-          <Text style={[defaultStyles.footnote, defaultStyles.textAlignCenter]}>
+          <AppText
+            style={[defaultStyles.footnote, defaultStyles.textAlignCenter]}>
             {workout?.remark}
-          </Text>
+          </AppText>
         )}
         <MuscleGroupList muscleGroups={workout.muscleGroups} alignCenter />
       </LinearGradient>

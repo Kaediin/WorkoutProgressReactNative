@@ -111,17 +111,29 @@ type Mutation {
   createExercise(input: ExerciseInput): Exercise
   createUser(userInput: UserInput!): User
   deleteExercise(id: ID!): Boolean!
+
+  """Delete workout by ID"""
   deleteWorkout(id: ID!): Boolean
+
+  """End workout by ID"""
   endWorkout(workoutId: ID!, zonedDateTimeString: String!): Workout
+
+  """Start a new workout for me"""
   meStartWorkout(input: WorkoutInput!): Workout
   reLogLatestLog(autoAdjust: Boolean!, workoutId: ID!, zonedDateTimeString: String!): Workout
   reLogLog(input: ExerciseLogInput!, workoutId: ID!): Workout
   removeExerciseLog(autoAdjust: Boolean!, exerciseLogId: String!): Boolean!
+
+  """
+  Restart workout by ID. This only removes end date and set active to false
+  """
   restartWorkout(id: ID!): Workout!
   runFetchWorkoutsTask: Boolean
   updateExercise(id: ID!, input: ExerciseInput): Exercise
   updateExerciseLog(exerciseLogId: ID!, input: ExerciseLogInput!): Workout
   updateMyPreference(input: PreferenceInput!): Preference!
+
+  """Update workout by ID"""
   updateWorkout(id: ID!, input: WorkoutInput!): Workout!
 }
 
@@ -148,16 +160,30 @@ input PreferenceInput {
 }
 
 type Query {
+  """Count my workouts"""
+  countMyWorkouts: Int!
+
+  """Get total time of all workouts"""
+  countTotalTimeAllMyWorkoutsInMinutes: Float!
   latestLogsByExerciseId(exerciseId: ID!): [ExerciseLog]
   latestLogsByExerciseIdAndNotWorkoutId(exerciseId: ID!, workoutId: String!): [ExerciseLog]
   me: User
+
+  """Check if me has an active workout ie. one that hasn't ended yet"""
   meHasActiveWorkout: Boolean!
   myExercises: [Exercise!]
   myPreference: Preference
+
+  """Fetch all my current workouts"""
   myWorkouts: [Workout!]
   userById(id: String!): User
   users: [User]
+
+  """Fetch workout by ID"""
   workoutById(id: ID!): Workout
+
+  """Fetch all workouts of user by current month with given timestamp"""
+  workoutsOfCurrentMonth(zonedDateTimeString: String!): [Workout!]!
 }
 
 type User {

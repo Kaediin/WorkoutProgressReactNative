@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Image, StyleSheet, Text, TextInput, View} from 'react-native';
+import {Image, StyleSheet, TextInput, View} from 'react-native';
 import GradientButton from '../../components/common/GradientButton';
 import useAuth from '../../hooks/useAuth';
 import {CognitoUser} from 'amazon-cognito-identity-js';
@@ -11,6 +11,7 @@ import Constants from '../../utils/Constants';
 import {defaultStyles} from '../../utils/DefaultStyles';
 import {errorCodeToMessage} from '../../utils/String';
 import ClickableText from '../../components/common/ClickableText';
+import AppText from '../../components/common/AppText';
 
 type Props = NativeStackScreenProps<AuthStackParamList, 'Login'>;
 
@@ -67,7 +68,7 @@ const LoginScreen: React.FC<Props> = props => {
                 autoComplete="password-new"
                 secureTextEntry
               />
-              <Text style={defaultStyles.error}>{error}</Text>
+              <AppText style={defaultStyles.error}>{error}</AppText>
               <View style={styles.loginButton}>
                 <GradientButton
                   title={'Login'}
@@ -95,9 +96,9 @@ const LoginScreen: React.FC<Props> = props => {
             </View>
           </View>
           <View style={styles.footer}>
-            <Text style={styles.noAccountText}>
+            <AppText style={styles.noAccountText}>
               No account yet? Click here to sign up!
-            </Text>
+            </AppText>
             <View style={styles.warmup}>
               <GradientButton
                 title={'Signup'}

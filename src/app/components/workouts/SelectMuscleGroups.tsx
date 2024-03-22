@@ -1,9 +1,10 @@
 import React, {useEffect, useState} from 'react';
 import {MuscleGroup} from '../../graphql/operations';
-import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {StyleSheet, TouchableOpacity, View} from 'react-native';
 import {enumToReadableString} from '../../utils/String';
 import Constants from '../../utils/Constants';
 import LinearGradient from 'react-native-linear-gradient';
+import AppText from '../common/AppText';
 
 interface SelectMuscleGroupsProps {
   onSelected: (groups: MuscleGroup[]) => void;
@@ -42,9 +43,9 @@ const SelectMuscleGroups: React.FC<SelectMuscleGroupsProps> = props => {
                     setSelected([...selected, muscleGroup as MuscleGroup]);
                   }
                 }}>
-                <Text style={styles.muscleGroupText}>
+                <AppText style={styles.muscleGroupText}>
                   {enumToReadableString(muscleGroup)}
-                </Text>
+                </AppText>
               </TouchableOpacity>
             </LinearGradient>
           );

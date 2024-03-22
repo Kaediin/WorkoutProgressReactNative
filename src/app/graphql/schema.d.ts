@@ -15,16 +15,25 @@ export type Scalars = {
 
 export type Query = {
   __typename?: 'Query';
+  /** Count my workouts */
+  countMyWorkouts: Scalars['Int'];
+  /** Get total time of all workouts */
+  countTotalTimeAllMyWorkoutsInMinutes: Scalars['Float'];
   latestLogsByExerciseId?: Maybe<Array<Maybe<ExerciseLog>>>;
   latestLogsByExerciseIdAndNotWorkoutId?: Maybe<Array<Maybe<ExerciseLog>>>;
   me?: Maybe<User>;
+  /** Check if me has an active workout ie. one that hasn't ended yet */
   meHasActiveWorkout: Scalars['Boolean'];
   myExercises?: Maybe<Array<Exercise>>;
   myPreference?: Maybe<Preference>;
+  /** Fetch all my current workouts */
   myWorkouts?: Maybe<Array<Workout>>;
   userById?: Maybe<User>;
   users?: Maybe<Array<Maybe<User>>>;
+  /** Fetch workout by ID */
   workoutById?: Maybe<Workout>;
+  /** Fetch all workouts of user by current month with given timestamp */
+  workoutsOfCurrentMonth: Array<Workout>;
 };
 
 
@@ -46,6 +55,11 @@ export type QueryUserByIdArgs = {
 
 export type QueryWorkoutByIdArgs = {
   id: Scalars['ID'];
+};
+
+
+export type QueryWorkoutsOfCurrentMonthArgs = {
+  zonedDateTimeString: Scalars['String'];
 };
 
 export type ExerciseLog = {
@@ -164,17 +178,22 @@ export type Mutation = {
   createExercise?: Maybe<Exercise>;
   createUser?: Maybe<User>;
   deleteExercise: Scalars['Boolean'];
+  /** Delete workout by ID */
   deleteWorkout?: Maybe<Scalars['Boolean']>;
+  /** End workout by ID */
   endWorkout?: Maybe<Workout>;
+  /** Start a new workout for me */
   meStartWorkout?: Maybe<Workout>;
   reLogLatestLog?: Maybe<Workout>;
   reLogLog?: Maybe<Workout>;
   removeExerciseLog: Scalars['Boolean'];
+  /** Restart workout by ID. This only removes end date and set active to false */
   restartWorkout: Workout;
   runFetchWorkoutsTask?: Maybe<Scalars['Boolean']>;
   updateExercise?: Maybe<Exercise>;
   updateExerciseLog?: Maybe<Workout>;
   updateMyPreference: Preference;
+  /** Update workout by ID */
   updateWorkout: Workout;
 };
 

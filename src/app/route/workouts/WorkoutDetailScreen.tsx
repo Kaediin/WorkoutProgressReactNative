@@ -6,7 +6,6 @@ import {
   ScrollView,
   StyleSheet,
   Switch,
-  Text,
   TouchableOpacity,
   View,
 } from 'react-native';
@@ -59,6 +58,7 @@ import {IActionProps} from 'react-native-floating-action';
 import useTimerStore from '../../stores/timerStore';
 import useRouteStore from '../../stores/routeStore';
 import {DATE_TIME_FORMAT} from '../../utils/Date';
+import AppText from '../../components/common/AppText';
 
 type Props = NativeStackScreenProps<WorkoutStackParamList, 'WorkoutDetail'>;
 
@@ -432,9 +432,9 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
       ) : workout ? (
         <View style={defaultStyles.container}>
           {workout.groupedExerciseLogs.length === 0 ? (
-            <Text style={styles.noExercisesText}>
+            <AppText style={styles.noExercisesText}>
               Click to + to log your exercises
-            </Text>
+            </AppText>
           ) : (
             <FlatList
               style={styles.flatlist}
@@ -645,12 +645,12 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
                       defaultStyles.marginBottom,
                     ]}>
                     <View style={defaultStyles.marginBottom}>
-                      <Text>
+                      <AppText>
                         Last set {latestLogs[0].exercise.name} on{' '}
                         {moment
                           .utc(latestLogs[0].logDateTime)
                           .format(DATE_TIME_FORMAT)}
-                      </Text>
+                      </AppText>
                     </View>
 
                     <View>
@@ -669,10 +669,10 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
                                 repetitions: log.repetitions,
                               });
                             }}>
-                            <Text style={styles.lastLoggedButtons}>
+                            <AppText style={styles.lastLoggedButtons}>
                               {log.repetitions} x{' '}
                               {logValueToString(log.logValue)}
-                            </Text>
+                            </AppText>
                           </TouchableOpacity>
                         ))}
                       </ScrollView>
@@ -690,15 +690,15 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
                           styles.expandableWeightSelectorLabel,
                         ]}
                         onPress={() => setShowPicker(!showPicker)}>
-                        <Text style={styles.selectedWeightLabel}>
+                        <AppText style={styles.selectedWeightLabel}>
                           {exerciseLog.repetitions} x{' '}
                           {logValueToString(exerciseLog.logValue)}
-                        </Text>
+                        </AppText>
                         <View style={defaultStyles.row}>
-                          <Text
+                          <AppText
                             style={[styles.fontSizeSmall, styles.warmupText]}>
                             Warmup
-                          </Text>
+                          </AppText>
                           <Switch
                             value={exerciseLog.warmup}
                             onValueChange={value =>
@@ -716,13 +716,13 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
                         contentHeight={225}>
                         <View style={styles.pickerContainer}>
                           <View style={styles.repetition}>
-                            <Text
+                            <AppText
                               style={[
                                 defaultStyles.footnote,
                                 styles.pickerLabel,
                               ]}>
                               Repetition
-                            </Text>
+                            </AppText>
                             <Picker
                               selectedValue={exerciseLog.repetitions}
                               onValueChange={value => {

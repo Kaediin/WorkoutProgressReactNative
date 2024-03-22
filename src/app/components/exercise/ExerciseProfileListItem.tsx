@@ -1,12 +1,13 @@
 import React from 'react';
 import {ExerciseFragment} from '../../graphql/operations';
-import {StyleSheet, Text} from 'react-native';
+import {StyleSheet} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import Constants from '../../utils/Constants';
 import {defaultStyles} from '../../utils/DefaultStyles';
 import MuscleGroupList from '../workouts/MuscleGroupList';
 import {nonNullable} from '../../utils/List';
 import {logValueToString} from '../../utils/String';
+import AppText from '../common/AppText';
 
 interface ExerciseProfileListItemProps {
   exercise: ExerciseFragment;
@@ -19,9 +20,9 @@ const ExerciseProfileListItem: React.FC<ExerciseProfileListItemProps> = ({
     <LinearGradient
       style={styles.container}
       colors={Constants.SECONDARY_GRADIENT}>
-      <Text style={styles.name}>{exercise.name}</Text>
+      <AppText style={styles.name}>{exercise.name}</AppText>
       {exercise.notes && (
-        <Text
+        <AppText
           style={[
             defaultStyles.textAlignCenter,
             defaultStyles.footnote,
@@ -29,20 +30,21 @@ const ExerciseProfileListItem: React.FC<ExerciseProfileListItemProps> = ({
             defaultStyles.marginBottom,
           ]}>
           {exercise.notes}
-        </Text>
+        </AppText>
       )}
-      <Text style={[defaultStyles.footnote, defaultStyles.textAlignCenter]}>
+      <AppText style={[defaultStyles.footnote, defaultStyles.textAlignCenter]}>
         Primary muscle groups
-      </Text>
+      </AppText>
       <MuscleGroupList
         muscleGroups={exercise.primaryMuscles?.filter(nonNullable) || []}
         alignCenter
       />
       {exercise.secondaryMuscles && exercise.secondaryMuscles?.length > 0 && (
         <>
-          <Text style={[defaultStyles.footnote, defaultStyles.textAlignCenter]}>
+          <AppText
+            style={[defaultStyles.footnote, defaultStyles.textAlignCenter]}>
             Secondary muscle groups
-          </Text>
+          </AppText>
           <MuscleGroupList
             muscleGroups={exercise.secondaryMuscles.filter(nonNullable) || []}
             alignCenter
@@ -50,9 +52,9 @@ const ExerciseProfileListItem: React.FC<ExerciseProfileListItemProps> = ({
         </>
       )}
       {exercise.defaultAppliedWeight && (
-        <Text style={[defaultStyles.p11, defaultStyles.textAlignCenter]}>
+        <AppText style={[defaultStyles.p11, defaultStyles.textAlignCenter]}>
           +{logValueToString(exercise.defaultAppliedWeight)}
-        </Text>
+        </AppText>
       )}
     </LinearGradient>
   );

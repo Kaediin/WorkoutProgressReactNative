@@ -18,16 +18,25 @@ export type Scalars = {
 
 export type Query = {
   __typename?: 'Query';
+  /** Count my workouts */
+  countMyWorkouts: Scalars['Int'];
+  /** Get total time of all workouts */
+  countTotalTimeAllMyWorkoutsInMinutes: Scalars['Float'];
   latestLogsByExerciseId?: Maybe<Array<Maybe<ExerciseLog>>>;
   latestLogsByExerciseIdAndNotWorkoutId?: Maybe<Array<Maybe<ExerciseLog>>>;
   me?: Maybe<User>;
+  /** Check if me has an active workout ie. one that hasn't ended yet */
   meHasActiveWorkout: Scalars['Boolean'];
   myExercises?: Maybe<Array<Exercise>>;
   myPreference?: Maybe<Preference>;
+  /** Fetch all my current workouts */
   myWorkouts?: Maybe<Array<Workout>>;
   userById?: Maybe<User>;
   users?: Maybe<Array<Maybe<User>>>;
+  /** Fetch workout by ID */
   workoutById?: Maybe<Workout>;
+  /** Fetch all workouts of user by current month with given timestamp */
+  workoutsOfCurrentMonth: Array<Workout>;
 };
 
 
@@ -49,6 +58,11 @@ export type QueryUserByIdArgs = {
 
 export type QueryWorkoutByIdArgs = {
   id: Scalars['ID'];
+};
+
+
+export type QueryWorkoutsOfCurrentMonthArgs = {
+  zonedDateTimeString: Scalars['String'];
 };
 
 export type ExerciseLog = {
@@ -167,17 +181,22 @@ export type Mutation = {
   createExercise?: Maybe<Exercise>;
   createUser?: Maybe<User>;
   deleteExercise: Scalars['Boolean'];
+  /** Delete workout by ID */
   deleteWorkout?: Maybe<Scalars['Boolean']>;
+  /** End workout by ID */
   endWorkout?: Maybe<Workout>;
+  /** Start a new workout for me */
   meStartWorkout?: Maybe<Workout>;
   reLogLatestLog?: Maybe<Workout>;
   reLogLog?: Maybe<Workout>;
   removeExerciseLog: Scalars['Boolean'];
+  /** Restart workout by ID. This only removes end date and set active to false */
   restartWorkout: Workout;
   runFetchWorkoutsTask?: Maybe<Scalars['Boolean']>;
   updateExercise?: Maybe<Exercise>;
   updateExerciseLog?: Maybe<Workout>;
   updateMyPreference: Preference;
+  /** Update workout by ID */
   updateWorkout: Workout;
 };
 
@@ -478,6 +497,16 @@ export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type MeQuery = { __typename?: 'Query', me?: { __typename?: 'User', id: string, fid: string, cognitoUser: { __typename?: 'CognitoUser', name: string } } | null };
 
+export type CountTotalTimeWorkoutsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type CountTotalTimeWorkoutsQuery = { __typename?: 'Query', countTotalTimeAllMyWorkoutsInMinutes: number };
+
+export type CountWorkoutsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type CountWorkoutsQuery = { __typename?: 'Query', countMyWorkouts: number };
+
 export type HasActiveWorkoutQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -494,6 +523,13 @@ export type WorkoutsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type WorkoutsQuery = { __typename?: 'Query', myWorkouts?: Array<{ __typename?: 'Workout', id: string, name: string, muscleGroups: Array<MuscleGroup>, startDateTime?: any | null, endDateTime?: any | null, active?: boolean | null, remark?: string | null }> | null };
+
+export type WorkoutsOfMonthQueryVariables = Exact<{
+  zonedDateTime: Scalars['String'];
+}>;
+
+
+export type WorkoutsOfMonthQuery = { __typename?: 'Query', workoutsOfCurrentMonth: Array<{ __typename?: 'Workout', id: string, name: string, muscleGroups: Array<MuscleGroup>, startDateTime?: any | null, endDateTime?: any | null, active?: boolean | null, remark?: string | null }> };
 
 export const PreferenceFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"Preference"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Preference"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"weightUnit"}},{"kind":"Field","name":{"kind":"Name","value":"distanceUnit"}},{"kind":"Field","name":{"kind":"Name","value":"defaultRepetitions"}},{"kind":"Field","name":{"kind":"Name","value":"hideUnitSelector"}},{"kind":"Field","name":{"kind":"Name","value":"autoAdjustWorkoutMuscleGroups"}},{"kind":"Field","name":{"kind":"Name","value":"timerDuration"}},{"kind":"Field","name":{"kind":"Name","value":"autoStartTimer"}},{"kind":"Field","name":{"kind":"Name","value":"playTimerCompletionSound"}}]}}]} as unknown as DocumentNode;
 export const CognitoUserFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"CognitoUser"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"CognitoUser"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]} as unknown as DocumentNode;
@@ -1062,6 +1098,62 @@ export function useMeLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<MeQuery
 export type MeQueryHookResult = ReturnType<typeof useMeQuery>;
 export type MeLazyQueryHookResult = ReturnType<typeof useMeLazyQuery>;
 export type MeQueryResult = Apollo.QueryResult<MeQuery, MeQueryVariables>;
+export const CountTotalTimeWorkoutsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"countTotalTimeWorkouts"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"countTotalTimeAllMyWorkoutsInMinutes"}}]}}]} as unknown as DocumentNode;
+
+/**
+ * __useCountTotalTimeWorkoutsQuery__
+ *
+ * To run a query within a React component, call `useCountTotalTimeWorkoutsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCountTotalTimeWorkoutsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCountTotalTimeWorkoutsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useCountTotalTimeWorkoutsQuery(baseOptions?: Apollo.QueryHookOptions<CountTotalTimeWorkoutsQuery, CountTotalTimeWorkoutsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<CountTotalTimeWorkoutsQuery, CountTotalTimeWorkoutsQueryVariables>(CountTotalTimeWorkoutsDocument, options);
+      }
+export function useCountTotalTimeWorkoutsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<CountTotalTimeWorkoutsQuery, CountTotalTimeWorkoutsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<CountTotalTimeWorkoutsQuery, CountTotalTimeWorkoutsQueryVariables>(CountTotalTimeWorkoutsDocument, options);
+        }
+export type CountTotalTimeWorkoutsQueryHookResult = ReturnType<typeof useCountTotalTimeWorkoutsQuery>;
+export type CountTotalTimeWorkoutsLazyQueryHookResult = ReturnType<typeof useCountTotalTimeWorkoutsLazyQuery>;
+export type CountTotalTimeWorkoutsQueryResult = Apollo.QueryResult<CountTotalTimeWorkoutsQuery, CountTotalTimeWorkoutsQueryVariables>;
+export const CountWorkoutsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"countWorkouts"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"countMyWorkouts"}}]}}]} as unknown as DocumentNode;
+
+/**
+ * __useCountWorkoutsQuery__
+ *
+ * To run a query within a React component, call `useCountWorkoutsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCountWorkoutsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCountWorkoutsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useCountWorkoutsQuery(baseOptions?: Apollo.QueryHookOptions<CountWorkoutsQuery, CountWorkoutsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<CountWorkoutsQuery, CountWorkoutsQueryVariables>(CountWorkoutsDocument, options);
+      }
+export function useCountWorkoutsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<CountWorkoutsQuery, CountWorkoutsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<CountWorkoutsQuery, CountWorkoutsQueryVariables>(CountWorkoutsDocument, options);
+        }
+export type CountWorkoutsQueryHookResult = ReturnType<typeof useCountWorkoutsQuery>;
+export type CountWorkoutsLazyQueryHookResult = ReturnType<typeof useCountWorkoutsLazyQuery>;
+export type CountWorkoutsQueryResult = Apollo.QueryResult<CountWorkoutsQuery, CountWorkoutsQueryVariables>;
 export const HasActiveWorkoutDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"hasActiveWorkout"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"meHasActiveWorkout"}}]}}]} as unknown as DocumentNode;
 
 /**
@@ -1147,3 +1239,32 @@ export function useWorkoutsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<W
 export type WorkoutsQueryHookResult = ReturnType<typeof useWorkoutsQuery>;
 export type WorkoutsLazyQueryHookResult = ReturnType<typeof useWorkoutsLazyQuery>;
 export type WorkoutsQueryResult = Apollo.QueryResult<WorkoutsQuery, WorkoutsQueryVariables>;
+export const WorkoutsOfMonthDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"workoutsOfMonth"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"zonedDateTime"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"workoutsOfCurrentMonth"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"zonedDateTimeString"},"value":{"kind":"Variable","name":{"kind":"Name","value":"zonedDateTime"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"WorkoutShort"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"WorkoutShort"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Workout"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"muscleGroups"}},{"kind":"Field","name":{"kind":"Name","value":"startDateTime"}},{"kind":"Field","name":{"kind":"Name","value":"endDateTime"}},{"kind":"Field","name":{"kind":"Name","value":"active"}},{"kind":"Field","name":{"kind":"Name","value":"remark"}}]}}]} as unknown as DocumentNode;
+
+/**
+ * __useWorkoutsOfMonthQuery__
+ *
+ * To run a query within a React component, call `useWorkoutsOfMonthQuery` and pass it any options that fit your needs.
+ * When your component renders, `useWorkoutsOfMonthQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useWorkoutsOfMonthQuery({
+ *   variables: {
+ *      zonedDateTime: // value for 'zonedDateTime'
+ *   },
+ * });
+ */
+export function useWorkoutsOfMonthQuery(baseOptions: Apollo.QueryHookOptions<WorkoutsOfMonthQuery, WorkoutsOfMonthQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<WorkoutsOfMonthQuery, WorkoutsOfMonthQueryVariables>(WorkoutsOfMonthDocument, options);
+      }
+export function useWorkoutsOfMonthLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<WorkoutsOfMonthQuery, WorkoutsOfMonthQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<WorkoutsOfMonthQuery, WorkoutsOfMonthQueryVariables>(WorkoutsOfMonthDocument, options);
+        }
+export type WorkoutsOfMonthQueryHookResult = ReturnType<typeof useWorkoutsOfMonthQuery>;
+export type WorkoutsOfMonthLazyQueryHookResult = ReturnType<typeof useWorkoutsOfMonthLazyQuery>;
+export type WorkoutsOfMonthQueryResult = Apollo.QueryResult<WorkoutsOfMonthQuery, WorkoutsOfMonthQueryVariables>;

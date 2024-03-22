@@ -1,11 +1,12 @@
 import React, {useEffect, useState} from 'react';
 import {LogUnit, LogValueFragment} from '../../graphql/operations';
 import usePreferenceStore from '../../stores/preferenceStore';
-import {StyleSheet, Text, View} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import {defaultStyles} from '../../utils/DefaultStyles';
 import {Picker} from '@react-native-picker/picker';
 import Constants from '../../utils/Constants';
 import {logValueToString} from '../../utils/String';
+import AppText from './AppText';
 
 interface LogValueSelectProps {
   logValue?: LogValueFragment;
@@ -74,9 +75,9 @@ const LogValueSelect: React.FC<LogValueSelectProps> = ({
     <>
       <View style={styles.pickerContainer}>
         <View style={styles.repetition}>
-          <Text style={[defaultStyles.footnote, styles.pickerLabel]}>
+          <AppText style={[defaultStyles.footnote, styles.pickerLabel]}>
             Value
-          </Text>
+          </AppText>
           <Picker
             selectedValue={+base}
             onValueChange={setBaseFromPicker}
@@ -91,9 +92,9 @@ const LogValueSelect: React.FC<LogValueSelectProps> = ({
           </Picker>
         </View>
         <View style={styles.repetition}>
-          <Text style={[defaultStyles.footnote, styles.pickerLabel]}>
+          <AppText style={[defaultStyles.footnote, styles.pickerLabel]}>
             Fraction
-          </Text>
+          </AppText>
           <Picker
             selectedValue={+fraction}
             onValueChange={setFractionFromPicker}
@@ -109,9 +110,9 @@ const LogValueSelect: React.FC<LogValueSelectProps> = ({
         </View>
         {!hideUnitSelector && (
           <View style={styles.repetition}>
-            <Text style={[defaultStyles.footnote, styles.pickerLabel]}>
+            <AppText style={[defaultStyles.footnote, styles.pickerLabel]}>
               Unit
-            </Text>
+            </AppText>
             <Picker
               selectedValue={unit}
               onValueChange={setUnit}
@@ -131,9 +132,9 @@ const LogValueSelect: React.FC<LogValueSelectProps> = ({
         )}
       </View>
       {!hideLabel && (
-        <Text style={styles.selectedWeightLabel}>
+        <AppText style={styles.selectedWeightLabel}>
           {nLogValue && logValueToString(nLogValue)}
-        </Text>
+        </AppText>
       )}
     </>
   );

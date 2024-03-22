@@ -20,7 +20,7 @@ import {
 } from '@gorhom/bottom-sheet';
 import {CustomBottomSheet} from '../../components/bottomSheet/CustomBottomSheet';
 import SelectMuscleGroups from '../../components/workouts/SelectMuscleGroups';
-import {FlatList, RefreshControl, StyleSheet, Text, View} from 'react-native';
+import {FlatList, RefreshControl, StyleSheet, View} from 'react-native';
 import moment from 'moment';
 import Constants from '../../utils/Constants';
 import {nonNullable} from '../../utils/List';
@@ -35,6 +35,7 @@ import ClickableText from '../../components/common/ClickableText';
 import Loader from '../../components/common/Loader';
 import {useIsFocused} from '@react-navigation/native';
 import useAuth from '../../hooks/useAuth';
+import AppText from '../../components/common/AppText';
 
 type Props = NativeStackScreenProps<WorkoutStackParamList, 'WorkoutsOverview'>;
 
@@ -234,7 +235,7 @@ const WorkoutsOverviewScreen: React.FC<Props> = ({navigation}) => {
         <Loader isLoading={loading} />
       ) : existingWorkouts.length === 0 ? (
         <View style={styles.centerContent}>
-          <Text>Click on the + to start your first workout!</Text>
+          <AppText>Click on the + to start your first workout!</AppText>
         </View>
       ) : (
         <FlatList
@@ -287,7 +288,7 @@ const WorkoutsOverviewScreen: React.FC<Props> = ({navigation}) => {
           index={50}
           disableRightText={!newWorkout.name}>
           <View style={defaultStyles.spaceBetween}>
-            <Text style={styles.header}>Name</Text>
+            <AppText style={styles.header}>Name</AppText>
             <ClickableText
               text={'Use current date'}
               onPress={(): void => {
@@ -309,7 +310,7 @@ const WorkoutsOverviewScreen: React.FC<Props> = ({navigation}) => {
             }
             maxLength={Constants.TEXT_INPUT_MAX_LENGTH}
           />
-          <Text style={styles.header}>Remarks</Text>
+          <AppText style={styles.header}>Remarks</AppText>
           <BottomSheetTextInput
             defaultValue={newWorkout.remark || ''}
             onChangeText={remark =>

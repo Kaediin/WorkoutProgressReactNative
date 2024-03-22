@@ -1,9 +1,10 @@
 import React from 'react';
 import {MuscleGroup} from '../../graphql/operations';
-import {ColorValue, StyleSheet, Text, View} from 'react-native';
+import {ColorValue, StyleSheet, View} from 'react-native';
 import {enumToReadableString} from '../../utils/String';
 import Constants from '../../utils/Constants';
 import {defaultStyles} from '../../utils/DefaultStyles';
+import AppText from '../common/AppText';
 
 interface MuscleGroupListProps {
   muscleGroups: MuscleGroup[];
@@ -24,7 +25,7 @@ const MuscleGroupList: React.FC<MuscleGroupListProps> = props => {
               styles.muscleGroup,
               props.pillColor ? {backgroundColor: props.pillColor} : {},
             ]}>
-            <Text
+            <AppText
               style={[
                 defaultStyles.p11,
                 // eslint-disable-next-line react-native/no-inline-styles
@@ -32,7 +33,7 @@ const MuscleGroupList: React.FC<MuscleGroupListProps> = props => {
                 styles.center,
               ]}>
               {enumToReadableString(group)}
-            </Text>
+            </AppText>
           </View>
         );
       })}
