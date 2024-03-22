@@ -20,3 +20,10 @@ fragment WorkoutLong on Workout {
     }
     remark
 }
+
+
+fragment MuscleGroupChartData on MuscleGroupChartData {
+    color
+    muscleGroup
+    count
+}

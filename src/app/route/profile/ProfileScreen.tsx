@@ -1,6 +1,6 @@
 import React, {useEffect, useRef, useState} from 'react';
 import GradientBackground from '../../components/common/GradientBackground';
-import {StyleSheet, TouchableOpacity, View} from 'react-native';
+import {ScrollView, StyleSheet, TouchableOpacity, View} from 'react-native';
 import {defaultStyles} from '../../utils/DefaultStyles';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {ProfileStackParamList} from '../../stacks/ProfileStack';
@@ -13,6 +13,7 @@ import TotalWorkoutTime from './insights/TotalWorkoutTime';
 import TotalWorkouts from './insights/TotalWorkouts';
 import {Exercise, Settings} from '../../icons/svg';
 import Constants from '../../utils/Constants';
+import MuscleGroupDistribution from './insights/MuscleGroupDistribution';
 
 type Props = NativeStackScreenProps<ProfileStackParamList, 'ProfileScreen'>;
 
@@ -35,7 +36,7 @@ const ProfileScreen: React.FC<Props> = ({navigation}) => {
 
   return (
     <GradientBackground>
-      <View style={defaultStyles.container}>
+      <ScrollView style={defaultStyles.container}>
         <View
           style={[
             defaultStyles.marginTop,
@@ -57,10 +58,13 @@ const ProfileScreen: React.FC<Props> = ({navigation}) => {
             </TouchableOpacity>
           </View>
         </View>
-        <View style={defaultStyles.marginTop}>
+        <View style={styles.marginTopLarge}>
           <WorkoutCalendarView onSelectDay={setSelectedWorkouts} />
         </View>
-      </View>
+        <View style={[styles.marginTopLarge, styles.paddingBottom]}>
+          <MuscleGroupDistribution />
+        </View>
+      </ScrollView>
       <BottomSheetModalProvider>
         <CustomBottomSheet
           ref={bottomSheetModal}
@@ -93,6 +97,12 @@ const styles = StyleSheet.create({
     padding: Constants.CONTAINER_PADDING_MARGIN / 2,
     borderRadius: Constants.BORDER_RADIUS_SMALL,
     backgroundColor: Constants.TERTIARY_GRADIENT[0],
+  },
+  marginTopLarge: {
+    marginTop: 30,
+  },
+  paddingBottom: {
+    paddingBottom: Constants.CONTAINER_PADDING_MARGIN,
   },
 });
 

@@ -15,6 +15,8 @@ export type Scalars = {
 
 export type Query = {
   __typename?: 'Query';
+  /** Get chart data per muscle group */
+  chartDataMuscleGroups: Array<MuscleGroupChartData>;
   /** Count my workouts */
   countMyWorkouts: Scalars['Int'];
   /** Get total time of all workouts */
@@ -62,6 +64,36 @@ export type QueryWorkoutsOfCurrentMonthArgs = {
   zonedDateTimeString: Scalars['String'];
 };
 
+export type MuscleGroupChartData = {
+  __typename?: 'MuscleGroupChartData';
+  color: Scalars['String'];
+  count: Scalars['Int'];
+  muscleGroup: MuscleGroup;
+};
+
+export enum MuscleGroup {
+  Abductor = 'ABDUCTOR',
+  Abs = 'ABS',
+  Adductor = 'ADDUCTOR',
+  BackShoulders = 'BACK_SHOULDERS',
+  Biceps = 'BICEPS',
+  Calves = 'CALVES',
+  Chest = 'CHEST',
+  Forearms = 'FOREARMS',
+  FrontShoulders = 'FRONT_SHOULDERS',
+  Glutes = 'GLUTES',
+  Hamstrings = 'HAMSTRINGS',
+  Hands = 'HANDS',
+  Lats = 'LATS',
+  LowerBack = 'LOWER_BACK',
+  Neck = 'NECK',
+  Obliques = 'OBLIQUES',
+  Quads = 'QUADS',
+  Shins = 'SHINS',
+  Triceps = 'TRICEPS',
+  UpperBack = 'UPPER_BACK'
+}
+
 export type ExerciseLog = {
   __typename?: 'ExerciseLog';
   exercise: Exercise;
@@ -97,29 +129,6 @@ export enum LogUnit {
   Km = 'KM',
   Lbs = 'LBS',
   Mi = 'MI'
-}
-
-export enum MuscleGroup {
-  Abductor = 'ABDUCTOR',
-  Abs = 'ABS',
-  Adductor = 'ADDUCTOR',
-  BackShoulders = 'BACK_SHOULDERS',
-  Biceps = 'BICEPS',
-  Calves = 'CALVES',
-  Chest = 'CHEST',
-  Forearms = 'FOREARMS',
-  FrontShoulders = 'FRONT_SHOULDERS',
-  Glutes = 'GLUTES',
-  Hamstrings = 'HAMSTRINGS',
-  Hands = 'HANDS',
-  Lats = 'LATS',
-  LowerBack = 'LOWER_BACK',
-  Neck = 'NECK',
-  Obliques = 'OBLIQUES',
-  Quads = 'QUADS',
-  Shins = 'SHINS',
-  Triceps = 'TRICEPS',
-  UpperBack = 'UPPER_BACK'
 }
 
 export type User = {

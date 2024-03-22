@@ -155,7 +155,9 @@ const CreateExerciseModalContent: React.FC<
               maxLength={Constants.TEXT_INPUT_MAX_LENGTH}
             />
             <View style={styles.spaceBetween}>
-              <AppText>Primary muscle groups</AppText>
+              <AppText style={defaultStyles.blackTextColor}>
+                Primary muscle groups
+              </AppText>
               <ClickableText
                 text={'Select'}
                 onPress={() => {
@@ -170,7 +172,9 @@ const CreateExerciseModalContent: React.FC<
               textColor="white"
             />
             <View style={styles.spaceBetween}>
-              <AppText>Secondary muscle groups</AppText>
+              <AppText style={defaultStyles.blackTextColor}>
+                Secondary muscle groups
+              </AppText>
               <ClickableText
                 text={'Select'}
                 onPress={() => {
@@ -185,7 +189,9 @@ const CreateExerciseModalContent: React.FC<
               textColor="white"
             />
             <View style={styles.spaceBetween}>
-              <AppText>Default applied weight</AppText>
+              <AppText style={defaultStyles.blackTextColor}>
+                Default applied weight
+              </AppText>
               <ClickableText
                 text={
                   defaultAppliedWeight
@@ -257,6 +263,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 20,
     marginBottom: 10,
+    color: 'black',
   },
   spaceBetween: {
     flexDirection: 'row',

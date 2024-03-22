@@ -265,7 +265,8 @@ const WorkoutsOverviewScreen: React.FC<Props> = ({navigation}) => {
                     ContextMenuActions.REACTIVATE_WORKOUT
                   ? doReactivateWorkout(item)
                   : undefined;
-              }}>
+              }}
+              style={defaultStyles.shadow}>
               <WorkoutListItem
                 key={item.id}
                 workout={item}
