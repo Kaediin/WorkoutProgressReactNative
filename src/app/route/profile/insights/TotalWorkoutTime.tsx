@@ -16,7 +16,7 @@ const TotalWorkoutTime: React.FC = () => {
     },
   });
 
-  return minutes ? (
+  return (
     <View style={styles.container}>
       <AppText
         style={[
@@ -26,12 +26,14 @@ const TotalWorkoutTime: React.FC = () => {
         ]}>
         Workout time
       </AppText>
-      <AppText style={defaultStyles.textAlignCenter}>
-        {Math.floor(minutes / 60)}h {minutes % 60}m
-      </AppText>
+      {minutes ? (
+        <AppText style={defaultStyles.textAlignCenter}>
+          {Math.floor(minutes / 60)}h {minutes % 60}m
+        </AppText>
+      ) : (
+        <AppText style={defaultStyles.textAlignCenter}>0h 0m</AppText>
+      )}
     </View>
-  ) : (
-    <></>
   );
 };
 

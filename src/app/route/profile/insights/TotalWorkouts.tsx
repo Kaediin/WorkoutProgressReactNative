@@ -17,7 +17,7 @@ const TotalWorkouts: React.FC = () => {
     },
   });
 
-  return countWorkouts ? (
+  return (
     <View style={styles.container}>
       <AppText
         style={[
@@ -27,10 +27,10 @@ const TotalWorkouts: React.FC = () => {
         ]}>
         Workouts
       </AppText>
-      <AppText style={defaultStyles.textAlignCenter}>{countWorkouts}</AppText>
+      <AppText style={defaultStyles.textAlignCenter}>
+        {countWorkouts ?? 0}
+      </AppText>
     </View>
-  ) : (
-    <></>
   );
 };
 
