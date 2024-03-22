@@ -13,7 +13,7 @@
     "generate:gql": "graphql-codegen -c codegen.yml",
     "codegen": "graphql-codegen",
     "build:ios": "react-native bundle --entry-file='index.js' --bundle-output='./ios/main.jsbundle' --dev=false --platform='ios'",
-    "postinstall": "npm run bundle:ios",
+    "postinstall": "npm run build:ios",
     "check-dependencies": "rnx-dep-check",
     "fix-dependencies": "rnx-dep-check --write"
   },
@@ -31,7 +31,7 @@
     "apollo-link-queue": "^3.1.0",
     "aws-amplify": "^5.3.4",
     "aws-amplify-react-native": "^7.0.2",
-    "graphql": "^14.0.0",
+    "graphql": "^15.8.0",
     "jwt-decode": "^3.1.2",
     "moment": "^2.29.4",
     "react": "18.2.0",
