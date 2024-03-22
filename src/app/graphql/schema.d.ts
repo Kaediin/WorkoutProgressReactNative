@@ -13,73 +13,41 @@ export type Scalars = {
   LocalDateTime: any;
 };
 
-export type Query = {
-  __typename?: 'Query';
-  /** Get all logs by excerice id */
-  allLogsByExerciseId: Array<ExerciseLog>;
-  /** Get chart data per muscle group */
-  chartDataMuscleGroups: Array<MuscleGroupChartData>;
-  /** Get chart data of last x months for logs by exercise id */
-  chartDataOfXMonthsByExerciseId: Array<ExerciseLineChartData>;
-  /** Count my workouts */
-  countMyWorkouts: Scalars['Int'];
-  /** Get total time of all workouts */
-  countTotalTimeAllMyWorkoutsInMinutes: Scalars['Float'];
-  /** Get all of the latest logs by exercise id from the same workout */
-  latestLogsByExerciseId?: Maybe<Array<Maybe<ExerciseLog>>>;
-  /** Get all of the latest logs by exercise id from the same workout except given workout Id */
-  latestLogsByExerciseIdAndNotWorkoutId?: Maybe<Array<Maybe<ExerciseLog>>>;
-  me?: Maybe<User>;
-  /** Check if me has an active workout ie. one that hasn't ended yet */
-  meHasActiveWorkout: Scalars['Boolean'];
-  myExercises?: Maybe<Array<Exercise>>;
-  myPreference?: Maybe<Preference>;
-  /** Fetch all my current workouts */
-  myWorkouts?: Maybe<Array<Workout>>;
-  userById?: Maybe<User>;
-  users?: Maybe<Array<Maybe<User>>>;
-  /** Fetch workout by ID */
-  workoutById?: Maybe<Workout>;
-  /** Fetch all workouts of user by current month with given timestamp */
-  workoutsOfCurrentMonth: Array<Workout>;
+export type CognitoUser = {
+  __typename?: 'CognitoUser';
+  email: Scalars['String'];
+  family_name: Scalars['String'];
+  gender: Scalars['String'];
+  given_name: Scalars['String'];
+  locale: Scalars['String'];
+  name: Scalars['String'];
+  nickname: Scalars['String'];
+  zoneinfo: Scalars['String'];
 };
 
-
-export type QueryAllLogsByExerciseIdArgs = {
-  exerciseId: Scalars['ID'];
-};
-
-
-export type QueryChartDataOfXMonthsByExerciseIdArgs = {
-  exerciseId: Scalars['ID'];
-  months: Scalars['Int'];
-  zonedDateTimeString: Scalars['String'];
-};
-
-
-export type QueryLatestLogsByExerciseIdArgs = {
-  exerciseId: Scalars['ID'];
-};
-
-
-export type QueryLatestLogsByExerciseIdAndNotWorkoutIdArgs = {
-  exerciseId: Scalars['ID'];
-  workoutId: Scalars['String'];
-};
-
-
-export type QueryUserByIdArgs = {
-  id: Scalars['String'];
-};
-
-
-export type QueryWorkoutByIdArgs = {
+export type Exercise = {
+  __typename?: 'Exercise';
+  defaultAppliedWeight?: Maybe<LogValue>;
   id: Scalars['ID'];
+  name: Scalars['String'];
+  notes?: Maybe<Scalars['String']>;
+  primaryMuscles?: Maybe<Array<Maybe<MuscleGroup>>>;
+  secondaryMuscles?: Maybe<Array<Maybe<MuscleGroup>>>;
+  user?: Maybe<User>;
 };
 
+export type ExerciseInput = {
+  defaultAppliedWeight?: InputMaybe<LogValueInput>;
+  name: Scalars['String'];
+  notes?: InputMaybe<Scalars['String']>;
+  primaryMuscles?: InputMaybe<Array<InputMaybe<MuscleGroup>>>;
+  secondaryMuscles?: InputMaybe<Array<InputMaybe<MuscleGroup>>>;
+};
 
-export type QueryWorkoutsOfCurrentMonthArgs = {
-  zonedDateTimeString: Scalars['String'];
+export type ExerciseLineChartData = {
+  __typename?: 'ExerciseLineChartData';
+  logs: Array<ExerciseLog>;
+  monthLabel: Scalars['String'];
 };
 
 export type ExerciseLog = {
@@ -94,22 +62,19 @@ export type ExerciseLog = {
   warmup?: Maybe<Scalars['Boolean']>;
 };
 
-export type Exercise = {
-  __typename?: 'Exercise';
-  defaultAppliedWeight?: Maybe<LogValue>;
-  id: Scalars['ID'];
-  name: Scalars['String'];
-  notes?: Maybe<Scalars['String']>;
-  primaryMuscles?: Maybe<Array<Maybe<MuscleGroup>>>;
-  secondaryMuscles?: Maybe<Array<Maybe<MuscleGroup>>>;
-  user?: Maybe<User>;
+export type ExerciseLogInput = {
+  exerciseId: Scalars['String'];
+  logValue: LogValueInput;
+  remark?: InputMaybe<Scalars['String']>;
+  repetitions: Scalars['Float'];
+  warmup: Scalars['Boolean'];
+  zonedDateTimeString: Scalars['String'];
 };
 
-export type LogValue = {
-  __typename?: 'LogValue';
-  base: Scalars['Int'];
-  fraction?: Maybe<Scalars['Int']>;
-  unit: LogUnit;
+export type GroupedExerciseLog = {
+  __typename?: 'GroupedExerciseLog';
+  exercise: Exercise;
+  logs: Array<ExerciseLog>;
 };
 
 export enum LogUnit {
@@ -118,6 +83,19 @@ export enum LogUnit {
   Lbs = 'LBS',
   Mi = 'MI'
 }
+
+export type LogValue = {
+  __typename?: 'LogValue';
+  base: Scalars['Int'];
+  fraction?: Maybe<Scalars['Int']>;
+  unit: LogUnit;
+};
+
+export type LogValueInput = {
+  base: Scalars['Int'];
+  fraction?: InputMaybe<Scalars['Int']>;
+  unit: LogUnit;
+};
 
 export enum MuscleGroup {
   Abductor = 'ABDUCTOR',
@@ -142,67 +120,11 @@ export enum MuscleGroup {
   UpperBack = 'UPPER_BACK'
 }
 
-export type User = {
-  __typename?: 'User';
-  cognitoUser: CognitoUser;
-  fid: Scalars['String'];
-  id: Scalars['ID'];
-};
-
-export type CognitoUser = {
-  __typename?: 'CognitoUser';
-  email: Scalars['String'];
-  family_name: Scalars['String'];
-  gender: Scalars['String'];
-  given_name: Scalars['String'];
-  locale: Scalars['String'];
-  name: Scalars['String'];
-  nickname: Scalars['String'];
-  zoneinfo: Scalars['String'];
-};
-
 export type MuscleGroupChartData = {
   __typename?: 'MuscleGroupChartData';
   color: Scalars['String'];
   count: Scalars['Int'];
   muscleGroup: MuscleGroup;
-};
-
-export type ExerciseLineChartData = {
-  __typename?: 'ExerciseLineChartData';
-  logs: Array<ExerciseLog>;
-  monthLabel: Scalars['String'];
-};
-
-export type Preference = {
-  __typename?: 'Preference';
-  autoAdjustWorkoutMuscleGroups?: Maybe<Scalars['Boolean']>;
-  autoStartTimer?: Maybe<Scalars['Boolean']>;
-  defaultRepetitions?: Maybe<Scalars['Int']>;
-  distanceUnit?: Maybe<LogUnit>;
-  hideUnitSelector?: Maybe<Scalars['Boolean']>;
-  playTimerCompletionSound?: Maybe<Scalars['Boolean']>;
-  timerDuration?: Maybe<Scalars['Int']>;
-  weightUnit?: Maybe<LogUnit>;
-};
-
-export type Workout = {
-  __typename?: 'Workout';
-  active?: Maybe<Scalars['Boolean']>;
-  endDateTime?: Maybe<Scalars['LocalDateTime']>;
-  exerciseLogs: Array<ExerciseLog>;
-  groupedExerciseLogs: Array<GroupedExerciseLog>;
-  id: Scalars['ID'];
-  muscleGroups: Array<MuscleGroup>;
-  name: Scalars['String'];
-  remark?: Maybe<Scalars['String']>;
-  startDateTime?: Maybe<Scalars['LocalDateTime']>;
-};
-
-export type GroupedExerciseLog = {
-  __typename?: 'GroupedExerciseLog';
-  exercise: Exercise;
-  logs: Array<ExerciseLog>;
 };
 
 export type Mutation = {
@@ -315,42 +237,16 @@ export type MutationUpdateWorkoutArgs = {
   input: WorkoutInput;
 };
 
-export type ExerciseLogInput = {
-  exerciseId: Scalars['String'];
-  logValue: LogValueInput;
-  remark?: InputMaybe<Scalars['String']>;
-  repetitions: Scalars['Float'];
-  warmup: Scalars['Boolean'];
-  zonedDateTimeString: Scalars['String'];
-};
-
-export type LogValueInput = {
-  base: Scalars['Int'];
-  fraction?: InputMaybe<Scalars['Int']>;
-  unit: LogUnit;
-};
-
-export type ExerciseInput = {
-  defaultAppliedWeight?: InputMaybe<LogValueInput>;
-  name: Scalars['String'];
-  notes?: InputMaybe<Scalars['String']>;
-  primaryMuscles?: InputMaybe<Array<InputMaybe<MuscleGroup>>>;
-  secondaryMuscles?: InputMaybe<Array<InputMaybe<MuscleGroup>>>;
-};
-
-export type UserInput = {
-  email: Scalars['String'];
-  firstName: Scalars['String'];
-  lastName: Scalars['String'];
-  middleName: Scalars['String'];
-  password: Scalars['String'];
-};
-
-export type WorkoutInput = {
-  muscleGroups: Array<MuscleGroup>;
-  name: Scalars['String'];
-  remark?: InputMaybe<Scalars['String']>;
-  zonedDateTime: Scalars['String'];
+export type Preference = {
+  __typename?: 'Preference';
+  autoAdjustWorkoutMuscleGroups?: Maybe<Scalars['Boolean']>;
+  autoStartTimer?: Maybe<Scalars['Boolean']>;
+  defaultRepetitions?: Maybe<Scalars['Int']>;
+  distanceUnit?: Maybe<LogUnit>;
+  hideUnitSelector?: Maybe<Scalars['Boolean']>;
+  playTimerCompletionSound?: Maybe<Scalars['Boolean']>;
+  timerDuration?: Maybe<Scalars['Int']>;
+  weightUnit?: Maybe<LogUnit>;
 };
 
 export type PreferenceInput = {
@@ -362,4 +258,108 @@ export type PreferenceInput = {
   playTimerCompletionSound?: InputMaybe<Scalars['Boolean']>;
   timerDuration?: InputMaybe<Scalars['Int']>;
   weightUnit?: InputMaybe<LogUnit>;
+};
+
+export type Query = {
+  __typename?: 'Query';
+  /** Get all logs by excerice id */
+  allLogsByExerciseId: Array<ExerciseLog>;
+  /** Get chart data per muscle group */
+  chartDataMuscleGroups: Array<MuscleGroupChartData>;
+  /** Get chart data of last x months for logs by exercise id */
+  chartDataOfXMonthsByExerciseId: Array<ExerciseLineChartData>;
+  /** Count my workouts */
+  countMyWorkouts: Scalars['Int'];
+  /** Get total time of all workouts */
+  countTotalTimeAllMyWorkoutsInMinutes: Scalars['Float'];
+  /** Get all of the latest logs by exercise id from the same workout */
+  latestLogsByExerciseId?: Maybe<Array<Maybe<ExerciseLog>>>;
+  /** Get all of the latest logs by exercise id from the same workout except given workout Id */
+  latestLogsByExerciseIdAndNotWorkoutId?: Maybe<Array<Maybe<ExerciseLog>>>;
+  me?: Maybe<User>;
+  /** Check if me has an active workout ie. one that hasn't ended yet */
+  meHasActiveWorkout: Scalars['Boolean'];
+  myExercises?: Maybe<Array<Exercise>>;
+  myPreference?: Maybe<Preference>;
+  /** Fetch all my current workouts */
+  myWorkouts?: Maybe<Array<Workout>>;
+  userById?: Maybe<User>;
+  users?: Maybe<Array<Maybe<User>>>;
+  /** Fetch workout by ID */
+  workoutById?: Maybe<Workout>;
+  /** Fetch all workouts of user by current month with given timestamp */
+  workoutsOfCurrentMonth: Array<Workout>;
+};
+
+
+export type QueryAllLogsByExerciseIdArgs = {
+  exerciseId: Scalars['ID'];
+};
+
+
+export type QueryChartDataOfXMonthsByExerciseIdArgs = {
+  exerciseId: Scalars['ID'];
+  months: Scalars['Int'];
+  zonedDateTimeString: Scalars['String'];
+};
+
+
+export type QueryLatestLogsByExerciseIdArgs = {
+  exerciseId: Scalars['ID'];
+};
+
+
+export type QueryLatestLogsByExerciseIdAndNotWorkoutIdArgs = {
+  exerciseId: Scalars['ID'];
+  workoutId: Scalars['String'];
+};
+
+
+export type QueryUserByIdArgs = {
+  id: Scalars['String'];
+};
+
+
+export type QueryWorkoutByIdArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type QueryWorkoutsOfCurrentMonthArgs = {
+  zonedDateTimeString: Scalars['String'];
+};
+
+export type User = {
+  __typename?: 'User';
+  cognitoUser: CognitoUser;
+  fid: Scalars['String'];
+  id: Scalars['ID'];
+};
+
+export type UserInput = {
+  email: Scalars['String'];
+  firstName: Scalars['String'];
+  lastName: Scalars['String'];
+  middleName: Scalars['String'];
+  password: Scalars['String'];
+};
+
+export type Workout = {
+  __typename?: 'Workout';
+  active?: Maybe<Scalars['Boolean']>;
+  endDateTime?: Maybe<Scalars['LocalDateTime']>;
+  exerciseLogs: Array<ExerciseLog>;
+  groupedExerciseLogs: Array<GroupedExerciseLog>;
+  id: Scalars['ID'];
+  muscleGroups: Array<MuscleGroup>;
+  name: Scalars['String'];
+  remark?: Maybe<Scalars['String']>;
+  startDateTime?: Maybe<Scalars['LocalDateTime']>;
+};
+
+export type WorkoutInput = {
+  muscleGroups: Array<MuscleGroup>;
+  name: Scalars['String'];
+  remark?: InputMaybe<Scalars['String']>;
+  zonedDateTime: Scalars['String'];
 };

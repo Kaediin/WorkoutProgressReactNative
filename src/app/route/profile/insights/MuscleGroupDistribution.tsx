@@ -25,7 +25,7 @@ const MuscleGroupDistribution: React.FC = () => {
 
   const {} = useChartDataMuscleGroupsQuery({
     fetchPolicy: 'no-cache',
-    onCompleted: (data: MuscleGroupChartDataFragment) => {
+    onCompleted: data => {
       if (data?.chartDataMuscleGroups) {
         setChartData(data.chartDataMuscleGroups);
       }
