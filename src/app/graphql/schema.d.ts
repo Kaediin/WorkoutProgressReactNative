@@ -15,13 +15,19 @@ export type Scalars = {
 
 export type Query = {
   __typename?: 'Query';
+  /** Get all logs by excerice id */
+  allLogsByExerciseId: Array<ExerciseLog>;
   /** Get chart data per muscle group */
   chartDataMuscleGroups: Array<MuscleGroupChartData>;
+  /** Get chart data of last x months for logs by exercise id */
+  chartDataOfXMonthsByExerciseId: Array<ExerciseLineChartData>;
   /** Count my workouts */
   countMyWorkouts: Scalars['Int'];
   /** Get total time of all workouts */
   countTotalTimeAllMyWorkoutsInMinutes: Scalars['Float'];
+  /** Get all of the latest logs by exercise id from the same workout */
   latestLogsByExerciseId?: Maybe<Array<Maybe<ExerciseLog>>>;
+  /** Get all of the latest logs by exercise id from the same workout except given workout Id */
   latestLogsByExerciseIdAndNotWorkoutId?: Maybe<Array<Maybe<ExerciseLog>>>;
   me?: Maybe<User>;
   /** Check if me has an active workout ie. one that hasn't ended yet */
@@ -36,6 +42,18 @@ export type Query = {
   workoutById?: Maybe<Workout>;
   /** Fetch all workouts of user by current month with given timestamp */
   workoutsOfCurrentMonth: Array<Workout>;
+};
+
+
+export type QueryAllLogsByExerciseIdArgs = {
+  exerciseId: Scalars['ID'];
+};
+
+
+export type QueryChartDataOfXMonthsByExerciseIdArgs = {
+  exerciseId: Scalars['ID'];
+  months: Scalars['Int'];
+  zonedDateTimeString: Scalars['String'];
 };
 
 
@@ -63,36 +81,6 @@ export type QueryWorkoutByIdArgs = {
 export type QueryWorkoutsOfCurrentMonthArgs = {
   zonedDateTimeString: Scalars['String'];
 };
-
-export type MuscleGroupChartData = {
-  __typename?: 'MuscleGroupChartData';
-  color: Scalars['String'];
-  count: Scalars['Int'];
-  muscleGroup: MuscleGroup;
-};
-
-export enum MuscleGroup {
-  Abductor = 'ABDUCTOR',
-  Abs = 'ABS',
-  Adductor = 'ADDUCTOR',
-  BackShoulders = 'BACK_SHOULDERS',
-  Biceps = 'BICEPS',
-  Calves = 'CALVES',
-  Chest = 'CHEST',
-  Forearms = 'FOREARMS',
-  FrontShoulders = 'FRONT_SHOULDERS',
-  Glutes = 'GLUTES',
-  Hamstrings = 'HAMSTRINGS',
-  Hands = 'HANDS',
-  Lats = 'LATS',
-  LowerBack = 'LOWER_BACK',
-  Neck = 'NECK',
-  Obliques = 'OBLIQUES',
-  Quads = 'QUADS',
-  Shins = 'SHINS',
-  Triceps = 'TRICEPS',
-  UpperBack = 'UPPER_BACK'
-}
 
 export type ExerciseLog = {
   __typename?: 'ExerciseLog';
@@ -131,6 +119,29 @@ export enum LogUnit {
   Mi = 'MI'
 }
 
+export enum MuscleGroup {
+  Abductor = 'ABDUCTOR',
+  Abs = 'ABS',
+  Adductor = 'ADDUCTOR',
+  BackShoulders = 'BACK_SHOULDERS',
+  Biceps = 'BICEPS',
+  Calves = 'CALVES',
+  Chest = 'CHEST',
+  Forearms = 'FOREARMS',
+  FrontShoulders = 'FRONT_SHOULDERS',
+  Glutes = 'GLUTES',
+  Hamstrings = 'HAMSTRINGS',
+  Hands = 'HANDS',
+  Lats = 'LATS',
+  LowerBack = 'LOWER_BACK',
+  Neck = 'NECK',
+  Obliques = 'OBLIQUES',
+  Quads = 'QUADS',
+  Shins = 'SHINS',
+  Triceps = 'TRICEPS',
+  UpperBack = 'UPPER_BACK'
+}
+
 export type User = {
   __typename?: 'User';
   cognitoUser: CognitoUser;
@@ -148,6 +159,19 @@ export type CognitoUser = {
   name: Scalars['String'];
   nickname: Scalars['String'];
   zoneinfo: Scalars['String'];
+};
+
+export type MuscleGroupChartData = {
+  __typename?: 'MuscleGroupChartData';
+  color: Scalars['String'];
+  count: Scalars['Int'];
+  muscleGroup: MuscleGroup;
+};
+
+export type ExerciseLineChartData = {
+  __typename?: 'ExerciseLineChartData';
+  logs: Array<ExerciseLog>;
+  monthLabel: Scalars['String'];
 };
 
 export type Preference = {

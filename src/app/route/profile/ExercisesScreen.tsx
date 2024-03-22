@@ -1,6 +1,6 @@
 import React, {useEffect, useRef, useState} from 'react';
 import GradientBackground from '../../components/common/GradientBackground';
-import {FlatList, View} from 'react-native';
+import {FlatList, StyleSheet, View} from 'react-native';
 import {
   ExerciseFragment,
   MuscleGroup,
@@ -13,7 +13,6 @@ import {ContextMenuActions} from '../../types/ContextMenuActions';
 import ExerciseProfileListItem from '../../components/exercise/ExerciseProfileListItem';
 import CreateExerciseModal from '../../components/bottomSheet/CreateExerciseModal';
 import PopupModal from '../../components/common/PopupModal';
-import HeaderLabel from '../../components/nav/headerComponents/EndWorkout';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {ProfileStackParamList} from '../../stacks/ProfileStack';
 import GradientButton from '../../components/common/GradientButton';
@@ -23,6 +22,7 @@ import {BottomSheetModal, BottomSheetModalProvider} from '@gorhom/bottom-sheet';
 import {CustomBottomSheet} from '../../components/bottomSheet/CustomBottomSheet';
 import SelectMuscleGroups from '../../components/workouts/SelectMuscleGroups';
 import {nonNullable} from '../../utils/List';
+import HeaderLabel from '../../components/nav/headerComponents/HeaderLabel';
 
 type Props = NativeStackScreenProps<ProfileStackParamList, 'ExercisesScreen'>;
 
@@ -68,14 +68,16 @@ const ExercisesScreen: React.FC<Props> = props => {
     }
   }, [editExercise]);
 
-  props.navigation.setOptions({
-    headerRight: () => (
-      <HeaderLabel
-        label={'Create'}
-        onPress={() => setCreateExerciseModalActive(true)}
-      />
-    ),
-  });
+  useEffect(() => {
+    props.navigation.setOptions({
+      headerRight: () => (
+        <HeaderLabel
+          label={'Create'}
+          onPress={() => setCreateExerciseModalActive(true)}
+        />
+      ),
+    });
+  }, []);
 
   useEffect(() => {
     if (exercisesData?.myExercises) {
@@ -119,7 +121,7 @@ const ExercisesScreen: React.FC<Props> = props => {
                     onClick={() =>
                       refMuscleGroupFilterSelect?.current?.present()
                     }
-                    styles={{width: 200}}
+                    styles={styles.buttonWidth}
                   />
                 )}
               </View>
@@ -139,7 +141,14 @@ const ExercisesScreen: React.FC<Props> = props => {
                     : setDeleteExerciseId(item.id)
                 }
                 style={defaultStyles.shadow}>
-                <ExerciseProfileListItem exercise={item} />
+                <ExerciseProfileListItem
+                  exercise={item}
+                  onPress={id =>
+                    props.navigation.navigate('ExerciseDetailScreen', {
+                      exerciseId: id,
+                    })
+                  }
+                />
               </ContextMenu>
             );
           }}
@@ -181,5 +190,11 @@ const ExercisesScreen: React.FC<Props> = props => {
     </GradientBackground>
   );
 };
+
+const styles = StyleSheet.create({
+  buttonWidth: {
+    width: 200,
+  },
+});
 
 export default ExercisesScreen;

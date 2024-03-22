@@ -18,13 +18,19 @@ export type Scalars = {
 
 export type Query = {
   __typename?: 'Query';
+  /** Get all logs by excerice id */
+  allLogsByExerciseId: Array<ExerciseLog>;
   /** Get chart data per muscle group */
   chartDataMuscleGroups: Array<MuscleGroupChartData>;
+  /** Get chart data of last x months for logs by exercise id */
+  chartDataOfXMonthsByExerciseId: Array<ExerciseLineChartData>;
   /** Count my workouts */
   countMyWorkouts: Scalars['Int'];
   /** Get total time of all workouts */
   countTotalTimeAllMyWorkoutsInMinutes: Scalars['Float'];
+  /** Get all of the latest logs by exercise id from the same workout */
   latestLogsByExerciseId?: Maybe<Array<Maybe<ExerciseLog>>>;
+  /** Get all of the latest logs by exercise id from the same workout except given workout Id */
   latestLogsByExerciseIdAndNotWorkoutId?: Maybe<Array<Maybe<ExerciseLog>>>;
   me?: Maybe<User>;
   /** Check if me has an active workout ie. one that hasn't ended yet */
@@ -39,6 +45,18 @@ export type Query = {
   workoutById?: Maybe<Workout>;
   /** Fetch all workouts of user by current month with given timestamp */
   workoutsOfCurrentMonth: Array<Workout>;
+};
+
+
+export type QueryAllLogsByExerciseIdArgs = {
+  exerciseId: Scalars['ID'];
+};
+
+
+export type QueryChartDataOfXMonthsByExerciseIdArgs = {
+  exerciseId: Scalars['ID'];
+  months: Scalars['Int'];
+  zonedDateTimeString: Scalars['String'];
 };
 
 
@@ -66,36 +84,6 @@ export type QueryWorkoutByIdArgs = {
 export type QueryWorkoutsOfCurrentMonthArgs = {
   zonedDateTimeString: Scalars['String'];
 };
-
-export type MuscleGroupChartData = {
-  __typename?: 'MuscleGroupChartData';
-  color: Scalars['String'];
-  count: Scalars['Int'];
-  muscleGroup: MuscleGroup;
-};
-
-export enum MuscleGroup {
-  ABDUCTOR = 'ABDUCTOR',
-  ABS = 'ABS',
-  ADDUCTOR = 'ADDUCTOR',
-  BACK_SHOULDERS = 'BACK_SHOULDERS',
-  BICEPS = 'BICEPS',
-  CALVES = 'CALVES',
-  CHEST = 'CHEST',
-  FOREARMS = 'FOREARMS',
-  FRONT_SHOULDERS = 'FRONT_SHOULDERS',
-  GLUTES = 'GLUTES',
-  HAMSTRINGS = 'HAMSTRINGS',
-  HANDS = 'HANDS',
-  LATS = 'LATS',
-  LOWER_BACK = 'LOWER_BACK',
-  NECK = 'NECK',
-  OBLIQUES = 'OBLIQUES',
-  QUADS = 'QUADS',
-  SHINS = 'SHINS',
-  TRICEPS = 'TRICEPS',
-  UPPER_BACK = 'UPPER_BACK'
-}
 
 export type ExerciseLog = {
   __typename?: 'ExerciseLog';
@@ -134,6 +122,29 @@ export enum LogUnit {
   MI = 'MI'
 }
 
+export enum MuscleGroup {
+  ABDUCTOR = 'ABDUCTOR',
+  ABS = 'ABS',
+  ADDUCTOR = 'ADDUCTOR',
+  BACK_SHOULDERS = 'BACK_SHOULDERS',
+  BICEPS = 'BICEPS',
+  CALVES = 'CALVES',
+  CHEST = 'CHEST',
+  FOREARMS = 'FOREARMS',
+  FRONT_SHOULDERS = 'FRONT_SHOULDERS',
+  GLUTES = 'GLUTES',
+  HAMSTRINGS = 'HAMSTRINGS',
+  HANDS = 'HANDS',
+  LATS = 'LATS',
+  LOWER_BACK = 'LOWER_BACK',
+  NECK = 'NECK',
+  OBLIQUES = 'OBLIQUES',
+  QUADS = 'QUADS',
+  SHINS = 'SHINS',
+  TRICEPS = 'TRICEPS',
+  UPPER_BACK = 'UPPER_BACK'
+}
+
 export type User = {
   __typename?: 'User';
   cognitoUser: CognitoUser;
@@ -151,6 +162,19 @@ export type CognitoUser = {
   name: Scalars['String'];
   nickname: Scalars['String'];
   zoneinfo: Scalars['String'];
+};
+
+export type MuscleGroupChartData = {
+  __typename?: 'MuscleGroupChartData';
+  color: Scalars['String'];
+  count: Scalars['Int'];
+  muscleGroup: MuscleGroup;
+};
+
+export type ExerciseLineChartData = {
+  __typename?: 'ExerciseLineChartData';
+  logs: Array<ExerciseLog>;
+  monthLabel: Scalars['String'];
 };
 
 export type Preference = {
@@ -349,6 +373,8 @@ export type ExerciseFragment = { __typename?: 'Exercise', id: string, name: stri
 
 export type ExerciseLogFragment = { __typename?: 'ExerciseLog', id: string, logDateTime: any, repetitions: number, warmup?: boolean | null, remark?: string | null, exercise: { __typename?: 'Exercise', id: string, name: string, primaryMuscles?: Array<MuscleGroup | null> | null, secondaryMuscles?: Array<MuscleGroup | null> | null, notes?: string | null, defaultAppliedWeight?: { __typename?: 'LogValue', unit: LogUnit, base: number, fraction?: number | null } | null }, logValue: { __typename?: 'LogValue', unit: LogUnit, base: number, fraction?: number | null } };
 
+export type ExerciseLineChartDataFragment = { __typename?: 'ExerciseLineChartData', monthLabel: string, logs: Array<{ __typename?: 'ExerciseLog', id: string, logDateTime: any, repetitions: number, warmup?: boolean | null, remark?: string | null, exercise: { __typename?: 'Exercise', id: string, name: string, primaryMuscles?: Array<MuscleGroup | null> | null, secondaryMuscles?: Array<MuscleGroup | null> | null, notes?: string | null, defaultAppliedWeight?: { __typename?: 'LogValue', unit: LogUnit, base: number, fraction?: number | null } | null }, logValue: { __typename?: 'LogValue', unit: LogUnit, base: number, fraction?: number | null } }> };
+
 export type GroupedExerciseLogFragment = { __typename?: 'GroupedExerciseLog', exercise: { __typename?: 'Exercise', id: string, name: string, primaryMuscles?: Array<MuscleGroup | null> | null, secondaryMuscles?: Array<MuscleGroup | null> | null, notes?: string | null, defaultAppliedWeight?: { __typename?: 'LogValue', unit: LogUnit, base: number, fraction?: number | null } | null }, logs: Array<{ __typename?: 'ExerciseLog', id: string, logDateTime: any, repetitions: number, warmup?: boolean | null, remark?: string | null, exercise: { __typename?: 'Exercise', id: string, name: string, primaryMuscles?: Array<MuscleGroup | null> | null, secondaryMuscles?: Array<MuscleGroup | null> | null, notes?: string | null, defaultAppliedWeight?: { __typename?: 'LogValue', unit: LogUnit, base: number, fraction?: number | null } | null }, logValue: { __typename?: 'LogValue', unit: LogUnit, base: number, fraction?: number | null } }> };
 
 export type LogValueFragment = { __typename?: 'LogValue', unit: LogUnit, base: number, fraction?: number | null };
@@ -498,6 +524,22 @@ export type LatestLogsByExerciseIdAndNotWorkoutIdQueryVariables = Exact<{
 
 export type LatestLogsByExerciseIdAndNotWorkoutIdQuery = { __typename?: 'Query', latestLogsByExerciseIdAndNotWorkoutId?: Array<{ __typename?: 'ExerciseLog', id: string, logDateTime: any, repetitions: number, warmup?: boolean | null, remark?: string | null, exercise: { __typename?: 'Exercise', id: string, name: string, primaryMuscles?: Array<MuscleGroup | null> | null, secondaryMuscles?: Array<MuscleGroup | null> | null, notes?: string | null, defaultAppliedWeight?: { __typename?: 'LogValue', unit: LogUnit, base: number, fraction?: number | null } | null }, logValue: { __typename?: 'LogValue', unit: LogUnit, base: number, fraction?: number | null } } | null> | null };
 
+export type AllLogsByExerciseIdQueryVariables = Exact<{
+  exerciseId: Scalars['ID'];
+}>;
+
+
+export type AllLogsByExerciseIdQuery = { __typename?: 'Query', allLogsByExerciseId: Array<{ __typename?: 'ExerciseLog', id: string, logDateTime: any, repetitions: number, warmup?: boolean | null, remark?: string | null, exercise: { __typename?: 'Exercise', id: string, name: string, primaryMuscles?: Array<MuscleGroup | null> | null, secondaryMuscles?: Array<MuscleGroup | null> | null, notes?: string | null, defaultAppliedWeight?: { __typename?: 'LogValue', unit: LogUnit, base: number, fraction?: number | null } | null }, logValue: { __typename?: 'LogValue', unit: LogUnit, base: number, fraction?: number | null } }> };
+
+export type ChartDataOfXMonthsByExerciseIdQueryVariables = Exact<{
+  exerciseId: Scalars['ID'];
+  months: Scalars['Int'];
+  zonedDateTimeString: Scalars['String'];
+}>;
+
+
+export type ChartDataOfXMonthsByExerciseIdQuery = { __typename?: 'Query', chartDataOfXMonthsByExerciseId: Array<{ __typename?: 'ExerciseLineChartData', monthLabel: string, logs: Array<{ __typename?: 'ExerciseLog', id: string, logDateTime: any, repetitions: number, warmup?: boolean | null, remark?: string | null, exercise: { __typename?: 'Exercise', id: string, name: string, primaryMuscles?: Array<MuscleGroup | null> | null, secondaryMuscles?: Array<MuscleGroup | null> | null, notes?: string | null, defaultAppliedWeight?: { __typename?: 'LogValue', unit: LogUnit, base: number, fraction?: number | null } | null }, logValue: { __typename?: 'LogValue', unit: LogUnit, base: number, fraction?: number | null } }> }> };
+
 export type MyPreferenceQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -547,13 +589,14 @@ export type WorkoutsOfMonthQueryVariables = Exact<{
 
 export type WorkoutsOfMonthQuery = { __typename?: 'Query', workoutsOfCurrentMonth: Array<{ __typename?: 'Workout', id: string, name: string, muscleGroups: Array<MuscleGroup>, startDateTime?: any | null, endDateTime?: any | null, active?: boolean | null, remark?: string | null }> };
 
+export const LogValueFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"LogValue"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"LogValue"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"unit"}},{"kind":"Field","name":{"kind":"Name","value":"base"}},{"kind":"Field","name":{"kind":"Name","value":"fraction"}}]}}]} as unknown as DocumentNode;
+export const ExerciseFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"Exercise"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Exercise"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"primaryMuscles"}},{"kind":"Field","name":{"kind":"Name","value":"secondaryMuscles"}},{"kind":"Field","name":{"kind":"Name","value":"defaultAppliedWeight"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"LogValue"}}]}},{"kind":"Field","name":{"kind":"Name","value":"notes"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"LogValue"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"LogValue"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"unit"}},{"kind":"Field","name":{"kind":"Name","value":"base"}},{"kind":"Field","name":{"kind":"Name","value":"fraction"}}]}}]} as unknown as DocumentNode;
+export const ExerciseLogFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"ExerciseLog"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"ExerciseLog"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"exercise"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"Exercise"}}]}},{"kind":"Field","name":{"kind":"Name","value":"logDateTime"}},{"kind":"Field","name":{"kind":"Name","value":"repetitions"}},{"kind":"Field","name":{"kind":"Name","value":"logValue"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"LogValue"}}]}},{"kind":"Field","name":{"kind":"Name","value":"warmup"}},{"kind":"Field","name":{"kind":"Name","value":"remark"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"Exercise"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Exercise"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"primaryMuscles"}},{"kind":"Field","name":{"kind":"Name","value":"secondaryMuscles"}},{"kind":"Field","name":{"kind":"Name","value":"defaultAppliedWeight"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"LogValue"}}]}},{"kind":"Field","name":{"kind":"Name","value":"notes"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"LogValue"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"LogValue"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"unit"}},{"kind":"Field","name":{"kind":"Name","value":"base"}},{"kind":"Field","name":{"kind":"Name","value":"fraction"}}]}}]} as unknown as DocumentNode;
+export const ExerciseLineChartDataFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"ExerciseLineChartData"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"ExerciseLineChartData"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"monthLabel"}},{"kind":"Field","name":{"kind":"Name","value":"logs"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"ExerciseLog"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"Exercise"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Exercise"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"primaryMuscles"}},{"kind":"Field","name":{"kind":"Name","value":"secondaryMuscles"}},{"kind":"Field","name":{"kind":"Name","value":"defaultAppliedWeight"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"LogValue"}}]}},{"kind":"Field","name":{"kind":"Name","value":"notes"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"ExerciseLog"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"ExerciseLog"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"exercise"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"Exercise"}}]}},{"kind":"Field","name":{"kind":"Name","value":"logDateTime"}},{"kind":"Field","name":{"kind":"Name","value":"repetitions"}},{"kind":"Field","name":{"kind":"Name","value":"logValue"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"LogValue"}}]}},{"kind":"Field","name":{"kind":"Name","value":"warmup"}},{"kind":"Field","name":{"kind":"Name","value":"remark"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"LogValue"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"LogValue"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"unit"}},{"kind":"Field","name":{"kind":"Name","value":"base"}},{"kind":"Field","name":{"kind":"Name","value":"fraction"}}]}}]} as unknown as DocumentNode;
 export const PreferenceFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"Preference"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Preference"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"weightUnit"}},{"kind":"Field","name":{"kind":"Name","value":"distanceUnit"}},{"kind":"Field","name":{"kind":"Name","value":"defaultRepetitions"}},{"kind":"Field","name":{"kind":"Name","value":"hideUnitSelector"}},{"kind":"Field","name":{"kind":"Name","value":"autoAdjustWorkoutMuscleGroups"}},{"kind":"Field","name":{"kind":"Name","value":"timerDuration"}},{"kind":"Field","name":{"kind":"Name","value":"autoStartTimer"}},{"kind":"Field","name":{"kind":"Name","value":"playTimerCompletionSound"}}]}}]} as unknown as DocumentNode;
 export const CognitoUserFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"CognitoUser"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"CognitoUser"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]} as unknown as DocumentNode;
 export const UserFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"User"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"User"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"fid"}},{"kind":"Field","name":{"kind":"Name","value":"cognitoUser"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"CognitoUser"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"CognitoUser"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"CognitoUser"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]} as unknown as DocumentNode;
 export const WorkoutShortFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"WorkoutShort"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Workout"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"muscleGroups"}},{"kind":"Field","name":{"kind":"Name","value":"startDateTime"}},{"kind":"Field","name":{"kind":"Name","value":"endDateTime"}},{"kind":"Field","name":{"kind":"Name","value":"active"}},{"kind":"Field","name":{"kind":"Name","value":"remark"}}]}}]} as unknown as DocumentNode;
-export const LogValueFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"LogValue"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"LogValue"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"unit"}},{"kind":"Field","name":{"kind":"Name","value":"base"}},{"kind":"Field","name":{"kind":"Name","value":"fraction"}}]}}]} as unknown as DocumentNode;
-export const ExerciseFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"Exercise"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Exercise"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"primaryMuscles"}},{"kind":"Field","name":{"kind":"Name","value":"secondaryMuscles"}},{"kind":"Field","name":{"kind":"Name","value":"defaultAppliedWeight"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"LogValue"}}]}},{"kind":"Field","name":{"kind":"Name","value":"notes"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"LogValue"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"LogValue"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"unit"}},{"kind":"Field","name":{"kind":"Name","value":"base"}},{"kind":"Field","name":{"kind":"Name","value":"fraction"}}]}}]} as unknown as DocumentNode;
-export const ExerciseLogFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"ExerciseLog"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"ExerciseLog"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"exercise"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"Exercise"}}]}},{"kind":"Field","name":{"kind":"Name","value":"logDateTime"}},{"kind":"Field","name":{"kind":"Name","value":"repetitions"}},{"kind":"Field","name":{"kind":"Name","value":"logValue"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"LogValue"}}]}},{"kind":"Field","name":{"kind":"Name","value":"warmup"}},{"kind":"Field","name":{"kind":"Name","value":"remark"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"Exercise"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Exercise"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"primaryMuscles"}},{"kind":"Field","name":{"kind":"Name","value":"secondaryMuscles"}},{"kind":"Field","name":{"kind":"Name","value":"defaultAppliedWeight"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"LogValue"}}]}},{"kind":"Field","name":{"kind":"Name","value":"notes"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"LogValue"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"LogValue"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"unit"}},{"kind":"Field","name":{"kind":"Name","value":"base"}},{"kind":"Field","name":{"kind":"Name","value":"fraction"}}]}}]} as unknown as DocumentNode;
 export const GroupedExerciseLogFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"GroupedExerciseLog"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"GroupedExerciseLog"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"exercise"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"Exercise"}}]}},{"kind":"Field","name":{"kind":"Name","value":"logs"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"ExerciseLog"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"Exercise"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Exercise"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"primaryMuscles"}},{"kind":"Field","name":{"kind":"Name","value":"secondaryMuscles"}},{"kind":"Field","name":{"kind":"Name","value":"defaultAppliedWeight"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"LogValue"}}]}},{"kind":"Field","name":{"kind":"Name","value":"notes"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"ExerciseLog"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"ExerciseLog"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"exercise"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"Exercise"}}]}},{"kind":"Field","name":{"kind":"Name","value":"logDateTime"}},{"kind":"Field","name":{"kind":"Name","value":"repetitions"}},{"kind":"Field","name":{"kind":"Name","value":"logValue"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"LogValue"}}]}},{"kind":"Field","name":{"kind":"Name","value":"warmup"}},{"kind":"Field","name":{"kind":"Name","value":"remark"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"LogValue"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"LogValue"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"unit"}},{"kind":"Field","name":{"kind":"Name","value":"base"}},{"kind":"Field","name":{"kind":"Name","value":"fraction"}}]}}]} as unknown as DocumentNode;
 export const WorkoutLongFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"WorkoutLong"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Workout"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"muscleGroups"}},{"kind":"Field","name":{"kind":"Name","value":"startDateTime"}},{"kind":"Field","name":{"kind":"Name","value":"endDateTime"}},{"kind":"Field","name":{"kind":"Name","value":"active"}},{"kind":"Field","name":{"kind":"Name","value":"groupedExerciseLogs"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"GroupedExerciseLog"}}]}},{"kind":"Field","name":{"kind":"Name","value":"remark"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"Exercise"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Exercise"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"primaryMuscles"}},{"kind":"Field","name":{"kind":"Name","value":"secondaryMuscles"}},{"kind":"Field","name":{"kind":"Name","value":"defaultAppliedWeight"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"LogValue"}}]}},{"kind":"Field","name":{"kind":"Name","value":"notes"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"ExerciseLog"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"ExerciseLog"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"exercise"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"Exercise"}}]}},{"kind":"Field","name":{"kind":"Name","value":"logDateTime"}},{"kind":"Field","name":{"kind":"Name","value":"repetitions"}},{"kind":"Field","name":{"kind":"Name","value":"logValue"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"LogValue"}}]}},{"kind":"Field","name":{"kind":"Name","value":"warmup"}},{"kind":"Field","name":{"kind":"Name","value":"remark"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"GroupedExerciseLog"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"GroupedExerciseLog"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"exercise"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"Exercise"}}]}},{"kind":"Field","name":{"kind":"Name","value":"logs"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"ExerciseLog"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"LogValue"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"LogValue"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"unit"}},{"kind":"Field","name":{"kind":"Name","value":"base"}},{"kind":"Field","name":{"kind":"Name","value":"fraction"}}]}}]} as unknown as DocumentNode;
 export const MuscleGroupChartDataFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"MuscleGroupChartData"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"MuscleGroupChartData"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"color"}},{"kind":"Field","name":{"kind":"Name","value":"muscleGroup"}},{"kind":"Field","name":{"kind":"Name","value":"count"}}]}}]} as unknown as DocumentNode;
@@ -1059,6 +1102,66 @@ export function useLatestLogsByExerciseIdAndNotWorkoutIdLazyQuery(baseOptions?: 
 export type LatestLogsByExerciseIdAndNotWorkoutIdQueryHookResult = ReturnType<typeof useLatestLogsByExerciseIdAndNotWorkoutIdQuery>;
 export type LatestLogsByExerciseIdAndNotWorkoutIdLazyQueryHookResult = ReturnType<typeof useLatestLogsByExerciseIdAndNotWorkoutIdLazyQuery>;
 export type LatestLogsByExerciseIdAndNotWorkoutIdQueryResult = Apollo.QueryResult<LatestLogsByExerciseIdAndNotWorkoutIdQuery, LatestLogsByExerciseIdAndNotWorkoutIdQueryVariables>;
+export const AllLogsByExerciseIdDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"allLogsByExerciseId"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"exerciseId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"allLogsByExerciseId"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"exerciseId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"exerciseId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"ExerciseLog"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"Exercise"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Exercise"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"primaryMuscles"}},{"kind":"Field","name":{"kind":"Name","value":"secondaryMuscles"}},{"kind":"Field","name":{"kind":"Name","value":"defaultAppliedWeight"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"LogValue"}}]}},{"kind":"Field","name":{"kind":"Name","value":"notes"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"ExerciseLog"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"ExerciseLog"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"exercise"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"Exercise"}}]}},{"kind":"Field","name":{"kind":"Name","value":"logDateTime"}},{"kind":"Field","name":{"kind":"Name","value":"repetitions"}},{"kind":"Field","name":{"kind":"Name","value":"logValue"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"LogValue"}}]}},{"kind":"Field","name":{"kind":"Name","value":"warmup"}},{"kind":"Field","name":{"kind":"Name","value":"remark"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"LogValue"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"LogValue"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"unit"}},{"kind":"Field","name":{"kind":"Name","value":"base"}},{"kind":"Field","name":{"kind":"Name","value":"fraction"}}]}}]} as unknown as DocumentNode;
+
+/**
+ * __useAllLogsByExerciseIdQuery__
+ *
+ * To run a query within a React component, call `useAllLogsByExerciseIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useAllLogsByExerciseIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useAllLogsByExerciseIdQuery({
+ *   variables: {
+ *      exerciseId: // value for 'exerciseId'
+ *   },
+ * });
+ */
+export function useAllLogsByExerciseIdQuery(baseOptions: Apollo.QueryHookOptions<AllLogsByExerciseIdQuery, AllLogsByExerciseIdQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<AllLogsByExerciseIdQuery, AllLogsByExerciseIdQueryVariables>(AllLogsByExerciseIdDocument, options);
+      }
+export function useAllLogsByExerciseIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<AllLogsByExerciseIdQuery, AllLogsByExerciseIdQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<AllLogsByExerciseIdQuery, AllLogsByExerciseIdQueryVariables>(AllLogsByExerciseIdDocument, options);
+        }
+export type AllLogsByExerciseIdQueryHookResult = ReturnType<typeof useAllLogsByExerciseIdQuery>;
+export type AllLogsByExerciseIdLazyQueryHookResult = ReturnType<typeof useAllLogsByExerciseIdLazyQuery>;
+export type AllLogsByExerciseIdQueryResult = Apollo.QueryResult<AllLogsByExerciseIdQuery, AllLogsByExerciseIdQueryVariables>;
+export const ChartDataOfXMonthsByExerciseIdDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"chartDataOfXMonthsByExerciseId"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"exerciseId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"months"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"zonedDateTimeString"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"chartDataOfXMonthsByExerciseId"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"exerciseId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"exerciseId"}}},{"kind":"Argument","name":{"kind":"Name","value":"months"},"value":{"kind":"Variable","name":{"kind":"Name","value":"months"}}},{"kind":"Argument","name":{"kind":"Name","value":"zonedDateTimeString"},"value":{"kind":"Variable","name":{"kind":"Name","value":"zonedDateTimeString"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"ExerciseLineChartData"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"Exercise"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Exercise"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"primaryMuscles"}},{"kind":"Field","name":{"kind":"Name","value":"secondaryMuscles"}},{"kind":"Field","name":{"kind":"Name","value":"defaultAppliedWeight"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"LogValue"}}]}},{"kind":"Field","name":{"kind":"Name","value":"notes"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"ExerciseLog"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"ExerciseLog"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"exercise"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"Exercise"}}]}},{"kind":"Field","name":{"kind":"Name","value":"logDateTime"}},{"kind":"Field","name":{"kind":"Name","value":"repetitions"}},{"kind":"Field","name":{"kind":"Name","value":"logValue"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"LogValue"}}]}},{"kind":"Field","name":{"kind":"Name","value":"warmup"}},{"kind":"Field","name":{"kind":"Name","value":"remark"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"ExerciseLineChartData"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"ExerciseLineChartData"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"monthLabel"}},{"kind":"Field","name":{"kind":"Name","value":"logs"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"ExerciseLog"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"LogValue"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"LogValue"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"unit"}},{"kind":"Field","name":{"kind":"Name","value":"base"}},{"kind":"Field","name":{"kind":"Name","value":"fraction"}}]}}]} as unknown as DocumentNode;
+
+/**
+ * __useChartDataOfXMonthsByExerciseIdQuery__
+ *
+ * To run a query within a React component, call `useChartDataOfXMonthsByExerciseIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useChartDataOfXMonthsByExerciseIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useChartDataOfXMonthsByExerciseIdQuery({
+ *   variables: {
+ *      exerciseId: // value for 'exerciseId'
+ *      months: // value for 'months'
+ *      zonedDateTimeString: // value for 'zonedDateTimeString'
+ *   },
+ * });
+ */
+export function useChartDataOfXMonthsByExerciseIdQuery(baseOptions: Apollo.QueryHookOptions<ChartDataOfXMonthsByExerciseIdQuery, ChartDataOfXMonthsByExerciseIdQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<ChartDataOfXMonthsByExerciseIdQuery, ChartDataOfXMonthsByExerciseIdQueryVariables>(ChartDataOfXMonthsByExerciseIdDocument, options);
+      }
+export function useChartDataOfXMonthsByExerciseIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ChartDataOfXMonthsByExerciseIdQuery, ChartDataOfXMonthsByExerciseIdQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<ChartDataOfXMonthsByExerciseIdQuery, ChartDataOfXMonthsByExerciseIdQueryVariables>(ChartDataOfXMonthsByExerciseIdDocument, options);
+        }
+export type ChartDataOfXMonthsByExerciseIdQueryHookResult = ReturnType<typeof useChartDataOfXMonthsByExerciseIdQuery>;
+export type ChartDataOfXMonthsByExerciseIdLazyQueryHookResult = ReturnType<typeof useChartDataOfXMonthsByExerciseIdLazyQuery>;
+export type ChartDataOfXMonthsByExerciseIdQueryResult = Apollo.QueryResult<ChartDataOfXMonthsByExerciseIdQuery, ChartDataOfXMonthsByExerciseIdQueryVariables>;
 export const MyPreferenceDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"myPreference"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"myPreference"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"Preference"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"Preference"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Preference"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"weightUnit"}},{"kind":"Field","name":{"kind":"Name","value":"distanceUnit"}},{"kind":"Field","name":{"kind":"Name","value":"defaultRepetitions"}},{"kind":"Field","name":{"kind":"Name","value":"hideUnitSelector"}},{"kind":"Field","name":{"kind":"Name","value":"autoAdjustWorkoutMuscleGroups"}},{"kind":"Field","name":{"kind":"Name","value":"timerDuration"}},{"kind":"Field","name":{"kind":"Name","value":"autoStartTimer"}},{"kind":"Field","name":{"kind":"Name","value":"playTimerCompletionSound"}}]}}]} as unknown as DocumentNode;
 
 /**

@@ -90,7 +90,6 @@ export const defaultStyles = StyleSheet.create({
   },
   p11: {
     fontSize: 11,
-    color: 'white',
   },
   textInput: {
     backgroundColor: 'lightgrey',

@@ -36,6 +36,11 @@ input ExerciseInput {
   secondaryMuscles: [MuscleGroup]
 }
 
+type ExerciseLineChartData {
+  logs: [ExerciseLog!]!
+  monthLabel: String!
+}
+
 type ExerciseLog {
   exercise: Exercise!
   id: ID!
@@ -166,15 +171,27 @@ input PreferenceInput {
 }
 
 type Query {
+  """Get all logs by excerice id"""
+  allLogsByExerciseId(exerciseId: ID!): [ExerciseLog!]!
+
   """Get chart data per muscle group"""
   chartDataMuscleGroups: [MuscleGroupChartData!]!
+
+  """Get chart data of last x months for logs by exercise id"""
+  chartDataOfXMonthsByExerciseId(exerciseId: ID!, months: Int!, zonedDateTimeString: String!): [ExerciseLineChartData!]!
 
   """Count my workouts"""
   countMyWorkouts: Int!
 
   """Get total time of all workouts"""
   countTotalTimeAllMyWorkoutsInMinutes: Float!
+
+  """Get all of the latest logs by exercise id from the same workout"""
   latestLogsByExerciseId(exerciseId: ID!): [ExerciseLog]
+
+  """
+  Get all of the latest logs by exercise id from the same workout except given workout Id
+  """
   latestLogsByExerciseIdAndNotWorkoutId(exerciseId: ID!, workoutId: String!): [ExerciseLog]
   me: User
 

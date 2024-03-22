@@ -11,3 +11,10 @@ fragment ExerciseLog on ExerciseLog {
     warmup
     remark
 }
+
+fragment ExerciseLineChartData on ExerciseLineChartData {
+    monthLabel
+    logs {
+        ...ExerciseLog
+    }
+}

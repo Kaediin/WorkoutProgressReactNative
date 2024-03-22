@@ -7,10 +7,10 @@ interface EndWorkoutProps {
   onPress: () => void;
 }
 
-const EndWorkout: React.FC<EndWorkoutProps> = props => {
+const HeaderLabel: React.FC<EndWorkoutProps> = props => {
   return (
     <Button title={props.label} color={props.color} onPress={props.onPress} />
   );
 };
 
-export default EndWorkout;
+export default HeaderLabel;

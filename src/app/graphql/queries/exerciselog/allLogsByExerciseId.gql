@@ -1,0 +1,6 @@
+query allLogsByExerciseId($exerciseId: ID!) {
+    allLogsByExerciseId(exerciseId: $exerciseId) {
+        ...ExerciseLog
+    }
+}
+

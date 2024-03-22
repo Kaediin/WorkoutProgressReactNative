@@ -105,7 +105,7 @@ const styles = StyleSheet.create({
     paddingBottom: Constants.CONTAINER_PADDING_MARGIN,
   },
   containerCalendar: {
-    height: 300,
+    height: 250,
   },
 });
 

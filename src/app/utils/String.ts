@@ -20,10 +20,18 @@ export const isValidPassword = (password: string): boolean => {
 };
 
 export const logValueToString = (logValue: LogValueFragment): string => {
-  if (!logValue) return '';
+  if (!logValue) {
+    return '';
+  }
   return `${logValue.base}${logValue.fraction ? '.' + logValue.fraction : ''} ${
     logValue.unit
   }`;
+};
+
+export const combineLogValueBaseFraction = (
+  logValue: LogValueFragment,
+): number => {
+  return +`${logValue.base}${logValue.fraction ? '.' + logValue.fraction : ''}`;
 };
 
 export const errorCodeToMessage = (code: string): string => {

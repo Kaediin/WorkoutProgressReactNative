@@ -42,7 +42,7 @@ import Constants from '../../utils/Constants';
 import moment from 'moment';
 import GroupedExerciseLogListItem from '../../components/exercise/GroupedExerciseLogListItem';
 import CreateExerciseModalContent from '../../components/bottomSheet/CreateExerciseModalContent';
-import EndWorkout from '../../components/nav/headerComponents/EndWorkout';
+import HeaderLabel from '../../components/nav/headerComponents/HeaderLabel';
 import usePreferenceStore from '../../stores/preferenceStore';
 import LogValueSelect from '../../components/common/LogValueSelect';
 import {Picker} from '@react-native-picker/picker';
@@ -185,7 +185,7 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
       if (workoutData?.workoutById?.active && workoutData?.workoutById?.id) {
         props.navigation.setOptions({
           headerRight: () => (
-            <EndWorkout
+            <HeaderLabel
               label={'End Workout'}
               color={'red'}
               onPress={() => setEndWorkoutClicked(true)}

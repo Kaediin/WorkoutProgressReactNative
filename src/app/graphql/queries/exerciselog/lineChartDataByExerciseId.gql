@@ -1,0 +1,5 @@
+query chartDataOfXMonthsByExerciseId($exerciseId: ID!, $months: Int!, $zonedDateTimeString: String!) {
+    chartDataOfXMonthsByExerciseId(exerciseId: $exerciseId, months: $months, zonedDateTimeString: $zonedDateTimeString) {
+        ...ExerciseLineChartData
+    }
+}
