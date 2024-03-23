@@ -1,3 +1,11 @@
+## [0.2.1]
+
+### Fixed
+
+- #79: Timer volume doesn't decrease after logging first time
+- #80: App no longer crashes when typing in bottom sheet
+- #81: FAB not visible while loading workouts anymore
+
 ## [0.2.0]
 
 ### Added
