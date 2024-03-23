@@ -26,10 +26,15 @@ RCT_EXPORT_METHOD(activateAudioSession) {
 
 RCT_EXPORT_METHOD(deactivateAudioSession) {
     NSError *error = nil;
-    [[AVAudioSession sharedInstance] setActive:NO withOptions:AVAudioSessionSetActiveOptionNotifyOthersOnDeactivation error:&error];
-    if (error) {
-        NSLog(@"Error deactivating audio session: %@", error);
-    }
+        [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback
+                                         withOptions:AVAudioSessionCategoryOptionMixWithOthers
+                                               error:&error];
+        if (!error) {
+            [[AVAudioSession sharedInstance] setActive:NO withOptions:AVAudioSessionSetActiveOptionNotifyOthersOnDeactivation error:&error];
+        }
+        if (error) {
+            NSLog(@"Error setting audio session category or deactivating audio session: %@", error);
+        }
 }
 
 @end
