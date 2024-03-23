@@ -72,7 +72,8 @@ const WorkoutsOverviewScreen: React.FC<Props> = ({navigation}) => {
   const [endWorkout, {loading: endWorkoutLoading}] = useEndWorkoutMutation();
   const [reactivateWorkout, {loading: reactivateLoading}] =
     useRestartWorkoutMutation();
-  const [updateWorkout] = useUpdateWorkoutMutation({fetchPolicy: 'no-cache'});
+  const [updateWorkout, {loading: updateWorkoutLoading}] =
+    useUpdateWorkoutMutation({fetchPolicy: 'no-cache'});
 
   const doStartWorkout = (): void => {
     if (newWorkout?.name) {
@@ -113,10 +114,13 @@ const WorkoutsOverviewScreen: React.FC<Props> = ({navigation}) => {
       fetchPolicy: 'no-cache',
     });
 
-  const {data: hasActiveWorkoutData, refetch: refetchActiveWorkout} =
-    useHasActiveWorkoutQuery({
-      fetchPolicy: 'no-cache',
-    });
+  const {
+    data: hasActiveWorkoutData,
+    loading: hasActiveWorkoutLoading,
+    refetch: refetchActiveWorkout,
+  } = useHasActiveWorkoutQuery({
+    fetchPolicy: 'no-cache',
+  });
 
   const existingWorkouts = useMemo(() => {
     return [
@@ -144,7 +148,9 @@ const WorkoutsOverviewScreen: React.FC<Props> = ({navigation}) => {
     startWorkoutLoading ||
     getWorkoutsLoading ||
     endWorkoutLoading ||
-    reactivateLoading;
+    reactivateLoading ||
+    updateWorkoutLoading ||
+    hasActiveWorkoutLoading;
 
   const onFloatingButtonClicked = (): void => {
     setNewWorkout(initialWorkout);
@@ -342,7 +348,7 @@ const WorkoutsOverviewScreen: React.FC<Props> = ({navigation}) => {
             buttonText={'Select'}
           />
         </CustomBottomSheet>
-        {!hasActiveWorkout && (
+        {!loading && !hasActiveWorkout && (
           <FloatingButton onClick={onFloatingButtonClicked} />
         )}
       </BottomSheetModalProvider>
