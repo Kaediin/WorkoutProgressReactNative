@@ -370,7 +370,7 @@ PODS:
     - React-perflogger (= 0.71.7)
   - ReactNativeExceptionHandler (2.10.10):
     - React-Core
-  - RNAWSCognito (6.3.1):
+  - RNAWSCognito (6.3.13):
     - React-Core
   - RNCAsyncStorage (1.18.1):
     - React-Core
@@ -382,33 +382,10 @@ PODS:
     - React-Core
   - RNReactNativeHapticFeedback (2.2.0):
     - React-Core
-  - RNReanimated (3.1.0):
-    - DoubleConversion
-    - FBLazyVector
-    - FBReactNativeSpec
-    - glog
-    - RCT-Folly
-    - RCTRequired
-    - RCTTypeSafety
-    - React-callinvoker
+  - RNReanimated (3.8.1):
+    - RCT-Folly (= 2021.07.22.00)
     - React-Core
-    - React-Core/DevSupport
-    - React-Core/RCTWebSocket
-    - React-CoreModules
-    - React-cxxreact
-    - React-jsi
-    - React-jsiexecutor
-    - React-jsinspector
-    - React-RCTActionSheet
-    - React-RCTAnimation
-    - React-RCTBlob
-    - React-RCTImage
-    - React-RCTLinking
-    - React-RCTNetwork
-    - React-RCTSettings
-    - React-RCTText
     - ReactCommon/turbomodule/core
-    - Yoga
   - RNScreens (3.20.0):
     - React-Core
     - React-RCTImage
@@ -644,13 +621,13 @@ SPEC CHECKSUMS:
   React-runtimeexecutor: c5c89f8f543842dd864b63ded1b0bbb9c9445328
   ReactCommon: dbfbe2f7f3c5ce4ce44f43f2fd0d5950d1eb67c5
   ReactNativeExceptionHandler: b11ff67c78802b2f62eed0e10e75cb1ef7947c60
-  RNAWSCognito: 5687577d12900389a893a9705ce31b6fa71c3805
+  RNAWSCognito: cb58fd45efe752ea69a806d5e2afe840000e9c20
   RNCAsyncStorage: b90b71f45b8b97be43bc4284e71a6af48ac9f547
   RNCPicker: 0bc2f0a29abcca7b7ed44a2d036aac9ab6d25700
   RNGestureHandler: 071d7a9ad81e8b83fe7663b303d132406a7d8f39
   RNKeychain: ff836453cba46938e0e9e4c22e43d43fa2c90333
   RNReactNativeHapticFeedback: ec56a5f81c3941206fd85625fa669ffc7b4545f9
-  RNReanimated: b1220a0e5168745283ff5d53bfc7d2144b2cee1b
+  RNReanimated: 4943d1e286130877c0539f053c3f36a22d8c66f5
   RNScreens: 218801c16a2782546d30bd2026bb625c0302d70f
   RNSentry: 9f0447b3ce13806f544903748de423259ead8552
   RNSound: 6c156f925295bdc83e8e422e7d8b38d33bc71852
@@ -662,4 +639,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: 72e7e2f6af244c55c1df169e2758cc0870adf14e
 
-COCOAPODS: 1.12.1
+COCOAPODS: 1.15.2
