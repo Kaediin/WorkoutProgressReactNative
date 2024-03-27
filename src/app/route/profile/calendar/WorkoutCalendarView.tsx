@@ -143,7 +143,7 @@ const WorkoutCalendarView: React.FC<WorkoutCalendarViewProps> = props => {
                     style={[defaultStyles.p11, defaultStyles.textAlignCenter]}>
                     {index + 1}
                   </AppText>
-                  {+moment().format('DD') === index + 1 && (
+                  {+moment().format('DD') === index + 1 && isToday && (
                     <AppText style={styles.todayBulletPoint}>&#x2022;</AppText>
                   )}
                 </View>

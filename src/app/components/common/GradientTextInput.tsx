@@ -21,7 +21,7 @@ const GradientTextInput: React.FC<GradientTextInputProps> = props => {
         <TextInput
           style={[{borderRadius: props.borderRadius || 0}, props.style]}
           onChangeText={props.onChangeText}
-          value={props.value}
+          defaultValue={props.value}
           placeholder={props.placeholder}
           textContentType={props.textContentType}
           autoComplete={props.autoComplete}

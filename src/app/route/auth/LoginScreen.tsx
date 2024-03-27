@@ -49,7 +49,7 @@ const LoginScreen: React.FC<Props> = props => {
               <TextInput
                 style={styles.input}
                 onChangeText={setEmail}
-                value={email}
+                defaultValue={email}
                 placeholder="Email"
                 textContentType="emailAddress"
                 autoComplete="email"
@@ -60,7 +60,7 @@ const LoginScreen: React.FC<Props> = props => {
               <TextInput
                 style={styles.input}
                 onChangeText={setPassword}
-                value={password}
+                defaultValue={password}
                 textContentType="password"
                 placeholder="Password"
                 inputMode="text"

@@ -87,7 +87,7 @@ const ForgotPasswordScreen: React.FC<Props> = ({navigation}) => {
               <TextInput
                 style={styles.input}
                 onChangeText={setEmail}
-                value={email}
+                defaultValue={email}
                 placeholder="Email"
                 textContentType="emailAddress"
                 autoComplete="email"
@@ -101,7 +101,7 @@ const ForgotPasswordScreen: React.FC<Props> = ({navigation}) => {
               <TextInput
                 style={styles.input}
                 onChangeText={setVerificationCode}
-                value={verificationCode}
+                defaultValue={verificationCode}
                 placeholder="Confirmation code"
                 inputMode="text"
                 placeholderTextColor="darkgrey"
@@ -109,7 +109,7 @@ const ForgotPasswordScreen: React.FC<Props> = ({navigation}) => {
               <TextInput
                 style={styles.input}
                 onChangeText={setPassword}
-                value={password}
+                defaultValue={password}
                 placeholder="Password"
                 textContentType="newPassword"
                 autoComplete="password-new"
@@ -120,7 +120,7 @@ const ForgotPasswordScreen: React.FC<Props> = ({navigation}) => {
               <TextInput
                 style={styles.input}
                 onChangeText={setPasswordConfirmation}
-                value={passwordConfirmation}
+                defaultValue={passwordConfirmation}
                 placeholder="Confirm password"
                 textContentType="newPassword"
                 autoComplete="password-new"

@@ -154,6 +154,7 @@ const WorkoutsOverviewScreen: React.FC<Props> = ({navigation}) => {
 
   const onFloatingButtonClicked = (): void => {
     setNewWorkout(initialWorkout);
+    setEditingExistingWorkoutId('');
     if (hasActiveWorkout) {
       setActiveWorkoutWarningModalOpen(true);
     } else {
@@ -288,7 +289,7 @@ const WorkoutsOverviewScreen: React.FC<Props> = ({navigation}) => {
       <BottomSheetModalProvider>
         <CustomBottomSheet
           ref={bottomSheetModalRef}
-          rightText={'Start'}
+          rightText={editingExistingWorkoutId ? 'Adjust' : 'Start'}
           onRightTextClicked={() =>
             editingExistingWorkoutId ? doEditWorkout() : doStartWorkout()
           }

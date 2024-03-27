@@ -7,7 +7,7 @@ interface CreateExerciseProps {
   active: boolean;
   onDismiss: (added: boolean) => void;
   existingExercise?: ExerciseFragment;
-  onUpdate: () => void;
+  onUpdate: (exercise: ExerciseFragment) => void;
 }
 
 const CreateExerciseModal: React.FC<CreateExerciseProps> = ({

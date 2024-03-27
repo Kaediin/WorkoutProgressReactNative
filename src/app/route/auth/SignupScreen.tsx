@@ -58,7 +58,7 @@ const SignupScreen: React.FC<Props> = props => {
             <TextInput
               style={styles.input}
               onChangeText={setFirstName}
-              value={firstName}
+              defaultValue={firstName}
               placeholder="First name"
               textContentType="givenName"
               autoComplete="name"
@@ -70,7 +70,7 @@ const SignupScreen: React.FC<Props> = props => {
             <TextInput
               style={styles.input}
               onChangeText={setMiddleName}
-              value={middleName}
+              defaultValue={middleName}
               placeholder="Middle name (optional)"
               autoCapitalize="none"
               keyboardType="default"
@@ -83,7 +83,7 @@ const SignupScreen: React.FC<Props> = props => {
             <TextInput
               style={styles.input}
               onChangeText={setLastName}
-              value={lastName}
+              defaultValue={lastName}
               placeholder="Last name"
               textContentType="familyName"
               autoComplete="name"
@@ -95,7 +95,7 @@ const SignupScreen: React.FC<Props> = props => {
             <TextInput
               style={styles.input}
               onChangeText={setEmail}
-              value={email}
+              defaultValue={email}
               placeholder="Email"
               textContentType="emailAddress"
               autoComplete="email"
@@ -138,7 +138,7 @@ const SignupScreen: React.FC<Props> = props => {
             <TextInput
               style={styles.input}
               onChangeText={setPassword}
-              value={password}
+              defaultValue={password}
               placeholder="Password"
               textContentType="newPassword"
               autoComplete="password-new"
@@ -151,7 +151,7 @@ const SignupScreen: React.FC<Props> = props => {
             <TextInput
               style={styles.input}
               onChangeText={setPasswordConfirmation}
-              value={passwordConfirmation}
+              defaultValue={passwordConfirmation}
               placeholder="Confirm password"
               textContentType="newPassword"
               autoComplete="password-new"

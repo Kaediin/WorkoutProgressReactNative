@@ -24,7 +24,7 @@ interface CreateExerciseModalProps {
   active: boolean;
   onDismiss: () => void;
   existingExercise?: ExerciseFragment;
-  onUpdate: () => void;
+  onUpdate?: (exercise: ExerciseFragment) => void;
 }
 
 const CreateExerciseModalContent: React.FC<
@@ -58,7 +58,14 @@ const CreateExerciseModalContent: React.FC<
   const [createExercise, {}] = useCreateExerciseMutation({
     fetchPolicy: 'no-cache',
   });
-  const [updateExercise] = useUpdateExerciseMutation({fetchPolicy: 'no-cache'});
+  const [updateExercise] = useUpdateExerciseMutation({
+    fetchPolicy: 'no-cache',
+    onCompleted: data => {
+      if (data?.updateExercise && props.onUpdate) {
+        props.onUpdate(data.updateExercise);
+      }
+    },
+  });
 
   useEffect(() => {
     if (props.active) {
@@ -102,8 +109,8 @@ const CreateExerciseModalContent: React.FC<
           },
         },
       });
+      props.onUpdate();
     }
-    props.onUpdate();
     props.onDismiss();
     setLoading(false);
   };

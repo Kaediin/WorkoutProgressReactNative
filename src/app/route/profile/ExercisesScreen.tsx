@@ -62,6 +62,17 @@ const ExercisesScreen: React.FC<Props> = props => {
     });
   };
 
+  const onUpdateExercise = (exercise: ExerciseFragment): void => {
+    setFilteredList(
+      filteredList.map(value => {
+        if (value.id === exercise.id) {
+          return exercise;
+        }
+        return value;
+      }),
+    );
+  };
+
   useEffect(() => {
     if (editExercise) {
       setCreateExerciseModalActive(true);
@@ -164,7 +175,7 @@ const ExercisesScreen: React.FC<Props> = props => {
           }
         }}
         existingExercise={editExercise}
-        onUpdate={refetchExercises}
+        onUpdate={onUpdateExercise}
       />
       <PopupModal
         message={'Are you sure you want to delete this exercise?'}

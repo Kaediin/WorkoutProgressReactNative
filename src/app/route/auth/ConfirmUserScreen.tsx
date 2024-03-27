@@ -68,7 +68,7 @@ const ConfirmUserScreen: React.FC<Props> = props => {
             <TextInput
               style={styles.input}
               onChangeText={setConfirmationCode}
-              value={confirmationCode}
+              defaultValue={confirmationCode}
               placeholder="Confirmation code"
               inputMode="text"
               placeholderTextColor="darkgrey"
