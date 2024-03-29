@@ -4,6 +4,9 @@ import {StyleSheet, View} from 'react-native';
 import {defaultStyles} from '../../utils/DefaultStyles';
 import {Picker} from '@react-native-picker/picker';
 import AppText from '../common/AppText';
+import MuscleGroupList from './MuscleGroupList';
+import {nonNullable} from '../../utils/List';
+import Constants from '../../utils/Constants';
 
 interface SelectExerciseProps {
   onSelect: (exercise: ExerciseFragment) => void;
@@ -38,6 +41,26 @@ const SelectExercises: React.FC<SelectExerciseProps> = props => {
             />
           ))}
       </Picker>
+      {selected?.primaryMuscles && (
+        <View>
+          <MuscleGroupList
+            muscleGroups={selected.primaryMuscles.filter(nonNullable)}
+            textColor={'white'}
+            pillColor={Constants.QUATERNARY_GRADIENT[1]}
+            alignCenter
+          />
+        </View>
+      )}
+      {selected?.secondaryMuscles && (
+        <View>
+          <MuscleGroupList
+            muscleGroups={selected.secondaryMuscles.filter(nonNullable)}
+            textColor={'white'}
+            pillColor={Constants.TERTIARY_GRADIENT[1]}
+            alignCenter
+          />
+        </View>
+      )}
       {selected?.notes && (
         <AppText
           style={[

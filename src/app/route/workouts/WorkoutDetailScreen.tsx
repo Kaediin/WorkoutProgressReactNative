@@ -645,7 +645,7 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
                       defaultStyles.marginBottom,
                     ]}>
                     <View style={defaultStyles.marginBottom}>
-                      <AppText>
+                      <AppText style={defaultStyles.blackTextColor}>
                         Last set {latestLogs[0].exercise.name} on{' '}
                         {moment
                           .utc(latestLogs[0].logDateTime)
@@ -840,7 +840,7 @@ const styles = StyleSheet.create({
   },
   lastLoggedButtonsView: {
     borderRadius: Constants.BORDER_RADIUS_SMALL,
-    width: 100,
+    width: 105,
     padding: 5,
     backgroundColor: Constants.QUATERNARY_GRADIENT[1],
     marginRight: 5,
