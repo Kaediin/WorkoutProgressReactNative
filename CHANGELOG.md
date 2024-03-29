@@ -1,3 +1,21 @@
+## [0.2.2]
+
+### Added
+
+- #84: Muscle groups are visible when selecting exercise to log
+- #85: Made exercises into a new stack
+- #85: Redesigned filter behavior for exercises and details
+- #85: Improved loading behavior for exercise-details
+
+### Fixed
+
+- #82: Made gender optional on sign up
+- #82: User gets redirected to their homepage immediately after sign up
+- #83: Poor performance on certain text-inputs
+- #83: Dot on today's date on calendar view
+- #83: Exercises staying filtered when adjusting exercises
+- #83: When editing a workout, the save label is now 'adjust'
+
 ## [0.2.1]
 
 ### Fixed
