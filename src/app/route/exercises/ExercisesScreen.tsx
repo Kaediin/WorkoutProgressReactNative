@@ -1,6 +1,6 @@
 import React, {useEffect, useRef, useState} from 'react';
 import GradientBackground from '../../components/common/GradientBackground';
-import {FlatList, StyleSheet, View} from 'react-native';
+import {FlatList} from 'react-native';
 import {
   ExerciseFragment,
   MuscleGroup,
@@ -14,17 +14,16 @@ import ExerciseProfileListItem from '../../components/exercise/ExerciseProfileLi
 import CreateExerciseModal from '../../components/bottomSheet/CreateExerciseModal';
 import PopupModal from '../../components/common/PopupModal';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {ProfileStackParamList} from '../../stacks/ProfileStack';
-import GradientButton from '../../components/common/GradientButton';
 import {defaultStyles} from '../../utils/DefaultStyles';
-import Constants from '../../utils/Constants';
 import {BottomSheetModal, BottomSheetModalProvider} from '@gorhom/bottom-sheet';
 import {CustomBottomSheet} from '../../components/bottomSheet/CustomBottomSheet';
 import SelectMuscleGroups from '../../components/workouts/SelectMuscleGroups';
 import {nonNullable} from '../../utils/List';
+import FloatingButton from '../../components/common/FloatingButton';
+import {ExercisesStackParamList} from '../../stacks/ExercisesStack';
 import HeaderLabel from '../../components/nav/headerComponents/HeaderLabel';
 
-type Props = NativeStackScreenProps<ProfileStackParamList, 'ExercisesScreen'>;
+type Props = NativeStackScreenProps<ExercisesStackParamList, 'ExercisesScreen'>;
 
 const ExercisesScreen: React.FC<Props> = props => {
   const refMuscleGroupFilterSelect = useRef<BottomSheetModal>(null);
@@ -110,23 +109,6 @@ const ExercisesScreen: React.FC<Props> = props => {
       ) : (
         <FlatList
           data={filteredList.sort((a, b) => a.name.localeCompare(b.name))}
-          ListHeaderComponent={() => {
-            return (
-              <View
-                style={[defaultStyles.container, defaultStyles.spaceEvenly]}>
-                {filteredList && (
-                  <GradientButton
-                    gradients={Constants.TERTIARY_GRADIENT}
-                    title={'Filter'}
-                    onClick={() =>
-                      refMuscleGroupFilterSelect?.current?.present()
-                    }
-                    styles={styles.buttonWidth}
-                  />
-                )}
-              </View>
-            );
-          }}
           renderItem={({item}) => {
             return (
               <ContextMenu
@@ -144,7 +126,7 @@ const ExercisesScreen: React.FC<Props> = props => {
                 <ExerciseProfileListItem
                   exercise={item}
                   onPress={id =>
-                    props.navigation.navigate('ExerciseDetailScreen', {
+                    props.navigation.navigate('ExercisesDetailScreen', {
                       exerciseId: id,
                     })
                   }
@@ -154,6 +136,7 @@ const ExercisesScreen: React.FC<Props> = props => {
           }}
         />
       )}
+      <FloatingButton onClick={() => setCreateExerciseModalActive(true)} />
       <CreateExerciseModal
         active={createExerciseModalActive}
         onDismiss={added => {
@@ -167,7 +150,7 @@ const ExercisesScreen: React.FC<Props> = props => {
         onUpdate={refetchExercises}
       />
       <PopupModal
-        message={'Are you sure you want to delete this exercise?'}
+        message={'Are you sure you want to delete this exercisedetails?'}
         isOpen={Boolean(deleteExerciseId)}
         type={'WARNING'}
         onDismiss={() => setDeleteExerciseId('')}
@@ -190,11 +173,5 @@ const ExercisesScreen: React.FC<Props> = props => {
     </GradientBackground>
   );
 };
-
-const styles = StyleSheet.create({
-  buttonWidth: {
-    width: 200,
-  },
-});
 
 export default ExercisesScreen;

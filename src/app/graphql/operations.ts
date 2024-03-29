@@ -1,10 +1,15 @@
-import { DocumentNode } from 'graphql';
+import {DocumentNode} from 'graphql';
 import * as Apollo from '@apollo/client';
+
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
-export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
-export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
-export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
+export type Exact<T extends {[key: string]: unknown}> = {[K in keyof T]: T[K]};
+export type MakeOptional<T, K extends keyof T> = Omit<T, K> & {
+  [SubKey in K]?: Maybe<T[SubKey]>;
+};
+export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & {
+  [SubKey in K]: Maybe<T[SubKey]>;
+};
 const defaultOptions = {} as const;
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
@@ -84,7 +89,7 @@ export enum LogUnit {
   KG = 'KG',
   KM = 'KM',
   LBS = 'LBS',
-  MI = 'MI'
+  MI = 'MI',
 }
 
 export type LogValue = {
@@ -120,7 +125,7 @@ export enum MuscleGroup {
   QUADS = 'QUADS',
   SHINS = 'SHINS',
   TRICEPS = 'TRICEPS',
-  UPPER_BACK = 'UPPER_BACK'
+  UPPER_BACK = 'UPPER_BACK',
 }
 
 export type MuscleGroupChartData = {
@@ -155,44 +160,36 @@ export type Mutation = {
   updateWorkout: Workout;
 };
 
-
 export type MutationAddExerciseLogArgs = {
   autoAdjust: Scalars['Boolean'];
   input: ExerciseLogInput;
   workoutId: Scalars['ID'];
 };
 
-
 export type MutationCreateExerciseArgs = {
   input?: InputMaybe<ExerciseInput>;
 };
-
 
 export type MutationCreateUserArgs = {
   userInput: UserInput;
 };
 
-
 export type MutationDeleteExerciseArgs = {
   id: Scalars['ID'];
 };
 
-
 export type MutationDeleteWorkoutArgs = {
   id: Scalars['ID'];
 };
-
 
 export type MutationEndWorkoutArgs = {
   workoutId: Scalars['ID'];
   zonedDateTimeString: Scalars['String'];
 };
 
-
 export type MutationMeStartWorkoutArgs = {
   input: WorkoutInput;
 };
-
 
 export type MutationReLogLatestLogArgs = {
   autoAdjust: Scalars['Boolean'];
@@ -200,40 +197,33 @@ export type MutationReLogLatestLogArgs = {
   zonedDateTimeString: Scalars['String'];
 };
 
-
 export type MutationReLogLogArgs = {
   input: ExerciseLogInput;
   workoutId: Scalars['ID'];
 };
-
 
 export type MutationRemoveExerciseLogArgs = {
   autoAdjust: Scalars['Boolean'];
   exerciseLogId: Scalars['String'];
 };
 
-
 export type MutationRestartWorkoutArgs = {
   id: Scalars['ID'];
 };
-
 
 export type MutationUpdateExerciseArgs = {
   id: Scalars['ID'];
   input?: InputMaybe<ExerciseInput>;
 };
 
-
 export type MutationUpdateExerciseLogArgs = {
   exerciseLogId: Scalars['ID'];
   input: ExerciseLogInput;
 };
 
-
 export type MutationUpdateMyPreferenceArgs = {
   input: PreferenceInput;
 };
-
 
 export type MutationUpdateWorkoutArgs = {
   id: Scalars['ID'];
@@ -269,15 +259,15 @@ export type Query = {
   allLogsByExerciseId: Array<ExerciseLog>;
   /** Get chart data per muscle group */
   chartDataMuscleGroups: Array<MuscleGroupChartData>;
-  /** Get chart data of last x months for logs by exercise id */
+  /** Get chart data of last x months for logs by exercisedetails id */
   chartDataOfXMonthsByExerciseId: Array<ExerciseLineChartData>;
   /** Count my workouts */
   countMyWorkouts: Scalars['Int'];
   /** Get total time of all workouts */
   countTotalTimeAllMyWorkoutsInMinutes: Scalars['Float'];
-  /** Get all of the latest logs by exercise id from the same workout */
+  /** Get all of the latest logs by exercisedetails id from the same workout */
   latestLogsByExerciseId?: Maybe<Array<Maybe<ExerciseLog>>>;
-  /** Get all of the latest logs by exercise id from the same workout except given workout Id */
+  /** Get all of the latest logs by exercisedetails id from the same workout except given workout Id */
   latestLogsByExerciseIdAndNotWorkoutId?: Maybe<Array<Maybe<ExerciseLog>>>;
   me?: Maybe<User>;
   /** Check if me has an active workout ie. one that hasn't ended yet */
@@ -294,11 +284,9 @@ export type Query = {
   workoutsOfCurrentMonth: Array<Workout>;
 };
 
-
 export type QueryAllLogsByExerciseIdArgs = {
   exerciseId: Scalars['ID'];
 };
-
 
 export type QueryChartDataOfXMonthsByExerciseIdArgs = {
   exerciseId: Scalars['ID'];
@@ -306,27 +294,22 @@ export type QueryChartDataOfXMonthsByExerciseIdArgs = {
   zonedDateTimeString: Scalars['String'];
 };
 
-
 export type QueryLatestLogsByExerciseIdArgs = {
   exerciseId: Scalars['ID'];
 };
-
 
 export type QueryLatestLogsByExerciseIdAndNotWorkoutIdArgs = {
   exerciseId: Scalars['ID'];
   workoutId: Scalars['String'];
 };
 
-
 export type QueryUserByIdArgs = {
   id: Scalars['String'];
 };
 
-
 export type QueryWorkoutByIdArgs = {
   id: Scalars['ID'];
 };
-
 
 export type QueryWorkoutsOfCurrentMonthArgs = {
   zonedDateTimeString: Scalars['String'];
@@ -367,49 +350,284 @@ export type WorkoutInput = {
   zonedDateTime: Scalars['String'];
 };
 
-export type CognitoUserFragment = { __typename?: 'CognitoUser', name: string };
+export type CognitoUserFragment = {__typename?: 'CognitoUser'; name: string};
 
-export type ExerciseFragment = { __typename?: 'Exercise', id: string, name: string, primaryMuscles?: Array<MuscleGroup | null> | null, secondaryMuscles?: Array<MuscleGroup | null> | null, notes?: string | null, defaultAppliedWeight?: { __typename?: 'LogValue', unit: LogUnit, base: number, fraction?: number | null } | null };
+export type ExerciseFragment = {
+  __typename?: 'Exercise';
+  id: string;
+  name: string;
+  primaryMuscles?: Array<MuscleGroup | null> | null;
+  secondaryMuscles?: Array<MuscleGroup | null> | null;
+  notes?: string | null;
+  defaultAppliedWeight?: {
+    __typename?: 'LogValue';
+    unit: LogUnit;
+    base: number;
+    fraction?: number | null;
+  } | null;
+};
 
-export type ExerciseLogFragment = { __typename?: 'ExerciseLog', id: string, logDateTime: any, repetitions: number, warmup?: boolean | null, remark?: string | null, exercise: { __typename?: 'Exercise', id: string, name: string, primaryMuscles?: Array<MuscleGroup | null> | null, secondaryMuscles?: Array<MuscleGroup | null> | null, notes?: string | null, defaultAppliedWeight?: { __typename?: 'LogValue', unit: LogUnit, base: number, fraction?: number | null } | null }, logValue: { __typename?: 'LogValue', unit: LogUnit, base: number, fraction?: number | null } };
+export type ExerciseLogFragment = {
+  __typename?: 'ExerciseLog';
+  id: string;
+  logDateTime: any;
+  repetitions: number;
+  warmup?: boolean | null;
+  remark?: string | null;
+  exercise: {
+    __typename?: 'Exercise';
+    id: string;
+    name: string;
+    primaryMuscles?: Array<MuscleGroup | null> | null;
+    secondaryMuscles?: Array<MuscleGroup | null> | null;
+    notes?: string | null;
+    defaultAppliedWeight?: {
+      __typename?: 'LogValue';
+      unit: LogUnit;
+      base: number;
+      fraction?: number | null;
+    } | null;
+  };
+  logValue: {
+    __typename?: 'LogValue';
+    unit: LogUnit;
+    base: number;
+    fraction?: number | null;
+  };
+};
 
-export type ExerciseLineChartDataFragment = { __typename?: 'ExerciseLineChartData', monthLabel: string, logs: Array<{ __typename?: 'ExerciseLog', id: string, logDateTime: any, repetitions: number, warmup?: boolean | null, remark?: string | null, exercise: { __typename?: 'Exercise', id: string, name: string, primaryMuscles?: Array<MuscleGroup | null> | null, secondaryMuscles?: Array<MuscleGroup | null> | null, notes?: string | null, defaultAppliedWeight?: { __typename?: 'LogValue', unit: LogUnit, base: number, fraction?: number | null } | null }, logValue: { __typename?: 'LogValue', unit: LogUnit, base: number, fraction?: number | null } }> };
+export type ExerciseLineChartDataFragment = {
+  __typename?: 'ExerciseLineChartData';
+  monthLabel: string;
+  logs: Array<{
+    __typename?: 'ExerciseLog';
+    id: string;
+    logDateTime: any;
+    repetitions: number;
+    warmup?: boolean | null;
+    remark?: string | null;
+    exercise: {
+      __typename?: 'Exercise';
+      id: string;
+      name: string;
+      primaryMuscles?: Array<MuscleGroup | null> | null;
+      secondaryMuscles?: Array<MuscleGroup | null> | null;
+      notes?: string | null;
+      defaultAppliedWeight?: {
+        __typename?: 'LogValue';
+        unit: LogUnit;
+        base: number;
+        fraction?: number | null;
+      } | null;
+    };
+    logValue: {
+      __typename?: 'LogValue';
+      unit: LogUnit;
+      base: number;
+      fraction?: number | null;
+    };
+  }>;
+};
 
-export type GroupedExerciseLogFragment = { __typename?: 'GroupedExerciseLog', exercise: { __typename?: 'Exercise', id: string, name: string, primaryMuscles?: Array<MuscleGroup | null> | null, secondaryMuscles?: Array<MuscleGroup | null> | null, notes?: string | null, defaultAppliedWeight?: { __typename?: 'LogValue', unit: LogUnit, base: number, fraction?: number | null } | null }, logs: Array<{ __typename?: 'ExerciseLog', id: string, logDateTime: any, repetitions: number, warmup?: boolean | null, remark?: string | null, exercise: { __typename?: 'Exercise', id: string, name: string, primaryMuscles?: Array<MuscleGroup | null> | null, secondaryMuscles?: Array<MuscleGroup | null> | null, notes?: string | null, defaultAppliedWeight?: { __typename?: 'LogValue', unit: LogUnit, base: number, fraction?: number | null } | null }, logValue: { __typename?: 'LogValue', unit: LogUnit, base: number, fraction?: number | null } }> };
+export type GroupedExerciseLogFragment = {
+  __typename?: 'GroupedExerciseLog';
+  exercise: {
+    __typename?: 'Exercise';
+    id: string;
+    name: string;
+    primaryMuscles?: Array<MuscleGroup | null> | null;
+    secondaryMuscles?: Array<MuscleGroup | null> | null;
+    notes?: string | null;
+    defaultAppliedWeight?: {
+      __typename?: 'LogValue';
+      unit: LogUnit;
+      base: number;
+      fraction?: number | null;
+    } | null;
+  };
+  logs: Array<{
+    __typename?: 'ExerciseLog';
+    id: string;
+    logDateTime: any;
+    repetitions: number;
+    warmup?: boolean | null;
+    remark?: string | null;
+    exercise: {
+      __typename?: 'Exercise';
+      id: string;
+      name: string;
+      primaryMuscles?: Array<MuscleGroup | null> | null;
+      secondaryMuscles?: Array<MuscleGroup | null> | null;
+      notes?: string | null;
+      defaultAppliedWeight?: {
+        __typename?: 'LogValue';
+        unit: LogUnit;
+        base: number;
+        fraction?: number | null;
+      } | null;
+    };
+    logValue: {
+      __typename?: 'LogValue';
+      unit: LogUnit;
+      base: number;
+      fraction?: number | null;
+    };
+  }>;
+};
 
-export type LogValueFragment = { __typename?: 'LogValue', unit: LogUnit, base: number, fraction?: number | null };
+export type LogValueFragment = {
+  __typename?: 'LogValue';
+  unit: LogUnit;
+  base: number;
+  fraction?: number | null;
+};
 
-export type PreferenceFragment = { __typename?: 'Preference', weightUnit?: LogUnit | null, distanceUnit?: LogUnit | null, defaultRepetitions?: number | null, hideUnitSelector?: boolean | null, autoAdjustWorkoutMuscleGroups?: boolean | null, timerDuration?: number | null, autoStartTimer?: boolean | null, playTimerCompletionSound?: boolean | null };
+export type PreferenceFragment = {
+  __typename?: 'Preference';
+  weightUnit?: LogUnit | null;
+  distanceUnit?: LogUnit | null;
+  defaultRepetitions?: number | null;
+  hideUnitSelector?: boolean | null;
+  autoAdjustWorkoutMuscleGroups?: boolean | null;
+  timerDuration?: number | null;
+  autoStartTimer?: boolean | null;
+  playTimerCompletionSound?: boolean | null;
+};
 
-export type UserFragment = { __typename?: 'User', id: string, fid: string, cognitoUser: { __typename?: 'CognitoUser', name: string } };
+export type UserFragment = {
+  __typename?: 'User';
+  id: string;
+  fid: string;
+  cognitoUser: {__typename?: 'CognitoUser'; name: string};
+};
 
-export type WorkoutShortFragment = { __typename?: 'Workout', id: string, name: string, muscleGroups: Array<MuscleGroup>, startDateTime?: any | null, endDateTime?: any | null, active?: boolean | null, remark?: string | null };
+export type WorkoutShortFragment = {
+  __typename?: 'Workout';
+  id: string;
+  name: string;
+  muscleGroups: Array<MuscleGroup>;
+  startDateTime?: any | null;
+  endDateTime?: any | null;
+  active?: boolean | null;
+  remark?: string | null;
+};
 
-export type WorkoutLongFragment = { __typename?: 'Workout', id: string, name: string, muscleGroups: Array<MuscleGroup>, startDateTime?: any | null, endDateTime?: any | null, active?: boolean | null, remark?: string | null, groupedExerciseLogs: Array<{ __typename?: 'GroupedExerciseLog', exercise: { __typename?: 'Exercise', id: string, name: string, primaryMuscles?: Array<MuscleGroup | null> | null, secondaryMuscles?: Array<MuscleGroup | null> | null, notes?: string | null, defaultAppliedWeight?: { __typename?: 'LogValue', unit: LogUnit, base: number, fraction?: number | null } | null }, logs: Array<{ __typename?: 'ExerciseLog', id: string, logDateTime: any, repetitions: number, warmup?: boolean | null, remark?: string | null, exercise: { __typename?: 'Exercise', id: string, name: string, primaryMuscles?: Array<MuscleGroup | null> | null, secondaryMuscles?: Array<MuscleGroup | null> | null, notes?: string | null, defaultAppliedWeight?: { __typename?: 'LogValue', unit: LogUnit, base: number, fraction?: number | null } | null }, logValue: { __typename?: 'LogValue', unit: LogUnit, base: number, fraction?: number | null } }> }> };
+export type WorkoutLongFragment = {
+  __typename?: 'Workout';
+  id: string;
+  name: string;
+  muscleGroups: Array<MuscleGroup>;
+  startDateTime?: any | null;
+  endDateTime?: any | null;
+  active?: boolean | null;
+  remark?: string | null;
+  groupedExerciseLogs: Array<{
+    __typename?: 'GroupedExerciseLog';
+    exercise: {
+      __typename?: 'Exercise';
+      id: string;
+      name: string;
+      primaryMuscles?: Array<MuscleGroup | null> | null;
+      secondaryMuscles?: Array<MuscleGroup | null> | null;
+      notes?: string | null;
+      defaultAppliedWeight?: {
+        __typename?: 'LogValue';
+        unit: LogUnit;
+        base: number;
+        fraction?: number | null;
+      } | null;
+    };
+    logs: Array<{
+      __typename?: 'ExerciseLog';
+      id: string;
+      logDateTime: any;
+      repetitions: number;
+      warmup?: boolean | null;
+      remark?: string | null;
+      exercise: {
+        __typename?: 'Exercise';
+        id: string;
+        name: string;
+        primaryMuscles?: Array<MuscleGroup | null> | null;
+        secondaryMuscles?: Array<MuscleGroup | null> | null;
+        notes?: string | null;
+        defaultAppliedWeight?: {
+          __typename?: 'LogValue';
+          unit: LogUnit;
+          base: number;
+          fraction?: number | null;
+        } | null;
+      };
+      logValue: {
+        __typename?: 'LogValue';
+        unit: LogUnit;
+        base: number;
+        fraction?: number | null;
+      };
+    }>;
+  }>;
+};
 
-export type MuscleGroupChartDataFragment = { __typename?: 'MuscleGroupChartData', color: string, muscleGroup: MuscleGroup, count: number };
+export type MuscleGroupChartDataFragment = {
+  __typename?: 'MuscleGroupChartData';
+  color: string;
+  muscleGroup: MuscleGroup;
+  count: number;
+};
 
 export type CreateExerciseMutationVariables = Exact<{
   input?: InputMaybe<ExerciseInput>;
 }>;
 
-
-export type CreateExerciseMutation = { __typename?: 'Mutation', createExercise?: { __typename?: 'Exercise', id: string, name: string, primaryMuscles?: Array<MuscleGroup | null> | null, secondaryMuscles?: Array<MuscleGroup | null> | null, notes?: string | null, defaultAppliedWeight?: { __typename?: 'LogValue', unit: LogUnit, base: number, fraction?: number | null } | null } | null };
+export type CreateExerciseMutation = {
+  __typename?: 'Mutation';
+  createExercise?: {
+    __typename?: 'Exercise';
+    id: string;
+    name: string;
+    primaryMuscles?: Array<MuscleGroup | null> | null;
+    secondaryMuscles?: Array<MuscleGroup | null> | null;
+    notes?: string | null;
+    defaultAppliedWeight?: {
+      __typename?: 'LogValue';
+      unit: LogUnit;
+      base: number;
+      fraction?: number | null;
+    } | null;
+  } | null;
+};
 
 export type DeleteExerciseMutationVariables = Exact<{
   id: Scalars['ID'];
 }>;
 
-
-export type DeleteExerciseMutation = { __typename?: 'Mutation', deleteExercise: boolean };
+export type DeleteExerciseMutation = {
+  __typename?: 'Mutation';
+  deleteExercise: boolean;
+};
 
 export type UpdateExerciseMutationVariables = Exact<{
   id: Scalars['ID'];
   input: ExerciseInput;
 }>;
 
-
-export type UpdateExerciseMutation = { __typename?: 'Mutation', updateExercise?: { __typename?: 'Exercise', id: string, name: string, primaryMuscles?: Array<MuscleGroup | null> | null, secondaryMuscles?: Array<MuscleGroup | null> | null, notes?: string | null, defaultAppliedWeight?: { __typename?: 'LogValue', unit: LogUnit, base: number, fraction?: number | null } | null } | null };
+export type UpdateExerciseMutation = {
+  __typename?: 'Mutation';
+  updateExercise?: {
+    __typename?: 'Exercise';
+    id: string;
+    name: string;
+    primaryMuscles?: Array<MuscleGroup | null> | null;
+    secondaryMuscles?: Array<MuscleGroup | null> | null;
+    notes?: string | null;
+    defaultAppliedWeight?: {
+      __typename?: 'LogValue';
+      unit: LogUnit;
+      base: number;
+      fraction?: number | null;
+    } | null;
+  } | null;
+};
 
 export type AddExerciseLogMutationVariables = Exact<{
   workoutId: Scalars['ID'];
@@ -417,8 +635,64 @@ export type AddExerciseLogMutationVariables = Exact<{
   autoAdjust: Scalars['Boolean'];
 }>;
 
-
-export type AddExerciseLogMutation = { __typename?: 'Mutation', addExerciseLog?: { __typename?: 'Workout', id: string, name: string, muscleGroups: Array<MuscleGroup>, startDateTime?: any | null, endDateTime?: any | null, active?: boolean | null, remark?: string | null, groupedExerciseLogs: Array<{ __typename?: 'GroupedExerciseLog', exercise: { __typename?: 'Exercise', id: string, name: string, primaryMuscles?: Array<MuscleGroup | null> | null, secondaryMuscles?: Array<MuscleGroup | null> | null, notes?: string | null, defaultAppliedWeight?: { __typename?: 'LogValue', unit: LogUnit, base: number, fraction?: number | null } | null }, logs: Array<{ __typename?: 'ExerciseLog', id: string, logDateTime: any, repetitions: number, warmup?: boolean | null, remark?: string | null, exercise: { __typename?: 'Exercise', id: string, name: string, primaryMuscles?: Array<MuscleGroup | null> | null, secondaryMuscles?: Array<MuscleGroup | null> | null, notes?: string | null, defaultAppliedWeight?: { __typename?: 'LogValue', unit: LogUnit, base: number, fraction?: number | null } | null }, logValue: { __typename?: 'LogValue', unit: LogUnit, base: number, fraction?: number | null } }> }> } | null };
+export type AddExerciseLogMutation = {
+  __typename?: 'Mutation';
+  addExerciseLog?: {
+    __typename?: 'Workout';
+    id: string;
+    name: string;
+    muscleGroups: Array<MuscleGroup>;
+    startDateTime?: any | null;
+    endDateTime?: any | null;
+    active?: boolean | null;
+    remark?: string | null;
+    groupedExerciseLogs: Array<{
+      __typename?: 'GroupedExerciseLog';
+      exercise: {
+        __typename?: 'Exercise';
+        id: string;
+        name: string;
+        primaryMuscles?: Array<MuscleGroup | null> | null;
+        secondaryMuscles?: Array<MuscleGroup | null> | null;
+        notes?: string | null;
+        defaultAppliedWeight?: {
+          __typename?: 'LogValue';
+          unit: LogUnit;
+          base: number;
+          fraction?: number | null;
+        } | null;
+      };
+      logs: Array<{
+        __typename?: 'ExerciseLog';
+        id: string;
+        logDateTime: any;
+        repetitions: number;
+        warmup?: boolean | null;
+        remark?: string | null;
+        exercise: {
+          __typename?: 'Exercise';
+          id: string;
+          name: string;
+          primaryMuscles?: Array<MuscleGroup | null> | null;
+          secondaryMuscles?: Array<MuscleGroup | null> | null;
+          notes?: string | null;
+          defaultAppliedWeight?: {
+            __typename?: 'LogValue';
+            unit: LogUnit;
+            base: number;
+            fraction?: number | null;
+          } | null;
+        };
+        logValue: {
+          __typename?: 'LogValue';
+          unit: LogUnit;
+          base: number;
+          fraction?: number | null;
+        };
+      }>;
+    }>;
+  } | null;
+};
 
 export type ReLogLatestLogMutationVariables = Exact<{
   workoutId: Scalars['ID'];
@@ -426,110 +700,442 @@ export type ReLogLatestLogMutationVariables = Exact<{
   autoAdjust: Scalars['Boolean'];
 }>;
 
-
-export type ReLogLatestLogMutation = { __typename?: 'Mutation', reLogLatestLog?: { __typename?: 'Workout', id: string, name: string, muscleGroups: Array<MuscleGroup>, startDateTime?: any | null, endDateTime?: any | null, active?: boolean | null, remark?: string | null, groupedExerciseLogs: Array<{ __typename?: 'GroupedExerciseLog', exercise: { __typename?: 'Exercise', id: string, name: string, primaryMuscles?: Array<MuscleGroup | null> | null, secondaryMuscles?: Array<MuscleGroup | null> | null, notes?: string | null, defaultAppliedWeight?: { __typename?: 'LogValue', unit: LogUnit, base: number, fraction?: number | null } | null }, logs: Array<{ __typename?: 'ExerciseLog', id: string, logDateTime: any, repetitions: number, warmup?: boolean | null, remark?: string | null, exercise: { __typename?: 'Exercise', id: string, name: string, primaryMuscles?: Array<MuscleGroup | null> | null, secondaryMuscles?: Array<MuscleGroup | null> | null, notes?: string | null, defaultAppliedWeight?: { __typename?: 'LogValue', unit: LogUnit, base: number, fraction?: number | null } | null }, logValue: { __typename?: 'LogValue', unit: LogUnit, base: number, fraction?: number | null } }> }> } | null };
+export type ReLogLatestLogMutation = {
+  __typename?: 'Mutation';
+  reLogLatestLog?: {
+    __typename?: 'Workout';
+    id: string;
+    name: string;
+    muscleGroups: Array<MuscleGroup>;
+    startDateTime?: any | null;
+    endDateTime?: any | null;
+    active?: boolean | null;
+    remark?: string | null;
+    groupedExerciseLogs: Array<{
+      __typename?: 'GroupedExerciseLog';
+      exercise: {
+        __typename?: 'Exercise';
+        id: string;
+        name: string;
+        primaryMuscles?: Array<MuscleGroup | null> | null;
+        secondaryMuscles?: Array<MuscleGroup | null> | null;
+        notes?: string | null;
+        defaultAppliedWeight?: {
+          __typename?: 'LogValue';
+          unit: LogUnit;
+          base: number;
+          fraction?: number | null;
+        } | null;
+      };
+      logs: Array<{
+        __typename?: 'ExerciseLog';
+        id: string;
+        logDateTime: any;
+        repetitions: number;
+        warmup?: boolean | null;
+        remark?: string | null;
+        exercise: {
+          __typename?: 'Exercise';
+          id: string;
+          name: string;
+          primaryMuscles?: Array<MuscleGroup | null> | null;
+          secondaryMuscles?: Array<MuscleGroup | null> | null;
+          notes?: string | null;
+          defaultAppliedWeight?: {
+            __typename?: 'LogValue';
+            unit: LogUnit;
+            base: number;
+            fraction?: number | null;
+          } | null;
+        };
+        logValue: {
+          __typename?: 'LogValue';
+          unit: LogUnit;
+          base: number;
+          fraction?: number | null;
+        };
+      }>;
+    }>;
+  } | null;
+};
 
 export type ReLogLogMutationVariables = Exact<{
   workoutId: Scalars['ID'];
   input: ExerciseLogInput;
 }>;
 
-
-export type ReLogLogMutation = { __typename?: 'Mutation', reLogLog?: { __typename?: 'Workout', id: string, name: string, muscleGroups: Array<MuscleGroup>, startDateTime?: any | null, endDateTime?: any | null, active?: boolean | null, remark?: string | null, groupedExerciseLogs: Array<{ __typename?: 'GroupedExerciseLog', exercise: { __typename?: 'Exercise', id: string, name: string, primaryMuscles?: Array<MuscleGroup | null> | null, secondaryMuscles?: Array<MuscleGroup | null> | null, notes?: string | null, defaultAppliedWeight?: { __typename?: 'LogValue', unit: LogUnit, base: number, fraction?: number | null } | null }, logs: Array<{ __typename?: 'ExerciseLog', id: string, logDateTime: any, repetitions: number, warmup?: boolean | null, remark?: string | null, exercise: { __typename?: 'Exercise', id: string, name: string, primaryMuscles?: Array<MuscleGroup | null> | null, secondaryMuscles?: Array<MuscleGroup | null> | null, notes?: string | null, defaultAppliedWeight?: { __typename?: 'LogValue', unit: LogUnit, base: number, fraction?: number | null } | null }, logValue: { __typename?: 'LogValue', unit: LogUnit, base: number, fraction?: number | null } }> }> } | null };
+export type ReLogLogMutation = {
+  __typename?: 'Mutation';
+  reLogLog?: {
+    __typename?: 'Workout';
+    id: string;
+    name: string;
+    muscleGroups: Array<MuscleGroup>;
+    startDateTime?: any | null;
+    endDateTime?: any | null;
+    active?: boolean | null;
+    remark?: string | null;
+    groupedExerciseLogs: Array<{
+      __typename?: 'GroupedExerciseLog';
+      exercise: {
+        __typename?: 'Exercise';
+        id: string;
+        name: string;
+        primaryMuscles?: Array<MuscleGroup | null> | null;
+        secondaryMuscles?: Array<MuscleGroup | null> | null;
+        notes?: string | null;
+        defaultAppliedWeight?: {
+          __typename?: 'LogValue';
+          unit: LogUnit;
+          base: number;
+          fraction?: number | null;
+        } | null;
+      };
+      logs: Array<{
+        __typename?: 'ExerciseLog';
+        id: string;
+        logDateTime: any;
+        repetitions: number;
+        warmup?: boolean | null;
+        remark?: string | null;
+        exercise: {
+          __typename?: 'Exercise';
+          id: string;
+          name: string;
+          primaryMuscles?: Array<MuscleGroup | null> | null;
+          secondaryMuscles?: Array<MuscleGroup | null> | null;
+          notes?: string | null;
+          defaultAppliedWeight?: {
+            __typename?: 'LogValue';
+            unit: LogUnit;
+            base: number;
+            fraction?: number | null;
+          } | null;
+        };
+        logValue: {
+          __typename?: 'LogValue';
+          unit: LogUnit;
+          base: number;
+          fraction?: number | null;
+        };
+      }>;
+    }>;
+  } | null;
+};
 
 export type RemoveExerciseLogMutationVariables = Exact<{
   exerciseLogId: Scalars['String'];
   autoAdjust: Scalars['Boolean'];
 }>;
 
-
-export type RemoveExerciseLogMutation = { __typename?: 'Mutation', removeExerciseLog: boolean };
+export type RemoveExerciseLogMutation = {
+  __typename?: 'Mutation';
+  removeExerciseLog: boolean;
+};
 
 export type UpdateExerciseLogMutationVariables = Exact<{
   id: Scalars['ID'];
   input: ExerciseLogInput;
 }>;
 
-
-export type UpdateExerciseLogMutation = { __typename?: 'Mutation', updateExerciseLog?: { __typename?: 'Workout', id: string, name: string, muscleGroups: Array<MuscleGroup>, startDateTime?: any | null, endDateTime?: any | null, active?: boolean | null, remark?: string | null, groupedExerciseLogs: Array<{ __typename?: 'GroupedExerciseLog', exercise: { __typename?: 'Exercise', id: string, name: string, primaryMuscles?: Array<MuscleGroup | null> | null, secondaryMuscles?: Array<MuscleGroup | null> | null, notes?: string | null, defaultAppliedWeight?: { __typename?: 'LogValue', unit: LogUnit, base: number, fraction?: number | null } | null }, logs: Array<{ __typename?: 'ExerciseLog', id: string, logDateTime: any, repetitions: number, warmup?: boolean | null, remark?: string | null, exercise: { __typename?: 'Exercise', id: string, name: string, primaryMuscles?: Array<MuscleGroup | null> | null, secondaryMuscles?: Array<MuscleGroup | null> | null, notes?: string | null, defaultAppliedWeight?: { __typename?: 'LogValue', unit: LogUnit, base: number, fraction?: number | null } | null }, logValue: { __typename?: 'LogValue', unit: LogUnit, base: number, fraction?: number | null } }> }> } | null };
+export type UpdateExerciseLogMutation = {
+  __typename?: 'Mutation';
+  updateExerciseLog?: {
+    __typename?: 'Workout';
+    id: string;
+    name: string;
+    muscleGroups: Array<MuscleGroup>;
+    startDateTime?: any | null;
+    endDateTime?: any | null;
+    active?: boolean | null;
+    remark?: string | null;
+    groupedExerciseLogs: Array<{
+      __typename?: 'GroupedExerciseLog';
+      exercise: {
+        __typename?: 'Exercise';
+        id: string;
+        name: string;
+        primaryMuscles?: Array<MuscleGroup | null> | null;
+        secondaryMuscles?: Array<MuscleGroup | null> | null;
+        notes?: string | null;
+        defaultAppliedWeight?: {
+          __typename?: 'LogValue';
+          unit: LogUnit;
+          base: number;
+          fraction?: number | null;
+        } | null;
+      };
+      logs: Array<{
+        __typename?: 'ExerciseLog';
+        id: string;
+        logDateTime: any;
+        repetitions: number;
+        warmup?: boolean | null;
+        remark?: string | null;
+        exercise: {
+          __typename?: 'Exercise';
+          id: string;
+          name: string;
+          primaryMuscles?: Array<MuscleGroup | null> | null;
+          secondaryMuscles?: Array<MuscleGroup | null> | null;
+          notes?: string | null;
+          defaultAppliedWeight?: {
+            __typename?: 'LogValue';
+            unit: LogUnit;
+            base: number;
+            fraction?: number | null;
+          } | null;
+        };
+        logValue: {
+          __typename?: 'LogValue';
+          unit: LogUnit;
+          base: number;
+          fraction?: number | null;
+        };
+      }>;
+    }>;
+  } | null;
+};
 
 export type UpdatePreferenceMutationVariables = Exact<{
   input: PreferenceInput;
 }>;
 
-
-export type UpdatePreferenceMutation = { __typename?: 'Mutation', updateMyPreference: { __typename?: 'Preference', weightUnit?: LogUnit | null, distanceUnit?: LogUnit | null, defaultRepetitions?: number | null, hideUnitSelector?: boolean | null, autoAdjustWorkoutMuscleGroups?: boolean | null, timerDuration?: number | null, autoStartTimer?: boolean | null, playTimerCompletionSound?: boolean | null } };
+export type UpdatePreferenceMutation = {
+  __typename?: 'Mutation';
+  updateMyPreference: {
+    __typename?: 'Preference';
+    weightUnit?: LogUnit | null;
+    distanceUnit?: LogUnit | null;
+    defaultRepetitions?: number | null;
+    hideUnitSelector?: boolean | null;
+    autoAdjustWorkoutMuscleGroups?: boolean | null;
+    timerDuration?: number | null;
+    autoStartTimer?: boolean | null;
+    playTimerCompletionSound?: boolean | null;
+  };
+};
 
 export type CreateUserMutationVariables = Exact<{
   input: UserInput;
 }>;
 
-
-export type CreateUserMutation = { __typename?: 'Mutation', createUser?: { __typename?: 'User', id: string } | null };
+export type CreateUserMutation = {
+  __typename?: 'Mutation';
+  createUser?: {__typename?: 'User'; id: string} | null;
+};
 
 export type DeleteWorkoutMutationVariables = Exact<{
   id: Scalars['ID'];
 }>;
 
-
-export type DeleteWorkoutMutation = { __typename?: 'Mutation', deleteWorkout?: boolean | null };
+export type DeleteWorkoutMutation = {
+  __typename?: 'Mutation';
+  deleteWorkout?: boolean | null;
+};
 
 export type EndWorkoutMutationVariables = Exact<{
   workoutId: Scalars['ID'];
   zonedDateTimeString: Scalars['String'];
 }>;
 
-
-export type EndWorkoutMutation = { __typename?: 'Mutation', endWorkout?: { __typename?: 'Workout', id: string, name: string, muscleGroups: Array<MuscleGroup>, startDateTime?: any | null, endDateTime?: any | null, active?: boolean | null, remark?: string | null } | null };
+export type EndWorkoutMutation = {
+  __typename?: 'Mutation';
+  endWorkout?: {
+    __typename?: 'Workout';
+    id: string;
+    name: string;
+    muscleGroups: Array<MuscleGroup>;
+    startDateTime?: any | null;
+    endDateTime?: any | null;
+    active?: boolean | null;
+    remark?: string | null;
+  } | null;
+};
 
 export type RestartWorkoutMutationVariables = Exact<{
   workoutId: Scalars['ID'];
 }>;
 
-
-export type RestartWorkoutMutation = { __typename?: 'Mutation', restartWorkout: { __typename?: 'Workout', id: string, name: string, muscleGroups: Array<MuscleGroup>, startDateTime?: any | null, endDateTime?: any | null, active?: boolean | null, remark?: string | null } };
+export type RestartWorkoutMutation = {
+  __typename?: 'Mutation';
+  restartWorkout: {
+    __typename?: 'Workout';
+    id: string;
+    name: string;
+    muscleGroups: Array<MuscleGroup>;
+    startDateTime?: any | null;
+    endDateTime?: any | null;
+    active?: boolean | null;
+    remark?: string | null;
+  };
+};
 
 export type StartWorkoutMutationVariables = Exact<{
   input: WorkoutInput;
 }>;
 
-
-export type StartWorkoutMutation = { __typename?: 'Mutation', meStartWorkout?: { __typename?: 'Workout', id: string, name: string, muscleGroups: Array<MuscleGroup>, startDateTime?: any | null, endDateTime?: any | null, active?: boolean | null, remark?: string | null } | null };
+export type StartWorkoutMutation = {
+  __typename?: 'Mutation';
+  meStartWorkout?: {
+    __typename?: 'Workout';
+    id: string;
+    name: string;
+    muscleGroups: Array<MuscleGroup>;
+    startDateTime?: any | null;
+    endDateTime?: any | null;
+    active?: boolean | null;
+    remark?: string | null;
+  } | null;
+};
 
 export type UpdateWorkoutMutationVariables = Exact<{
   id: Scalars['ID'];
   input: WorkoutInput;
 }>;
 
+export type UpdateWorkoutMutation = {
+  __typename?: 'Mutation';
+  updateWorkout: {
+    __typename?: 'Workout';
+    id: string;
+    name: string;
+    muscleGroups: Array<MuscleGroup>;
+    startDateTime?: any | null;
+    endDateTime?: any | null;
+    active?: boolean | null;
+    remark?: string | null;
+  };
+};
 
-export type UpdateWorkoutMutation = { __typename?: 'Mutation', updateWorkout: { __typename?: 'Workout', id: string, name: string, muscleGroups: Array<MuscleGroup>, startDateTime?: any | null, endDateTime?: any | null, active?: boolean | null, remark?: string | null } };
+export type MyExercisesQueryVariables = Exact<{[key: string]: never}>;
 
-export type MyExercisesQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type MyExercisesQuery = { __typename?: 'Query', myExercises?: Array<{ __typename?: 'Exercise', id: string, name: string, primaryMuscles?: Array<MuscleGroup | null> | null, secondaryMuscles?: Array<MuscleGroup | null> | null, notes?: string | null, defaultAppliedWeight?: { __typename?: 'LogValue', unit: LogUnit, base: number, fraction?: number | null } | null }> | null };
+export type MyExercisesQuery = {
+  __typename?: 'Query';
+  myExercises?: Array<{
+    __typename?: 'Exercise';
+    id: string;
+    name: string;
+    primaryMuscles?: Array<MuscleGroup | null> | null;
+    secondaryMuscles?: Array<MuscleGroup | null> | null;
+    notes?: string | null;
+    defaultAppliedWeight?: {
+      __typename?: 'LogValue';
+      unit: LogUnit;
+      base: number;
+      fraction?: number | null;
+    } | null;
+  }> | null;
+};
 
 export type LatestLogsByExerciseIdQueryVariables = Exact<{
   id: Scalars['ID'];
 }>;
 
-
-export type LatestLogsByExerciseIdQuery = { __typename?: 'Query', latestLogsByExerciseId?: Array<{ __typename?: 'ExerciseLog', id: string, logDateTime: any, repetitions: number, warmup?: boolean | null, remark?: string | null, exercise: { __typename?: 'Exercise', id: string, name: string, primaryMuscles?: Array<MuscleGroup | null> | null, secondaryMuscles?: Array<MuscleGroup | null> | null, notes?: string | null, defaultAppliedWeight?: { __typename?: 'LogValue', unit: LogUnit, base: number, fraction?: number | null } | null }, logValue: { __typename?: 'LogValue', unit: LogUnit, base: number, fraction?: number | null } } | null> | null };
+export type LatestLogsByExerciseIdQuery = {
+  __typename?: 'Query';
+  latestLogsByExerciseId?: Array<{
+    __typename?: 'ExerciseLog';
+    id: string;
+    logDateTime: any;
+    repetitions: number;
+    warmup?: boolean | null;
+    remark?: string | null;
+    exercise: {
+      __typename?: 'Exercise';
+      id: string;
+      name: string;
+      primaryMuscles?: Array<MuscleGroup | null> | null;
+      secondaryMuscles?: Array<MuscleGroup | null> | null;
+      notes?: string | null;
+      defaultAppliedWeight?: {
+        __typename?: 'LogValue';
+        unit: LogUnit;
+        base: number;
+        fraction?: number | null;
+      } | null;
+    };
+    logValue: {
+      __typename?: 'LogValue';
+      unit: LogUnit;
+      base: number;
+      fraction?: number | null;
+    };
+  } | null> | null;
+};
 
 export type LatestLogsByExerciseIdAndNotWorkoutIdQueryVariables = Exact<{
   id: Scalars['ID'];
   workoutId: Scalars['String'];
 }>;
 
-
-export type LatestLogsByExerciseIdAndNotWorkoutIdQuery = { __typename?: 'Query', latestLogsByExerciseIdAndNotWorkoutId?: Array<{ __typename?: 'ExerciseLog', id: string, logDateTime: any, repetitions: number, warmup?: boolean | null, remark?: string | null, exercise: { __typename?: 'Exercise', id: string, name: string, primaryMuscles?: Array<MuscleGroup | null> | null, secondaryMuscles?: Array<MuscleGroup | null> | null, notes?: string | null, defaultAppliedWeight?: { __typename?: 'LogValue', unit: LogUnit, base: number, fraction?: number | null } | null }, logValue: { __typename?: 'LogValue', unit: LogUnit, base: number, fraction?: number | null } } | null> | null };
+export type LatestLogsByExerciseIdAndNotWorkoutIdQuery = {
+  __typename?: 'Query';
+  latestLogsByExerciseIdAndNotWorkoutId?: Array<{
+    __typename?: 'ExerciseLog';
+    id: string;
+    logDateTime: any;
+    repetitions: number;
+    warmup?: boolean | null;
+    remark?: string | null;
+    exercise: {
+      __typename?: 'Exercise';
+      id: string;
+      name: string;
+      primaryMuscles?: Array<MuscleGroup | null> | null;
+      secondaryMuscles?: Array<MuscleGroup | null> | null;
+      notes?: string | null;
+      defaultAppliedWeight?: {
+        __typename?: 'LogValue';
+        unit: LogUnit;
+        base: number;
+        fraction?: number | null;
+      } | null;
+    };
+    logValue: {
+      __typename?: 'LogValue';
+      unit: LogUnit;
+      base: number;
+      fraction?: number | null;
+    };
+  } | null> | null;
+};
 
 export type AllLogsByExerciseIdQueryVariables = Exact<{
   exerciseId: Scalars['ID'];
 }>;
 
-
-export type AllLogsByExerciseIdQuery = { __typename?: 'Query', allLogsByExerciseId: Array<{ __typename?: 'ExerciseLog', id: string, logDateTime: any, repetitions: number, warmup?: boolean | null, remark?: string | null, exercise: { __typename?: 'Exercise', id: string, name: string, primaryMuscles?: Array<MuscleGroup | null> | null, secondaryMuscles?: Array<MuscleGroup | null> | null, notes?: string | null, defaultAppliedWeight?: { __typename?: 'LogValue', unit: LogUnit, base: number, fraction?: number | null } | null }, logValue: { __typename?: 'LogValue', unit: LogUnit, base: number, fraction?: number | null } }> };
+export type AllLogsByExerciseIdQuery = {
+  __typename?: 'Query';
+  allLogsByExerciseId: Array<{
+    __typename?: 'ExerciseLog';
+    id: string;
+    logDateTime: any;
+    repetitions: number;
+    warmup?: boolean | null;
+    remark?: string | null;
+    exercise: {
+      __typename?: 'Exercise';
+      id: string;
+      name: string;
+      primaryMuscles?: Array<MuscleGroup | null> | null;
+      secondaryMuscles?: Array<MuscleGroup | null> | null;
+      notes?: string | null;
+      defaultAppliedWeight?: {
+        __typename?: 'LogValue';
+        unit: LogUnit;
+        base: number;
+        fraction?: number | null;
+      } | null;
+    };
+    logValue: {
+      __typename?: 'LogValue';
+      unit: LogUnit;
+      base: number;
+      fraction?: number | null;
+    };
+  }>;
+};
 
 export type ChartDataOfXMonthsByExerciseIdQueryVariables = Exact<{
   exerciseId: Scalars['ID'];
@@ -537,71 +1143,1145 @@ export type ChartDataOfXMonthsByExerciseIdQueryVariables = Exact<{
   zonedDateTimeString: Scalars['String'];
 }>;
 
+export type ChartDataOfXMonthsByExerciseIdQuery = {
+  __typename?: 'Query';
+  chartDataOfXMonthsByExerciseId: Array<{
+    __typename?: 'ExerciseLineChartData';
+    monthLabel: string;
+    logs: Array<{
+      __typename?: 'ExerciseLog';
+      id: string;
+      logDateTime: any;
+      repetitions: number;
+      warmup?: boolean | null;
+      remark?: string | null;
+      exercise: {
+        __typename?: 'Exercise';
+        id: string;
+        name: string;
+        primaryMuscles?: Array<MuscleGroup | null> | null;
+        secondaryMuscles?: Array<MuscleGroup | null> | null;
+        notes?: string | null;
+        defaultAppliedWeight?: {
+          __typename?: 'LogValue';
+          unit: LogUnit;
+          base: number;
+          fraction?: number | null;
+        } | null;
+      };
+      logValue: {
+        __typename?: 'LogValue';
+        unit: LogUnit;
+        base: number;
+        fraction?: number | null;
+      };
+    }>;
+  }>;
+};
 
-export type ChartDataOfXMonthsByExerciseIdQuery = { __typename?: 'Query', chartDataOfXMonthsByExerciseId: Array<{ __typename?: 'ExerciseLineChartData', monthLabel: string, logs: Array<{ __typename?: 'ExerciseLog', id: string, logDateTime: any, repetitions: number, warmup?: boolean | null, remark?: string | null, exercise: { __typename?: 'Exercise', id: string, name: string, primaryMuscles?: Array<MuscleGroup | null> | null, secondaryMuscles?: Array<MuscleGroup | null> | null, notes?: string | null, defaultAppliedWeight?: { __typename?: 'LogValue', unit: LogUnit, base: number, fraction?: number | null } | null }, logValue: { __typename?: 'LogValue', unit: LogUnit, base: number, fraction?: number | null } }> }> };
+export type MyPreferenceQueryVariables = Exact<{[key: string]: never}>;
 
-export type MyPreferenceQueryVariables = Exact<{ [key: string]: never; }>;
+export type MyPreferenceQuery = {
+  __typename?: 'Query';
+  myPreference?: {
+    __typename?: 'Preference';
+    weightUnit?: LogUnit | null;
+    distanceUnit?: LogUnit | null;
+    defaultRepetitions?: number | null;
+    hideUnitSelector?: boolean | null;
+    autoAdjustWorkoutMuscleGroups?: boolean | null;
+    timerDuration?: number | null;
+    autoStartTimer?: boolean | null;
+    playTimerCompletionSound?: boolean | null;
+  } | null;
+};
 
+export type MeQueryVariables = Exact<{[key: string]: never}>;
 
-export type MyPreferenceQuery = { __typename?: 'Query', myPreference?: { __typename?: 'Preference', weightUnit?: LogUnit | null, distanceUnit?: LogUnit | null, defaultRepetitions?: number | null, hideUnitSelector?: boolean | null, autoAdjustWorkoutMuscleGroups?: boolean | null, timerDuration?: number | null, autoStartTimer?: boolean | null, playTimerCompletionSound?: boolean | null } | null };
+export type MeQuery = {
+  __typename?: 'Query';
+  me?: {
+    __typename?: 'User';
+    id: string;
+    fid: string;
+    cognitoUser: {__typename?: 'CognitoUser'; name: string};
+  } | null;
+};
 
-export type MeQueryVariables = Exact<{ [key: string]: never; }>;
+export type ChartDataMuscleGroupsQueryVariables = Exact<{[key: string]: never}>;
 
+export type ChartDataMuscleGroupsQuery = {
+  __typename?: 'Query';
+  chartDataMuscleGroups: Array<{
+    __typename?: 'MuscleGroupChartData';
+    color: string;
+    muscleGroup: MuscleGroup;
+    count: number;
+  }>;
+};
 
-export type MeQuery = { __typename?: 'Query', me?: { __typename?: 'User', id: string, fid: string, cognitoUser: { __typename?: 'CognitoUser', name: string } } | null };
+export type CountTotalTimeWorkoutsQueryVariables = Exact<{
+  [key: string]: never;
+}>;
 
-export type ChartDataMuscleGroupsQueryVariables = Exact<{ [key: string]: never; }>;
+export type CountTotalTimeWorkoutsQuery = {
+  __typename?: 'Query';
+  countTotalTimeAllMyWorkoutsInMinutes: number;
+};
 
+export type CountWorkoutsQueryVariables = Exact<{[key: string]: never}>;
 
-export type ChartDataMuscleGroupsQuery = { __typename?: 'Query', chartDataMuscleGroups: Array<{ __typename?: 'MuscleGroupChartData', color: string, muscleGroup: MuscleGroup, count: number }> };
+export type CountWorkoutsQuery = {
+  __typename?: 'Query';
+  countMyWorkouts: number;
+};
 
-export type CountTotalTimeWorkoutsQueryVariables = Exact<{ [key: string]: never; }>;
+export type HasActiveWorkoutQueryVariables = Exact<{[key: string]: never}>;
 
-
-export type CountTotalTimeWorkoutsQuery = { __typename?: 'Query', countTotalTimeAllMyWorkoutsInMinutes: number };
-
-export type CountWorkoutsQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type CountWorkoutsQuery = { __typename?: 'Query', countMyWorkouts: number };
-
-export type HasActiveWorkoutQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type HasActiveWorkoutQuery = { __typename?: 'Query', meHasActiveWorkout: boolean };
+export type HasActiveWorkoutQuery = {
+  __typename?: 'Query';
+  meHasActiveWorkout: boolean;
+};
 
 export type WorkoutByIdQueryVariables = Exact<{
   id: Scalars['ID'];
 }>;
 
+export type WorkoutByIdQuery = {
+  __typename?: 'Query';
+  workoutById?: {
+    __typename?: 'Workout';
+    id: string;
+    name: string;
+    muscleGroups: Array<MuscleGroup>;
+    startDateTime?: any | null;
+    endDateTime?: any | null;
+    active?: boolean | null;
+    remark?: string | null;
+    groupedExerciseLogs: Array<{
+      __typename?: 'GroupedExerciseLog';
+      exercise: {
+        __typename?: 'Exercise';
+        id: string;
+        name: string;
+        primaryMuscles?: Array<MuscleGroup | null> | null;
+        secondaryMuscles?: Array<MuscleGroup | null> | null;
+        notes?: string | null;
+        defaultAppliedWeight?: {
+          __typename?: 'LogValue';
+          unit: LogUnit;
+          base: number;
+          fraction?: number | null;
+        } | null;
+      };
+      logs: Array<{
+        __typename?: 'ExerciseLog';
+        id: string;
+        logDateTime: any;
+        repetitions: number;
+        warmup?: boolean | null;
+        remark?: string | null;
+        exercise: {
+          __typename?: 'Exercise';
+          id: string;
+          name: string;
+          primaryMuscles?: Array<MuscleGroup | null> | null;
+          secondaryMuscles?: Array<MuscleGroup | null> | null;
+          notes?: string | null;
+          defaultAppliedWeight?: {
+            __typename?: 'LogValue';
+            unit: LogUnit;
+            base: number;
+            fraction?: number | null;
+          } | null;
+        };
+        logValue: {
+          __typename?: 'LogValue';
+          unit: LogUnit;
+          base: number;
+          fraction?: number | null;
+        };
+      }>;
+    }>;
+  } | null;
+};
 
-export type WorkoutByIdQuery = { __typename?: 'Query', workoutById?: { __typename?: 'Workout', id: string, name: string, muscleGroups: Array<MuscleGroup>, startDateTime?: any | null, endDateTime?: any | null, active?: boolean | null, remark?: string | null, groupedExerciseLogs: Array<{ __typename?: 'GroupedExerciseLog', exercise: { __typename?: 'Exercise', id: string, name: string, primaryMuscles?: Array<MuscleGroup | null> | null, secondaryMuscles?: Array<MuscleGroup | null> | null, notes?: string | null, defaultAppliedWeight?: { __typename?: 'LogValue', unit: LogUnit, base: number, fraction?: number | null } | null }, logs: Array<{ __typename?: 'ExerciseLog', id: string, logDateTime: any, repetitions: number, warmup?: boolean | null, remark?: string | null, exercise: { __typename?: 'Exercise', id: string, name: string, primaryMuscles?: Array<MuscleGroup | null> | null, secondaryMuscles?: Array<MuscleGroup | null> | null, notes?: string | null, defaultAppliedWeight?: { __typename?: 'LogValue', unit: LogUnit, base: number, fraction?: number | null } | null }, logValue: { __typename?: 'LogValue', unit: LogUnit, base: number, fraction?: number | null } }> }> } | null };
+export type WorkoutsQueryVariables = Exact<{[key: string]: never}>;
 
-export type WorkoutsQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type WorkoutsQuery = { __typename?: 'Query', myWorkouts?: Array<{ __typename?: 'Workout', id: string, name: string, muscleGroups: Array<MuscleGroup>, startDateTime?: any | null, endDateTime?: any | null, active?: boolean | null, remark?: string | null }> | null };
+export type WorkoutsQuery = {
+  __typename?: 'Query';
+  myWorkouts?: Array<{
+    __typename?: 'Workout';
+    id: string;
+    name: string;
+    muscleGroups: Array<MuscleGroup>;
+    startDateTime?: any | null;
+    endDateTime?: any | null;
+    active?: boolean | null;
+    remark?: string | null;
+  }> | null;
+};
 
 export type WorkoutsOfMonthQueryVariables = Exact<{
   zonedDateTime: Scalars['String'];
 }>;
 
+export type WorkoutsOfMonthQuery = {
+  __typename?: 'Query';
+  workoutsOfCurrentMonth: Array<{
+    __typename?: 'Workout';
+    id: string;
+    name: string;
+    muscleGroups: Array<MuscleGroup>;
+    startDateTime?: any | null;
+    endDateTime?: any | null;
+    active?: boolean | null;
+    remark?: string | null;
+  }>;
+};
 
-export type WorkoutsOfMonthQuery = { __typename?: 'Query', workoutsOfCurrentMonth: Array<{ __typename?: 'Workout', id: string, name: string, muscleGroups: Array<MuscleGroup>, startDateTime?: any | null, endDateTime?: any | null, active?: boolean | null, remark?: string | null }> };
-
-export const LogValueFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"LogValue"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"LogValue"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"unit"}},{"kind":"Field","name":{"kind":"Name","value":"base"}},{"kind":"Field","name":{"kind":"Name","value":"fraction"}}]}}]} as unknown as DocumentNode;
-export const ExerciseFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"Exercise"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Exercise"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"primaryMuscles"}},{"kind":"Field","name":{"kind":"Name","value":"secondaryMuscles"}},{"kind":"Field","name":{"kind":"Name","value":"defaultAppliedWeight"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"LogValue"}}]}},{"kind":"Field","name":{"kind":"Name","value":"notes"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"LogValue"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"LogValue"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"unit"}},{"kind":"Field","name":{"kind":"Name","value":"base"}},{"kind":"Field","name":{"kind":"Name","value":"fraction"}}]}}]} as unknown as DocumentNode;
-export const ExerciseLogFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"ExerciseLog"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"ExerciseLog"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"exercise"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"Exercise"}}]}},{"kind":"Field","name":{"kind":"Name","value":"logDateTime"}},{"kind":"Field","name":{"kind":"Name","value":"repetitions"}},{"kind":"Field","name":{"kind":"Name","value":"logValue"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"LogValue"}}]}},{"kind":"Field","name":{"kind":"Name","value":"warmup"}},{"kind":"Field","name":{"kind":"Name","value":"remark"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"Exercise"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Exercise"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"primaryMuscles"}},{"kind":"Field","name":{"kind":"Name","value":"secondaryMuscles"}},{"kind":"Field","name":{"kind":"Name","value":"defaultAppliedWeight"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"LogValue"}}]}},{"kind":"Field","name":{"kind":"Name","value":"notes"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"LogValue"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"LogValue"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"unit"}},{"kind":"Field","name":{"kind":"Name","value":"base"}},{"kind":"Field","name":{"kind":"Name","value":"fraction"}}]}}]} as unknown as DocumentNode;
-export const ExerciseLineChartDataFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"ExerciseLineChartData"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"ExerciseLineChartData"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"monthLabel"}},{"kind":"Field","name":{"kind":"Name","value":"logs"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"ExerciseLog"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"Exercise"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Exercise"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"primaryMuscles"}},{"kind":"Field","name":{"kind":"Name","value":"secondaryMuscles"}},{"kind":"Field","name":{"kind":"Name","value":"defaultAppliedWeight"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"LogValue"}}]}},{"kind":"Field","name":{"kind":"Name","value":"notes"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"ExerciseLog"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"ExerciseLog"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"exercise"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"Exercise"}}]}},{"kind":"Field","name":{"kind":"Name","value":"logDateTime"}},{"kind":"Field","name":{"kind":"Name","value":"repetitions"}},{"kind":"Field","name":{"kind":"Name","value":"logValue"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"LogValue"}}]}},{"kind":"Field","name":{"kind":"Name","value":"warmup"}},{"kind":"Field","name":{"kind":"Name","value":"remark"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"LogValue"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"LogValue"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"unit"}},{"kind":"Field","name":{"kind":"Name","value":"base"}},{"kind":"Field","name":{"kind":"Name","value":"fraction"}}]}}]} as unknown as DocumentNode;
-export const PreferenceFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"Preference"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Preference"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"weightUnit"}},{"kind":"Field","name":{"kind":"Name","value":"distanceUnit"}},{"kind":"Field","name":{"kind":"Name","value":"defaultRepetitions"}},{"kind":"Field","name":{"kind":"Name","value":"hideUnitSelector"}},{"kind":"Field","name":{"kind":"Name","value":"autoAdjustWorkoutMuscleGroups"}},{"kind":"Field","name":{"kind":"Name","value":"timerDuration"}},{"kind":"Field","name":{"kind":"Name","value":"autoStartTimer"}},{"kind":"Field","name":{"kind":"Name","value":"playTimerCompletionSound"}}]}}]} as unknown as DocumentNode;
-export const CognitoUserFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"CognitoUser"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"CognitoUser"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]} as unknown as DocumentNode;
-export const UserFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"User"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"User"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"fid"}},{"kind":"Field","name":{"kind":"Name","value":"cognitoUser"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"CognitoUser"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"CognitoUser"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"CognitoUser"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]} as unknown as DocumentNode;
-export const WorkoutShortFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"WorkoutShort"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Workout"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"muscleGroups"}},{"kind":"Field","name":{"kind":"Name","value":"startDateTime"}},{"kind":"Field","name":{"kind":"Name","value":"endDateTime"}},{"kind":"Field","name":{"kind":"Name","value":"active"}},{"kind":"Field","name":{"kind":"Name","value":"remark"}}]}}]} as unknown as DocumentNode;
-export const GroupedExerciseLogFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"GroupedExerciseLog"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"GroupedExerciseLog"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"exercise"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"Exercise"}}]}},{"kind":"Field","name":{"kind":"Name","value":"logs"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"ExerciseLog"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"Exercise"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Exercise"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"primaryMuscles"}},{"kind":"Field","name":{"kind":"Name","value":"secondaryMuscles"}},{"kind":"Field","name":{"kind":"Name","value":"defaultAppliedWeight"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"LogValue"}}]}},{"kind":"Field","name":{"kind":"Name","value":"notes"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"ExerciseLog"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"ExerciseLog"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"exercise"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"Exercise"}}]}},{"kind":"Field","name":{"kind":"Name","value":"logDateTime"}},{"kind":"Field","name":{"kind":"Name","value":"repetitions"}},{"kind":"Field","name":{"kind":"Name","value":"logValue"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"LogValue"}}]}},{"kind":"Field","name":{"kind":"Name","value":"warmup"}},{"kind":"Field","name":{"kind":"Name","value":"remark"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"LogValue"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"LogValue"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"unit"}},{"kind":"Field","name":{"kind":"Name","value":"base"}},{"kind":"Field","name":{"kind":"Name","value":"fraction"}}]}}]} as unknown as DocumentNode;
-export const WorkoutLongFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"WorkoutLong"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Workout"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"muscleGroups"}},{"kind":"Field","name":{"kind":"Name","value":"startDateTime"}},{"kind":"Field","name":{"kind":"Name","value":"endDateTime"}},{"kind":"Field","name":{"kind":"Name","value":"active"}},{"kind":"Field","name":{"kind":"Name","value":"groupedExerciseLogs"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"GroupedExerciseLog"}}]}},{"kind":"Field","name":{"kind":"Name","value":"remark"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"Exercise"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Exercise"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"primaryMuscles"}},{"kind":"Field","name":{"kind":"Name","value":"secondaryMuscles"}},{"kind":"Field","name":{"kind":"Name","value":"defaultAppliedWeight"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"LogValue"}}]}},{"kind":"Field","name":{"kind":"Name","value":"notes"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"ExerciseLog"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"ExerciseLog"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"exercise"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"Exercise"}}]}},{"kind":"Field","name":{"kind":"Name","value":"logDateTime"}},{"kind":"Field","name":{"kind":"Name","value":"repetitions"}},{"kind":"Field","name":{"kind":"Name","value":"logValue"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"LogValue"}}]}},{"kind":"Field","name":{"kind":"Name","value":"warmup"}},{"kind":"Field","name":{"kind":"Name","value":"remark"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"GroupedExerciseLog"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"GroupedExerciseLog"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"exercise"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"Exercise"}}]}},{"kind":"Field","name":{"kind":"Name","value":"logs"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"ExerciseLog"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"LogValue"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"LogValue"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"unit"}},{"kind":"Field","name":{"kind":"Name","value":"base"}},{"kind":"Field","name":{"kind":"Name","value":"fraction"}}]}}]} as unknown as DocumentNode;
-export const MuscleGroupChartDataFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"MuscleGroupChartData"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"MuscleGroupChartData"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"color"}},{"kind":"Field","name":{"kind":"Name","value":"muscleGroup"}},{"kind":"Field","name":{"kind":"Name","value":"count"}}]}}]} as unknown as DocumentNode;
-export const CreateExerciseDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"createExercise"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"ExerciseInput"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createExercise"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"Exercise"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"Exercise"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Exercise"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"primaryMuscles"}},{"kind":"Field","name":{"kind":"Name","value":"secondaryMuscles"}},{"kind":"Field","name":{"kind":"Name","value":"defaultAppliedWeight"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"LogValue"}}]}},{"kind":"Field","name":{"kind":"Name","value":"notes"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"LogValue"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"LogValue"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"unit"}},{"kind":"Field","name":{"kind":"Name","value":"base"}},{"kind":"Field","name":{"kind":"Name","value":"fraction"}}]}}]} as unknown as DocumentNode;
-export type CreateExerciseMutationFn = Apollo.MutationFunction<CreateExerciseMutation, CreateExerciseMutationVariables>;
+export const LogValueFragmentDoc = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'FragmentDefinition',
+      name: {kind: 'Name', value: 'LogValue'},
+      typeCondition: {
+        kind: 'NamedType',
+        name: {kind: 'Name', value: 'LogValue'},
+      },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {kind: 'Field', name: {kind: 'Name', value: 'unit'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'base'},
+          },
+          {kind: 'Field', name: {kind: 'Name', value: 'fraction'}},
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode;
+export const ExerciseFragmentDoc = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'FragmentDefinition',
+      name: {kind: 'Name', value: 'Exercise'},
+      typeCondition: {
+        kind: 'NamedType',
+        name: {kind: 'Name', value: 'Exercise'},
+      },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {kind: 'Field', name: {kind: 'Name', value: 'id'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'name'},
+          },
+          {kind: 'Field', name: {kind: 'Name', value: 'primaryMuscles'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'secondaryMuscles'},
+          },
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'defaultAppliedWeight'},
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'FragmentSpread',
+                  name: {kind: 'Name', value: 'LogValue'},
+                },
+              ],
+            },
+          },
+          {kind: 'Field', name: {kind: 'Name', value: 'notes'}},
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: {kind: 'Name', value: 'LogValue'},
+      typeCondition: {
+        kind: 'NamedType',
+        name: {kind: 'Name', value: 'LogValue'},
+      },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {kind: 'Field', name: {kind: 'Name', value: 'unit'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'base'},
+          },
+          {kind: 'Field', name: {kind: 'Name', value: 'fraction'}},
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode;
+export const ExerciseLogFragmentDoc = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'FragmentDefinition',
+      name: {kind: 'Name', value: 'ExerciseLog'},
+      typeCondition: {
+        kind: 'NamedType',
+        name: {kind: 'Name', value: 'ExerciseLog'},
+      },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {kind: 'Field', name: {kind: 'Name', value: 'id'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'exercise'},
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'FragmentSpread',
+                  name: {kind: 'Name', value: 'Exercise'},
+                },
+              ],
+            },
+          },
+          {kind: 'Field', name: {kind: 'Name', value: 'logDateTime'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'repetitions'},
+          },
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'logValue'},
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'FragmentSpread',
+                  name: {kind: 'Name', value: 'LogValue'},
+                },
+              ],
+            },
+          },
+          {kind: 'Field', name: {kind: 'Name', value: 'warmup'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'remark'},
+          },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: {kind: 'Name', value: 'Exercise'},
+      typeCondition: {
+        kind: 'NamedType',
+        name: {kind: 'Name', value: 'Exercise'},
+      },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {kind: 'Field', name: {kind: 'Name', value: 'id'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'name'},
+          },
+          {kind: 'Field', name: {kind: 'Name', value: 'primaryMuscles'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'secondaryMuscles'},
+          },
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'defaultAppliedWeight'},
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'FragmentSpread',
+                  name: {kind: 'Name', value: 'LogValue'},
+                },
+              ],
+            },
+          },
+          {kind: 'Field', name: {kind: 'Name', value: 'notes'}},
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: {kind: 'Name', value: 'LogValue'},
+      typeCondition: {
+        kind: 'NamedType',
+        name: {kind: 'Name', value: 'LogValue'},
+      },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {kind: 'Field', name: {kind: 'Name', value: 'unit'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'base'},
+          },
+          {kind: 'Field', name: {kind: 'Name', value: 'fraction'}},
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode;
+export const ExerciseLineChartDataFragmentDoc = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'FragmentDefinition',
+      name: {kind: 'Name', value: 'ExerciseLineChartData'},
+      typeCondition: {
+        kind: 'NamedType',
+        name: {kind: 'Name', value: 'ExerciseLineChartData'},
+      },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {kind: 'Field', name: {kind: 'Name', value: 'monthLabel'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'logs'},
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'FragmentSpread',
+                  name: {kind: 'Name', value: 'ExerciseLog'},
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: {kind: 'Name', value: 'Exercise'},
+      typeCondition: {
+        kind: 'NamedType',
+        name: {kind: 'Name', value: 'Exercise'},
+      },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {kind: 'Field', name: {kind: 'Name', value: 'id'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'name'},
+          },
+          {kind: 'Field', name: {kind: 'Name', value: 'primaryMuscles'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'secondaryMuscles'},
+          },
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'defaultAppliedWeight'},
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'FragmentSpread',
+                  name: {kind: 'Name', value: 'LogValue'},
+                },
+              ],
+            },
+          },
+          {kind: 'Field', name: {kind: 'Name', value: 'notes'}},
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: {kind: 'Name', value: 'ExerciseLog'},
+      typeCondition: {
+        kind: 'NamedType',
+        name: {kind: 'Name', value: 'ExerciseLog'},
+      },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {kind: 'Field', name: {kind: 'Name', value: 'id'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'exercise'},
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'FragmentSpread',
+                  name: {kind: 'Name', value: 'Exercise'},
+                },
+              ],
+            },
+          },
+          {kind: 'Field', name: {kind: 'Name', value: 'logDateTime'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'repetitions'},
+          },
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'logValue'},
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'FragmentSpread',
+                  name: {kind: 'Name', value: 'LogValue'},
+                },
+              ],
+            },
+          },
+          {kind: 'Field', name: {kind: 'Name', value: 'warmup'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'remark'},
+          },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: {kind: 'Name', value: 'LogValue'},
+      typeCondition: {
+        kind: 'NamedType',
+        name: {kind: 'Name', value: 'LogValue'},
+      },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {kind: 'Field', name: {kind: 'Name', value: 'unit'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'base'},
+          },
+          {kind: 'Field', name: {kind: 'Name', value: 'fraction'}},
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode;
+export const PreferenceFragmentDoc = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'FragmentDefinition',
+      name: {kind: 'Name', value: 'Preference'},
+      typeCondition: {
+        kind: 'NamedType',
+        name: {kind: 'Name', value: 'Preference'},
+      },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {kind: 'Field', name: {kind: 'Name', value: 'weightUnit'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'distanceUnit'},
+          },
+          {kind: 'Field', name: {kind: 'Name', value: 'defaultRepetitions'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'hideUnitSelector'},
+          },
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'autoAdjustWorkoutMuscleGroups'},
+          },
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'timerDuration'},
+          },
+          {kind: 'Field', name: {kind: 'Name', value: 'autoStartTimer'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'playTimerCompletionSound'},
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode;
+export const CognitoUserFragmentDoc = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'FragmentDefinition',
+      name: {kind: 'Name', value: 'CognitoUser'},
+      typeCondition: {
+        kind: 'NamedType',
+        name: {kind: 'Name', value: 'CognitoUser'},
+      },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [{kind: 'Field', name: {kind: 'Name', value: 'name'}}],
+      },
+    },
+  ],
+} as unknown as DocumentNode;
+export const UserFragmentDoc = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'FragmentDefinition',
+      name: {kind: 'Name', value: 'User'},
+      typeCondition: {kind: 'NamedType', name: {kind: 'Name', value: 'User'}},
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {kind: 'Field', name: {kind: 'Name', value: 'id'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'fid'},
+          },
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'cognitoUser'},
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'FragmentSpread',
+                  name: {kind: 'Name', value: 'CognitoUser'},
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: {kind: 'Name', value: 'CognitoUser'},
+      typeCondition: {
+        kind: 'NamedType',
+        name: {kind: 'Name', value: 'CognitoUser'},
+      },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [{kind: 'Field', name: {kind: 'Name', value: 'name'}}],
+      },
+    },
+  ],
+} as unknown as DocumentNode;
+export const WorkoutShortFragmentDoc = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'FragmentDefinition',
+      name: {kind: 'Name', value: 'WorkoutShort'},
+      typeCondition: {
+        kind: 'NamedType',
+        name: {kind: 'Name', value: 'Workout'},
+      },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {kind: 'Field', name: {kind: 'Name', value: 'id'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'name'},
+          },
+          {kind: 'Field', name: {kind: 'Name', value: 'muscleGroups'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'startDateTime'},
+          },
+          {kind: 'Field', name: {kind: 'Name', value: 'endDateTime'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'active'},
+          },
+          {kind: 'Field', name: {kind: 'Name', value: 'remark'}},
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode;
+export const GroupedExerciseLogFragmentDoc = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'FragmentDefinition',
+      name: {kind: 'Name', value: 'GroupedExerciseLog'},
+      typeCondition: {
+        kind: 'NamedType',
+        name: {kind: 'Name', value: 'GroupedExerciseLog'},
+      },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'exercise'},
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'FragmentSpread',
+                  name: {kind: 'Name', value: 'Exercise'},
+                },
+              ],
+            },
+          },
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'logs'},
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'FragmentSpread',
+                  name: {kind: 'Name', value: 'ExerciseLog'},
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: {kind: 'Name', value: 'Exercise'},
+      typeCondition: {
+        kind: 'NamedType',
+        name: {kind: 'Name', value: 'Exercise'},
+      },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {kind: 'Field', name: {kind: 'Name', value: 'id'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'name'},
+          },
+          {kind: 'Field', name: {kind: 'Name', value: 'primaryMuscles'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'secondaryMuscles'},
+          },
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'defaultAppliedWeight'},
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'FragmentSpread',
+                  name: {kind: 'Name', value: 'LogValue'},
+                },
+              ],
+            },
+          },
+          {kind: 'Field', name: {kind: 'Name', value: 'notes'}},
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: {kind: 'Name', value: 'ExerciseLog'},
+      typeCondition: {
+        kind: 'NamedType',
+        name: {kind: 'Name', value: 'ExerciseLog'},
+      },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {kind: 'Field', name: {kind: 'Name', value: 'id'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'exercise'},
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'FragmentSpread',
+                  name: {kind: 'Name', value: 'Exercise'},
+                },
+              ],
+            },
+          },
+          {kind: 'Field', name: {kind: 'Name', value: 'logDateTime'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'repetitions'},
+          },
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'logValue'},
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'FragmentSpread',
+                  name: {kind: 'Name', value: 'LogValue'},
+                },
+              ],
+            },
+          },
+          {kind: 'Field', name: {kind: 'Name', value: 'warmup'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'remark'},
+          },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: {kind: 'Name', value: 'LogValue'},
+      typeCondition: {
+        kind: 'NamedType',
+        name: {kind: 'Name', value: 'LogValue'},
+      },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {kind: 'Field', name: {kind: 'Name', value: 'unit'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'base'},
+          },
+          {kind: 'Field', name: {kind: 'Name', value: 'fraction'}},
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode;
+export const WorkoutLongFragmentDoc = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'FragmentDefinition',
+      name: {kind: 'Name', value: 'WorkoutLong'},
+      typeCondition: {
+        kind: 'NamedType',
+        name: {kind: 'Name', value: 'Workout'},
+      },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {kind: 'Field', name: {kind: 'Name', value: 'id'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'name'},
+          },
+          {kind: 'Field', name: {kind: 'Name', value: 'muscleGroups'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'startDateTime'},
+          },
+          {kind: 'Field', name: {kind: 'Name', value: 'endDateTime'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'active'},
+          },
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'groupedExerciseLogs'},
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'FragmentSpread',
+                  name: {kind: 'Name', value: 'GroupedExerciseLog'},
+                },
+              ],
+            },
+          },
+          {kind: 'Field', name: {kind: 'Name', value: 'remark'}},
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: {kind: 'Name', value: 'Exercise'},
+      typeCondition: {
+        kind: 'NamedType',
+        name: {kind: 'Name', value: 'Exercise'},
+      },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {kind: 'Field', name: {kind: 'Name', value: 'id'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'name'},
+          },
+          {kind: 'Field', name: {kind: 'Name', value: 'primaryMuscles'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'secondaryMuscles'},
+          },
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'defaultAppliedWeight'},
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'FragmentSpread',
+                  name: {kind: 'Name', value: 'LogValue'},
+                },
+              ],
+            },
+          },
+          {kind: 'Field', name: {kind: 'Name', value: 'notes'}},
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: {kind: 'Name', value: 'ExerciseLog'},
+      typeCondition: {
+        kind: 'NamedType',
+        name: {kind: 'Name', value: 'ExerciseLog'},
+      },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {kind: 'Field', name: {kind: 'Name', value: 'id'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'exercise'},
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'FragmentSpread',
+                  name: {kind: 'Name', value: 'Exercise'},
+                },
+              ],
+            },
+          },
+          {kind: 'Field', name: {kind: 'Name', value: 'logDateTime'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'repetitions'},
+          },
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'logValue'},
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'FragmentSpread',
+                  name: {kind: 'Name', value: 'LogValue'},
+                },
+              ],
+            },
+          },
+          {kind: 'Field', name: {kind: 'Name', value: 'warmup'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'remark'},
+          },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: {kind: 'Name', value: 'GroupedExerciseLog'},
+      typeCondition: {
+        kind: 'NamedType',
+        name: {kind: 'Name', value: 'GroupedExerciseLog'},
+      },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'exercise'},
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'FragmentSpread',
+                  name: {kind: 'Name', value: 'Exercise'},
+                },
+              ],
+            },
+          },
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'logs'},
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'FragmentSpread',
+                  name: {kind: 'Name', value: 'ExerciseLog'},
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: {kind: 'Name', value: 'LogValue'},
+      typeCondition: {
+        kind: 'NamedType',
+        name: {kind: 'Name', value: 'LogValue'},
+      },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {kind: 'Field', name: {kind: 'Name', value: 'unit'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'base'},
+          },
+          {kind: 'Field', name: {kind: 'Name', value: 'fraction'}},
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode;
+export const MuscleGroupChartDataFragmentDoc = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'FragmentDefinition',
+      name: {kind: 'Name', value: 'MuscleGroupChartData'},
+      typeCondition: {
+        kind: 'NamedType',
+        name: {kind: 'Name', value: 'MuscleGroupChartData'},
+      },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {kind: 'Field', name: {kind: 'Name', value: 'color'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'muscleGroup'},
+          },
+          {kind: 'Field', name: {kind: 'Name', value: 'count'}},
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode;
+export const CreateExerciseDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: {kind: 'Name', value: 'createExercise'},
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: {kind: 'Variable', name: {kind: 'Name', value: 'input'}},
+          type: {
+            kind: 'NamedType',
+            name: {kind: 'Name', value: 'ExerciseInput'},
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'createExercise'},
+            arguments: [
+              {
+                kind: 'Argument',
+                name: {kind: 'Name', value: 'input'},
+                value: {kind: 'Variable', name: {kind: 'Name', value: 'input'}},
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'FragmentSpread',
+                  name: {kind: 'Name', value: 'Exercise'},
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: {kind: 'Name', value: 'Exercise'},
+      typeCondition: {
+        kind: 'NamedType',
+        name: {kind: 'Name', value: 'Exercise'},
+      },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {kind: 'Field', name: {kind: 'Name', value: 'id'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'name'},
+          },
+          {kind: 'Field', name: {kind: 'Name', value: 'primaryMuscles'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'secondaryMuscles'},
+          },
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'defaultAppliedWeight'},
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'FragmentSpread',
+                  name: {kind: 'Name', value: 'LogValue'},
+                },
+              ],
+            },
+          },
+          {kind: 'Field', name: {kind: 'Name', value: 'notes'}},
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: {kind: 'Name', value: 'LogValue'},
+      typeCondition: {
+        kind: 'NamedType',
+        name: {kind: 'Name', value: 'LogValue'},
+      },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {kind: 'Field', name: {kind: 'Name', value: 'unit'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'base'},
+          },
+          {kind: 'Field', name: {kind: 'Name', value: 'fraction'}},
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode;
+export type CreateExerciseMutationFn = Apollo.MutationFunction<
+  CreateExerciseMutation,
+  CreateExerciseMutationVariables
+>;
 
 /**
  * __useCreateExerciseMutation__
@@ -620,15 +2300,68 @@ export type CreateExerciseMutationFn = Apollo.MutationFunction<CreateExerciseMut
  *   },
  * });
  */
-export function useCreateExerciseMutation(baseOptions?: Apollo.MutationHookOptions<CreateExerciseMutation, CreateExerciseMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<CreateExerciseMutation, CreateExerciseMutationVariables>(CreateExerciseDocument, options);
-      }
-export type CreateExerciseMutationHookResult = ReturnType<typeof useCreateExerciseMutation>;
-export type CreateExerciseMutationResult = Apollo.MutationResult<CreateExerciseMutation>;
-export type CreateExerciseMutationOptions = Apollo.BaseMutationOptions<CreateExerciseMutation, CreateExerciseMutationVariables>;
-export const DeleteExerciseDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"deleteExercise"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"deleteExercise"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}]}]}}]} as unknown as DocumentNode;
-export type DeleteExerciseMutationFn = Apollo.MutationFunction<DeleteExerciseMutation, DeleteExerciseMutationVariables>;
+export function useCreateExerciseMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    CreateExerciseMutation,
+    CreateExerciseMutationVariables
+  >,
+) {
+  const options = {...defaultOptions, ...baseOptions};
+  return Apollo.useMutation<
+    CreateExerciseMutation,
+    CreateExerciseMutationVariables
+  >(CreateExerciseDocument, options);
+}
+
+export type CreateExerciseMutationHookResult = ReturnType<
+  typeof useCreateExerciseMutation
+>;
+export type CreateExerciseMutationResult =
+  Apollo.MutationResult<CreateExerciseMutation>;
+export type CreateExerciseMutationOptions = Apollo.BaseMutationOptions<
+  CreateExerciseMutation,
+  CreateExerciseMutationVariables
+>;
+export const DeleteExerciseDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: {kind: 'Name', value: 'deleteExercise'},
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: {kind: 'Variable', name: {kind: 'Name', value: 'id'}},
+          type: {
+            kind: 'NonNullType',
+            type: {kind: 'NamedType', name: {kind: 'Name', value: 'ID'}},
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'deleteExercise'},
+            arguments: [
+              {
+                kind: 'Argument',
+                name: {kind: 'Name', value: 'id'},
+                value: {kind: 'Variable', name: {kind: 'Name', value: 'id'}},
+              },
+            ],
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode;
+export type DeleteExerciseMutationFn = Apollo.MutationFunction<
+  DeleteExerciseMutation,
+  DeleteExerciseMutationVariables
+>;
 
 /**
  * __useDeleteExerciseMutation__
@@ -647,15 +2380,149 @@ export type DeleteExerciseMutationFn = Apollo.MutationFunction<DeleteExerciseMut
  *   },
  * });
  */
-export function useDeleteExerciseMutation(baseOptions?: Apollo.MutationHookOptions<DeleteExerciseMutation, DeleteExerciseMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<DeleteExerciseMutation, DeleteExerciseMutationVariables>(DeleteExerciseDocument, options);
-      }
-export type DeleteExerciseMutationHookResult = ReturnType<typeof useDeleteExerciseMutation>;
-export type DeleteExerciseMutationResult = Apollo.MutationResult<DeleteExerciseMutation>;
-export type DeleteExerciseMutationOptions = Apollo.BaseMutationOptions<DeleteExerciseMutation, DeleteExerciseMutationVariables>;
-export const UpdateExerciseDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"updateExercise"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ExerciseInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"updateExercise"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}},{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"Exercise"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"Exercise"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Exercise"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"primaryMuscles"}},{"kind":"Field","name":{"kind":"Name","value":"secondaryMuscles"}},{"kind":"Field","name":{"kind":"Name","value":"defaultAppliedWeight"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"LogValue"}}]}},{"kind":"Field","name":{"kind":"Name","value":"notes"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"LogValue"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"LogValue"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"unit"}},{"kind":"Field","name":{"kind":"Name","value":"base"}},{"kind":"Field","name":{"kind":"Name","value":"fraction"}}]}}]} as unknown as DocumentNode;
-export type UpdateExerciseMutationFn = Apollo.MutationFunction<UpdateExerciseMutation, UpdateExerciseMutationVariables>;
+export function useDeleteExerciseMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    DeleteExerciseMutation,
+    DeleteExerciseMutationVariables
+  >,
+) {
+  const options = {...defaultOptions, ...baseOptions};
+  return Apollo.useMutation<
+    DeleteExerciseMutation,
+    DeleteExerciseMutationVariables
+  >(DeleteExerciseDocument, options);
+}
+
+export type DeleteExerciseMutationHookResult = ReturnType<
+  typeof useDeleteExerciseMutation
+>;
+export type DeleteExerciseMutationResult =
+  Apollo.MutationResult<DeleteExerciseMutation>;
+export type DeleteExerciseMutationOptions = Apollo.BaseMutationOptions<
+  DeleteExerciseMutation,
+  DeleteExerciseMutationVariables
+>;
+export const UpdateExerciseDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: {kind: 'Name', value: 'updateExercise'},
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: {kind: 'Variable', name: {kind: 'Name', value: 'id'}},
+          type: {
+            kind: 'NonNullType',
+            type: {kind: 'NamedType', name: {kind: 'Name', value: 'ID'}},
+          },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {kind: 'Variable', name: {kind: 'Name', value: 'input'}},
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'NamedType',
+              name: {kind: 'Name', value: 'ExerciseInput'},
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'updateExercise'},
+            arguments: [
+              {
+                kind: 'Argument',
+                name: {kind: 'Name', value: 'id'},
+                value: {kind: 'Variable', name: {kind: 'Name', value: 'id'}},
+              },
+              {
+                kind: 'Argument',
+                name: {kind: 'Name', value: 'input'},
+                value: {kind: 'Variable', name: {kind: 'Name', value: 'input'}},
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'FragmentSpread',
+                  name: {kind: 'Name', value: 'Exercise'},
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: {kind: 'Name', value: 'Exercise'},
+      typeCondition: {
+        kind: 'NamedType',
+        name: {kind: 'Name', value: 'Exercise'},
+      },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {kind: 'Field', name: {kind: 'Name', value: 'id'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'name'},
+          },
+          {kind: 'Field', name: {kind: 'Name', value: 'primaryMuscles'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'secondaryMuscles'},
+          },
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'defaultAppliedWeight'},
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'FragmentSpread',
+                  name: {kind: 'Name', value: 'LogValue'},
+                },
+              ],
+            },
+          },
+          {kind: 'Field', name: {kind: 'Name', value: 'notes'}},
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: {kind: 'Name', value: 'LogValue'},
+      typeCondition: {
+        kind: 'NamedType',
+        name: {kind: 'Name', value: 'LogValue'},
+      },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {kind: 'Field', name: {kind: 'Name', value: 'unit'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'base'},
+          },
+          {kind: 'Field', name: {kind: 'Name', value: 'fraction'}},
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode;
+export type UpdateExerciseMutationFn = Apollo.MutationFunction<
+  UpdateExerciseMutation,
+  UpdateExerciseMutationVariables
+>;
 
 /**
  * __useUpdateExerciseMutation__
@@ -675,15 +2542,305 @@ export type UpdateExerciseMutationFn = Apollo.MutationFunction<UpdateExerciseMut
  *   },
  * });
  */
-export function useUpdateExerciseMutation(baseOptions?: Apollo.MutationHookOptions<UpdateExerciseMutation, UpdateExerciseMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<UpdateExerciseMutation, UpdateExerciseMutationVariables>(UpdateExerciseDocument, options);
-      }
-export type UpdateExerciseMutationHookResult = ReturnType<typeof useUpdateExerciseMutation>;
-export type UpdateExerciseMutationResult = Apollo.MutationResult<UpdateExerciseMutation>;
-export type UpdateExerciseMutationOptions = Apollo.BaseMutationOptions<UpdateExerciseMutation, UpdateExerciseMutationVariables>;
-export const AddExerciseLogDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"addExerciseLog"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"workoutId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ExerciseLogInput"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"autoAdjust"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Boolean"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"addExerciseLog"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"workoutId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"workoutId"}}},{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}},{"kind":"Argument","name":{"kind":"Name","value":"autoAdjust"},"value":{"kind":"Variable","name":{"kind":"Name","value":"autoAdjust"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"WorkoutLong"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"Exercise"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Exercise"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"primaryMuscles"}},{"kind":"Field","name":{"kind":"Name","value":"secondaryMuscles"}},{"kind":"Field","name":{"kind":"Name","value":"defaultAppliedWeight"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"LogValue"}}]}},{"kind":"Field","name":{"kind":"Name","value":"notes"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"ExerciseLog"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"ExerciseLog"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"exercise"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"Exercise"}}]}},{"kind":"Field","name":{"kind":"Name","value":"logDateTime"}},{"kind":"Field","name":{"kind":"Name","value":"repetitions"}},{"kind":"Field","name":{"kind":"Name","value":"logValue"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"LogValue"}}]}},{"kind":"Field","name":{"kind":"Name","value":"warmup"}},{"kind":"Field","name":{"kind":"Name","value":"remark"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"GroupedExerciseLog"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"GroupedExerciseLog"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"exercise"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"Exercise"}}]}},{"kind":"Field","name":{"kind":"Name","value":"logs"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"ExerciseLog"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"LogValue"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"LogValue"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"unit"}},{"kind":"Field","name":{"kind":"Name","value":"base"}},{"kind":"Field","name":{"kind":"Name","value":"fraction"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"WorkoutLong"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Workout"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"muscleGroups"}},{"kind":"Field","name":{"kind":"Name","value":"startDateTime"}},{"kind":"Field","name":{"kind":"Name","value":"endDateTime"}},{"kind":"Field","name":{"kind":"Name","value":"active"}},{"kind":"Field","name":{"kind":"Name","value":"groupedExerciseLogs"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"GroupedExerciseLog"}}]}},{"kind":"Field","name":{"kind":"Name","value":"remark"}}]}}]} as unknown as DocumentNode;
-export type AddExerciseLogMutationFn = Apollo.MutationFunction<AddExerciseLogMutation, AddExerciseLogMutationVariables>;
+export function useUpdateExerciseMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    UpdateExerciseMutation,
+    UpdateExerciseMutationVariables
+  >,
+) {
+  const options = {...defaultOptions, ...baseOptions};
+  return Apollo.useMutation<
+    UpdateExerciseMutation,
+    UpdateExerciseMutationVariables
+  >(UpdateExerciseDocument, options);
+}
+
+export type UpdateExerciseMutationHookResult = ReturnType<
+  typeof useUpdateExerciseMutation
+>;
+export type UpdateExerciseMutationResult =
+  Apollo.MutationResult<UpdateExerciseMutation>;
+export type UpdateExerciseMutationOptions = Apollo.BaseMutationOptions<
+  UpdateExerciseMutation,
+  UpdateExerciseMutationVariables
+>;
+export const AddExerciseLogDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: {kind: 'Name', value: 'addExerciseLog'},
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: {kind: 'Name', value: 'workoutId'},
+          },
+          type: {
+            kind: 'NonNullType',
+            type: {kind: 'NamedType', name: {kind: 'Name', value: 'ID'}},
+          },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {kind: 'Variable', name: {kind: 'Name', value: 'input'}},
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'NamedType',
+              name: {kind: 'Name', value: 'ExerciseLogInput'},
+            },
+          },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: {kind: 'Name', value: 'autoAdjust'},
+          },
+          type: {
+            kind: 'NonNullType',
+            type: {kind: 'NamedType', name: {kind: 'Name', value: 'Boolean'}},
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'addExerciseLog'},
+            arguments: [
+              {
+                kind: 'Argument',
+                name: {kind: 'Name', value: 'workoutId'},
+                value: {
+                  kind: 'Variable',
+                  name: {kind: 'Name', value: 'workoutId'},
+                },
+              },
+              {
+                kind: 'Argument',
+                name: {kind: 'Name', value: 'input'},
+                value: {kind: 'Variable', name: {kind: 'Name', value: 'input'}},
+              },
+              {
+                kind: 'Argument',
+                name: {kind: 'Name', value: 'autoAdjust'},
+                value: {
+                  kind: 'Variable',
+                  name: {kind: 'Name', value: 'autoAdjust'},
+                },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'FragmentSpread',
+                  name: {kind: 'Name', value: 'WorkoutLong'},
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: {kind: 'Name', value: 'Exercise'},
+      typeCondition: {
+        kind: 'NamedType',
+        name: {kind: 'Name', value: 'Exercise'},
+      },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {kind: 'Field', name: {kind: 'Name', value: 'id'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'name'},
+          },
+          {kind: 'Field', name: {kind: 'Name', value: 'primaryMuscles'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'secondaryMuscles'},
+          },
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'defaultAppliedWeight'},
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'FragmentSpread',
+                  name: {kind: 'Name', value: 'LogValue'},
+                },
+              ],
+            },
+          },
+          {kind: 'Field', name: {kind: 'Name', value: 'notes'}},
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: {kind: 'Name', value: 'ExerciseLog'},
+      typeCondition: {
+        kind: 'NamedType',
+        name: {kind: 'Name', value: 'ExerciseLog'},
+      },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {kind: 'Field', name: {kind: 'Name', value: 'id'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'exercise'},
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'FragmentSpread',
+                  name: {kind: 'Name', value: 'Exercise'},
+                },
+              ],
+            },
+          },
+          {kind: 'Field', name: {kind: 'Name', value: 'logDateTime'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'repetitions'},
+          },
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'logValue'},
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'FragmentSpread',
+                  name: {kind: 'Name', value: 'LogValue'},
+                },
+              ],
+            },
+          },
+          {kind: 'Field', name: {kind: 'Name', value: 'warmup'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'remark'},
+          },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: {kind: 'Name', value: 'GroupedExerciseLog'},
+      typeCondition: {
+        kind: 'NamedType',
+        name: {kind: 'Name', value: 'GroupedExerciseLog'},
+      },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'exercise'},
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'FragmentSpread',
+                  name: {kind: 'Name', value: 'Exercise'},
+                },
+              ],
+            },
+          },
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'logs'},
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'FragmentSpread',
+                  name: {kind: 'Name', value: 'ExerciseLog'},
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: {kind: 'Name', value: 'LogValue'},
+      typeCondition: {
+        kind: 'NamedType',
+        name: {kind: 'Name', value: 'LogValue'},
+      },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {kind: 'Field', name: {kind: 'Name', value: 'unit'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'base'},
+          },
+          {kind: 'Field', name: {kind: 'Name', value: 'fraction'}},
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: {kind: 'Name', value: 'WorkoutLong'},
+      typeCondition: {
+        kind: 'NamedType',
+        name: {kind: 'Name', value: 'Workout'},
+      },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {kind: 'Field', name: {kind: 'Name', value: 'id'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'name'},
+          },
+          {kind: 'Field', name: {kind: 'Name', value: 'muscleGroups'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'startDateTime'},
+          },
+          {kind: 'Field', name: {kind: 'Name', value: 'endDateTime'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'active'},
+          },
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'groupedExerciseLogs'},
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'FragmentSpread',
+                  name: {kind: 'Name', value: 'GroupedExerciseLog'},
+                },
+              ],
+            },
+          },
+          {kind: 'Field', name: {kind: 'Name', value: 'remark'}},
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode;
+export type AddExerciseLogMutationFn = Apollo.MutationFunction<
+  AddExerciseLogMutation,
+  AddExerciseLogMutationVariables
+>;
 
 /**
  * __useAddExerciseLogMutation__
@@ -704,15 +2861,308 @@ export type AddExerciseLogMutationFn = Apollo.MutationFunction<AddExerciseLogMut
  *   },
  * });
  */
-export function useAddExerciseLogMutation(baseOptions?: Apollo.MutationHookOptions<AddExerciseLogMutation, AddExerciseLogMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<AddExerciseLogMutation, AddExerciseLogMutationVariables>(AddExerciseLogDocument, options);
-      }
-export type AddExerciseLogMutationHookResult = ReturnType<typeof useAddExerciseLogMutation>;
-export type AddExerciseLogMutationResult = Apollo.MutationResult<AddExerciseLogMutation>;
-export type AddExerciseLogMutationOptions = Apollo.BaseMutationOptions<AddExerciseLogMutation, AddExerciseLogMutationVariables>;
-export const ReLogLatestLogDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"reLogLatestLog"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"workoutId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"zonedDateTimeString"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"autoAdjust"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Boolean"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"reLogLatestLog"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"workoutId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"workoutId"}}},{"kind":"Argument","name":{"kind":"Name","value":"zonedDateTimeString"},"value":{"kind":"Variable","name":{"kind":"Name","value":"zonedDateTimeString"}}},{"kind":"Argument","name":{"kind":"Name","value":"autoAdjust"},"value":{"kind":"Variable","name":{"kind":"Name","value":"autoAdjust"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"WorkoutLong"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"Exercise"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Exercise"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"primaryMuscles"}},{"kind":"Field","name":{"kind":"Name","value":"secondaryMuscles"}},{"kind":"Field","name":{"kind":"Name","value":"defaultAppliedWeight"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"LogValue"}}]}},{"kind":"Field","name":{"kind":"Name","value":"notes"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"ExerciseLog"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"ExerciseLog"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"exercise"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"Exercise"}}]}},{"kind":"Field","name":{"kind":"Name","value":"logDateTime"}},{"kind":"Field","name":{"kind":"Name","value":"repetitions"}},{"kind":"Field","name":{"kind":"Name","value":"logValue"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"LogValue"}}]}},{"kind":"Field","name":{"kind":"Name","value":"warmup"}},{"kind":"Field","name":{"kind":"Name","value":"remark"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"GroupedExerciseLog"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"GroupedExerciseLog"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"exercise"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"Exercise"}}]}},{"kind":"Field","name":{"kind":"Name","value":"logs"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"ExerciseLog"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"LogValue"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"LogValue"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"unit"}},{"kind":"Field","name":{"kind":"Name","value":"base"}},{"kind":"Field","name":{"kind":"Name","value":"fraction"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"WorkoutLong"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Workout"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"muscleGroups"}},{"kind":"Field","name":{"kind":"Name","value":"startDateTime"}},{"kind":"Field","name":{"kind":"Name","value":"endDateTime"}},{"kind":"Field","name":{"kind":"Name","value":"active"}},{"kind":"Field","name":{"kind":"Name","value":"groupedExerciseLogs"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"GroupedExerciseLog"}}]}},{"kind":"Field","name":{"kind":"Name","value":"remark"}}]}}]} as unknown as DocumentNode;
-export type ReLogLatestLogMutationFn = Apollo.MutationFunction<ReLogLatestLogMutation, ReLogLatestLogMutationVariables>;
+export function useAddExerciseLogMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    AddExerciseLogMutation,
+    AddExerciseLogMutationVariables
+  >,
+) {
+  const options = {...defaultOptions, ...baseOptions};
+  return Apollo.useMutation<
+    AddExerciseLogMutation,
+    AddExerciseLogMutationVariables
+  >(AddExerciseLogDocument, options);
+}
+
+export type AddExerciseLogMutationHookResult = ReturnType<
+  typeof useAddExerciseLogMutation
+>;
+export type AddExerciseLogMutationResult =
+  Apollo.MutationResult<AddExerciseLogMutation>;
+export type AddExerciseLogMutationOptions = Apollo.BaseMutationOptions<
+  AddExerciseLogMutation,
+  AddExerciseLogMutationVariables
+>;
+export const ReLogLatestLogDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: {kind: 'Name', value: 'reLogLatestLog'},
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: {kind: 'Name', value: 'workoutId'},
+          },
+          type: {
+            kind: 'NonNullType',
+            type: {kind: 'NamedType', name: {kind: 'Name', value: 'ID'}},
+          },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: {kind: 'Name', value: 'zonedDateTimeString'},
+          },
+          type: {
+            kind: 'NonNullType',
+            type: {kind: 'NamedType', name: {kind: 'Name', value: 'String'}},
+          },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: {kind: 'Name', value: 'autoAdjust'},
+          },
+          type: {
+            kind: 'NonNullType',
+            type: {kind: 'NamedType', name: {kind: 'Name', value: 'Boolean'}},
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'reLogLatestLog'},
+            arguments: [
+              {
+                kind: 'Argument',
+                name: {kind: 'Name', value: 'workoutId'},
+                value: {
+                  kind: 'Variable',
+                  name: {kind: 'Name', value: 'workoutId'},
+                },
+              },
+              {
+                kind: 'Argument',
+                name: {kind: 'Name', value: 'zonedDateTimeString'},
+                value: {
+                  kind: 'Variable',
+                  name: {kind: 'Name', value: 'zonedDateTimeString'},
+                },
+              },
+              {
+                kind: 'Argument',
+                name: {kind: 'Name', value: 'autoAdjust'},
+                value: {
+                  kind: 'Variable',
+                  name: {kind: 'Name', value: 'autoAdjust'},
+                },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'FragmentSpread',
+                  name: {kind: 'Name', value: 'WorkoutLong'},
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: {kind: 'Name', value: 'Exercise'},
+      typeCondition: {
+        kind: 'NamedType',
+        name: {kind: 'Name', value: 'Exercise'},
+      },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {kind: 'Field', name: {kind: 'Name', value: 'id'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'name'},
+          },
+          {kind: 'Field', name: {kind: 'Name', value: 'primaryMuscles'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'secondaryMuscles'},
+          },
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'defaultAppliedWeight'},
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'FragmentSpread',
+                  name: {kind: 'Name', value: 'LogValue'},
+                },
+              ],
+            },
+          },
+          {kind: 'Field', name: {kind: 'Name', value: 'notes'}},
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: {kind: 'Name', value: 'ExerciseLog'},
+      typeCondition: {
+        kind: 'NamedType',
+        name: {kind: 'Name', value: 'ExerciseLog'},
+      },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {kind: 'Field', name: {kind: 'Name', value: 'id'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'exercise'},
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'FragmentSpread',
+                  name: {kind: 'Name', value: 'Exercise'},
+                },
+              ],
+            },
+          },
+          {kind: 'Field', name: {kind: 'Name', value: 'logDateTime'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'repetitions'},
+          },
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'logValue'},
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'FragmentSpread',
+                  name: {kind: 'Name', value: 'LogValue'},
+                },
+              ],
+            },
+          },
+          {kind: 'Field', name: {kind: 'Name', value: 'warmup'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'remark'},
+          },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: {kind: 'Name', value: 'GroupedExerciseLog'},
+      typeCondition: {
+        kind: 'NamedType',
+        name: {kind: 'Name', value: 'GroupedExerciseLog'},
+      },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'exercise'},
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'FragmentSpread',
+                  name: {kind: 'Name', value: 'Exercise'},
+                },
+              ],
+            },
+          },
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'logs'},
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'FragmentSpread',
+                  name: {kind: 'Name', value: 'ExerciseLog'},
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: {kind: 'Name', value: 'LogValue'},
+      typeCondition: {
+        kind: 'NamedType',
+        name: {kind: 'Name', value: 'LogValue'},
+      },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {kind: 'Field', name: {kind: 'Name', value: 'unit'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'base'},
+          },
+          {kind: 'Field', name: {kind: 'Name', value: 'fraction'}},
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: {kind: 'Name', value: 'WorkoutLong'},
+      typeCondition: {
+        kind: 'NamedType',
+        name: {kind: 'Name', value: 'Workout'},
+      },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {kind: 'Field', name: {kind: 'Name', value: 'id'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'name'},
+          },
+          {kind: 'Field', name: {kind: 'Name', value: 'muscleGroups'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'startDateTime'},
+          },
+          {kind: 'Field', name: {kind: 'Name', value: 'endDateTime'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'active'},
+          },
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'groupedExerciseLogs'},
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'FragmentSpread',
+                  name: {kind: 'Name', value: 'GroupedExerciseLog'},
+                },
+              ],
+            },
+          },
+          {kind: 'Field', name: {kind: 'Name', value: 'remark'}},
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode;
+export type ReLogLatestLogMutationFn = Apollo.MutationFunction<
+  ReLogLatestLogMutation,
+  ReLogLatestLogMutationVariables
+>;
 
 /**
  * __useReLogLatestLogMutation__
@@ -733,15 +3183,286 @@ export type ReLogLatestLogMutationFn = Apollo.MutationFunction<ReLogLatestLogMut
  *   },
  * });
  */
-export function useReLogLatestLogMutation(baseOptions?: Apollo.MutationHookOptions<ReLogLatestLogMutation, ReLogLatestLogMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<ReLogLatestLogMutation, ReLogLatestLogMutationVariables>(ReLogLatestLogDocument, options);
-      }
-export type ReLogLatestLogMutationHookResult = ReturnType<typeof useReLogLatestLogMutation>;
-export type ReLogLatestLogMutationResult = Apollo.MutationResult<ReLogLatestLogMutation>;
-export type ReLogLatestLogMutationOptions = Apollo.BaseMutationOptions<ReLogLatestLogMutation, ReLogLatestLogMutationVariables>;
-export const ReLogLogDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"reLogLog"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"workoutId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ExerciseLogInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"reLogLog"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"workoutId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"workoutId"}}},{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"WorkoutLong"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"Exercise"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Exercise"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"primaryMuscles"}},{"kind":"Field","name":{"kind":"Name","value":"secondaryMuscles"}},{"kind":"Field","name":{"kind":"Name","value":"defaultAppliedWeight"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"LogValue"}}]}},{"kind":"Field","name":{"kind":"Name","value":"notes"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"ExerciseLog"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"ExerciseLog"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"exercise"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"Exercise"}}]}},{"kind":"Field","name":{"kind":"Name","value":"logDateTime"}},{"kind":"Field","name":{"kind":"Name","value":"repetitions"}},{"kind":"Field","name":{"kind":"Name","value":"logValue"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"LogValue"}}]}},{"kind":"Field","name":{"kind":"Name","value":"warmup"}},{"kind":"Field","name":{"kind":"Name","value":"remark"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"GroupedExerciseLog"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"GroupedExerciseLog"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"exercise"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"Exercise"}}]}},{"kind":"Field","name":{"kind":"Name","value":"logs"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"ExerciseLog"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"LogValue"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"LogValue"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"unit"}},{"kind":"Field","name":{"kind":"Name","value":"base"}},{"kind":"Field","name":{"kind":"Name","value":"fraction"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"WorkoutLong"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Workout"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"muscleGroups"}},{"kind":"Field","name":{"kind":"Name","value":"startDateTime"}},{"kind":"Field","name":{"kind":"Name","value":"endDateTime"}},{"kind":"Field","name":{"kind":"Name","value":"active"}},{"kind":"Field","name":{"kind":"Name","value":"groupedExerciseLogs"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"GroupedExerciseLog"}}]}},{"kind":"Field","name":{"kind":"Name","value":"remark"}}]}}]} as unknown as DocumentNode;
-export type ReLogLogMutationFn = Apollo.MutationFunction<ReLogLogMutation, ReLogLogMutationVariables>;
+export function useReLogLatestLogMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    ReLogLatestLogMutation,
+    ReLogLatestLogMutationVariables
+  >,
+) {
+  const options = {...defaultOptions, ...baseOptions};
+  return Apollo.useMutation<
+    ReLogLatestLogMutation,
+    ReLogLatestLogMutationVariables
+  >(ReLogLatestLogDocument, options);
+}
+
+export type ReLogLatestLogMutationHookResult = ReturnType<
+  typeof useReLogLatestLogMutation
+>;
+export type ReLogLatestLogMutationResult =
+  Apollo.MutationResult<ReLogLatestLogMutation>;
+export type ReLogLatestLogMutationOptions = Apollo.BaseMutationOptions<
+  ReLogLatestLogMutation,
+  ReLogLatestLogMutationVariables
+>;
+export const ReLogLogDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: {kind: 'Name', value: 'reLogLog'},
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: {kind: 'Name', value: 'workoutId'},
+          },
+          type: {
+            kind: 'NonNullType',
+            type: {kind: 'NamedType', name: {kind: 'Name', value: 'ID'}},
+          },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {kind: 'Variable', name: {kind: 'Name', value: 'input'}},
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'NamedType',
+              name: {kind: 'Name', value: 'ExerciseLogInput'},
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'reLogLog'},
+            arguments: [
+              {
+                kind: 'Argument',
+                name: {kind: 'Name', value: 'workoutId'},
+                value: {
+                  kind: 'Variable',
+                  name: {kind: 'Name', value: 'workoutId'},
+                },
+              },
+              {
+                kind: 'Argument',
+                name: {kind: 'Name', value: 'input'},
+                value: {kind: 'Variable', name: {kind: 'Name', value: 'input'}},
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'FragmentSpread',
+                  name: {kind: 'Name', value: 'WorkoutLong'},
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: {kind: 'Name', value: 'Exercise'},
+      typeCondition: {
+        kind: 'NamedType',
+        name: {kind: 'Name', value: 'Exercise'},
+      },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {kind: 'Field', name: {kind: 'Name', value: 'id'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'name'},
+          },
+          {kind: 'Field', name: {kind: 'Name', value: 'primaryMuscles'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'secondaryMuscles'},
+          },
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'defaultAppliedWeight'},
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'FragmentSpread',
+                  name: {kind: 'Name', value: 'LogValue'},
+                },
+              ],
+            },
+          },
+          {kind: 'Field', name: {kind: 'Name', value: 'notes'}},
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: {kind: 'Name', value: 'ExerciseLog'},
+      typeCondition: {
+        kind: 'NamedType',
+        name: {kind: 'Name', value: 'ExerciseLog'},
+      },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {kind: 'Field', name: {kind: 'Name', value: 'id'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'exercise'},
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'FragmentSpread',
+                  name: {kind: 'Name', value: 'Exercise'},
+                },
+              ],
+            },
+          },
+          {kind: 'Field', name: {kind: 'Name', value: 'logDateTime'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'repetitions'},
+          },
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'logValue'},
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'FragmentSpread',
+                  name: {kind: 'Name', value: 'LogValue'},
+                },
+              ],
+            },
+          },
+          {kind: 'Field', name: {kind: 'Name', value: 'warmup'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'remark'},
+          },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: {kind: 'Name', value: 'GroupedExerciseLog'},
+      typeCondition: {
+        kind: 'NamedType',
+        name: {kind: 'Name', value: 'GroupedExerciseLog'},
+      },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'exercise'},
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'FragmentSpread',
+                  name: {kind: 'Name', value: 'Exercise'},
+                },
+              ],
+            },
+          },
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'logs'},
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'FragmentSpread',
+                  name: {kind: 'Name', value: 'ExerciseLog'},
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: {kind: 'Name', value: 'LogValue'},
+      typeCondition: {
+        kind: 'NamedType',
+        name: {kind: 'Name', value: 'LogValue'},
+      },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {kind: 'Field', name: {kind: 'Name', value: 'unit'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'base'},
+          },
+          {kind: 'Field', name: {kind: 'Name', value: 'fraction'}},
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: {kind: 'Name', value: 'WorkoutLong'},
+      typeCondition: {
+        kind: 'NamedType',
+        name: {kind: 'Name', value: 'Workout'},
+      },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {kind: 'Field', name: {kind: 'Name', value: 'id'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'name'},
+          },
+          {kind: 'Field', name: {kind: 'Name', value: 'muscleGroups'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'startDateTime'},
+          },
+          {kind: 'Field', name: {kind: 'Name', value: 'endDateTime'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'active'},
+          },
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'groupedExerciseLogs'},
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'FragmentSpread',
+                  name: {kind: 'Name', value: 'GroupedExerciseLog'},
+                },
+              ],
+            },
+          },
+          {kind: 'Field', name: {kind: 'Name', value: 'remark'}},
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode;
+export type ReLogLogMutationFn = Apollo.MutationFunction<
+  ReLogLogMutation,
+  ReLogLogMutationVariables
+>;
 
 /**
  * __useReLogLogMutation__
@@ -761,15 +3482,90 @@ export type ReLogLogMutationFn = Apollo.MutationFunction<ReLogLogMutation, ReLog
  *   },
  * });
  */
-export function useReLogLogMutation(baseOptions?: Apollo.MutationHookOptions<ReLogLogMutation, ReLogLogMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<ReLogLogMutation, ReLogLogMutationVariables>(ReLogLogDocument, options);
-      }
+export function useReLogLogMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    ReLogLogMutation,
+    ReLogLogMutationVariables
+  >,
+) {
+  const options = {...defaultOptions, ...baseOptions};
+  return Apollo.useMutation<ReLogLogMutation, ReLogLogMutationVariables>(
+    ReLogLogDocument,
+    options,
+  );
+}
+
 export type ReLogLogMutationHookResult = ReturnType<typeof useReLogLogMutation>;
 export type ReLogLogMutationResult = Apollo.MutationResult<ReLogLogMutation>;
-export type ReLogLogMutationOptions = Apollo.BaseMutationOptions<ReLogLogMutation, ReLogLogMutationVariables>;
-export const RemoveExerciseLogDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"removeExerciseLog"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"exerciseLogId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"autoAdjust"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Boolean"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"removeExerciseLog"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"exerciseLogId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"exerciseLogId"}}},{"kind":"Argument","name":{"kind":"Name","value":"autoAdjust"},"value":{"kind":"Variable","name":{"kind":"Name","value":"autoAdjust"}}}]}]}}]} as unknown as DocumentNode;
-export type RemoveExerciseLogMutationFn = Apollo.MutationFunction<RemoveExerciseLogMutation, RemoveExerciseLogMutationVariables>;
+export type ReLogLogMutationOptions = Apollo.BaseMutationOptions<
+  ReLogLogMutation,
+  ReLogLogMutationVariables
+>;
+export const RemoveExerciseLogDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: {kind: 'Name', value: 'removeExerciseLog'},
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: {kind: 'Name', value: 'exerciseLogId'},
+          },
+          type: {
+            kind: 'NonNullType',
+            type: {kind: 'NamedType', name: {kind: 'Name', value: 'String'}},
+          },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: {kind: 'Name', value: 'autoAdjust'},
+          },
+          type: {
+            kind: 'NonNullType',
+            type: {kind: 'NamedType', name: {kind: 'Name', value: 'Boolean'}},
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'removeExerciseLog'},
+            arguments: [
+              {
+                kind: 'Argument',
+                name: {kind: 'Name', value: 'exerciseLogId'},
+                value: {
+                  kind: 'Variable',
+                  name: {kind: 'Name', value: 'exerciseLogId'},
+                },
+              },
+              {
+                kind: 'Argument',
+                name: {kind: 'Name', value: 'autoAdjust'},
+                value: {
+                  kind: 'Variable',
+                  name: {kind: 'Name', value: 'autoAdjust'},
+                },
+              },
+            ],
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode;
+export type RemoveExerciseLogMutationFn = Apollo.MutationFunction<
+  RemoveExerciseLogMutation,
+  RemoveExerciseLogMutationVariables
+>;
 
 /**
  * __useRemoveExerciseLogMutation__
@@ -789,15 +3585,280 @@ export type RemoveExerciseLogMutationFn = Apollo.MutationFunction<RemoveExercise
  *   },
  * });
  */
-export function useRemoveExerciseLogMutation(baseOptions?: Apollo.MutationHookOptions<RemoveExerciseLogMutation, RemoveExerciseLogMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<RemoveExerciseLogMutation, RemoveExerciseLogMutationVariables>(RemoveExerciseLogDocument, options);
-      }
-export type RemoveExerciseLogMutationHookResult = ReturnType<typeof useRemoveExerciseLogMutation>;
-export type RemoveExerciseLogMutationResult = Apollo.MutationResult<RemoveExerciseLogMutation>;
-export type RemoveExerciseLogMutationOptions = Apollo.BaseMutationOptions<RemoveExerciseLogMutation, RemoveExerciseLogMutationVariables>;
-export const UpdateExerciseLogDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"updateExerciseLog"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ExerciseLogInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"updateExerciseLog"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"exerciseLogId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}},{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"WorkoutLong"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"Exercise"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Exercise"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"primaryMuscles"}},{"kind":"Field","name":{"kind":"Name","value":"secondaryMuscles"}},{"kind":"Field","name":{"kind":"Name","value":"defaultAppliedWeight"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"LogValue"}}]}},{"kind":"Field","name":{"kind":"Name","value":"notes"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"ExerciseLog"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"ExerciseLog"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"exercise"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"Exercise"}}]}},{"kind":"Field","name":{"kind":"Name","value":"logDateTime"}},{"kind":"Field","name":{"kind":"Name","value":"repetitions"}},{"kind":"Field","name":{"kind":"Name","value":"logValue"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"LogValue"}}]}},{"kind":"Field","name":{"kind":"Name","value":"warmup"}},{"kind":"Field","name":{"kind":"Name","value":"remark"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"GroupedExerciseLog"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"GroupedExerciseLog"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"exercise"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"Exercise"}}]}},{"kind":"Field","name":{"kind":"Name","value":"logs"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"ExerciseLog"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"LogValue"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"LogValue"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"unit"}},{"kind":"Field","name":{"kind":"Name","value":"base"}},{"kind":"Field","name":{"kind":"Name","value":"fraction"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"WorkoutLong"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Workout"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"muscleGroups"}},{"kind":"Field","name":{"kind":"Name","value":"startDateTime"}},{"kind":"Field","name":{"kind":"Name","value":"endDateTime"}},{"kind":"Field","name":{"kind":"Name","value":"active"}},{"kind":"Field","name":{"kind":"Name","value":"groupedExerciseLogs"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"GroupedExerciseLog"}}]}},{"kind":"Field","name":{"kind":"Name","value":"remark"}}]}}]} as unknown as DocumentNode;
-export type UpdateExerciseLogMutationFn = Apollo.MutationFunction<UpdateExerciseLogMutation, UpdateExerciseLogMutationVariables>;
+export function useRemoveExerciseLogMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    RemoveExerciseLogMutation,
+    RemoveExerciseLogMutationVariables
+  >,
+) {
+  const options = {...defaultOptions, ...baseOptions};
+  return Apollo.useMutation<
+    RemoveExerciseLogMutation,
+    RemoveExerciseLogMutationVariables
+  >(RemoveExerciseLogDocument, options);
+}
+
+export type RemoveExerciseLogMutationHookResult = ReturnType<
+  typeof useRemoveExerciseLogMutation
+>;
+export type RemoveExerciseLogMutationResult =
+  Apollo.MutationResult<RemoveExerciseLogMutation>;
+export type RemoveExerciseLogMutationOptions = Apollo.BaseMutationOptions<
+  RemoveExerciseLogMutation,
+  RemoveExerciseLogMutationVariables
+>;
+export const UpdateExerciseLogDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: {kind: 'Name', value: 'updateExerciseLog'},
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: {kind: 'Variable', name: {kind: 'Name', value: 'id'}},
+          type: {
+            kind: 'NonNullType',
+            type: {kind: 'NamedType', name: {kind: 'Name', value: 'ID'}},
+          },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {kind: 'Variable', name: {kind: 'Name', value: 'input'}},
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'NamedType',
+              name: {kind: 'Name', value: 'ExerciseLogInput'},
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'updateExerciseLog'},
+            arguments: [
+              {
+                kind: 'Argument',
+                name: {kind: 'Name', value: 'exerciseLogId'},
+                value: {kind: 'Variable', name: {kind: 'Name', value: 'id'}},
+              },
+              {
+                kind: 'Argument',
+                name: {kind: 'Name', value: 'input'},
+                value: {kind: 'Variable', name: {kind: 'Name', value: 'input'}},
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'FragmentSpread',
+                  name: {kind: 'Name', value: 'WorkoutLong'},
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: {kind: 'Name', value: 'Exercise'},
+      typeCondition: {
+        kind: 'NamedType',
+        name: {kind: 'Name', value: 'Exercise'},
+      },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {kind: 'Field', name: {kind: 'Name', value: 'id'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'name'},
+          },
+          {kind: 'Field', name: {kind: 'Name', value: 'primaryMuscles'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'secondaryMuscles'},
+          },
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'defaultAppliedWeight'},
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'FragmentSpread',
+                  name: {kind: 'Name', value: 'LogValue'},
+                },
+              ],
+            },
+          },
+          {kind: 'Field', name: {kind: 'Name', value: 'notes'}},
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: {kind: 'Name', value: 'ExerciseLog'},
+      typeCondition: {
+        kind: 'NamedType',
+        name: {kind: 'Name', value: 'ExerciseLog'},
+      },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {kind: 'Field', name: {kind: 'Name', value: 'id'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'exercise'},
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'FragmentSpread',
+                  name: {kind: 'Name', value: 'Exercise'},
+                },
+              ],
+            },
+          },
+          {kind: 'Field', name: {kind: 'Name', value: 'logDateTime'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'repetitions'},
+          },
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'logValue'},
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'FragmentSpread',
+                  name: {kind: 'Name', value: 'LogValue'},
+                },
+              ],
+            },
+          },
+          {kind: 'Field', name: {kind: 'Name', value: 'warmup'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'remark'},
+          },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: {kind: 'Name', value: 'GroupedExerciseLog'},
+      typeCondition: {
+        kind: 'NamedType',
+        name: {kind: 'Name', value: 'GroupedExerciseLog'},
+      },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'exercise'},
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'FragmentSpread',
+                  name: {kind: 'Name', value: 'Exercise'},
+                },
+              ],
+            },
+          },
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'logs'},
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'FragmentSpread',
+                  name: {kind: 'Name', value: 'ExerciseLog'},
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: {kind: 'Name', value: 'LogValue'},
+      typeCondition: {
+        kind: 'NamedType',
+        name: {kind: 'Name', value: 'LogValue'},
+      },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {kind: 'Field', name: {kind: 'Name', value: 'unit'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'base'},
+          },
+          {kind: 'Field', name: {kind: 'Name', value: 'fraction'}},
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: {kind: 'Name', value: 'WorkoutLong'},
+      typeCondition: {
+        kind: 'NamedType',
+        name: {kind: 'Name', value: 'Workout'},
+      },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {kind: 'Field', name: {kind: 'Name', value: 'id'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'name'},
+          },
+          {kind: 'Field', name: {kind: 'Name', value: 'muscleGroups'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'startDateTime'},
+          },
+          {kind: 'Field', name: {kind: 'Name', value: 'endDateTime'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'active'},
+          },
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'groupedExerciseLogs'},
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'FragmentSpread',
+                  name: {kind: 'Name', value: 'GroupedExerciseLog'},
+                },
+              ],
+            },
+          },
+          {kind: 'Field', name: {kind: 'Name', value: 'remark'}},
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode;
+export type UpdateExerciseLogMutationFn = Apollo.MutationFunction<
+  UpdateExerciseLogMutation,
+  UpdateExerciseLogMutationVariables
+>;
 
 /**
  * __useUpdateExerciseLogMutation__
@@ -817,15 +3878,116 @@ export type UpdateExerciseLogMutationFn = Apollo.MutationFunction<UpdateExercise
  *   },
  * });
  */
-export function useUpdateExerciseLogMutation(baseOptions?: Apollo.MutationHookOptions<UpdateExerciseLogMutation, UpdateExerciseLogMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<UpdateExerciseLogMutation, UpdateExerciseLogMutationVariables>(UpdateExerciseLogDocument, options);
-      }
-export type UpdateExerciseLogMutationHookResult = ReturnType<typeof useUpdateExerciseLogMutation>;
-export type UpdateExerciseLogMutationResult = Apollo.MutationResult<UpdateExerciseLogMutation>;
-export type UpdateExerciseLogMutationOptions = Apollo.BaseMutationOptions<UpdateExerciseLogMutation, UpdateExerciseLogMutationVariables>;
-export const UpdatePreferenceDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"updatePreference"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"PreferenceInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"updateMyPreference"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"Preference"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"Preference"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Preference"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"weightUnit"}},{"kind":"Field","name":{"kind":"Name","value":"distanceUnit"}},{"kind":"Field","name":{"kind":"Name","value":"defaultRepetitions"}},{"kind":"Field","name":{"kind":"Name","value":"hideUnitSelector"}},{"kind":"Field","name":{"kind":"Name","value":"autoAdjustWorkoutMuscleGroups"}},{"kind":"Field","name":{"kind":"Name","value":"timerDuration"}},{"kind":"Field","name":{"kind":"Name","value":"autoStartTimer"}},{"kind":"Field","name":{"kind":"Name","value":"playTimerCompletionSound"}}]}}]} as unknown as DocumentNode;
-export type UpdatePreferenceMutationFn = Apollo.MutationFunction<UpdatePreferenceMutation, UpdatePreferenceMutationVariables>;
+export function useUpdateExerciseLogMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    UpdateExerciseLogMutation,
+    UpdateExerciseLogMutationVariables
+  >,
+) {
+  const options = {...defaultOptions, ...baseOptions};
+  return Apollo.useMutation<
+    UpdateExerciseLogMutation,
+    UpdateExerciseLogMutationVariables
+  >(UpdateExerciseLogDocument, options);
+}
+
+export type UpdateExerciseLogMutationHookResult = ReturnType<
+  typeof useUpdateExerciseLogMutation
+>;
+export type UpdateExerciseLogMutationResult =
+  Apollo.MutationResult<UpdateExerciseLogMutation>;
+export type UpdateExerciseLogMutationOptions = Apollo.BaseMutationOptions<
+  UpdateExerciseLogMutation,
+  UpdateExerciseLogMutationVariables
+>;
+export const UpdatePreferenceDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: {kind: 'Name', value: 'updatePreference'},
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: {kind: 'Variable', name: {kind: 'Name', value: 'input'}},
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'NamedType',
+              name: {kind: 'Name', value: 'PreferenceInput'},
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'updateMyPreference'},
+            arguments: [
+              {
+                kind: 'Argument',
+                name: {kind: 'Name', value: 'input'},
+                value: {kind: 'Variable', name: {kind: 'Name', value: 'input'}},
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'FragmentSpread',
+                  name: {kind: 'Name', value: 'Preference'},
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: {kind: 'Name', value: 'Preference'},
+      typeCondition: {
+        kind: 'NamedType',
+        name: {kind: 'Name', value: 'Preference'},
+      },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {kind: 'Field', name: {kind: 'Name', value: 'weightUnit'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'distanceUnit'},
+          },
+          {kind: 'Field', name: {kind: 'Name', value: 'defaultRepetitions'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'hideUnitSelector'},
+          },
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'autoAdjustWorkoutMuscleGroups'},
+          },
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'timerDuration'},
+          },
+          {kind: 'Field', name: {kind: 'Name', value: 'autoStartTimer'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'playTimerCompletionSound'},
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode;
+export type UpdatePreferenceMutationFn = Apollo.MutationFunction<
+  UpdatePreferenceMutation,
+  UpdatePreferenceMutationVariables
+>;
 
 /**
  * __useUpdatePreferenceMutation__
@@ -844,15 +4006,72 @@ export type UpdatePreferenceMutationFn = Apollo.MutationFunction<UpdatePreferenc
  *   },
  * });
  */
-export function useUpdatePreferenceMutation(baseOptions?: Apollo.MutationHookOptions<UpdatePreferenceMutation, UpdatePreferenceMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<UpdatePreferenceMutation, UpdatePreferenceMutationVariables>(UpdatePreferenceDocument, options);
-      }
-export type UpdatePreferenceMutationHookResult = ReturnType<typeof useUpdatePreferenceMutation>;
-export type UpdatePreferenceMutationResult = Apollo.MutationResult<UpdatePreferenceMutation>;
-export type UpdatePreferenceMutationOptions = Apollo.BaseMutationOptions<UpdatePreferenceMutation, UpdatePreferenceMutationVariables>;
-export const CreateUserDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"createUser"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"UserInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createUser"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"userInput"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]} as unknown as DocumentNode;
-export type CreateUserMutationFn = Apollo.MutationFunction<CreateUserMutation, CreateUserMutationVariables>;
+export function useUpdatePreferenceMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    UpdatePreferenceMutation,
+    UpdatePreferenceMutationVariables
+  >,
+) {
+  const options = {...defaultOptions, ...baseOptions};
+  return Apollo.useMutation<
+    UpdatePreferenceMutation,
+    UpdatePreferenceMutationVariables
+  >(UpdatePreferenceDocument, options);
+}
+
+export type UpdatePreferenceMutationHookResult = ReturnType<
+  typeof useUpdatePreferenceMutation
+>;
+export type UpdatePreferenceMutationResult =
+  Apollo.MutationResult<UpdatePreferenceMutation>;
+export type UpdatePreferenceMutationOptions = Apollo.BaseMutationOptions<
+  UpdatePreferenceMutation,
+  UpdatePreferenceMutationVariables
+>;
+export const CreateUserDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: {kind: 'Name', value: 'createUser'},
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: {kind: 'Variable', name: {kind: 'Name', value: 'input'}},
+          type: {
+            kind: 'NonNullType',
+            type: {kind: 'NamedType', name: {kind: 'Name', value: 'UserInput'}},
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'createUser'},
+            arguments: [
+              {
+                kind: 'Argument',
+                name: {kind: 'Name', value: 'userInput'},
+                value: {kind: 'Variable', name: {kind: 'Name', value: 'input'}},
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [{kind: 'Field', name: {kind: 'Name', value: 'id'}}],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode;
+export type CreateUserMutationFn = Apollo.MutationFunction<
+  CreateUserMutation,
+  CreateUserMutationVariables
+>;
 
 /**
  * __useCreateUserMutation__
@@ -871,15 +4090,68 @@ export type CreateUserMutationFn = Apollo.MutationFunction<CreateUserMutation, C
  *   },
  * });
  */
-export function useCreateUserMutation(baseOptions?: Apollo.MutationHookOptions<CreateUserMutation, CreateUserMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<CreateUserMutation, CreateUserMutationVariables>(CreateUserDocument, options);
-      }
-export type CreateUserMutationHookResult = ReturnType<typeof useCreateUserMutation>;
-export type CreateUserMutationResult = Apollo.MutationResult<CreateUserMutation>;
-export type CreateUserMutationOptions = Apollo.BaseMutationOptions<CreateUserMutation, CreateUserMutationVariables>;
-export const DeleteWorkoutDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"deleteWorkout"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"deleteWorkout"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}]}]}}]} as unknown as DocumentNode;
-export type DeleteWorkoutMutationFn = Apollo.MutationFunction<DeleteWorkoutMutation, DeleteWorkoutMutationVariables>;
+export function useCreateUserMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    CreateUserMutation,
+    CreateUserMutationVariables
+  >,
+) {
+  const options = {...defaultOptions, ...baseOptions};
+  return Apollo.useMutation<CreateUserMutation, CreateUserMutationVariables>(
+    CreateUserDocument,
+    options,
+  );
+}
+
+export type CreateUserMutationHookResult = ReturnType<
+  typeof useCreateUserMutation
+>;
+export type CreateUserMutationResult =
+  Apollo.MutationResult<CreateUserMutation>;
+export type CreateUserMutationOptions = Apollo.BaseMutationOptions<
+  CreateUserMutation,
+  CreateUserMutationVariables
+>;
+export const DeleteWorkoutDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: {kind: 'Name', value: 'deleteWorkout'},
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: {kind: 'Variable', name: {kind: 'Name', value: 'id'}},
+          type: {
+            kind: 'NonNullType',
+            type: {kind: 'NamedType', name: {kind: 'Name', value: 'ID'}},
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'deleteWorkout'},
+            arguments: [
+              {
+                kind: 'Argument',
+                name: {kind: 'Name', value: 'id'},
+                value: {kind: 'Variable', name: {kind: 'Name', value: 'id'}},
+              },
+            ],
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode;
+export type DeleteWorkoutMutationFn = Apollo.MutationFunction<
+  DeleteWorkoutMutation,
+  DeleteWorkoutMutationVariables
+>;
 
 /**
  * __useDeleteWorkoutMutation__
@@ -898,15 +4170,131 @@ export type DeleteWorkoutMutationFn = Apollo.MutationFunction<DeleteWorkoutMutat
  *   },
  * });
  */
-export function useDeleteWorkoutMutation(baseOptions?: Apollo.MutationHookOptions<DeleteWorkoutMutation, DeleteWorkoutMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<DeleteWorkoutMutation, DeleteWorkoutMutationVariables>(DeleteWorkoutDocument, options);
-      }
-export type DeleteWorkoutMutationHookResult = ReturnType<typeof useDeleteWorkoutMutation>;
-export type DeleteWorkoutMutationResult = Apollo.MutationResult<DeleteWorkoutMutation>;
-export type DeleteWorkoutMutationOptions = Apollo.BaseMutationOptions<DeleteWorkoutMutation, DeleteWorkoutMutationVariables>;
-export const EndWorkoutDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"endWorkout"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"workoutId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"zonedDateTimeString"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"endWorkout"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"workoutId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"workoutId"}}},{"kind":"Argument","name":{"kind":"Name","value":"zonedDateTimeString"},"value":{"kind":"Variable","name":{"kind":"Name","value":"zonedDateTimeString"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"WorkoutShort"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"WorkoutShort"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Workout"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"muscleGroups"}},{"kind":"Field","name":{"kind":"Name","value":"startDateTime"}},{"kind":"Field","name":{"kind":"Name","value":"endDateTime"}},{"kind":"Field","name":{"kind":"Name","value":"active"}},{"kind":"Field","name":{"kind":"Name","value":"remark"}}]}}]} as unknown as DocumentNode;
-export type EndWorkoutMutationFn = Apollo.MutationFunction<EndWorkoutMutation, EndWorkoutMutationVariables>;
+export function useDeleteWorkoutMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    DeleteWorkoutMutation,
+    DeleteWorkoutMutationVariables
+  >,
+) {
+  const options = {...defaultOptions, ...baseOptions};
+  return Apollo.useMutation<
+    DeleteWorkoutMutation,
+    DeleteWorkoutMutationVariables
+  >(DeleteWorkoutDocument, options);
+}
+
+export type DeleteWorkoutMutationHookResult = ReturnType<
+  typeof useDeleteWorkoutMutation
+>;
+export type DeleteWorkoutMutationResult =
+  Apollo.MutationResult<DeleteWorkoutMutation>;
+export type DeleteWorkoutMutationOptions = Apollo.BaseMutationOptions<
+  DeleteWorkoutMutation,
+  DeleteWorkoutMutationVariables
+>;
+export const EndWorkoutDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: {kind: 'Name', value: 'endWorkout'},
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: {kind: 'Name', value: 'workoutId'},
+          },
+          type: {
+            kind: 'NonNullType',
+            type: {kind: 'NamedType', name: {kind: 'Name', value: 'ID'}},
+          },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: {kind: 'Name', value: 'zonedDateTimeString'},
+          },
+          type: {
+            kind: 'NonNullType',
+            type: {kind: 'NamedType', name: {kind: 'Name', value: 'String'}},
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'endWorkout'},
+            arguments: [
+              {
+                kind: 'Argument',
+                name: {kind: 'Name', value: 'workoutId'},
+                value: {
+                  kind: 'Variable',
+                  name: {kind: 'Name', value: 'workoutId'},
+                },
+              },
+              {
+                kind: 'Argument',
+                name: {kind: 'Name', value: 'zonedDateTimeString'},
+                value: {
+                  kind: 'Variable',
+                  name: {kind: 'Name', value: 'zonedDateTimeString'},
+                },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'FragmentSpread',
+                  name: {kind: 'Name', value: 'WorkoutShort'},
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: {kind: 'Name', value: 'WorkoutShort'},
+      typeCondition: {
+        kind: 'NamedType',
+        name: {kind: 'Name', value: 'Workout'},
+      },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {kind: 'Field', name: {kind: 'Name', value: 'id'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'name'},
+          },
+          {kind: 'Field', name: {kind: 'Name', value: 'muscleGroups'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'startDateTime'},
+          },
+          {kind: 'Field', name: {kind: 'Name', value: 'endDateTime'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'active'},
+          },
+          {kind: 'Field', name: {kind: 'Name', value: 'remark'}},
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode;
+export type EndWorkoutMutationFn = Apollo.MutationFunction<
+  EndWorkoutMutation,
+  EndWorkoutMutationVariables
+>;
 
 /**
  * __useEndWorkoutMutation__
@@ -926,15 +4314,112 @@ export type EndWorkoutMutationFn = Apollo.MutationFunction<EndWorkoutMutation, E
  *   },
  * });
  */
-export function useEndWorkoutMutation(baseOptions?: Apollo.MutationHookOptions<EndWorkoutMutation, EndWorkoutMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<EndWorkoutMutation, EndWorkoutMutationVariables>(EndWorkoutDocument, options);
-      }
-export type EndWorkoutMutationHookResult = ReturnType<typeof useEndWorkoutMutation>;
-export type EndWorkoutMutationResult = Apollo.MutationResult<EndWorkoutMutation>;
-export type EndWorkoutMutationOptions = Apollo.BaseMutationOptions<EndWorkoutMutation, EndWorkoutMutationVariables>;
-export const RestartWorkoutDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"restartWorkout"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"workoutId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"restartWorkout"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"workoutId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"WorkoutShort"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"WorkoutShort"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Workout"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"muscleGroups"}},{"kind":"Field","name":{"kind":"Name","value":"startDateTime"}},{"kind":"Field","name":{"kind":"Name","value":"endDateTime"}},{"kind":"Field","name":{"kind":"Name","value":"active"}},{"kind":"Field","name":{"kind":"Name","value":"remark"}}]}}]} as unknown as DocumentNode;
-export type RestartWorkoutMutationFn = Apollo.MutationFunction<RestartWorkoutMutation, RestartWorkoutMutationVariables>;
+export function useEndWorkoutMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    EndWorkoutMutation,
+    EndWorkoutMutationVariables
+  >,
+) {
+  const options = {...defaultOptions, ...baseOptions};
+  return Apollo.useMutation<EndWorkoutMutation, EndWorkoutMutationVariables>(
+    EndWorkoutDocument,
+    options,
+  );
+}
+
+export type EndWorkoutMutationHookResult = ReturnType<
+  typeof useEndWorkoutMutation
+>;
+export type EndWorkoutMutationResult =
+  Apollo.MutationResult<EndWorkoutMutation>;
+export type EndWorkoutMutationOptions = Apollo.BaseMutationOptions<
+  EndWorkoutMutation,
+  EndWorkoutMutationVariables
+>;
+export const RestartWorkoutDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: {kind: 'Name', value: 'restartWorkout'},
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: {kind: 'Name', value: 'workoutId'},
+          },
+          type: {
+            kind: 'NonNullType',
+            type: {kind: 'NamedType', name: {kind: 'Name', value: 'ID'}},
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'restartWorkout'},
+            arguments: [
+              {
+                kind: 'Argument',
+                name: {kind: 'Name', value: 'id'},
+                value: {
+                  kind: 'Variable',
+                  name: {kind: 'Name', value: 'workoutId'},
+                },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'FragmentSpread',
+                  name: {kind: 'Name', value: 'WorkoutShort'},
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: {kind: 'Name', value: 'WorkoutShort'},
+      typeCondition: {
+        kind: 'NamedType',
+        name: {kind: 'Name', value: 'Workout'},
+      },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {kind: 'Field', name: {kind: 'Name', value: 'id'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'name'},
+          },
+          {kind: 'Field', name: {kind: 'Name', value: 'muscleGroups'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'startDateTime'},
+          },
+          {kind: 'Field', name: {kind: 'Name', value: 'endDateTime'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'active'},
+          },
+          {kind: 'Field', name: {kind: 'Name', value: 'remark'}},
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode;
+export type RestartWorkoutMutationFn = Apollo.MutationFunction<
+  RestartWorkoutMutation,
+  RestartWorkoutMutationVariables
+>;
 
 /**
  * __useRestartWorkoutMutation__
@@ -953,15 +4438,109 @@ export type RestartWorkoutMutationFn = Apollo.MutationFunction<RestartWorkoutMut
  *   },
  * });
  */
-export function useRestartWorkoutMutation(baseOptions?: Apollo.MutationHookOptions<RestartWorkoutMutation, RestartWorkoutMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<RestartWorkoutMutation, RestartWorkoutMutationVariables>(RestartWorkoutDocument, options);
-      }
-export type RestartWorkoutMutationHookResult = ReturnType<typeof useRestartWorkoutMutation>;
-export type RestartWorkoutMutationResult = Apollo.MutationResult<RestartWorkoutMutation>;
-export type RestartWorkoutMutationOptions = Apollo.BaseMutationOptions<RestartWorkoutMutation, RestartWorkoutMutationVariables>;
-export const StartWorkoutDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"startWorkout"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"WorkoutInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"meStartWorkout"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"WorkoutShort"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"WorkoutShort"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Workout"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"muscleGroups"}},{"kind":"Field","name":{"kind":"Name","value":"startDateTime"}},{"kind":"Field","name":{"kind":"Name","value":"endDateTime"}},{"kind":"Field","name":{"kind":"Name","value":"active"}},{"kind":"Field","name":{"kind":"Name","value":"remark"}}]}}]} as unknown as DocumentNode;
-export type StartWorkoutMutationFn = Apollo.MutationFunction<StartWorkoutMutation, StartWorkoutMutationVariables>;
+export function useRestartWorkoutMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    RestartWorkoutMutation,
+    RestartWorkoutMutationVariables
+  >,
+) {
+  const options = {...defaultOptions, ...baseOptions};
+  return Apollo.useMutation<
+    RestartWorkoutMutation,
+    RestartWorkoutMutationVariables
+  >(RestartWorkoutDocument, options);
+}
+
+export type RestartWorkoutMutationHookResult = ReturnType<
+  typeof useRestartWorkoutMutation
+>;
+export type RestartWorkoutMutationResult =
+  Apollo.MutationResult<RestartWorkoutMutation>;
+export type RestartWorkoutMutationOptions = Apollo.BaseMutationOptions<
+  RestartWorkoutMutation,
+  RestartWorkoutMutationVariables
+>;
+export const StartWorkoutDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: {kind: 'Name', value: 'startWorkout'},
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: {kind: 'Variable', name: {kind: 'Name', value: 'input'}},
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'NamedType',
+              name: {kind: 'Name', value: 'WorkoutInput'},
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'meStartWorkout'},
+            arguments: [
+              {
+                kind: 'Argument',
+                name: {kind: 'Name', value: 'input'},
+                value: {kind: 'Variable', name: {kind: 'Name', value: 'input'}},
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'FragmentSpread',
+                  name: {kind: 'Name', value: 'WorkoutShort'},
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: {kind: 'Name', value: 'WorkoutShort'},
+      typeCondition: {
+        kind: 'NamedType',
+        name: {kind: 'Name', value: 'Workout'},
+      },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {kind: 'Field', name: {kind: 'Name', value: 'id'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'name'},
+          },
+          {kind: 'Field', name: {kind: 'Name', value: 'muscleGroups'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'startDateTime'},
+          },
+          {kind: 'Field', name: {kind: 'Name', value: 'endDateTime'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'active'},
+          },
+          {kind: 'Field', name: {kind: 'Name', value: 'remark'}},
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode;
+export type StartWorkoutMutationFn = Apollo.MutationFunction<
+  StartWorkoutMutation,
+  StartWorkoutMutationVariables
+>;
 
 /**
  * __useStartWorkoutMutation__
@@ -980,15 +4559,122 @@ export type StartWorkoutMutationFn = Apollo.MutationFunction<StartWorkoutMutatio
  *   },
  * });
  */
-export function useStartWorkoutMutation(baseOptions?: Apollo.MutationHookOptions<StartWorkoutMutation, StartWorkoutMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<StartWorkoutMutation, StartWorkoutMutationVariables>(StartWorkoutDocument, options);
-      }
-export type StartWorkoutMutationHookResult = ReturnType<typeof useStartWorkoutMutation>;
-export type StartWorkoutMutationResult = Apollo.MutationResult<StartWorkoutMutation>;
-export type StartWorkoutMutationOptions = Apollo.BaseMutationOptions<StartWorkoutMutation, StartWorkoutMutationVariables>;
-export const UpdateWorkoutDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"updateWorkout"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"WorkoutInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"updateWorkout"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}},{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"WorkoutShort"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"WorkoutShort"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Workout"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"muscleGroups"}},{"kind":"Field","name":{"kind":"Name","value":"startDateTime"}},{"kind":"Field","name":{"kind":"Name","value":"endDateTime"}},{"kind":"Field","name":{"kind":"Name","value":"active"}},{"kind":"Field","name":{"kind":"Name","value":"remark"}}]}}]} as unknown as DocumentNode;
-export type UpdateWorkoutMutationFn = Apollo.MutationFunction<UpdateWorkoutMutation, UpdateWorkoutMutationVariables>;
+export function useStartWorkoutMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    StartWorkoutMutation,
+    StartWorkoutMutationVariables
+  >,
+) {
+  const options = {...defaultOptions, ...baseOptions};
+  return Apollo.useMutation<
+    StartWorkoutMutation,
+    StartWorkoutMutationVariables
+  >(StartWorkoutDocument, options);
+}
+
+export type StartWorkoutMutationHookResult = ReturnType<
+  typeof useStartWorkoutMutation
+>;
+export type StartWorkoutMutationResult =
+  Apollo.MutationResult<StartWorkoutMutation>;
+export type StartWorkoutMutationOptions = Apollo.BaseMutationOptions<
+  StartWorkoutMutation,
+  StartWorkoutMutationVariables
+>;
+export const UpdateWorkoutDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: {kind: 'Name', value: 'updateWorkout'},
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: {kind: 'Variable', name: {kind: 'Name', value: 'id'}},
+          type: {
+            kind: 'NonNullType',
+            type: {kind: 'NamedType', name: {kind: 'Name', value: 'ID'}},
+          },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {kind: 'Variable', name: {kind: 'Name', value: 'input'}},
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'NamedType',
+              name: {kind: 'Name', value: 'WorkoutInput'},
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'updateWorkout'},
+            arguments: [
+              {
+                kind: 'Argument',
+                name: {kind: 'Name', value: 'id'},
+                value: {kind: 'Variable', name: {kind: 'Name', value: 'id'}},
+              },
+              {
+                kind: 'Argument',
+                name: {kind: 'Name', value: 'input'},
+                value: {kind: 'Variable', name: {kind: 'Name', value: 'input'}},
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'FragmentSpread',
+                  name: {kind: 'Name', value: 'WorkoutShort'},
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: {kind: 'Name', value: 'WorkoutShort'},
+      typeCondition: {
+        kind: 'NamedType',
+        name: {kind: 'Name', value: 'Workout'},
+      },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {kind: 'Field', name: {kind: 'Name', value: 'id'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'name'},
+          },
+          {kind: 'Field', name: {kind: 'Name', value: 'muscleGroups'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'startDateTime'},
+          },
+          {kind: 'Field', name: {kind: 'Name', value: 'endDateTime'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'active'},
+          },
+          {kind: 'Field', name: {kind: 'Name', value: 'remark'}},
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode;
+export type UpdateWorkoutMutationFn = Apollo.MutationFunction<
+  UpdateWorkoutMutation,
+  UpdateWorkoutMutationVariables
+>;
 
 /**
  * __useUpdateWorkoutMutation__
@@ -1008,14 +4694,112 @@ export type UpdateWorkoutMutationFn = Apollo.MutationFunction<UpdateWorkoutMutat
  *   },
  * });
  */
-export function useUpdateWorkoutMutation(baseOptions?: Apollo.MutationHookOptions<UpdateWorkoutMutation, UpdateWorkoutMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<UpdateWorkoutMutation, UpdateWorkoutMutationVariables>(UpdateWorkoutDocument, options);
-      }
-export type UpdateWorkoutMutationHookResult = ReturnType<typeof useUpdateWorkoutMutation>;
-export type UpdateWorkoutMutationResult = Apollo.MutationResult<UpdateWorkoutMutation>;
-export type UpdateWorkoutMutationOptions = Apollo.BaseMutationOptions<UpdateWorkoutMutation, UpdateWorkoutMutationVariables>;
-export const MyExercisesDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"myExercises"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"myExercises"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"Exercise"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"Exercise"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Exercise"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"primaryMuscles"}},{"kind":"Field","name":{"kind":"Name","value":"secondaryMuscles"}},{"kind":"Field","name":{"kind":"Name","value":"defaultAppliedWeight"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"LogValue"}}]}},{"kind":"Field","name":{"kind":"Name","value":"notes"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"LogValue"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"LogValue"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"unit"}},{"kind":"Field","name":{"kind":"Name","value":"base"}},{"kind":"Field","name":{"kind":"Name","value":"fraction"}}]}}]} as unknown as DocumentNode;
+export function useUpdateWorkoutMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    UpdateWorkoutMutation,
+    UpdateWorkoutMutationVariables
+  >,
+) {
+  const options = {...defaultOptions, ...baseOptions};
+  return Apollo.useMutation<
+    UpdateWorkoutMutation,
+    UpdateWorkoutMutationVariables
+  >(UpdateWorkoutDocument, options);
+}
+
+export type UpdateWorkoutMutationHookResult = ReturnType<
+  typeof useUpdateWorkoutMutation
+>;
+export type UpdateWorkoutMutationResult =
+  Apollo.MutationResult<UpdateWorkoutMutation>;
+export type UpdateWorkoutMutationOptions = Apollo.BaseMutationOptions<
+  UpdateWorkoutMutation,
+  UpdateWorkoutMutationVariables
+>;
+export const MyExercisesDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: {kind: 'Name', value: 'myExercises'},
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'myExercises'},
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'FragmentSpread',
+                  name: {kind: 'Name', value: 'Exercise'},
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: {kind: 'Name', value: 'Exercise'},
+      typeCondition: {
+        kind: 'NamedType',
+        name: {kind: 'Name', value: 'Exercise'},
+      },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {kind: 'Field', name: {kind: 'Name', value: 'id'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'name'},
+          },
+          {kind: 'Field', name: {kind: 'Name', value: 'primaryMuscles'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'secondaryMuscles'},
+          },
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'defaultAppliedWeight'},
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'FragmentSpread',
+                  name: {kind: 'Name', value: 'LogValue'},
+                },
+              ],
+            },
+          },
+          {kind: 'Field', name: {kind: 'Name', value: 'notes'}},
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: {kind: 'Name', value: 'LogValue'},
+      typeCondition: {
+        kind: 'NamedType',
+        name: {kind: 'Name', value: 'LogValue'},
+      },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {kind: 'Field', name: {kind: 'Name', value: 'unit'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'base'},
+          },
+          {kind: 'Field', name: {kind: 'Name', value: 'fraction'}},
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode;
 
 /**
  * __useMyExercisesQuery__
@@ -1032,18 +4816,191 @@ export const MyExercisesDocument = {"kind":"Document","definitions":[{"kind":"Op
  *   },
  * });
  */
-export function useMyExercisesQuery(baseOptions?: Apollo.QueryHookOptions<MyExercisesQuery, MyExercisesQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<MyExercisesQuery, MyExercisesQueryVariables>(MyExercisesDocument, options);
-      }
-export function useMyExercisesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<MyExercisesQuery, MyExercisesQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<MyExercisesQuery, MyExercisesQueryVariables>(MyExercisesDocument, options);
-        }
+export function useMyExercisesQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    MyExercisesQuery,
+    MyExercisesQueryVariables
+  >,
+) {
+  const options = {...defaultOptions, ...baseOptions};
+  return Apollo.useQuery<MyExercisesQuery, MyExercisesQueryVariables>(
+    MyExercisesDocument,
+    options,
+  );
+}
+
+export function useMyExercisesLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    MyExercisesQuery,
+    MyExercisesQueryVariables
+  >,
+) {
+  const options = {...defaultOptions, ...baseOptions};
+  return Apollo.useLazyQuery<MyExercisesQuery, MyExercisesQueryVariables>(
+    MyExercisesDocument,
+    options,
+  );
+}
+
 export type MyExercisesQueryHookResult = ReturnType<typeof useMyExercisesQuery>;
-export type MyExercisesLazyQueryHookResult = ReturnType<typeof useMyExercisesLazyQuery>;
-export type MyExercisesQueryResult = Apollo.QueryResult<MyExercisesQuery, MyExercisesQueryVariables>;
-export const LatestLogsByExerciseIdDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"latestLogsByExerciseId"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"latestLogsByExerciseId"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"exerciseId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"ExerciseLog"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"Exercise"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Exercise"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"primaryMuscles"}},{"kind":"Field","name":{"kind":"Name","value":"secondaryMuscles"}},{"kind":"Field","name":{"kind":"Name","value":"defaultAppliedWeight"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"LogValue"}}]}},{"kind":"Field","name":{"kind":"Name","value":"notes"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"ExerciseLog"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"ExerciseLog"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"exercise"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"Exercise"}}]}},{"kind":"Field","name":{"kind":"Name","value":"logDateTime"}},{"kind":"Field","name":{"kind":"Name","value":"repetitions"}},{"kind":"Field","name":{"kind":"Name","value":"logValue"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"LogValue"}}]}},{"kind":"Field","name":{"kind":"Name","value":"warmup"}},{"kind":"Field","name":{"kind":"Name","value":"remark"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"LogValue"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"LogValue"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"unit"}},{"kind":"Field","name":{"kind":"Name","value":"base"}},{"kind":"Field","name":{"kind":"Name","value":"fraction"}}]}}]} as unknown as DocumentNode;
+export type MyExercisesLazyQueryHookResult = ReturnType<
+  typeof useMyExercisesLazyQuery
+>;
+export type MyExercisesQueryResult = Apollo.QueryResult<
+  MyExercisesQuery,
+  MyExercisesQueryVariables
+>;
+export const LatestLogsByExerciseIdDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: {kind: 'Name', value: 'latestLogsByExerciseId'},
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: {kind: 'Variable', name: {kind: 'Name', value: 'id'}},
+          type: {
+            kind: 'NonNullType',
+            type: {kind: 'NamedType', name: {kind: 'Name', value: 'ID'}},
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'latestLogsByExerciseId'},
+            arguments: [
+              {
+                kind: 'Argument',
+                name: {kind: 'Name', value: 'exerciseId'},
+                value: {kind: 'Variable', name: {kind: 'Name', value: 'id'}},
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'FragmentSpread',
+                  name: {kind: 'Name', value: 'ExerciseLog'},
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: {kind: 'Name', value: 'Exercise'},
+      typeCondition: {
+        kind: 'NamedType',
+        name: {kind: 'Name', value: 'Exercise'},
+      },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {kind: 'Field', name: {kind: 'Name', value: 'id'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'name'},
+          },
+          {kind: 'Field', name: {kind: 'Name', value: 'primaryMuscles'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'secondaryMuscles'},
+          },
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'defaultAppliedWeight'},
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'FragmentSpread',
+                  name: {kind: 'Name', value: 'LogValue'},
+                },
+              ],
+            },
+          },
+          {kind: 'Field', name: {kind: 'Name', value: 'notes'}},
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: {kind: 'Name', value: 'ExerciseLog'},
+      typeCondition: {
+        kind: 'NamedType',
+        name: {kind: 'Name', value: 'ExerciseLog'},
+      },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {kind: 'Field', name: {kind: 'Name', value: 'id'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'exercise'},
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'FragmentSpread',
+                  name: {kind: 'Name', value: 'Exercise'},
+                },
+              ],
+            },
+          },
+          {kind: 'Field', name: {kind: 'Name', value: 'logDateTime'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'repetitions'},
+          },
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'logValue'},
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'FragmentSpread',
+                  name: {kind: 'Name', value: 'LogValue'},
+                },
+              ],
+            },
+          },
+          {kind: 'Field', name: {kind: 'Name', value: 'warmup'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'remark'},
+          },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: {kind: 'Name', value: 'LogValue'},
+      typeCondition: {
+        kind: 'NamedType',
+        name: {kind: 'Name', value: 'LogValue'},
+      },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {kind: 'Field', name: {kind: 'Name', value: 'unit'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'base'},
+          },
+          {kind: 'Field', name: {kind: 'Name', value: 'fraction'}},
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode;
 
 /**
  * __useLatestLogsByExerciseIdQuery__
@@ -1061,18 +5018,215 @@ export const LatestLogsByExerciseIdDocument = {"kind":"Document","definitions":[
  *   },
  * });
  */
-export function useLatestLogsByExerciseIdQuery(baseOptions: Apollo.QueryHookOptions<LatestLogsByExerciseIdQuery, LatestLogsByExerciseIdQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<LatestLogsByExerciseIdQuery, LatestLogsByExerciseIdQueryVariables>(LatestLogsByExerciseIdDocument, options);
-      }
-export function useLatestLogsByExerciseIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<LatestLogsByExerciseIdQuery, LatestLogsByExerciseIdQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<LatestLogsByExerciseIdQuery, LatestLogsByExerciseIdQueryVariables>(LatestLogsByExerciseIdDocument, options);
-        }
-export type LatestLogsByExerciseIdQueryHookResult = ReturnType<typeof useLatestLogsByExerciseIdQuery>;
-export type LatestLogsByExerciseIdLazyQueryHookResult = ReturnType<typeof useLatestLogsByExerciseIdLazyQuery>;
-export type LatestLogsByExerciseIdQueryResult = Apollo.QueryResult<LatestLogsByExerciseIdQuery, LatestLogsByExerciseIdQueryVariables>;
-export const LatestLogsByExerciseIdAndNotWorkoutIdDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"latestLogsByExerciseIdAndNotWorkoutId"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"workoutId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"latestLogsByExerciseIdAndNotWorkoutId"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"exerciseId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}},{"kind":"Argument","name":{"kind":"Name","value":"workoutId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"workoutId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"ExerciseLog"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"Exercise"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Exercise"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"primaryMuscles"}},{"kind":"Field","name":{"kind":"Name","value":"secondaryMuscles"}},{"kind":"Field","name":{"kind":"Name","value":"defaultAppliedWeight"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"LogValue"}}]}},{"kind":"Field","name":{"kind":"Name","value":"notes"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"ExerciseLog"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"ExerciseLog"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"exercise"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"Exercise"}}]}},{"kind":"Field","name":{"kind":"Name","value":"logDateTime"}},{"kind":"Field","name":{"kind":"Name","value":"repetitions"}},{"kind":"Field","name":{"kind":"Name","value":"logValue"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"LogValue"}}]}},{"kind":"Field","name":{"kind":"Name","value":"warmup"}},{"kind":"Field","name":{"kind":"Name","value":"remark"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"LogValue"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"LogValue"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"unit"}},{"kind":"Field","name":{"kind":"Name","value":"base"}},{"kind":"Field","name":{"kind":"Name","value":"fraction"}}]}}]} as unknown as DocumentNode;
+export function useLatestLogsByExerciseIdQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    LatestLogsByExerciseIdQuery,
+    LatestLogsByExerciseIdQueryVariables
+  >,
+) {
+  const options = {...defaultOptions, ...baseOptions};
+  return Apollo.useQuery<
+    LatestLogsByExerciseIdQuery,
+    LatestLogsByExerciseIdQueryVariables
+  >(LatestLogsByExerciseIdDocument, options);
+}
+
+export function useLatestLogsByExerciseIdLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    LatestLogsByExerciseIdQuery,
+    LatestLogsByExerciseIdQueryVariables
+  >,
+) {
+  const options = {...defaultOptions, ...baseOptions};
+  return Apollo.useLazyQuery<
+    LatestLogsByExerciseIdQuery,
+    LatestLogsByExerciseIdQueryVariables
+  >(LatestLogsByExerciseIdDocument, options);
+}
+
+export type LatestLogsByExerciseIdQueryHookResult = ReturnType<
+  typeof useLatestLogsByExerciseIdQuery
+>;
+export type LatestLogsByExerciseIdLazyQueryHookResult = ReturnType<
+  typeof useLatestLogsByExerciseIdLazyQuery
+>;
+export type LatestLogsByExerciseIdQueryResult = Apollo.QueryResult<
+  LatestLogsByExerciseIdQuery,
+  LatestLogsByExerciseIdQueryVariables
+>;
+export const LatestLogsByExerciseIdAndNotWorkoutIdDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: {kind: 'Name', value: 'latestLogsByExerciseIdAndNotWorkoutId'},
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: {kind: 'Variable', name: {kind: 'Name', value: 'id'}},
+          type: {
+            kind: 'NonNullType',
+            type: {kind: 'NamedType', name: {kind: 'Name', value: 'ID'}},
+          },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: {kind: 'Name', value: 'workoutId'},
+          },
+          type: {
+            kind: 'NonNullType',
+            type: {kind: 'NamedType', name: {kind: 'Name', value: 'String'}},
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: {
+              kind: 'Name',
+              value: 'latestLogsByExerciseIdAndNotWorkoutId',
+            },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: {kind: 'Name', value: 'exerciseId'},
+                value: {kind: 'Variable', name: {kind: 'Name', value: 'id'}},
+              },
+              {
+                kind: 'Argument',
+                name: {kind: 'Name', value: 'workoutId'},
+                value: {
+                  kind: 'Variable',
+                  name: {kind: 'Name', value: 'workoutId'},
+                },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'FragmentSpread',
+                  name: {kind: 'Name', value: 'ExerciseLog'},
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: {kind: 'Name', value: 'Exercise'},
+      typeCondition: {
+        kind: 'NamedType',
+        name: {kind: 'Name', value: 'Exercise'},
+      },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {kind: 'Field', name: {kind: 'Name', value: 'id'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'name'},
+          },
+          {kind: 'Field', name: {kind: 'Name', value: 'primaryMuscles'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'secondaryMuscles'},
+          },
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'defaultAppliedWeight'},
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'FragmentSpread',
+                  name: {kind: 'Name', value: 'LogValue'},
+                },
+              ],
+            },
+          },
+          {kind: 'Field', name: {kind: 'Name', value: 'notes'}},
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: {kind: 'Name', value: 'ExerciseLog'},
+      typeCondition: {
+        kind: 'NamedType',
+        name: {kind: 'Name', value: 'ExerciseLog'},
+      },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {kind: 'Field', name: {kind: 'Name', value: 'id'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'exercise'},
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'FragmentSpread',
+                  name: {kind: 'Name', value: 'Exercise'},
+                },
+              ],
+            },
+          },
+          {kind: 'Field', name: {kind: 'Name', value: 'logDateTime'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'repetitions'},
+          },
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'logValue'},
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'FragmentSpread',
+                  name: {kind: 'Name', value: 'LogValue'},
+                },
+              ],
+            },
+          },
+          {kind: 'Field', name: {kind: 'Name', value: 'warmup'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'remark'},
+          },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: {kind: 'Name', value: 'LogValue'},
+      typeCondition: {
+        kind: 'NamedType',
+        name: {kind: 'Name', value: 'LogValue'},
+      },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {kind: 'Field', name: {kind: 'Name', value: 'unit'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'base'},
+          },
+          {kind: 'Field', name: {kind: 'Name', value: 'fraction'}},
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode;
 
 /**
  * __useLatestLogsByExerciseIdAndNotWorkoutIdQuery__
@@ -1091,18 +5245,199 @@ export const LatestLogsByExerciseIdAndNotWorkoutIdDocument = {"kind":"Document",
  *   },
  * });
  */
-export function useLatestLogsByExerciseIdAndNotWorkoutIdQuery(baseOptions: Apollo.QueryHookOptions<LatestLogsByExerciseIdAndNotWorkoutIdQuery, LatestLogsByExerciseIdAndNotWorkoutIdQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<LatestLogsByExerciseIdAndNotWorkoutIdQuery, LatestLogsByExerciseIdAndNotWorkoutIdQueryVariables>(LatestLogsByExerciseIdAndNotWorkoutIdDocument, options);
-      }
-export function useLatestLogsByExerciseIdAndNotWorkoutIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<LatestLogsByExerciseIdAndNotWorkoutIdQuery, LatestLogsByExerciseIdAndNotWorkoutIdQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<LatestLogsByExerciseIdAndNotWorkoutIdQuery, LatestLogsByExerciseIdAndNotWorkoutIdQueryVariables>(LatestLogsByExerciseIdAndNotWorkoutIdDocument, options);
-        }
-export type LatestLogsByExerciseIdAndNotWorkoutIdQueryHookResult = ReturnType<typeof useLatestLogsByExerciseIdAndNotWorkoutIdQuery>;
-export type LatestLogsByExerciseIdAndNotWorkoutIdLazyQueryHookResult = ReturnType<typeof useLatestLogsByExerciseIdAndNotWorkoutIdLazyQuery>;
-export type LatestLogsByExerciseIdAndNotWorkoutIdQueryResult = Apollo.QueryResult<LatestLogsByExerciseIdAndNotWorkoutIdQuery, LatestLogsByExerciseIdAndNotWorkoutIdQueryVariables>;
-export const AllLogsByExerciseIdDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"allLogsByExerciseId"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"exerciseId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"allLogsByExerciseId"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"exerciseId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"exerciseId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"ExerciseLog"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"Exercise"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Exercise"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"primaryMuscles"}},{"kind":"Field","name":{"kind":"Name","value":"secondaryMuscles"}},{"kind":"Field","name":{"kind":"Name","value":"defaultAppliedWeight"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"LogValue"}}]}},{"kind":"Field","name":{"kind":"Name","value":"notes"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"ExerciseLog"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"ExerciseLog"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"exercise"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"Exercise"}}]}},{"kind":"Field","name":{"kind":"Name","value":"logDateTime"}},{"kind":"Field","name":{"kind":"Name","value":"repetitions"}},{"kind":"Field","name":{"kind":"Name","value":"logValue"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"LogValue"}}]}},{"kind":"Field","name":{"kind":"Name","value":"warmup"}},{"kind":"Field","name":{"kind":"Name","value":"remark"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"LogValue"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"LogValue"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"unit"}},{"kind":"Field","name":{"kind":"Name","value":"base"}},{"kind":"Field","name":{"kind":"Name","value":"fraction"}}]}}]} as unknown as DocumentNode;
+export function useLatestLogsByExerciseIdAndNotWorkoutIdQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    LatestLogsByExerciseIdAndNotWorkoutIdQuery,
+    LatestLogsByExerciseIdAndNotWorkoutIdQueryVariables
+  >,
+) {
+  const options = {...defaultOptions, ...baseOptions};
+  return Apollo.useQuery<
+    LatestLogsByExerciseIdAndNotWorkoutIdQuery,
+    LatestLogsByExerciseIdAndNotWorkoutIdQueryVariables
+  >(LatestLogsByExerciseIdAndNotWorkoutIdDocument, options);
+}
+
+export function useLatestLogsByExerciseIdAndNotWorkoutIdLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    LatestLogsByExerciseIdAndNotWorkoutIdQuery,
+    LatestLogsByExerciseIdAndNotWorkoutIdQueryVariables
+  >,
+) {
+  const options = {...defaultOptions, ...baseOptions};
+  return Apollo.useLazyQuery<
+    LatestLogsByExerciseIdAndNotWorkoutIdQuery,
+    LatestLogsByExerciseIdAndNotWorkoutIdQueryVariables
+  >(LatestLogsByExerciseIdAndNotWorkoutIdDocument, options);
+}
+
+export type LatestLogsByExerciseIdAndNotWorkoutIdQueryHookResult = ReturnType<
+  typeof useLatestLogsByExerciseIdAndNotWorkoutIdQuery
+>;
+export type LatestLogsByExerciseIdAndNotWorkoutIdLazyQueryHookResult =
+  ReturnType<typeof useLatestLogsByExerciseIdAndNotWorkoutIdLazyQuery>;
+export type LatestLogsByExerciseIdAndNotWorkoutIdQueryResult =
+  Apollo.QueryResult<
+    LatestLogsByExerciseIdAndNotWorkoutIdQuery,
+    LatestLogsByExerciseIdAndNotWorkoutIdQueryVariables
+  >;
+export const AllLogsByExerciseIdDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: {kind: 'Name', value: 'allLogsByExerciseId'},
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: {kind: 'Name', value: 'exerciseId'},
+          },
+          type: {
+            kind: 'NonNullType',
+            type: {kind: 'NamedType', name: {kind: 'Name', value: 'ID'}},
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'allLogsByExerciseId'},
+            arguments: [
+              {
+                kind: 'Argument',
+                name: {kind: 'Name', value: 'exerciseId'},
+                value: {
+                  kind: 'Variable',
+                  name: {kind: 'Name', value: 'exerciseId'},
+                },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'FragmentSpread',
+                  name: {kind: 'Name', value: 'ExerciseLog'},
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: {kind: 'Name', value: 'Exercise'},
+      typeCondition: {
+        kind: 'NamedType',
+        name: {kind: 'Name', value: 'Exercise'},
+      },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {kind: 'Field', name: {kind: 'Name', value: 'id'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'name'},
+          },
+          {kind: 'Field', name: {kind: 'Name', value: 'primaryMuscles'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'secondaryMuscles'},
+          },
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'defaultAppliedWeight'},
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'FragmentSpread',
+                  name: {kind: 'Name', value: 'LogValue'},
+                },
+              ],
+            },
+          },
+          {kind: 'Field', name: {kind: 'Name', value: 'notes'}},
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: {kind: 'Name', value: 'ExerciseLog'},
+      typeCondition: {
+        kind: 'NamedType',
+        name: {kind: 'Name', value: 'ExerciseLog'},
+      },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {kind: 'Field', name: {kind: 'Name', value: 'id'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'exercise'},
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'FragmentSpread',
+                  name: {kind: 'Name', value: 'Exercise'},
+                },
+              ],
+            },
+          },
+          {kind: 'Field', name: {kind: 'Name', value: 'logDateTime'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'repetitions'},
+          },
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'logValue'},
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'FragmentSpread',
+                  name: {kind: 'Name', value: 'LogValue'},
+                },
+              ],
+            },
+          },
+          {kind: 'Field', name: {kind: 'Name', value: 'warmup'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'remark'},
+          },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: {kind: 'Name', value: 'LogValue'},
+      typeCondition: {
+        kind: 'NamedType',
+        name: {kind: 'Name', value: 'LogValue'},
+      },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {kind: 'Field', name: {kind: 'Name', value: 'unit'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'base'},
+          },
+          {kind: 'Field', name: {kind: 'Name', value: 'fraction'}},
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode;
 
 /**
  * __useAllLogsByExerciseIdQuery__
@@ -1120,18 +5455,261 @@ export const AllLogsByExerciseIdDocument = {"kind":"Document","definitions":[{"k
  *   },
  * });
  */
-export function useAllLogsByExerciseIdQuery(baseOptions: Apollo.QueryHookOptions<AllLogsByExerciseIdQuery, AllLogsByExerciseIdQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<AllLogsByExerciseIdQuery, AllLogsByExerciseIdQueryVariables>(AllLogsByExerciseIdDocument, options);
-      }
-export function useAllLogsByExerciseIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<AllLogsByExerciseIdQuery, AllLogsByExerciseIdQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<AllLogsByExerciseIdQuery, AllLogsByExerciseIdQueryVariables>(AllLogsByExerciseIdDocument, options);
-        }
-export type AllLogsByExerciseIdQueryHookResult = ReturnType<typeof useAllLogsByExerciseIdQuery>;
-export type AllLogsByExerciseIdLazyQueryHookResult = ReturnType<typeof useAllLogsByExerciseIdLazyQuery>;
-export type AllLogsByExerciseIdQueryResult = Apollo.QueryResult<AllLogsByExerciseIdQuery, AllLogsByExerciseIdQueryVariables>;
-export const ChartDataOfXMonthsByExerciseIdDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"chartDataOfXMonthsByExerciseId"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"exerciseId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"months"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"zonedDateTimeString"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"chartDataOfXMonthsByExerciseId"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"exerciseId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"exerciseId"}}},{"kind":"Argument","name":{"kind":"Name","value":"months"},"value":{"kind":"Variable","name":{"kind":"Name","value":"months"}}},{"kind":"Argument","name":{"kind":"Name","value":"zonedDateTimeString"},"value":{"kind":"Variable","name":{"kind":"Name","value":"zonedDateTimeString"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"ExerciseLineChartData"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"Exercise"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Exercise"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"primaryMuscles"}},{"kind":"Field","name":{"kind":"Name","value":"secondaryMuscles"}},{"kind":"Field","name":{"kind":"Name","value":"defaultAppliedWeight"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"LogValue"}}]}},{"kind":"Field","name":{"kind":"Name","value":"notes"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"ExerciseLog"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"ExerciseLog"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"exercise"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"Exercise"}}]}},{"kind":"Field","name":{"kind":"Name","value":"logDateTime"}},{"kind":"Field","name":{"kind":"Name","value":"repetitions"}},{"kind":"Field","name":{"kind":"Name","value":"logValue"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"LogValue"}}]}},{"kind":"Field","name":{"kind":"Name","value":"warmup"}},{"kind":"Field","name":{"kind":"Name","value":"remark"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"ExerciseLineChartData"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"ExerciseLineChartData"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"monthLabel"}},{"kind":"Field","name":{"kind":"Name","value":"logs"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"ExerciseLog"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"LogValue"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"LogValue"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"unit"}},{"kind":"Field","name":{"kind":"Name","value":"base"}},{"kind":"Field","name":{"kind":"Name","value":"fraction"}}]}}]} as unknown as DocumentNode;
+export function useAllLogsByExerciseIdQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    AllLogsByExerciseIdQuery,
+    AllLogsByExerciseIdQueryVariables
+  >,
+) {
+  const options = {...defaultOptions, ...baseOptions};
+  return Apollo.useQuery<
+    AllLogsByExerciseIdQuery,
+    AllLogsByExerciseIdQueryVariables
+  >(AllLogsByExerciseIdDocument, options);
+}
+
+export function useAllLogsByExerciseIdLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    AllLogsByExerciseIdQuery,
+    AllLogsByExerciseIdQueryVariables
+  >,
+) {
+  const options = {...defaultOptions, ...baseOptions};
+  return Apollo.useLazyQuery<
+    AllLogsByExerciseIdQuery,
+    AllLogsByExerciseIdQueryVariables
+  >(AllLogsByExerciseIdDocument, options);
+}
+
+export type AllLogsByExerciseIdQueryHookResult = ReturnType<
+  typeof useAllLogsByExerciseIdQuery
+>;
+export type AllLogsByExerciseIdLazyQueryHookResult = ReturnType<
+  typeof useAllLogsByExerciseIdLazyQuery
+>;
+export type AllLogsByExerciseIdQueryResult = Apollo.QueryResult<
+  AllLogsByExerciseIdQuery,
+  AllLogsByExerciseIdQueryVariables
+>;
+export const ChartDataOfXMonthsByExerciseIdDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: {kind: 'Name', value: 'chartDataOfXMonthsByExerciseId'},
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: {kind: 'Name', value: 'exerciseId'},
+          },
+          type: {
+            kind: 'NonNullType',
+            type: {kind: 'NamedType', name: {kind: 'Name', value: 'ID'}},
+          },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {kind: 'Variable', name: {kind: 'Name', value: 'months'}},
+          type: {
+            kind: 'NonNullType',
+            type: {kind: 'NamedType', name: {kind: 'Name', value: 'Int'}},
+          },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: {kind: 'Name', value: 'zonedDateTimeString'},
+          },
+          type: {
+            kind: 'NonNullType',
+            type: {kind: 'NamedType', name: {kind: 'Name', value: 'String'}},
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'chartDataOfXMonthsByExerciseId'},
+            arguments: [
+              {
+                kind: 'Argument',
+                name: {kind: 'Name', value: 'exerciseId'},
+                value: {
+                  kind: 'Variable',
+                  name: {kind: 'Name', value: 'exerciseId'},
+                },
+              },
+              {
+                kind: 'Argument',
+                name: {kind: 'Name', value: 'months'},
+                value: {
+                  kind: 'Variable',
+                  name: {kind: 'Name', value: 'months'},
+                },
+              },
+              {
+                kind: 'Argument',
+                name: {kind: 'Name', value: 'zonedDateTimeString'},
+                value: {
+                  kind: 'Variable',
+                  name: {kind: 'Name', value: 'zonedDateTimeString'},
+                },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'FragmentSpread',
+                  name: {kind: 'Name', value: 'ExerciseLineChartData'},
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: {kind: 'Name', value: 'Exercise'},
+      typeCondition: {
+        kind: 'NamedType',
+        name: {kind: 'Name', value: 'Exercise'},
+      },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {kind: 'Field', name: {kind: 'Name', value: 'id'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'name'},
+          },
+          {kind: 'Field', name: {kind: 'Name', value: 'primaryMuscles'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'secondaryMuscles'},
+          },
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'defaultAppliedWeight'},
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'FragmentSpread',
+                  name: {kind: 'Name', value: 'LogValue'},
+                },
+              ],
+            },
+          },
+          {kind: 'Field', name: {kind: 'Name', value: 'notes'}},
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: {kind: 'Name', value: 'ExerciseLog'},
+      typeCondition: {
+        kind: 'NamedType',
+        name: {kind: 'Name', value: 'ExerciseLog'},
+      },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {kind: 'Field', name: {kind: 'Name', value: 'id'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'exercise'},
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'FragmentSpread',
+                  name: {kind: 'Name', value: 'Exercise'},
+                },
+              ],
+            },
+          },
+          {kind: 'Field', name: {kind: 'Name', value: 'logDateTime'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'repetitions'},
+          },
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'logValue'},
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'FragmentSpread',
+                  name: {kind: 'Name', value: 'LogValue'},
+                },
+              ],
+            },
+          },
+          {kind: 'Field', name: {kind: 'Name', value: 'warmup'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'remark'},
+          },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: {kind: 'Name', value: 'ExerciseLineChartData'},
+      typeCondition: {
+        kind: 'NamedType',
+        name: {kind: 'Name', value: 'ExerciseLineChartData'},
+      },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {kind: 'Field', name: {kind: 'Name', value: 'monthLabel'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'logs'},
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'FragmentSpread',
+                  name: {kind: 'Name', value: 'ExerciseLog'},
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: {kind: 'Name', value: 'LogValue'},
+      typeCondition: {
+        kind: 'NamedType',
+        name: {kind: 'Name', value: 'LogValue'},
+      },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {kind: 'Field', name: {kind: 'Name', value: 'unit'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'base'},
+          },
+          {kind: 'Field', name: {kind: 'Name', value: 'fraction'}},
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode;
 
 /**
  * __useChartDataOfXMonthsByExerciseIdQuery__
@@ -1151,18 +5729,106 @@ export const ChartDataOfXMonthsByExerciseIdDocument = {"kind":"Document","defini
  *   },
  * });
  */
-export function useChartDataOfXMonthsByExerciseIdQuery(baseOptions: Apollo.QueryHookOptions<ChartDataOfXMonthsByExerciseIdQuery, ChartDataOfXMonthsByExerciseIdQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<ChartDataOfXMonthsByExerciseIdQuery, ChartDataOfXMonthsByExerciseIdQueryVariables>(ChartDataOfXMonthsByExerciseIdDocument, options);
-      }
-export function useChartDataOfXMonthsByExerciseIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ChartDataOfXMonthsByExerciseIdQuery, ChartDataOfXMonthsByExerciseIdQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<ChartDataOfXMonthsByExerciseIdQuery, ChartDataOfXMonthsByExerciseIdQueryVariables>(ChartDataOfXMonthsByExerciseIdDocument, options);
-        }
-export type ChartDataOfXMonthsByExerciseIdQueryHookResult = ReturnType<typeof useChartDataOfXMonthsByExerciseIdQuery>;
-export type ChartDataOfXMonthsByExerciseIdLazyQueryHookResult = ReturnType<typeof useChartDataOfXMonthsByExerciseIdLazyQuery>;
-export type ChartDataOfXMonthsByExerciseIdQueryResult = Apollo.QueryResult<ChartDataOfXMonthsByExerciseIdQuery, ChartDataOfXMonthsByExerciseIdQueryVariables>;
-export const MyPreferenceDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"myPreference"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"myPreference"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"Preference"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"Preference"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Preference"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"weightUnit"}},{"kind":"Field","name":{"kind":"Name","value":"distanceUnit"}},{"kind":"Field","name":{"kind":"Name","value":"defaultRepetitions"}},{"kind":"Field","name":{"kind":"Name","value":"hideUnitSelector"}},{"kind":"Field","name":{"kind":"Name","value":"autoAdjustWorkoutMuscleGroups"}},{"kind":"Field","name":{"kind":"Name","value":"timerDuration"}},{"kind":"Field","name":{"kind":"Name","value":"autoStartTimer"}},{"kind":"Field","name":{"kind":"Name","value":"playTimerCompletionSound"}}]}}]} as unknown as DocumentNode;
+export function useChartDataOfXMonthsByExerciseIdQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    ChartDataOfXMonthsByExerciseIdQuery,
+    ChartDataOfXMonthsByExerciseIdQueryVariables
+  >,
+) {
+  const options = {...defaultOptions, ...baseOptions};
+  return Apollo.useQuery<
+    ChartDataOfXMonthsByExerciseIdQuery,
+    ChartDataOfXMonthsByExerciseIdQueryVariables
+  >(ChartDataOfXMonthsByExerciseIdDocument, options);
+}
+
+export function useChartDataOfXMonthsByExerciseIdLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    ChartDataOfXMonthsByExerciseIdQuery,
+    ChartDataOfXMonthsByExerciseIdQueryVariables
+  >,
+) {
+  const options = {...defaultOptions, ...baseOptions};
+  return Apollo.useLazyQuery<
+    ChartDataOfXMonthsByExerciseIdQuery,
+    ChartDataOfXMonthsByExerciseIdQueryVariables
+  >(ChartDataOfXMonthsByExerciseIdDocument, options);
+}
+
+export type ChartDataOfXMonthsByExerciseIdQueryHookResult = ReturnType<
+  typeof useChartDataOfXMonthsByExerciseIdQuery
+>;
+export type ChartDataOfXMonthsByExerciseIdLazyQueryHookResult = ReturnType<
+  typeof useChartDataOfXMonthsByExerciseIdLazyQuery
+>;
+export type ChartDataOfXMonthsByExerciseIdQueryResult = Apollo.QueryResult<
+  ChartDataOfXMonthsByExerciseIdQuery,
+  ChartDataOfXMonthsByExerciseIdQueryVariables
+>;
+export const MyPreferenceDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: {kind: 'Name', value: 'myPreference'},
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'myPreference'},
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'FragmentSpread',
+                  name: {kind: 'Name', value: 'Preference'},
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: {kind: 'Name', value: 'Preference'},
+      typeCondition: {
+        kind: 'NamedType',
+        name: {kind: 'Name', value: 'Preference'},
+      },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {kind: 'Field', name: {kind: 'Name', value: 'weightUnit'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'distanceUnit'},
+          },
+          {kind: 'Field', name: {kind: 'Name', value: 'defaultRepetitions'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'hideUnitSelector'},
+          },
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'autoAdjustWorkoutMuscleGroups'},
+          },
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'timerDuration'},
+          },
+          {kind: 'Field', name: {kind: 'Name', value: 'autoStartTimer'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'playTimerCompletionSound'},
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode;
 
 /**
  * __useMyPreferenceQuery__
@@ -1179,18 +5845,107 @@ export const MyPreferenceDocument = {"kind":"Document","definitions":[{"kind":"O
  *   },
  * });
  */
-export function useMyPreferenceQuery(baseOptions?: Apollo.QueryHookOptions<MyPreferenceQuery, MyPreferenceQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<MyPreferenceQuery, MyPreferenceQueryVariables>(MyPreferenceDocument, options);
-      }
-export function useMyPreferenceLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<MyPreferenceQuery, MyPreferenceQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<MyPreferenceQuery, MyPreferenceQueryVariables>(MyPreferenceDocument, options);
-        }
-export type MyPreferenceQueryHookResult = ReturnType<typeof useMyPreferenceQuery>;
-export type MyPreferenceLazyQueryHookResult = ReturnType<typeof useMyPreferenceLazyQuery>;
-export type MyPreferenceQueryResult = Apollo.QueryResult<MyPreferenceQuery, MyPreferenceQueryVariables>;
-export const MeDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"me"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"me"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"User"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"CognitoUser"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"CognitoUser"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"User"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"User"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"fid"}},{"kind":"Field","name":{"kind":"Name","value":"cognitoUser"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"CognitoUser"}}]}}]}}]} as unknown as DocumentNode;
+export function useMyPreferenceQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    MyPreferenceQuery,
+    MyPreferenceQueryVariables
+  >,
+) {
+  const options = {...defaultOptions, ...baseOptions};
+  return Apollo.useQuery<MyPreferenceQuery, MyPreferenceQueryVariables>(
+    MyPreferenceDocument,
+    options,
+  );
+}
+
+export function useMyPreferenceLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    MyPreferenceQuery,
+    MyPreferenceQueryVariables
+  >,
+) {
+  const options = {...defaultOptions, ...baseOptions};
+  return Apollo.useLazyQuery<MyPreferenceQuery, MyPreferenceQueryVariables>(
+    MyPreferenceDocument,
+    options,
+  );
+}
+
+export type MyPreferenceQueryHookResult = ReturnType<
+  typeof useMyPreferenceQuery
+>;
+export type MyPreferenceLazyQueryHookResult = ReturnType<
+  typeof useMyPreferenceLazyQuery
+>;
+export type MyPreferenceQueryResult = Apollo.QueryResult<
+  MyPreferenceQuery,
+  MyPreferenceQueryVariables
+>;
+export const MeDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: {kind: 'Name', value: 'me'},
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'me'},
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {kind: 'FragmentSpread', name: {kind: 'Name', value: 'User'}},
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: {kind: 'Name', value: 'CognitoUser'},
+      typeCondition: {
+        kind: 'NamedType',
+        name: {kind: 'Name', value: 'CognitoUser'},
+      },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [{kind: 'Field', name: {kind: 'Name', value: 'name'}}],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: {kind: 'Name', value: 'User'},
+      typeCondition: {kind: 'NamedType', name: {kind: 'Name', value: 'User'}},
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {kind: 'Field', name: {kind: 'Name', value: 'id'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'fid'},
+          },
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'cognitoUser'},
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'FragmentSpread',
+                  name: {kind: 'Name', value: 'CognitoUser'},
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode;
 
 /**
  * __useMeQuery__
@@ -1207,18 +5962,70 @@ export const MeDocument = {"kind":"Document","definitions":[{"kind":"OperationDe
  *   },
  * });
  */
-export function useMeQuery(baseOptions?: Apollo.QueryHookOptions<MeQuery, MeQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<MeQuery, MeQueryVariables>(MeDocument, options);
-      }
-export function useMeLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<MeQuery, MeQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<MeQuery, MeQueryVariables>(MeDocument, options);
-        }
+export function useMeQuery(
+  baseOptions?: Apollo.QueryHookOptions<MeQuery, MeQueryVariables>,
+) {
+  const options = {...defaultOptions, ...baseOptions};
+  return Apollo.useQuery<MeQuery, MeQueryVariables>(MeDocument, options);
+}
+
+export function useMeLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<MeQuery, MeQueryVariables>,
+) {
+  const options = {...defaultOptions, ...baseOptions};
+  return Apollo.useLazyQuery<MeQuery, MeQueryVariables>(MeDocument, options);
+}
+
 export type MeQueryHookResult = ReturnType<typeof useMeQuery>;
 export type MeLazyQueryHookResult = ReturnType<typeof useMeLazyQuery>;
 export type MeQueryResult = Apollo.QueryResult<MeQuery, MeQueryVariables>;
-export const ChartDataMuscleGroupsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"chartDataMuscleGroups"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"chartDataMuscleGroups"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"MuscleGroupChartData"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"MuscleGroupChartData"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"MuscleGroupChartData"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"color"}},{"kind":"Field","name":{"kind":"Name","value":"muscleGroup"}},{"kind":"Field","name":{"kind":"Name","value":"count"}}]}}]} as unknown as DocumentNode;
+export const ChartDataMuscleGroupsDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: {kind: 'Name', value: 'chartDataMuscleGroups'},
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'chartDataMuscleGroups'},
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'FragmentSpread',
+                  name: {kind: 'Name', value: 'MuscleGroupChartData'},
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: {kind: 'Name', value: 'MuscleGroupChartData'},
+      typeCondition: {
+        kind: 'NamedType',
+        name: {kind: 'Name', value: 'MuscleGroupChartData'},
+      },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {kind: 'Field', name: {kind: 'Name', value: 'color'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'muscleGroup'},
+          },
+          {kind: 'Field', name: {kind: 'Name', value: 'count'}},
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode;
 
 /**
  * __useChartDataMuscleGroupsQuery__
@@ -1235,18 +6042,61 @@ export const ChartDataMuscleGroupsDocument = {"kind":"Document","definitions":[{
  *   },
  * });
  */
-export function useChartDataMuscleGroupsQuery(baseOptions?: Apollo.QueryHookOptions<ChartDataMuscleGroupsQuery, ChartDataMuscleGroupsQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<ChartDataMuscleGroupsQuery, ChartDataMuscleGroupsQueryVariables>(ChartDataMuscleGroupsDocument, options);
-      }
-export function useChartDataMuscleGroupsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ChartDataMuscleGroupsQuery, ChartDataMuscleGroupsQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<ChartDataMuscleGroupsQuery, ChartDataMuscleGroupsQueryVariables>(ChartDataMuscleGroupsDocument, options);
-        }
-export type ChartDataMuscleGroupsQueryHookResult = ReturnType<typeof useChartDataMuscleGroupsQuery>;
-export type ChartDataMuscleGroupsLazyQueryHookResult = ReturnType<typeof useChartDataMuscleGroupsLazyQuery>;
-export type ChartDataMuscleGroupsQueryResult = Apollo.QueryResult<ChartDataMuscleGroupsQuery, ChartDataMuscleGroupsQueryVariables>;
-export const CountTotalTimeWorkoutsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"countTotalTimeWorkouts"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"countTotalTimeAllMyWorkoutsInMinutes"}}]}}]} as unknown as DocumentNode;
+export function useChartDataMuscleGroupsQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    ChartDataMuscleGroupsQuery,
+    ChartDataMuscleGroupsQueryVariables
+  >,
+) {
+  const options = {...defaultOptions, ...baseOptions};
+  return Apollo.useQuery<
+    ChartDataMuscleGroupsQuery,
+    ChartDataMuscleGroupsQueryVariables
+  >(ChartDataMuscleGroupsDocument, options);
+}
+
+export function useChartDataMuscleGroupsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    ChartDataMuscleGroupsQuery,
+    ChartDataMuscleGroupsQueryVariables
+  >,
+) {
+  const options = {...defaultOptions, ...baseOptions};
+  return Apollo.useLazyQuery<
+    ChartDataMuscleGroupsQuery,
+    ChartDataMuscleGroupsQueryVariables
+  >(ChartDataMuscleGroupsDocument, options);
+}
+
+export type ChartDataMuscleGroupsQueryHookResult = ReturnType<
+  typeof useChartDataMuscleGroupsQuery
+>;
+export type ChartDataMuscleGroupsLazyQueryHookResult = ReturnType<
+  typeof useChartDataMuscleGroupsLazyQuery
+>;
+export type ChartDataMuscleGroupsQueryResult = Apollo.QueryResult<
+  ChartDataMuscleGroupsQuery,
+  ChartDataMuscleGroupsQueryVariables
+>;
+export const CountTotalTimeWorkoutsDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: {kind: 'Name', value: 'countTotalTimeWorkouts'},
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'countTotalTimeAllMyWorkoutsInMinutes'},
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode;
 
 /**
  * __useCountTotalTimeWorkoutsQuery__
@@ -1263,18 +6113,58 @@ export const CountTotalTimeWorkoutsDocument = {"kind":"Document","definitions":[
  *   },
  * });
  */
-export function useCountTotalTimeWorkoutsQuery(baseOptions?: Apollo.QueryHookOptions<CountTotalTimeWorkoutsQuery, CountTotalTimeWorkoutsQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<CountTotalTimeWorkoutsQuery, CountTotalTimeWorkoutsQueryVariables>(CountTotalTimeWorkoutsDocument, options);
-      }
-export function useCountTotalTimeWorkoutsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<CountTotalTimeWorkoutsQuery, CountTotalTimeWorkoutsQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<CountTotalTimeWorkoutsQuery, CountTotalTimeWorkoutsQueryVariables>(CountTotalTimeWorkoutsDocument, options);
-        }
-export type CountTotalTimeWorkoutsQueryHookResult = ReturnType<typeof useCountTotalTimeWorkoutsQuery>;
-export type CountTotalTimeWorkoutsLazyQueryHookResult = ReturnType<typeof useCountTotalTimeWorkoutsLazyQuery>;
-export type CountTotalTimeWorkoutsQueryResult = Apollo.QueryResult<CountTotalTimeWorkoutsQuery, CountTotalTimeWorkoutsQueryVariables>;
-export const CountWorkoutsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"countWorkouts"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"countMyWorkouts"}}]}}]} as unknown as DocumentNode;
+export function useCountTotalTimeWorkoutsQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    CountTotalTimeWorkoutsQuery,
+    CountTotalTimeWorkoutsQueryVariables
+  >,
+) {
+  const options = {...defaultOptions, ...baseOptions};
+  return Apollo.useQuery<
+    CountTotalTimeWorkoutsQuery,
+    CountTotalTimeWorkoutsQueryVariables
+  >(CountTotalTimeWorkoutsDocument, options);
+}
+
+export function useCountTotalTimeWorkoutsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    CountTotalTimeWorkoutsQuery,
+    CountTotalTimeWorkoutsQueryVariables
+  >,
+) {
+  const options = {...defaultOptions, ...baseOptions};
+  return Apollo.useLazyQuery<
+    CountTotalTimeWorkoutsQuery,
+    CountTotalTimeWorkoutsQueryVariables
+  >(CountTotalTimeWorkoutsDocument, options);
+}
+
+export type CountTotalTimeWorkoutsQueryHookResult = ReturnType<
+  typeof useCountTotalTimeWorkoutsQuery
+>;
+export type CountTotalTimeWorkoutsLazyQueryHookResult = ReturnType<
+  typeof useCountTotalTimeWorkoutsLazyQuery
+>;
+export type CountTotalTimeWorkoutsQueryResult = Apollo.QueryResult<
+  CountTotalTimeWorkoutsQuery,
+  CountTotalTimeWorkoutsQueryVariables
+>;
+export const CountWorkoutsDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: {kind: 'Name', value: 'countWorkouts'},
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {kind: 'Field', name: {kind: 'Name', value: 'countMyWorkouts'}},
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode;
 
 /**
  * __useCountWorkoutsQuery__
@@ -1291,18 +6181,58 @@ export const CountWorkoutsDocument = {"kind":"Document","definitions":[{"kind":"
  *   },
  * });
  */
-export function useCountWorkoutsQuery(baseOptions?: Apollo.QueryHookOptions<CountWorkoutsQuery, CountWorkoutsQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<CountWorkoutsQuery, CountWorkoutsQueryVariables>(CountWorkoutsDocument, options);
-      }
-export function useCountWorkoutsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<CountWorkoutsQuery, CountWorkoutsQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<CountWorkoutsQuery, CountWorkoutsQueryVariables>(CountWorkoutsDocument, options);
-        }
-export type CountWorkoutsQueryHookResult = ReturnType<typeof useCountWorkoutsQuery>;
-export type CountWorkoutsLazyQueryHookResult = ReturnType<typeof useCountWorkoutsLazyQuery>;
-export type CountWorkoutsQueryResult = Apollo.QueryResult<CountWorkoutsQuery, CountWorkoutsQueryVariables>;
-export const HasActiveWorkoutDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"hasActiveWorkout"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"meHasActiveWorkout"}}]}}]} as unknown as DocumentNode;
+export function useCountWorkoutsQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    CountWorkoutsQuery,
+    CountWorkoutsQueryVariables
+  >,
+) {
+  const options = {...defaultOptions, ...baseOptions};
+  return Apollo.useQuery<CountWorkoutsQuery, CountWorkoutsQueryVariables>(
+    CountWorkoutsDocument,
+    options,
+  );
+}
+
+export function useCountWorkoutsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    CountWorkoutsQuery,
+    CountWorkoutsQueryVariables
+  >,
+) {
+  const options = {...defaultOptions, ...baseOptions};
+  return Apollo.useLazyQuery<CountWorkoutsQuery, CountWorkoutsQueryVariables>(
+    CountWorkoutsDocument,
+    options,
+  );
+}
+
+export type CountWorkoutsQueryHookResult = ReturnType<
+  typeof useCountWorkoutsQuery
+>;
+export type CountWorkoutsLazyQueryHookResult = ReturnType<
+  typeof useCountWorkoutsLazyQuery
+>;
+export type CountWorkoutsQueryResult = Apollo.QueryResult<
+  CountWorkoutsQuery,
+  CountWorkoutsQueryVariables
+>;
+export const HasActiveWorkoutDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: {kind: 'Name', value: 'hasActiveWorkout'},
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {kind: 'Field', name: {kind: 'Name', value: 'meHasActiveWorkout'}},
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode;
 
 /**
  * __useHasActiveWorkoutQuery__
@@ -1319,18 +6249,274 @@ export const HasActiveWorkoutDocument = {"kind":"Document","definitions":[{"kind
  *   },
  * });
  */
-export function useHasActiveWorkoutQuery(baseOptions?: Apollo.QueryHookOptions<HasActiveWorkoutQuery, HasActiveWorkoutQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<HasActiveWorkoutQuery, HasActiveWorkoutQueryVariables>(HasActiveWorkoutDocument, options);
-      }
-export function useHasActiveWorkoutLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<HasActiveWorkoutQuery, HasActiveWorkoutQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<HasActiveWorkoutQuery, HasActiveWorkoutQueryVariables>(HasActiveWorkoutDocument, options);
-        }
-export type HasActiveWorkoutQueryHookResult = ReturnType<typeof useHasActiveWorkoutQuery>;
-export type HasActiveWorkoutLazyQueryHookResult = ReturnType<typeof useHasActiveWorkoutLazyQuery>;
-export type HasActiveWorkoutQueryResult = Apollo.QueryResult<HasActiveWorkoutQuery, HasActiveWorkoutQueryVariables>;
-export const WorkoutByIdDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"workoutById"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"workoutById"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"WorkoutLong"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"Exercise"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Exercise"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"primaryMuscles"}},{"kind":"Field","name":{"kind":"Name","value":"secondaryMuscles"}},{"kind":"Field","name":{"kind":"Name","value":"defaultAppliedWeight"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"LogValue"}}]}},{"kind":"Field","name":{"kind":"Name","value":"notes"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"ExerciseLog"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"ExerciseLog"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"exercise"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"Exercise"}}]}},{"kind":"Field","name":{"kind":"Name","value":"logDateTime"}},{"kind":"Field","name":{"kind":"Name","value":"repetitions"}},{"kind":"Field","name":{"kind":"Name","value":"logValue"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"LogValue"}}]}},{"kind":"Field","name":{"kind":"Name","value":"warmup"}},{"kind":"Field","name":{"kind":"Name","value":"remark"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"GroupedExerciseLog"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"GroupedExerciseLog"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"exercise"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"Exercise"}}]}},{"kind":"Field","name":{"kind":"Name","value":"logs"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"ExerciseLog"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"LogValue"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"LogValue"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"unit"}},{"kind":"Field","name":{"kind":"Name","value":"base"}},{"kind":"Field","name":{"kind":"Name","value":"fraction"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"WorkoutLong"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Workout"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"muscleGroups"}},{"kind":"Field","name":{"kind":"Name","value":"startDateTime"}},{"kind":"Field","name":{"kind":"Name","value":"endDateTime"}},{"kind":"Field","name":{"kind":"Name","value":"active"}},{"kind":"Field","name":{"kind":"Name","value":"groupedExerciseLogs"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"GroupedExerciseLog"}}]}},{"kind":"Field","name":{"kind":"Name","value":"remark"}}]}}]} as unknown as DocumentNode;
+export function useHasActiveWorkoutQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    HasActiveWorkoutQuery,
+    HasActiveWorkoutQueryVariables
+  >,
+) {
+  const options = {...defaultOptions, ...baseOptions};
+  return Apollo.useQuery<HasActiveWorkoutQuery, HasActiveWorkoutQueryVariables>(
+    HasActiveWorkoutDocument,
+    options,
+  );
+}
+
+export function useHasActiveWorkoutLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    HasActiveWorkoutQuery,
+    HasActiveWorkoutQueryVariables
+  >,
+) {
+  const options = {...defaultOptions, ...baseOptions};
+  return Apollo.useLazyQuery<
+    HasActiveWorkoutQuery,
+    HasActiveWorkoutQueryVariables
+  >(HasActiveWorkoutDocument, options);
+}
+
+export type HasActiveWorkoutQueryHookResult = ReturnType<
+  typeof useHasActiveWorkoutQuery
+>;
+export type HasActiveWorkoutLazyQueryHookResult = ReturnType<
+  typeof useHasActiveWorkoutLazyQuery
+>;
+export type HasActiveWorkoutQueryResult = Apollo.QueryResult<
+  HasActiveWorkoutQuery,
+  HasActiveWorkoutQueryVariables
+>;
+export const WorkoutByIdDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: {kind: 'Name', value: 'workoutById'},
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: {kind: 'Variable', name: {kind: 'Name', value: 'id'}},
+          type: {
+            kind: 'NonNullType',
+            type: {kind: 'NamedType', name: {kind: 'Name', value: 'ID'}},
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'workoutById'},
+            arguments: [
+              {
+                kind: 'Argument',
+                name: {kind: 'Name', value: 'id'},
+                value: {kind: 'Variable', name: {kind: 'Name', value: 'id'}},
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'FragmentSpread',
+                  name: {kind: 'Name', value: 'WorkoutLong'},
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: {kind: 'Name', value: 'Exercise'},
+      typeCondition: {
+        kind: 'NamedType',
+        name: {kind: 'Name', value: 'Exercise'},
+      },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {kind: 'Field', name: {kind: 'Name', value: 'id'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'name'},
+          },
+          {kind: 'Field', name: {kind: 'Name', value: 'primaryMuscles'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'secondaryMuscles'},
+          },
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'defaultAppliedWeight'},
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'FragmentSpread',
+                  name: {kind: 'Name', value: 'LogValue'},
+                },
+              ],
+            },
+          },
+          {kind: 'Field', name: {kind: 'Name', value: 'notes'}},
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: {kind: 'Name', value: 'ExerciseLog'},
+      typeCondition: {
+        kind: 'NamedType',
+        name: {kind: 'Name', value: 'ExerciseLog'},
+      },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {kind: 'Field', name: {kind: 'Name', value: 'id'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'exercise'},
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'FragmentSpread',
+                  name: {kind: 'Name', value: 'Exercise'},
+                },
+              ],
+            },
+          },
+          {kind: 'Field', name: {kind: 'Name', value: 'logDateTime'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'repetitions'},
+          },
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'logValue'},
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'FragmentSpread',
+                  name: {kind: 'Name', value: 'LogValue'},
+                },
+              ],
+            },
+          },
+          {kind: 'Field', name: {kind: 'Name', value: 'warmup'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'remark'},
+          },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: {kind: 'Name', value: 'GroupedExerciseLog'},
+      typeCondition: {
+        kind: 'NamedType',
+        name: {kind: 'Name', value: 'GroupedExerciseLog'},
+      },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'exercise'},
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'FragmentSpread',
+                  name: {kind: 'Name', value: 'Exercise'},
+                },
+              ],
+            },
+          },
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'logs'},
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'FragmentSpread',
+                  name: {kind: 'Name', value: 'ExerciseLog'},
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: {kind: 'Name', value: 'LogValue'},
+      typeCondition: {
+        kind: 'NamedType',
+        name: {kind: 'Name', value: 'LogValue'},
+      },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {kind: 'Field', name: {kind: 'Name', value: 'unit'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'base'},
+          },
+          {kind: 'Field', name: {kind: 'Name', value: 'fraction'}},
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: {kind: 'Name', value: 'WorkoutLong'},
+      typeCondition: {
+        kind: 'NamedType',
+        name: {kind: 'Name', value: 'Workout'},
+      },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {kind: 'Field', name: {kind: 'Name', value: 'id'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'name'},
+          },
+          {kind: 'Field', name: {kind: 'Name', value: 'muscleGroups'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'startDateTime'},
+          },
+          {kind: 'Field', name: {kind: 'Name', value: 'endDateTime'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'active'},
+          },
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'groupedExerciseLogs'},
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'FragmentSpread',
+                  name: {kind: 'Name', value: 'GroupedExerciseLog'},
+                },
+              ],
+            },
+          },
+          {kind: 'Field', name: {kind: 'Name', value: 'remark'}},
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode;
 
 /**
  * __useWorkoutByIdQuery__
@@ -1348,18 +6534,97 @@ export const WorkoutByIdDocument = {"kind":"Document","definitions":[{"kind":"Op
  *   },
  * });
  */
-export function useWorkoutByIdQuery(baseOptions: Apollo.QueryHookOptions<WorkoutByIdQuery, WorkoutByIdQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<WorkoutByIdQuery, WorkoutByIdQueryVariables>(WorkoutByIdDocument, options);
-      }
-export function useWorkoutByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<WorkoutByIdQuery, WorkoutByIdQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<WorkoutByIdQuery, WorkoutByIdQueryVariables>(WorkoutByIdDocument, options);
-        }
+export function useWorkoutByIdQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    WorkoutByIdQuery,
+    WorkoutByIdQueryVariables
+  >,
+) {
+  const options = {...defaultOptions, ...baseOptions};
+  return Apollo.useQuery<WorkoutByIdQuery, WorkoutByIdQueryVariables>(
+    WorkoutByIdDocument,
+    options,
+  );
+}
+
+export function useWorkoutByIdLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    WorkoutByIdQuery,
+    WorkoutByIdQueryVariables
+  >,
+) {
+  const options = {...defaultOptions, ...baseOptions};
+  return Apollo.useLazyQuery<WorkoutByIdQuery, WorkoutByIdQueryVariables>(
+    WorkoutByIdDocument,
+    options,
+  );
+}
+
 export type WorkoutByIdQueryHookResult = ReturnType<typeof useWorkoutByIdQuery>;
-export type WorkoutByIdLazyQueryHookResult = ReturnType<typeof useWorkoutByIdLazyQuery>;
-export type WorkoutByIdQueryResult = Apollo.QueryResult<WorkoutByIdQuery, WorkoutByIdQueryVariables>;
-export const WorkoutsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"workouts"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"myWorkouts"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"WorkoutShort"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"WorkoutShort"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Workout"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"muscleGroups"}},{"kind":"Field","name":{"kind":"Name","value":"startDateTime"}},{"kind":"Field","name":{"kind":"Name","value":"endDateTime"}},{"kind":"Field","name":{"kind":"Name","value":"active"}},{"kind":"Field","name":{"kind":"Name","value":"remark"}}]}}]} as unknown as DocumentNode;
+export type WorkoutByIdLazyQueryHookResult = ReturnType<
+  typeof useWorkoutByIdLazyQuery
+>;
+export type WorkoutByIdQueryResult = Apollo.QueryResult<
+  WorkoutByIdQuery,
+  WorkoutByIdQueryVariables
+>;
+export const WorkoutsDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: {kind: 'Name', value: 'workouts'},
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'myWorkouts'},
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'FragmentSpread',
+                  name: {kind: 'Name', value: 'WorkoutShort'},
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: {kind: 'Name', value: 'WorkoutShort'},
+      typeCondition: {
+        kind: 'NamedType',
+        name: {kind: 'Name', value: 'Workout'},
+      },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {kind: 'Field', name: {kind: 'Name', value: 'id'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'name'},
+          },
+          {kind: 'Field', name: {kind: 'Name', value: 'muscleGroups'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'startDateTime'},
+          },
+          {kind: 'Field', name: {kind: 'Name', value: 'endDateTime'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'active'},
+          },
+          {kind: 'Field', name: {kind: 'Name', value: 'remark'}},
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode;
 
 /**
  * __useWorkoutsQuery__
@@ -1376,18 +6641,117 @@ export const WorkoutsDocument = {"kind":"Document","definitions":[{"kind":"Opera
  *   },
  * });
  */
-export function useWorkoutsQuery(baseOptions?: Apollo.QueryHookOptions<WorkoutsQuery, WorkoutsQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<WorkoutsQuery, WorkoutsQueryVariables>(WorkoutsDocument, options);
-      }
-export function useWorkoutsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<WorkoutsQuery, WorkoutsQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<WorkoutsQuery, WorkoutsQueryVariables>(WorkoutsDocument, options);
-        }
+export function useWorkoutsQuery(
+  baseOptions?: Apollo.QueryHookOptions<WorkoutsQuery, WorkoutsQueryVariables>,
+) {
+  const options = {...defaultOptions, ...baseOptions};
+  return Apollo.useQuery<WorkoutsQuery, WorkoutsQueryVariables>(
+    WorkoutsDocument,
+    options,
+  );
+}
+
+export function useWorkoutsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    WorkoutsQuery,
+    WorkoutsQueryVariables
+  >,
+) {
+  const options = {...defaultOptions, ...baseOptions};
+  return Apollo.useLazyQuery<WorkoutsQuery, WorkoutsQueryVariables>(
+    WorkoutsDocument,
+    options,
+  );
+}
+
 export type WorkoutsQueryHookResult = ReturnType<typeof useWorkoutsQuery>;
-export type WorkoutsLazyQueryHookResult = ReturnType<typeof useWorkoutsLazyQuery>;
-export type WorkoutsQueryResult = Apollo.QueryResult<WorkoutsQuery, WorkoutsQueryVariables>;
-export const WorkoutsOfMonthDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"workoutsOfMonth"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"zonedDateTime"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"workoutsOfCurrentMonth"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"zonedDateTimeString"},"value":{"kind":"Variable","name":{"kind":"Name","value":"zonedDateTime"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"WorkoutShort"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"WorkoutShort"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Workout"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"muscleGroups"}},{"kind":"Field","name":{"kind":"Name","value":"startDateTime"}},{"kind":"Field","name":{"kind":"Name","value":"endDateTime"}},{"kind":"Field","name":{"kind":"Name","value":"active"}},{"kind":"Field","name":{"kind":"Name","value":"remark"}}]}}]} as unknown as DocumentNode;
+export type WorkoutsLazyQueryHookResult = ReturnType<
+  typeof useWorkoutsLazyQuery
+>;
+export type WorkoutsQueryResult = Apollo.QueryResult<
+  WorkoutsQuery,
+  WorkoutsQueryVariables
+>;
+export const WorkoutsOfMonthDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: {kind: 'Name', value: 'workoutsOfMonth'},
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: {kind: 'Name', value: 'zonedDateTime'},
+          },
+          type: {
+            kind: 'NonNullType',
+            type: {kind: 'NamedType', name: {kind: 'Name', value: 'String'}},
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'workoutsOfCurrentMonth'},
+            arguments: [
+              {
+                kind: 'Argument',
+                name: {kind: 'Name', value: 'zonedDateTimeString'},
+                value: {
+                  kind: 'Variable',
+                  name: {kind: 'Name', value: 'zonedDateTime'},
+                },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'FragmentSpread',
+                  name: {kind: 'Name', value: 'WorkoutShort'},
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: {kind: 'Name', value: 'WorkoutShort'},
+      typeCondition: {
+        kind: 'NamedType',
+        name: {kind: 'Name', value: 'Workout'},
+      },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {kind: 'Field', name: {kind: 'Name', value: 'id'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'name'},
+          },
+          {kind: 'Field', name: {kind: 'Name', value: 'muscleGroups'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'startDateTime'},
+          },
+          {kind: 'Field', name: {kind: 'Name', value: 'endDateTime'}},
+          {
+            kind: 'Field',
+            name: {kind: 'Name', value: 'active'},
+          },
+          {kind: 'Field', name: {kind: 'Name', value: 'remark'}},
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode;
 
 /**
  * __useWorkoutsOfMonthQuery__
@@ -1405,14 +6769,39 @@ export const WorkoutsOfMonthDocument = {"kind":"Document","definitions":[{"kind"
  *   },
  * });
  */
-export function useWorkoutsOfMonthQuery(baseOptions: Apollo.QueryHookOptions<WorkoutsOfMonthQuery, WorkoutsOfMonthQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<WorkoutsOfMonthQuery, WorkoutsOfMonthQueryVariables>(WorkoutsOfMonthDocument, options);
-      }
-export function useWorkoutsOfMonthLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<WorkoutsOfMonthQuery, WorkoutsOfMonthQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<WorkoutsOfMonthQuery, WorkoutsOfMonthQueryVariables>(WorkoutsOfMonthDocument, options);
-        }
-export type WorkoutsOfMonthQueryHookResult = ReturnType<typeof useWorkoutsOfMonthQuery>;
-export type WorkoutsOfMonthLazyQueryHookResult = ReturnType<typeof useWorkoutsOfMonthLazyQuery>;
-export type WorkoutsOfMonthQueryResult = Apollo.QueryResult<WorkoutsOfMonthQuery, WorkoutsOfMonthQueryVariables>;
+export function useWorkoutsOfMonthQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    WorkoutsOfMonthQuery,
+    WorkoutsOfMonthQueryVariables
+  >,
+) {
+  const options = {...defaultOptions, ...baseOptions};
+  return Apollo.useQuery<WorkoutsOfMonthQuery, WorkoutsOfMonthQueryVariables>(
+    WorkoutsOfMonthDocument,
+    options,
+  );
+}
+
+export function useWorkoutsOfMonthLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    WorkoutsOfMonthQuery,
+    WorkoutsOfMonthQueryVariables
+  >,
+) {
+  const options = {...defaultOptions, ...baseOptions};
+  return Apollo.useLazyQuery<
+    WorkoutsOfMonthQuery,
+    WorkoutsOfMonthQueryVariables
+  >(WorkoutsOfMonthDocument, options);
+}
+
+export type WorkoutsOfMonthQueryHookResult = ReturnType<
+  typeof useWorkoutsOfMonthQuery
+>;
+export type WorkoutsOfMonthLazyQueryHookResult = ReturnType<
+  typeof useWorkoutsOfMonthLazyQuery
+>;
+export type WorkoutsOfMonthQueryResult = Apollo.QueryResult<
+  WorkoutsOfMonthQuery,
+  WorkoutsOfMonthQueryVariables
+>;
