@@ -7,6 +7,8 @@ import {useApolloClient} from '@apollo/client';
 import {NativeModules, Platform} from 'react-native';
 
 export enum CognitoResponse {
+  NOT_AUTHORIZED_EXCEPTION = 'NotAuthorizedException',
+  PASSWORD_RESET_REQUIRED = 'PasswordResetRequiredException',
   CODE_MISMATCH_EXCEPTION = 'CodeMismatchException',
   USERNAME_EXISTS = 'UsernameExistsException',
   EXPIRED_CODE = 'ExpiredCodeException',
@@ -30,7 +32,7 @@ const useAuth = (): {
     middleName: string,
     lastName: string,
     email: string,
-    gender: Gender,
+    gender: Gender | '',
     password: string,
   ) => Promise<{cognitoUser: CognitoUser | null | undefined; error?: string}>;
   confirmSignUp: (
@@ -64,6 +66,8 @@ const useAuth = (): {
         return 'Your confirmation code has expired. Please request a new one.';
       case CognitoResponse.CODE_MISMATCH_EXCEPTION:
         return 'Invalid verification code provided.';
+      case CognitoResponse.NOT_AUTHORIZED_EXCEPTION:
+        return "Can't resend confirmation code for this user. User is already confirmed.";
       default:
         return 'Something went wrong.';
     }
