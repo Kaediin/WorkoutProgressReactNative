@@ -5,14 +5,10 @@ import useUserStore from '../stores/userStore';
 import HeaderLabel from '../components/nav/headerComponents/HeaderLabel';
 import useAuth from '../hooks/useAuth';
 import PreferencesScreen from '../route/profile/PreferencesScreen';
-import ExercisesScreen from '../route/profile/ExercisesScreen';
-import ExerciseDetailScreen from '../route/profile/exercise/ExerciseDetailScreen';
 
 export type ProfileStackParamList = {
   ProfileScreen: undefined;
   PreferencesScreen: undefined;
-  ExercisesScreen: undefined;
-  ExerciseDetailScreen: {exerciseId: string};
 };
 
 const ProfileStackNavigator =
@@ -39,20 +35,6 @@ const ProfileStack: React.FC = () => {
         component={PreferencesScreen}
         options={{
           headerTitle: 'Preferences',
-        }}
-      />
-      <ProfileStackNavigator.Screen
-        name={'ExercisesScreen'}
-        component={ExercisesScreen}
-        options={{
-          headerTitle: 'Exercises',
-        }}
-      />
-      <ProfileStackNavigator.Screen
-        name={'ExerciseDetailScreen'}
-        component={ExerciseDetailScreen}
-        options={{
-          headerTitle: '',
         }}
       />
     </ProfileStackNavigator.Navigator>

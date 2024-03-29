@@ -396,7 +396,7 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
       });
     }
 
-    // Update text with stats from last workout that is not this but same exercise
+    // Update text with stats from last workout that is not this but same exercisedetails
     latestLogQuery({
       variables: {
         id: exerciseId,
@@ -565,7 +565,7 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
                   // Enable log button
                   setDisableLogButton(false);
 
-                  // Set the exercise log to be the last logged exercise of this workout
+                  // Set the exercisedetails log to be the last logged exercisedetails of this workout
                   const lastLogged = getLatestCurrentLog();
                   if (lastLogged) {
                     setExerciseLog({
@@ -611,7 +611,7 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
             disableLogButton
           }
           onRightTextClicked={doLogExercise}
-          leftText={'Create new exercise'}>
+          leftText={'Create new exercisedetails'}>
           {myExercisesLoading || logExeciseLoading || updateExeciseLoading ? (
             <Loader style={defaultStyles.container} dark />
           ) : (

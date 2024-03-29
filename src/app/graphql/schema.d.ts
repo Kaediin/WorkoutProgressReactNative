@@ -1,8 +1,12 @@
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
-export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
-export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
-export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
+export type Exact<T extends {[key: string]: unknown}> = {[K in keyof T]: T[K]};
+export type MakeOptional<T, K extends keyof T> = Omit<T, K> & {
+  [SubKey in K]?: Maybe<T[SubKey]>;
+};
+export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & {
+  [SubKey in K]: Maybe<T[SubKey]>;
+};
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: string;
@@ -81,7 +85,7 @@ export enum LogUnit {
   Kg = 'KG',
   Km = 'KM',
   Lbs = 'LBS',
-  Mi = 'MI'
+  Mi = 'MI',
 }
 
 export type LogValue = {
@@ -117,7 +121,7 @@ export enum MuscleGroup {
   Quads = 'QUADS',
   Shins = 'SHINS',
   Triceps = 'TRICEPS',
-  UpperBack = 'UPPER_BACK'
+  UpperBack = 'UPPER_BACK',
 }
 
 export type MuscleGroupChartData = {
@@ -152,44 +156,36 @@ export type Mutation = {
   updateWorkout: Workout;
 };
 
-
 export type MutationAddExerciseLogArgs = {
   autoAdjust: Scalars['Boolean'];
   input: ExerciseLogInput;
   workoutId: Scalars['ID'];
 };
 
-
 export type MutationCreateExerciseArgs = {
   input?: InputMaybe<ExerciseInput>;
 };
-
 
 export type MutationCreateUserArgs = {
   userInput: UserInput;
 };
 
-
 export type MutationDeleteExerciseArgs = {
   id: Scalars['ID'];
 };
 
-
 export type MutationDeleteWorkoutArgs = {
   id: Scalars['ID'];
 };
-
 
 export type MutationEndWorkoutArgs = {
   workoutId: Scalars['ID'];
   zonedDateTimeString: Scalars['String'];
 };
 
-
 export type MutationMeStartWorkoutArgs = {
   input: WorkoutInput;
 };
-
 
 export type MutationReLogLatestLogArgs = {
   autoAdjust: Scalars['Boolean'];
@@ -197,40 +193,33 @@ export type MutationReLogLatestLogArgs = {
   zonedDateTimeString: Scalars['String'];
 };
 
-
 export type MutationReLogLogArgs = {
   input: ExerciseLogInput;
   workoutId: Scalars['ID'];
 };
-
 
 export type MutationRemoveExerciseLogArgs = {
   autoAdjust: Scalars['Boolean'];
   exerciseLogId: Scalars['String'];
 };
 
-
 export type MutationRestartWorkoutArgs = {
   id: Scalars['ID'];
 };
-
 
 export type MutationUpdateExerciseArgs = {
   id: Scalars['ID'];
   input?: InputMaybe<ExerciseInput>;
 };
 
-
 export type MutationUpdateExerciseLogArgs = {
   exerciseLogId: Scalars['ID'];
   input: ExerciseLogInput;
 };
 
-
 export type MutationUpdateMyPreferenceArgs = {
   input: PreferenceInput;
 };
-
 
 export type MutationUpdateWorkoutArgs = {
   id: Scalars['ID'];
@@ -266,15 +255,15 @@ export type Query = {
   allLogsByExerciseId: Array<ExerciseLog>;
   /** Get chart data per muscle group */
   chartDataMuscleGroups: Array<MuscleGroupChartData>;
-  /** Get chart data of last x months for logs by exercise id */
+  /** Get chart data of last x months for logs by exercisedetails id */
   chartDataOfXMonthsByExerciseId: Array<ExerciseLineChartData>;
   /** Count my workouts */
   countMyWorkouts: Scalars['Int'];
   /** Get total time of all workouts */
   countTotalTimeAllMyWorkoutsInMinutes: Scalars['Float'];
-  /** Get all of the latest logs by exercise id from the same workout */
+  /** Get all of the latest logs by exercisedetails id from the same workout */
   latestLogsByExerciseId?: Maybe<Array<Maybe<ExerciseLog>>>;
-  /** Get all of the latest logs by exercise id from the same workout except given workout Id */
+  /** Get all of the latest logs by exercisedetails id from the same workout except given workout Id */
   latestLogsByExerciseIdAndNotWorkoutId?: Maybe<Array<Maybe<ExerciseLog>>>;
   me?: Maybe<User>;
   /** Check if me has an active workout ie. one that hasn't ended yet */
@@ -291,11 +280,9 @@ export type Query = {
   workoutsOfCurrentMonth: Array<Workout>;
 };
 
-
 export type QueryAllLogsByExerciseIdArgs = {
   exerciseId: Scalars['ID'];
 };
-
 
 export type QueryChartDataOfXMonthsByExerciseIdArgs = {
   exerciseId: Scalars['ID'];
@@ -303,27 +290,22 @@ export type QueryChartDataOfXMonthsByExerciseIdArgs = {
   zonedDateTimeString: Scalars['String'];
 };
 
-
 export type QueryLatestLogsByExerciseIdArgs = {
   exerciseId: Scalars['ID'];
 };
-
 
 export type QueryLatestLogsByExerciseIdAndNotWorkoutIdArgs = {
   exerciseId: Scalars['ID'];
   workoutId: Scalars['String'];
 };
 
-
 export type QueryUserByIdArgs = {
   id: Scalars['String'];
 };
 
-
 export type QueryWorkoutByIdArgs = {
   id: Scalars['ID'];
 };
-
 
 export type QueryWorkoutsOfCurrentMonthArgs = {
   zonedDateTimeString: Scalars['String'];

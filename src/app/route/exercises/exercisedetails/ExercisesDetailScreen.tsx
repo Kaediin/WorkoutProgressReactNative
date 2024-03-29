@@ -1,6 +1,5 @@
 import React, {useEffect, useMemo, useState} from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {ProfileStackParamList} from '../../../stacks/ProfileStack';
 import GradientBackground from '../../../components/common/GradientBackground';
 import {
   ExerciseLineChartDataFragment,
@@ -9,7 +8,6 @@ import {
   useAllLogsByExerciseIdLazyQuery,
   useChartDataOfXMonthsByExerciseIdLazyQuery,
 } from '../../../graphql/operations';
-import Loader from '../../../components/common/Loader';
 import {Dimensions, FlatList, StyleSheet, View} from 'react-native';
 import {
   combineLogValueBaseFraction,
@@ -20,23 +18,29 @@ import moment from 'moment/moment';
 import {defaultStyles} from '../../../utils/DefaultStyles';
 import Constants from '../../../utils/Constants';
 import {LineChart} from 'react-native-chart-kit';
-import HeaderLabel from '../../../components/nav/headerComponents/HeaderLabel';
 import usePreferenceStore from '../../../stores/preferenceStore';
+import {ExercisesStackParamList} from '../../../stacks/ExercisesStack';
+import Loader from '../../../components/common/Loader';
+import ContextMenu from 'react-native-context-menu-view';
+import HeaderLabel from '../../../components/nav/headerComponents/HeaderLabel';
 
 type Props = NativeStackScreenProps<
-  ProfileStackParamList,
-  'ExerciseDetailScreen'
+  ExercisesStackParamList,
+  'ExercisesDetailScreen'
 >;
 
-const ExerciseDetailScreen: React.FC<Props> = props => {
+const ExercisesDetailScreen: React.FC<Props> = props => {
   const preferences = usePreferenceStore(state => state.preference);
-  const [ignoreWarmup, setIgnoreWarmup] = useState(false);
+  const [filterMode, setFilterMode] = useState<
+    'ONLY_WARMUP' | 'ONLY_LOGS' | 'MIX'
+  >('MIX');
   const [allLogs, setAllLogs] = useState<ExerciseLogFragment[]>([]);
+  const [filteredLogs, setFilteredLogs] = useState<ExerciseLogFragment[]>([]);
   const [chartData, setChartData] = useState<ExerciseLineChartDataFragment[]>(
     [],
   );
 
-  // Fetch chart data by exercise id
+  // Fetch chart data by exercisedetails id
   const [fetchChartData, {loading: loadinChartData}] =
     useChartDataOfXMonthsByExerciseIdLazyQuery({
       onCompleted: data => {
@@ -46,17 +50,16 @@ const ExerciseDetailScreen: React.FC<Props> = props => {
       },
     });
 
-  // Fetch all logs by exercise id
-  const [fetchAllLogs, {loading: loadingAllLogs}] =
-    useAllLogsByExerciseIdLazyQuery({
-      onCompleted: data => {
-        if (data?.allLogsByExerciseId) {
-          setAllLogs(data.allLogsByExerciseId);
-        }
-      },
-    });
+  // Fetch all logs by exercisedetails id
+  const [fetchAllLogs] = useAllLogsByExerciseIdLazyQuery({
+    onCompleted: data => {
+      if (data?.allLogsByExerciseId) {
+        setAllLogs(data.allLogsByExerciseId);
+      }
+    },
+  });
 
-  // Fetch logs when param (exercise id) changes
+  // Fetch logs when param (exercisedetails id) changes
   useEffect(() => {
     if (props.route.params.exerciseId) {
       fetchAllLogs({
@@ -91,7 +94,13 @@ const ExerciseDetailScreen: React.FC<Props> = props => {
       chartData && chartData.length > 0
         ? chartData
             .flatMap(log => log.logs)
-            .filter(log => (ignoreWarmup ? log.warmup === false : true))
+            .filter(log =>
+              filterMode === 'ONLY_LOGS'
+                ? log.warmup === false
+                : filterMode === 'ONLY_WARMUP'
+                ? log.warmup === true
+                : true,
+            )
             .sort(
               (a, b) =>
                 new Date(a.logDateTime).getTime() -
@@ -99,35 +108,71 @@ const ExerciseDetailScreen: React.FC<Props> = props => {
             )
             .map(log => combineLogValueBaseFraction(log.logValue))
         : [0],
-    [chartData, ignoreWarmup],
+    [chartData, filterMode],
   );
 
-  // Adjust headerRight depending on state
   useEffect(() => {
+    // Adjust headerRight depending on state
     props.navigation.setOptions({
       headerRight: () => (
-        <HeaderLabel
-          label={ignoreWarmup ? 'Show warmup' : 'Ignore warmup'}
-          onPress={() => setIgnoreWarmup(!ignoreWarmup)}
-        />
+        <ContextMenu
+          actions={[
+            {
+              title: 'Only Warmup',
+              disabled: filterMode === 'ONLY_WARMUP',
+            },
+            {
+              title: 'Only Logs',
+              disabled: filterMode === 'ONLY_LOGS',
+            },
+            {
+              title: 'Mix',
+              disabled: filterMode === 'MIX',
+            },
+          ]}
+          onPress={e => {
+            switch (e.nativeEvent.name) {
+              case 'Only Warmup':
+                setFilterMode('ONLY_WARMUP');
+                break;
+              case 'Only Logs':
+                setFilterMode('ONLY_LOGS');
+                break;
+              case 'Mix':
+                setFilterMode('MIX');
+                break;
+            }
+          }}
+          dropdownMenuMode>
+          <HeaderLabel label="Filter" onPress={() => {}} />
+        </ContextMenu>
       ),
     });
-  }, [ignoreWarmup]);
 
-  const loading = loadingAllLogs || loadinChartData;
+    // Filter logs based on selected filter mode
+    if (allLogs && allLogs.length > 0) {
+      setFilteredLogs(
+        [...allLogs].filter(log =>
+          filterMode === 'ONLY_LOGS'
+            ? log.warmup === false
+            : filterMode === 'ONLY_WARMUP'
+            ? log.warmup === true
+            : true,
+        ),
+      );
+    }
+  }, [filterMode]);
 
   return (
     <GradientBackground>
-      {loading ? (
-        <Loader isLoading={loading} />
-      ) : (
-        <View style={defaultStyles.container}>
-          <FlatList
-            data={allLogs.filter(log =>
-              ignoreWarmup ? log.warmup === false : true,
-            )}
-            style={styles.flatlistHeight}
-            ListHeaderComponent={
+      <View style={defaultStyles.container}>
+        <FlatList
+          data={filteredLogs}
+          style={styles.flatlistHeight}
+          ListHeaderComponent={
+            loadinChartData ? (
+              <Loader isLoading style={defaultStyles.container} />
+            ) : (
               <View style={[defaultStyles.marginBottom, styles.containerChart]}>
                 <LineChart
                   data={{
@@ -155,6 +200,7 @@ const ExerciseDetailScreen: React.FC<Props> = props => {
                       stroke: Constants.PRIMARY_GRADIENT[1],
                     },
                   }}
+                  fromZero
                   bezier
                 />
                 <View>
@@ -169,35 +215,34 @@ const ExerciseDetailScreen: React.FC<Props> = props => {
                   </View>
                 </View>
               </View>
-            }
-            stickyHeaderIndices={[0]}
-            renderItem={item => {
-              return (
-                <View style={styles.containerLogRow}>
-                  <View style={[defaultStyles.row, defaultStyles.spaceBetween]}>
-                    <AppText>
-                      {item.item.warmup && '• '}
-                      {logValueToString(item.item.logValue)} x{' '}
-                      {item.item.repetitions}
-                    </AppText>
-                    <AppText>
-                      {moment(item.item.logDateTime).format(
-                        'MMMM DD yyyy - HH:mm:ss',
-                      )}
-                    </AppText>
-                  </View>
-                  {item.item.remark && (
-                    <AppText
-                      style={[defaultStyles.p11, defaultStyles.marginTop]}>
-                      {item.item.remark}
-                    </AppText>
-                  )}
+            )
+          }
+          stickyHeaderIndices={[0]}
+          renderItem={item => {
+            return (
+              <View style={styles.containerLogRow}>
+                <View style={[defaultStyles.row, defaultStyles.spaceBetween]}>
+                  <AppText>
+                    {item.item.warmup && '• '}
+                    {logValueToString(item.item.logValue)} x{' '}
+                    {item.item.repetitions}
+                  </AppText>
+                  <AppText>
+                    {moment(item.item.logDateTime).format(
+                      'MMMM DD yyyy - HH:mm:ss',
+                    )}
+                  </AppText>
                 </View>
-              );
-            }}
-          />
-        </View>
-      )}
+                {item.item.remark && (
+                  <AppText style={[defaultStyles.p11, defaultStyles.marginTop]}>
+                    {item.item.remark}
+                  </AppText>
+                )}
+              </View>
+            );
+          }}
+        />
+      </View>
     </GradientBackground>
   );
 };
@@ -223,4 +268,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ExerciseDetailScreen;
+export default ExercisesDetailScreen;

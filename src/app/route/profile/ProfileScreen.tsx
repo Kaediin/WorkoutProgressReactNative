@@ -11,7 +11,7 @@ import {WorkoutShortFragment} from '../../graphql/operations';
 import WorkoutListItem from '../../components/workouts/WorkoutListItem';
 import TotalWorkoutTime from './insights/TotalWorkoutTime';
 import TotalWorkouts from './insights/TotalWorkouts';
-import {Exercise, Settings} from '../../icons/svg';
+import {Settings} from '../../icons/svg';
 import Constants from '../../utils/Constants';
 import MuscleGroupDistribution from './insights/MuscleGroupDistribution';
 
@@ -45,18 +45,11 @@ const ProfileScreen: React.FC<Props> = ({navigation}) => {
           ]}>
           <TotalWorkoutTime />
           <TotalWorkouts />
-          <View style={styles.containerIcons}>
-            <TouchableOpacity
-              style={styles.icons}
-              onPress={() => navigation.navigate('PreferencesScreen')}>
-              <Settings />
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.icons}
-              onPress={() => navigation.navigate('ExercisesScreen')}>
-              <Exercise />
-            </TouchableOpacity>
-          </View>
+          <TouchableOpacity
+            style={styles.containerIcons}
+            onPress={() => navigation.navigate('PreferencesScreen')}>
+            <Settings />
+          </TouchableOpacity>
         </View>
         <View style={[styles.marginTopLarge, styles.containerCalendar]}>
           <WorkoutCalendarView onSelectDay={setSelectedWorkouts} />
@@ -89,14 +82,12 @@ const ProfileScreen: React.FC<Props> = ({navigation}) => {
 const styles = StyleSheet.create({
   containerIcons: {
     height: 60,
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  icons: {
+    width: 60,
     padding: Constants.CONTAINER_PADDING_MARGIN / 2,
     borderRadius: Constants.BORDER_RADIUS_SMALL,
     backgroundColor: Constants.TERTIARY_GRADIENT[0],
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   marginTopLarge: {
     marginTop: 30,
