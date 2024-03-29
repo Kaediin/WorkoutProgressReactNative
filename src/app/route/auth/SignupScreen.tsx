@@ -39,10 +39,9 @@ const SignupScreen: React.FC<Props> = props => {
       firstName.length > 0 &&
       lastName.length > 0 &&
       isValidEmail(email) &&
-      gender !== undefined &&
       isValidPassword(password) &&
       password === passwordConfirmation,
-    [firstName, lastName, email, gender, password, passwordConfirmation],
+    [firstName, lastName, email, password, passwordConfirmation],
   );
 
   return (
@@ -173,15 +172,12 @@ const SignupScreen: React.FC<Props> = props => {
           <GradientButton
             title={'Create'}
             onClick={async () => {
-              if (!gender) {
-                return;
-              }
               const {cognitoUser, error} = await signUp(
                 firstName,
                 middleName,
                 lastName,
                 email,
-                gender,
+                gender ?? '',
                 password,
               );
               if (error) {
