@@ -82,8 +82,8 @@ const ExercisesScreen: React.FC<Props> = props => {
     props.navigation.setOptions({
       headerRight: () => (
         <HeaderLabel
-          label={'Create'}
-          onPress={() => setCreateExerciseModalActive(true)}
+          label={'Filter'}
+          onPress={() => refMuscleGroupFilterSelect?.current?.present()}
         />
       ),
     });

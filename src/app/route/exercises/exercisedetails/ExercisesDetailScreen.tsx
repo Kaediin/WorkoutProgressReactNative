@@ -161,7 +161,7 @@ const ExercisesDetailScreen: React.FC<Props> = props => {
         ),
       );
     }
-  }, [filterMode]);
+  }, [filterMode, allLogs]);
 
   return (
     <GradientBackground>

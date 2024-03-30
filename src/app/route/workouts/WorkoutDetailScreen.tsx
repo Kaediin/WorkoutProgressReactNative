@@ -596,7 +596,7 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
         <CreateExerciseModalContent
           active={createExerciseModal}
           onDismiss={() => setCreateExerciseModal(false)}
-          onUpdate={refetchMyExercises}
+          onUpdate={() => refetchMyExercises()}
         />
         <CustomBottomSheet
           ref={bottomSheetRef}
@@ -611,7 +611,7 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
             disableLogButton
           }
           onRightTextClicked={doLogExercise}
-          leftText={'Create new exercisedetails'}>
+          leftText={'Create exercise'}>
           {myExercisesLoading || logExeciseLoading || updateExeciseLoading ? (
             <Loader style={defaultStyles.container} dark />
           ) : (
