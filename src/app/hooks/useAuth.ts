@@ -52,6 +52,7 @@ const useAuth = (): {
     success?: any;
     error?: string;
   }>;
+  deleteUser: () => Promise<string | void>;
 } => {
   const setAuthToken = useAuthStore(state => state.setAuthToken);
   const setState = useAuthStore(state => state.setState);
@@ -140,7 +141,7 @@ const useAuth = (): {
     middleName: string,
     lastName: string,
     email: string,
-    gender: Gender,
+    gender: Gender | '',
     password: string,
   ): Promise<{cognitoUser: CognitoUser | null | undefined; error?: string}> => {
     try {
@@ -256,6 +257,14 @@ const useAuth = (): {
     }
   };
 
+  const deleteUser = async (): Promise<string | void> => {
+    try {
+      return await Auth.deleteUser();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return {
     getToken,
     signIn,
@@ -266,6 +275,7 @@ const useAuth = (): {
     requestNewCode,
     handleResetPassword,
     handleResetPasswordSubmit,
+    deleteUser,
   };
 };
 

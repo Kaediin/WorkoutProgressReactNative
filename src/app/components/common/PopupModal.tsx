@@ -16,6 +16,7 @@ interface PopupModalProps {
   onDismiss: () => void;
   overrideGradient?: (string | number)[];
   overrideTitle?: string;
+  overrideConfirmGradient?: string[];
 }
 
 const PopupModal: React.FC<PopupModalProps> = props => {
@@ -53,7 +54,9 @@ const PopupModal: React.FC<PopupModalProps> = props => {
               <GradientButton
                 title={'Confirm'}
                 onClick={props.onConfirm}
-                gradients={Constants.TERTIARY_GRADIENT}
+                gradients={
+                  props.overrideConfirmGradient || Constants.TERTIARY_GRADIENT
+                }
                 styles={defaultStyles.flex1}
               />
             )}
