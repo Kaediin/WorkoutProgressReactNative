@@ -6,7 +6,25 @@ export const DATE_TIME_FORMAT = 'DD MMM yyyy - HH:mm';
 export const getRelativeTimeIfToday = (dateString: string): string => {
   const date = moment.utc(dateString);
   if (date.isSame(moment(), 'day')) {
-    return date.local(true).fromNow();
+    // Parse the localized datetime
+    const dateTime: Date = date.local(true).toDate();
+    const now = new Date();
+
+    // Calculate the difference in milliseconds
+    const diffInMs = now - dateTime;
+
+    // Convert milliseconds to minutes
+    const diffInMinutes = Math.floor(diffInMs / 60000);
+
+    if (diffInMinutes < 60) {
+      return `${diffInMinutes} minutes ago`;
+    } else {
+      // Convert minutes to hours and remaining minutes
+      const hours = Math.floor(diffInMinutes / 60);
+      const minutes = diffInMinutes % 60;
+
+      return `${hours} hours, ${minutes} minutes ago`;
+    }
   } else {
     return date.format(DATE_TIME_FORMAT);
   }
