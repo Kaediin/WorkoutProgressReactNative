@@ -11,7 +11,7 @@ import {WorkoutShortFragment} from '../../graphql/operations';
 import WorkoutListItem from '../../components/workouts/WorkoutListItem';
 import TotalWorkoutTime from './insights/TotalWorkoutTime';
 import TotalWorkouts from './insights/TotalWorkouts';
-import {Settings} from '../../icons/svg';
+import {Preferences} from '../../icons/svg';
 import Constants from '../../utils/Constants';
 import MuscleGroupDistribution from './insights/MuscleGroupDistribution';
 
@@ -48,7 +48,7 @@ const ProfileScreen: React.FC<Props> = ({navigation}) => {
           <TouchableOpacity
             style={styles.containerIcons}
             onPress={() => navigation.navigate('PreferencesScreen')}>
-            <Settings />
+            <Preferences />
           </TouchableOpacity>
         </View>
         <View style={[styles.marginTopLarge, styles.containerCalendar]}>
@@ -81,8 +81,8 @@ const ProfileScreen: React.FC<Props> = ({navigation}) => {
 
 const styles = StyleSheet.create({
   containerIcons: {
-    height: 60,
-    width: 60,
+    height: 40,
+    width: 40,
     padding: Constants.CONTAINER_PADDING_MARGIN / 2,
     borderRadius: Constants.BORDER_RADIUS_SMALL,
     backgroundColor: Constants.TERTIARY_GRADIENT[0],
