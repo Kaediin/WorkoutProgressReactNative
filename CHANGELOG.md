@@ -1,3 +1,21 @@
+## [0.2.3]
+
+### Changed
+
+- #89: Adjusted size of insights data
+- #90: Increased visibility of graph
+- #91: Log date time is not rounded to the nearest hour after threshold
+
+### Fixed
+
+- #88: On load, the logs are loaded for an exercise in exercise detail screen
+- #88: Create button on top right is now 'filter' on exercises screen
+- #88: When logging an exercise, the top-left button is now named 'Create exercise'
+
+### Added
+
+- #92: User can now delete their account
+
 ## [0.2.2]
 
 ### Added
