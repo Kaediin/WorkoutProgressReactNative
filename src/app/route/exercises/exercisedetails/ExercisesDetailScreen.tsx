@@ -195,8 +195,8 @@ const ExercisesDetailScreen: React.FC<Props> = props => {
                     decimalPlaces: 0, // optional, defaults to 2dp
                     color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
                     propsForDots: {
-                      r: '6',
-                      strokeWidth: '2',
+                      r: '3',
+                      strokeWidth: '1',
                       stroke: Constants.PRIMARY_GRADIENT[1],
                     },
                   }}
