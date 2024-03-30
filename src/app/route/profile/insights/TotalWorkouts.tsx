@@ -21,7 +21,7 @@ const TotalWorkouts: React.FC = () => {
     <View style={styles.container}>
       <AppText
         style={[
-          defaultStyles.p11,
+          defaultStyles.p9,
           defaultStyles.textAlignCenter,
           defaultStyles.marginBottom,
         ]}>
@@ -37,8 +37,8 @@ const TotalWorkouts: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     width: 150,
-    height: 60,
-    padding: Constants.CONTAINER_PADDING_MARGIN,
+    height: 50,
+    paddingTop: Constants.CONTAINER_PADDING_MARGIN / 1.5,
     backgroundColor: Constants.TERTIARY_GRADIENT[0],
     borderRadius: Constants.BORDER_RADIUS_SMALL,
   },

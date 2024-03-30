@@ -91,6 +91,9 @@ export const defaultStyles = StyleSheet.create({
   p11: {
     fontSize: 11,
   },
+  p9: {
+    fontSize: 9,
+  },
   textInput: {
     backgroundColor: 'lightgrey',
     padding: Constants.CONTAINER_PADDING_MARGIN,
