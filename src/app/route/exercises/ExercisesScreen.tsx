@@ -1,6 +1,6 @@
 import React, {useEffect, useRef, useState} from 'react';
 import GradientBackground from '../../components/common/GradientBackground';
-import {FlatList} from 'react-native';
+import {FlatList, View} from 'react-native';
 import {
   ExerciseFragment,
   MuscleGroup,
@@ -22,6 +22,7 @@ import {nonNullable} from '../../utils/List';
 import FloatingButton from '../../components/common/FloatingButton';
 import {ExercisesStackParamList} from '../../stacks/ExercisesStack';
 import HeaderLabel from '../../components/nav/headerComponents/HeaderLabel';
+import AppText from '../../components/common/AppText';
 
 type Props = NativeStackScreenProps<ExercisesStackParamList, 'ExercisesScreen'>;
 
@@ -117,6 +118,10 @@ const ExercisesScreen: React.FC<Props> = props => {
     <GradientBackground>
       {exercisesDataLoading || deleteExerciseLoading ? (
         <Loader />
+      ) : allExercises.length === 0 ? (
+        <View style={defaultStyles.absoluteCenterContent}>
+          <AppText>Click on the + to add your first exercise!</AppText>
+        </View>
       ) : (
         <FlatList
           data={filteredList.sort((a, b) => a.name.localeCompare(b.name))}

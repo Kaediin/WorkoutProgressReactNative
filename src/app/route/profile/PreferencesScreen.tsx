@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {ScrollView, StyleSheet, Switch, View} from 'react-native';
+import {Platform, ScrollView, StyleSheet, Switch, View} from 'react-native';
 import GradientBackground from '../../components/common/GradientBackground';
 import {defaultStyles} from '../../utils/DefaultStyles';
 import DropDownPicker from 'react-native-dropdown-picker';
@@ -267,40 +267,42 @@ const PreferencesScreen: React.FC = () => {
               />
             </View>
           </View>
-          <View
-            style={[
-              defaultStyles.spaceBetween,
-              styles.padding,
-              styles.marginTop,
-            ]}>
-            <View style={styles.labelContainer}>
-              <AppText>Play sound after timer completes</AppText>
-              <AppText style={defaultStyles.footnote}>
-                Automatically play a sound through media that marks the
-                completion of the timer which is active in the background
-              </AppText>
-            </View>
-            <View style={styles.controlContainer}>
-              <Switch
-                value={preferenceInput?.playTimerCompletionSound ?? true}
-                onValueChange={value => {
-                  setPreferenceInput(prevState => ({
-                    ...prevState,
-                    playTimerCompletionSound: value,
-                  }));
-                  updateMyPreferences({
-                    variables: {
-                      input: {
-                        ...preferenceInput,
-                        playTimerCompletionSound: value,
+          {Platform.OS === 'ios' && (
+            <View
+              style={[
+                defaultStyles.spaceBetween,
+                styles.padding,
+                styles.marginTop,
+              ]}>
+              <View style={styles.labelContainer}>
+                <AppText>Play sound after timer completes</AppText>
+                <AppText style={defaultStyles.footnote}>
+                  Automatically play a sound through media that marks the
+                  completion of the timer which is active in the background
+                </AppText>
+              </View>
+              <View style={styles.controlContainer}>
+                <Switch
+                  value={preferenceInput?.playTimerCompletionSound ?? true}
+                  onValueChange={value => {
+                    setPreferenceInput(prevState => ({
+                      ...prevState,
+                      playTimerCompletionSound: value,
+                    }));
+                    updateMyPreferences({
+                      variables: {
+                        input: {
+                          ...preferenceInput,
+                          playTimerCompletionSound: value,
+                        },
                       },
-                    },
-                  });
-                }}
-                ios_backgroundColor={'red'}
-              />
+                    });
+                  }}
+                  ios_backgroundColor={'red'}
+                />
+              </View>
             </View>
-          </View>
+          )}
         </View>
       </ScrollView>
       <SinglePicker

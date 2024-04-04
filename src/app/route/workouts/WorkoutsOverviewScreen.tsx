@@ -241,7 +241,7 @@ const WorkoutsOverviewScreen: React.FC<Props> = ({navigation}) => {
       ) : loading ? (
         <Loader isLoading={loading} />
       ) : existingWorkouts.length === 0 ? (
-        <View style={styles.centerContent}>
+        <View style={defaultStyles.absoluteCenterContent}>
           <AppText>Click on the + to start your first workout!</AppText>
         </View>
       ) : (
@@ -386,11 +386,6 @@ const styles = StyleSheet.create({
     fontSize: 18,
     margin: Constants.CONTAINER_PADDING_MARGIN,
     fontWeight: 'bold',
-  },
-  centerContent: {
-    height: '100%',
-    justifyContent: 'center',
-    alignItems: 'center',
   },
   containerTitle: {
     backgroundColor: 'lightgrey',

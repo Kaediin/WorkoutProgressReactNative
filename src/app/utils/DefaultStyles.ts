@@ -120,4 +120,9 @@ export const defaultStyles = StyleSheet.create({
   blackTextColor: {
     color: 'black',
   },
+  absoluteCenterContent: {
+    height: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
 });
