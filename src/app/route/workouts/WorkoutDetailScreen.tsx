@@ -3,6 +3,7 @@ import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {
   Dimensions,
   FlatList,
+  Platform,
   ScrollView,
   StyleSheet,
   Switch,
@@ -334,10 +335,12 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
 
   // Define FAB actions
   const getFabActions = (): IActionProps[] => {
+    const isIOS = Platform.OS === 'ios';
+
     const actions: IActionProps[] = [
       {
         text: timerActive ? 'Clear timer' : 'Start timer',
-        icon: <Timer />,
+        icon: isIOS ? <Timer /> : require('../../icons/timer.png'),
         name: Fab.TIMER,
         color: timerActive
           ? Constants.ERROR_GRADIENT[0]
@@ -352,14 +355,14 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
     ) {
       actions.push({
         text: 'Re-log latest log',
-        icon: <Retry />,
+        icon: isIOS ? <Retry /> : require('../../icons/redo.png'),
         name: Fab.RELOG,
         color: Constants.FAB_ACTION_COLOR,
       });
     }
     actions.push({
       text: 'New log',
-      icon: <Add />,
+      icon: isIOS ? <Add /> : require('../../icons/plus.png'),
       name: Fab.NEWLOG,
       color: Constants.FAB_ACTION_COLOR,
     });
