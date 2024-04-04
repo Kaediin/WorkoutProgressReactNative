@@ -63,7 +63,12 @@ const ProfileScreen: React.FC<Props> = ({navigation}) => {
         <View style={styles.paddingBottom}>
           <MuscleGroupDistribution />
         </View>
-        <View style={styles.marginTopExtraLarge}>
+        <View
+          style={[
+            styles.marginTopExtraLarge,
+            defaultStyles.row,
+            defaultStyles.spaceEvenly,
+          ]}>
           <HeaderLabel
             label={'Permanently delete account'}
             onPress={() => setShowDeleteAccountModal(true)}
@@ -120,6 +125,7 @@ const styles = StyleSheet.create({
   },
   marginTopExtraLarge: {
     marginTop: 100,
+    marginBottom: 20,
   },
   paddingBottom: {
     paddingBottom: Constants.CONTAINER_PADDING_MARGIN,

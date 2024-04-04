@@ -1,5 +1,6 @@
 import React from 'react';
-import {Button} from 'react-native';
+import ClickableText from '../../common/ClickableText';
+import {defaultStyles} from '../../../utils/DefaultStyles';
 
 interface EndWorkoutProps {
   label: string;
@@ -9,7 +10,11 @@ interface EndWorkoutProps {
 
 const HeaderLabel: React.FC<EndWorkoutProps> = props => {
   return (
-    <Button title={props.label} color={props.color} onPress={props.onPress} />
+    <ClickableText
+      text={props.label}
+      styles={{color: props.color ?? defaultStyles.clickableText.color}}
+      onPress={props.onPress}
+    />
   );
 };
 
