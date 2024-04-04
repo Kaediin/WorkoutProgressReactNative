@@ -163,6 +163,39 @@ const ExercisesDetailScreen: React.FC<Props> = props => {
     }
   }, [filterMode, allLogs]);
 
+  let currentWorkoutId = '';
+  let currentColor = Constants.SECONDARY_GRADIENT[0];
+
+  // @ts-ignore
+  const renderItem = ({item}) => {
+    if (item.workout.id !== currentWorkoutId) {
+      currentWorkoutId = item.workout.id;
+      currentColor =
+        currentColor === Constants.SECONDARY_GRADIENT[0]
+          ? Constants.PRIMARY_GRADIENT[0]
+          : Constants.SECONDARY_GRADIENT[0];
+    }
+
+    return (
+      <View style={[styles.containerLogRow, {backgroundColor: currentColor}]}>
+        <View style={[defaultStyles.row, defaultStyles.spaceBetween]}>
+          <AppText>
+            {item.warmup && '• '}
+            {logValueToString(item.logValue)} x {item.repetitions}
+          </AppText>
+          <AppText>
+            {moment(item.logDateTime).format('MMMM DD yyyy - HH:mm:ss')}
+          </AppText>
+        </View>
+        {item.remark && (
+          <AppText style={[defaultStyles.p11, defaultStyles.marginTop]}>
+            {item.remark}
+          </AppText>
+        )}
+      </View>
+    );
+  };
+
   return (
     <GradientBackground>
       <View style={defaultStyles.container}>
@@ -218,29 +251,7 @@ const ExercisesDetailScreen: React.FC<Props> = props => {
             )
           }
           stickyHeaderIndices={[0]}
-          renderItem={item => {
-            return (
-              <View style={styles.containerLogRow}>
-                <View style={[defaultStyles.row, defaultStyles.spaceBetween]}>
-                  <AppText>
-                    {item.item.warmup && '• '}
-                    {logValueToString(item.item.logValue)} x{' '}
-                    {item.item.repetitions}
-                  </AppText>
-                  <AppText>
-                    {moment(item.item.logDateTime).format(
-                      'MMMM DD yyyy - HH:mm:ss',
-                    )}
-                  </AppText>
-                </View>
-                {item.item.remark && (
-                  <AppText style={[defaultStyles.p11, defaultStyles.marginTop]}>
-                    {item.item.remark}
-                  </AppText>
-                )}
-              </View>
-            );
-          }}
+          renderItem={renderItem}
         />
       </View>
     </GradientBackground>

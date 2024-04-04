@@ -60,6 +60,7 @@ export type ExerciseLog = {
   repetitions: Scalars['Float'];
   user: User;
   warmup?: Maybe<Scalars['Boolean']>;
+  workout: Workout;
 };
 
 export type ExerciseLogInput = {

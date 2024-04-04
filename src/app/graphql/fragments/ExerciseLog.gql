@@ -10,6 +10,9 @@ fragment ExerciseLog on ExerciseLog {
     }
     warmup
     remark
+    workout {
+        id
+    }
 }
 
 fragment ExerciseLineChartData on ExerciseLineChartData {
