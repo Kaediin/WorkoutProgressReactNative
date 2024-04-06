@@ -22,7 +22,7 @@ import AppText from '../common/AppText';
 
 interface CreateExerciseModalProps {
   active: boolean;
-  onDismiss: () => void;
+  onDismiss: (addded: boolean) => void;
   existingExercise?: ExerciseFragment;
   onUpdate?: (exercise: ExerciseFragment) => void;
 }
@@ -55,8 +55,13 @@ const CreateExerciseModalContent: React.FC<
     'PRIMARY' | 'SECONDARY'
   >();
 
-  const [createExercise, {}] = useCreateExerciseMutation({
+  const [createExercise] = useCreateExerciseMutation({
     fetchPolicy: 'no-cache',
+    onCompleted: data => {
+      if (data?.createExercise && props.onUpdate) {
+        props.onUpdate(data.createExercise);
+      }
+    },
   });
   const [updateExercise] = useUpdateExerciseMutation({
     fetchPolicy: 'no-cache',
@@ -97,6 +102,7 @@ const CreateExerciseModalContent: React.FC<
           },
         },
       });
+      props.onDismiss(false);
     } else {
       await createExercise({
         variables: {
@@ -109,9 +115,8 @@ const CreateExerciseModalContent: React.FC<
           },
         },
       });
-      props.onUpdate();
+      props.onDismiss(true);
     }
-    props.onDismiss();
     setLoading(false);
   };
 
@@ -144,7 +149,7 @@ const CreateExerciseModalContent: React.FC<
           <CustomBottomSheet
             ref={bottomSheetModalRefMain}
             index={55}
-            onDismissClicked={props.onDismiss}
+            onDismissClicked={() => props.onDismiss(false)}
             rightText={'Save'}
             onRightTextClicked={saveExercise}
             disableRightText={

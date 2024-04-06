@@ -22,10 +22,12 @@ import {nonNullable} from '../../utils/List';
 import FloatingButton from '../../components/common/FloatingButton';
 import {ExercisesStackParamList} from '../../stacks/ExercisesStack';
 import HeaderLabel from '../../components/nav/headerComponents/HeaderLabel';
+import useRouteStore from '../../stores/routeStore';
 
 type Props = NativeStackScreenProps<ExercisesStackParamList, 'ExercisesScreen'>;
 
 const ExercisesScreen: React.FC<Props> = props => {
+  const setRouteName = useRouteStore(state => state.setRouteName);
   const refMuscleGroupFilterSelect = useRef<BottomSheetModal>(null);
   useState(false);
   const [filterMuscleGroups, setFilterMuscleGroups] = useState<MuscleGroup[]>(
@@ -147,10 +149,16 @@ const ExercisesScreen: React.FC<Props> = props => {
           }}
         />
       )}
-      <FloatingButton onClick={() => setCreateExerciseModalActive(true)} />
+      <FloatingButton
+        onClick={() => {
+          setRouteName('draggableBottomOpen');
+          setCreateExerciseModalActive(true);
+        }}
+      />
       <CreateExerciseModal
         active={createExerciseModalActive}
         onDismiss={added => {
+          setRouteName('draggableBottomClose');
           setCreateExerciseModalActive(false);
           setEditExercise(undefined);
           if (added) {
