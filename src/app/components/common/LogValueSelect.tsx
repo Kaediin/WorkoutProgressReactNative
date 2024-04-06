@@ -71,6 +71,17 @@ const LogValueSelect: React.FC<LogValueSelectProps> = ({
     setFraction(_fraction);
   };
 
+  const setUnitFromPicker = (_unit: LogUnit): void => {
+    const nWeight: LogValueFragment = {
+      base,
+      fraction: fraction ? parseFloat(fraction.toString().split('.')[1]) : 0,
+      unit: _unit,
+    };
+    setNLogValue(nWeight);
+    onWeightSelected(nWeight);
+    setUnit(_unit);
+  };
+
   return (
     <>
       <View style={styles.pickerContainer}>
@@ -115,11 +126,13 @@ const LogValueSelect: React.FC<LogValueSelectProps> = ({
             </AppText>
             <Picker
               selectedValue={unit}
-              onValueChange={setUnit}
+              onValueChange={setUnitFromPicker}
               itemStyle={styles.fontSizeSmall}>
               {[
                 preferenceWeightUnit || LogUnit.KG,
                 preferenceDistanceUnit || LogUnit.KM,
+                LogUnit.MIN,
+                LogUnit.SEC,
               ].map(logUnit => (
                 <Picker.Item
                   label={logUnit}

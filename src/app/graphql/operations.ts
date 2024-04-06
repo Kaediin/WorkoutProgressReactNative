@@ -63,6 +63,7 @@ export type ExerciseLog = {
   repetitions: Scalars['Float'];
   user: User;
   warmup?: Maybe<Scalars['Boolean']>;
+  workout: Workout;
 };
 
 export type ExerciseLogInput = {
@@ -84,7 +85,9 @@ export enum LogUnit {
   KG = 'KG',
   KM = 'KM',
   LBS = 'LBS',
-  MI = 'MI'
+  MI = 'MI',
+  MIN = 'MIN',
+  SEC = 'SEC'
 }
 
 export type LogValue = {
