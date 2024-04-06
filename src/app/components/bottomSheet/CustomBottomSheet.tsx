@@ -71,6 +71,7 @@ export const CustomBottomSheet = React.forwardRef<
               text={leftText}
               onPress={onLeftTextClicked}
               hitSlop={HITSLOP}
+              containerStyles={styles.containerLeft}
             />
           ) : (
             <View />
@@ -82,6 +83,7 @@ export const CustomBottomSheet = React.forwardRef<
               onPress={onRightTextClicked}
               disabled={disableRightText}
               hitSlop={HITSLOP}
+              containerStyles={styles.containerRight}
             />
           )}
         </View>
@@ -105,5 +107,13 @@ const styles = StyleSheet.create({
   rightText: {
     alignSelf: 'flex-end',
     marginRight: 20,
+  },
+  containerLeft: {
+    padding: 10,
+    paddingLeft: 0,
+  },
+  containerRight: {
+    padding: 10,
+    paddingRight: 0,
   },
 });

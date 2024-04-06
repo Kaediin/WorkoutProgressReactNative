@@ -73,6 +73,7 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
   const preference = usePreferenceStore(state => state.preference);
   const hideUnitSelector = preference?.hideUnitSelector || false;
   const autoAdjust = preference?.autoAdjustWorkoutMuscleGroups || false;
+  const flatListRef = useRef<FlatList>(null);
 
   const bottomSheetRef = useRef<BottomSheetModal>(null);
   const setRouteName = useRouteStore(state => state.setRouteName);
@@ -440,6 +441,13 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
             </AppText>
           ) : (
             <FlatList
+              ref={flatListRef}
+              onContentSizeChange={() =>
+                flatListRef?.current?.scrollToEnd({animated: true})
+              }
+              onLayout={() =>
+                flatListRef?.current?.scrollToEnd({animated: true})
+              }
               style={styles.flatlist}
               data={workout.groupedExerciseLogs}
               ListHeaderComponent={
