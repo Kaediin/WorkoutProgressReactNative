@@ -1,3 +1,22 @@
+## [0.2.4]
+
+### Added
+
+- #87: Units for Minutes and Seconds
+- #94: Zebra styling for exercise logs in details view
+
+### Fixed
+
+- #96: [Android] Fixed an issue where the app would crash when showing SVG in FAB
+- #97: [Android] iOS Native modules don't interfere with Android logic
+- #97: [Android] Temporary disabled sound
+- #98: [Android] Fixed styling where it didn't align between iOS and Android
+- #99: Increased hitslop on bottom sheet buttons
+- #99: Timer no longer overlaps with FAB on exercises view
+- #99: Auto scroll to bottom when adding a log
+- #99: When deleting a workout while the timer is still active, it deactivates the timer
+- #99: Corrected behaviour when adding an exercise
+
 ## [0.2.3]
 
 ### Changed
