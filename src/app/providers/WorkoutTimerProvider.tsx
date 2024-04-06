@@ -3,6 +3,7 @@ import useTimerStore from '../stores/timerStore';
 import Constants from '../utils/Constants';
 import {
   NativeModules,
+  Platform,
   StyleSheet,
   TouchableOpacity,
   Vibration,
@@ -20,6 +21,7 @@ import Sound from 'react-native-sound';
 const {AudioSessionManager} = NativeModules;
 
 const WorkoutTimerProvider: React.FC<PropsWithChildren> = props => {
+  const isiOS = Platform.OS === 'ios';
   const preference = usePreferenceStore(state => state.preference);
   const hideTimer = useTimerStore(state => state.timerHidden);
   const startTimer = useTimerStore(state => state.startTimer);
@@ -35,8 +37,10 @@ const WorkoutTimerProvider: React.FC<PropsWithChildren> = props => {
   const toggleTimer = () => {
     BackgroundTimer.runBackgroundTimer(() => {
       setCountdown(secs => {
-        // Needed to keep the app active in background
-        playSilence();
+        if (isiOS) {
+          // Needed to keep the app active in background
+          playSilence();
+        }
         // Decrement every second
         if (!isPaused && secs > 0) {
           return secs - 1;
@@ -63,7 +67,7 @@ const WorkoutTimerProvider: React.FC<PropsWithChildren> = props => {
       BackgroundTimer.stopBackgroundTimer();
       startTimer(false);
       Vibration.vibrate(10, false);
-      if (preference?.playTimerCompletionSound) {
+      if (preference?.playTimerCompletionSound && isiOS) {
         playSound();
       }
     }
@@ -108,7 +112,6 @@ const WorkoutTimerProvider: React.FC<PropsWithChildren> = props => {
       }
       // Play the sound with an option to mix with other sounds
       sound.play(success => {
-        // AudioSessionManager.deactivateAudioSession();
         if (success) {
           console.log('Successfully finished playing silence');
         } else {
@@ -120,8 +123,10 @@ const WorkoutTimerProvider: React.FC<PropsWithChildren> = props => {
   };
 
   const playSound = (): void => {
-    // Activate the audio session before playing the sound. This ducks the volume of media currently playing
-    AudioSessionManager.activateAudioSession();
+    if (isiOS) {
+      // Activate the audio session before playing the sound. This ducks the volume of media currently playing
+      AudioSessionManager.activateAudioSession();
+    }
 
     Sound.setCategory('Playback', true);
     const sound = new Sound('done.mp3', Sound.MAIN_BUNDLE, error => {
@@ -138,8 +143,10 @@ const WorkoutTimerProvider: React.FC<PropsWithChildren> = props => {
         }
         sound.release(); // Release the audio player resource once the sound is finished
 
-        // Deactivate the audio session after the sound finishes playing. This highers the volume of the media playing
-        AudioSessionManager.deactivateAudioSession();
+        if (isiOS) {
+          // Deactivate the audio session after the sound finishes playing. This highers the volume of the media playing
+          AudioSessionManager.deactivateAudioSession();
+        }
       });
     });
   };
