@@ -14,18 +14,12 @@ import TotalWorkouts from './insights/TotalWorkouts';
 import {Preferences} from '../../icons/svg';
 import Constants from '../../utils/Constants';
 import MuscleGroupDistribution from './insights/MuscleGroupDistribution';
-import PopupModal from '../../components/common/PopupModal';
-import useAuth from '../../hooks/useAuth';
-import HeaderLabel from '../../components/nav/headerComponents/HeaderLabel';
 
 type Props = NativeStackScreenProps<ProfileStackParamList, 'ProfileScreen'>;
 
 const ProfileScreen: React.FC<Props> = ({navigation}) => {
-  const {deleteUser} = useAuth();
   // Bottom sheet ref for the calendar popup
   const bottomSheetModal = useRef<BottomSheetModal>(null);
-
-  const [showDeleteAccountModal, setShowDeleteAccountModal] = useState(false);
 
   // Keep track of selected workouts which is set by tapping on a day
   const [selectedWorkouts, setSelectedWorkouts] =
@@ -63,18 +57,6 @@ const ProfileScreen: React.FC<Props> = ({navigation}) => {
         <View style={styles.paddingBottom}>
           <MuscleGroupDistribution />
         </View>
-        <View
-          style={[
-            styles.marginTopExtraLarge,
-            defaultStyles.row,
-            defaultStyles.spaceEvenly,
-          ]}>
-          <HeaderLabel
-            label={'Permanently delete account'}
-            onPress={() => setShowDeleteAccountModal(true)}
-            color={'red'}
-          />
-        </View>
       </ScrollView>
       <BottomSheetModalProvider>
         <CustomBottomSheet
@@ -93,27 +75,14 @@ const ProfileScreen: React.FC<Props> = ({navigation}) => {
           ))}
         </CustomBottomSheet>
       </BottomSheetModalProvider>
-      <PopupModal
-        message={
-          'Are you sure you want to permanently delete your account? This action cannot be reversed and your account along with its data will be erased forever'
-        }
-        isOpen={showDeleteAccountModal}
-        type={'WARNING'}
-        onDismiss={() => setShowDeleteAccountModal(false)}
-        onConfirm={() => {
-          const response = deleteUser();
-          console.log(response);
-        }}
-        overrideConfirmGradient={Constants.ERROR_GRADIENT}
-      />
     </GradientBackground>
   );
 };
 
 const styles = StyleSheet.create({
   containerIcons: {
-    height: 40,
-    width: 40,
+    height: 50,
+    width: 50,
     padding: Constants.CONTAINER_PADDING_MARGIN / 2,
     borderRadius: Constants.BORDER_RADIUS_SMALL,
     backgroundColor: Constants.TERTIARY_GRADIENT[0],
@@ -122,10 +91,6 @@ const styles = StyleSheet.create({
   },
   marginTopLarge: {
     marginTop: 30,
-  },
-  marginTopExtraLarge: {
-    marginTop: 100,
-    marginBottom: 20,
   },
   paddingBottom: {
     paddingBottom: Constants.CONTAINER_PADDING_MARGIN,
