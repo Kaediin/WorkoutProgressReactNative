@@ -1,5 +1,12 @@
 import React, {useEffect, useState} from 'react';
-import {Platform, ScrollView, StyleSheet, Switch, View} from 'react-native';
+import {
+  Platform,
+  ScrollView,
+  StyleSheet,
+  Switch,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import GradientBackground from '../../components/common/GradientBackground';
 import {defaultStyles} from '../../utils/DefaultStyles';
 import DropDownPicker from 'react-native-dropdown-picker';
@@ -13,11 +20,17 @@ import usePreferenceStore from '../../stores/preferenceStore';
 import ClickableText from '../../components/common/ClickableText';
 import SinglePicker from '../../components/bottomSheet/SinglePicker';
 import AppText from '../../components/common/AppText';
+import PopupModal from '../../components/common/PopupModal';
+import useAuth from '../../hooks/useAuth';
+import HeaderLabel from '../../components/nav/headerComponents/HeaderLabel';
+import {Delete} from '../../icons/svg';
 
 const PreferencesScreen: React.FC = () => {
+  const {deleteUser} = useAuth();
   const preference = usePreferenceStore(state => state.preference);
   const setPreference = usePreferenceStore(state => state.setPreference);
 
+  const [showDeleteAccountModal, setShowDeleteAccountModal] = useState(false);
   const [pickerActiveDuration, setPickerActiveDuration] = useState(false);
   const [pickerActiveReps, setPickerActiveReps] = useState(false);
   const [weightUnitSelect, setWeightUnitSelect] = useState<LogUnit.KG>();
@@ -303,6 +316,17 @@ const PreferencesScreen: React.FC = () => {
               </View>
             </View>
           )}
+
+          <TouchableOpacity
+            style={styles.deleteRow}
+            onPress={() => setShowDeleteAccountModal(true)}>
+            <HeaderLabel
+              label={'Permanently delete account'}
+              onPress={() => setShowDeleteAccountModal(true)}
+              color={Constants.ERROR_GRADIENT[1]}
+            />
+            <Delete />
+          </TouchableOpacity>
         </View>
       </ScrollView>
       <SinglePicker
@@ -353,6 +377,20 @@ const PreferencesScreen: React.FC = () => {
         )}
         hideRightText
       />
+
+      <PopupModal
+        message={
+          'Are you sure you want to permanently delete your account? This action cannot be reversed and your account along with its data will be erased forever'
+        }
+        isOpen={showDeleteAccountModal}
+        type={'WARNING'}
+        onDismiss={() => setShowDeleteAccountModal(false)}
+        onConfirm={() => {
+          const response = deleteUser();
+          console.log(response);
+        }}
+        overrideConfirmGradient={Constants.ERROR_GRADIENT}
+      />
     </GradientBackground>
   );
 };
@@ -393,6 +431,20 @@ const styles = StyleSheet.create({
   },
   marginTop: {
     marginTop: 20,
+  },
+  marginTopLarge: {
+    marginTop: 100,
+  },
+  deleteRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: 200,
+    borderRadius: Constants.BORDER_RADIUS_SMALL,
+    padding: Constants.CONTAINER_PADDING_MARGIN,
+    borderColor: Constants.ERROR_GRADIENT[1],
+    borderWidth: 1,
+    marginLeft: 10,
   },
 });
 export default PreferencesScreen;
