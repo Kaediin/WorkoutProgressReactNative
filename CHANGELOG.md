@@ -4,6 +4,7 @@
 
 - #87: Units for Minutes and Seconds
 - #94: Zebra styling for exercise logs in details view
+- #102: Password validation text on sign up
 
 ### Fixed
 
@@ -16,6 +17,10 @@
 - #99: Auto scroll to bottom when adding a log
 - #99: When deleting a workout while the timer is still active, it deactivates the timer
 - #99: Corrected behaviour when adding an exercise
+
+### Changed
+
+- #103: Moved permanently delete account button
 
 ## [0.2.3]
 
