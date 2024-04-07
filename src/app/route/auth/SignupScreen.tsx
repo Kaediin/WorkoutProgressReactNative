@@ -105,10 +105,6 @@ const SignupScreen: React.FC<Props> = props => {
             />
           </View>
           <View style={[styles.signupInputContainer, styles.zIndex]}>
-            <AppText style={[defaultStyles.footnote, styles.footnote]}>
-              Biological gender is only used for personalised content based on
-              your tracked workouts
-            </AppText>
             <DropDownPicker
               setValue={setGender}
               value={gender || ''}
@@ -159,12 +155,63 @@ const SignupScreen: React.FC<Props> = props => {
               maxLength={Constants.TEXT_INPUT_MAX_LENGTH}
             />
           </View>
-          <AppText style={[defaultStyles.footnote, styles.footnote]}>
-            Your password should contain at least eight characters: one digit,
-            one upper case, one lower case, and one special character.
-          </AppText>
-          <View>
-            <AppText style={styles.errorMessage}>{errorMessage}</AppText>
+          <View style={defaultStyles.marginTop}>
+            <AppText>Password requirements:</AppText>
+            <AppText
+              style={[
+                {
+                  textDecorationLine:
+                    password && password === passwordConfirmation
+                      ? 'line-through'
+                      : 'none',
+                },
+              ]}>
+              - Passwords should match
+            </AppText>
+            <AppText
+              style={[
+                {
+                  textDecorationLine:
+                    password.length >= 8 ? 'line-through' : 'none',
+                },
+              ]}>
+              - Eight characters
+            </AppText>
+            <AppText
+              style={{
+                textDecorationLine: /\d/.test(password)
+                  ? 'line-through'
+                  : 'none',
+              }}>
+              - One digit
+            </AppText>
+            <AppText
+              style={{
+                textDecorationLine: /[A-Z]/.test(password)
+                  ? 'line-through'
+                  : 'none',
+              }}>
+              - One upper case character
+            </AppText>
+            <AppText
+              style={{
+                textDecorationLine: /[a-z]/.test(password)
+                  ? 'line-through'
+                  : 'none',
+              }}>
+              - One lower case character
+            </AppText>
+            <AppText
+              style={{
+                textDecorationLine: /[#!?@$%^&*-]/.test(password)
+                  ? 'line-through'
+                  : 'none',
+              }}>
+              - One special character: #?!@$%^&*-
+            </AppText>
+            <View>
+              <AppText style={styles.errorMessage}>{errorMessage}</AppText>
+            </View>
           </View>
         </KeyboardAvoidingView>
 
@@ -206,7 +253,7 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
     padding: 20,
-    marginTop: 20,
+    marginTop: 50,
   },
   input: {
     padding: Constants.CONTAINER_PADDING_MARGIN,
@@ -229,9 +276,6 @@ const styles = StyleSheet.create({
   genderLinearGradient: {
     borderRadius: Constants.BORDER_RADIUS_SMALL,
     padding: 5,
-  },
-  footnote: {
-    marginBottom: 5,
   },
   dropdownPicker: {
     borderWidth: 0,
