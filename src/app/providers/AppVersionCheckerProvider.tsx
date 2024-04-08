@@ -70,6 +70,8 @@ const AppVersionCheckerProvider: React.FC<PropsWithChildren> = props => {
   useEffect(() => {
     if (checkAppVersionData?.checkAppVersion === true) {
       checkAppVersion();
+    } else if (checkAppVersionData?.checkAppVersion === false) {
+      console.log('[AppVersionCheckerProvider] App version check is disabled');
     }
   }, [checkAppVersionData]);
 
