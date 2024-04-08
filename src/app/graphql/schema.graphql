@@ -176,6 +176,7 @@ type Query {
 
   """Get chart data of last x months for logs by exercise id"""
   chartDataOfXMonthsByExerciseId(exerciseId: ID!, months: Int!, zonedDateTimeString: String!): [ExerciseLineChartData!]!
+  checkAppVersion: Boolean!
 
   """Count my workouts"""
   countMyWorkouts: Int!

@@ -89,13 +89,13 @@ const useAuth = (): {
         return null;
       }
     } else {
-      console.log('useAuth: trySignInWithKeyChain: no credentials');
+      console.log('[useAuth] trySignInWithKeyChain: no credentials');
     }
     return null;
   };
 
   const getToken = async (): Promise<string | null> => {
-    console.log('useAuth: getToken()');
+    console.log('[useAuth] getToken()');
     try {
       const session = await Auth.currentSession();
       if (session) {
@@ -106,7 +106,7 @@ const useAuth = (): {
 
       return trySignInWithKeyChain();
     } catch (e) {
-      console.log(`useAuth: getToken: e=${e}`);
+      console.log(`[useAuth] getToken: e=${e}`);
       return trySignInWithKeyChain();
     }
   };
