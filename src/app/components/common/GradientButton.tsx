@@ -8,7 +8,7 @@ import AppText from './AppText';
 
 interface GradientButtonProps {
   title: string;
-  onClick: () => void;
+  onPress: () => void;
   disabled?: boolean;
   gradients?: string[];
   outlineBackgroundColor?: string;
@@ -55,7 +55,7 @@ const GradientButton: React.FC<GradientButtonProps> = props => {
   ) : (
     <TouchableOpacity
       style={props.styles}
-      onPress={props.onClick}
+      onPress={props.onPress}
       activeOpacity={0.6}>
       <LinearGradient
         colors={props.gradients ?? Constants.SECONDARY_GRADIENT}

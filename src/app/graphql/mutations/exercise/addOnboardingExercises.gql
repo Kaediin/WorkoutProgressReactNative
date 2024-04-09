@@ -1,0 +1,3 @@
+mutation addOnboardingExercises($ids: [String!]!) {
+    addOnboardingExercises(ids: $ids)
+}

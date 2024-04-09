@@ -3,8 +3,10 @@ import {create} from 'zustand';
 export enum AuthState {
   USER_NOT_CONFIRMED = 'USER_NOT_CONFIRMED',
   USER_CONFIRMED = 'USER_CONFIRMED',
+  ONBOARDING = 'ONBOARDING',
   AUTHENTICATED = 'AUTHENTICATED',
   UNAUTHENTICATED = 'UNAUTHENTICATED',
+  INITIAL_LOAD = 'INITIAL_LOAD',
   UNKNOWN = 'UNKNOWN',
 }
 
@@ -22,7 +24,7 @@ interface AuthStore {
 }
 
 const useAuthStore = create<AuthStore>()(set => ({
-  state: AuthState.UNAUTHENTICATED,
+  state: AuthState.INITIAL_LOAD,
   setState: (state): void => {
     console.log('[authStore] Settings state to ' + state);
     set({state});

@@ -46,14 +46,14 @@ const PopupModal: React.FC<PopupModalProps> = props => {
           <View style={[defaultStyles.spaceBetween, defaultStyles.marginTop]}>
             <GradientButton
               title={props.onConfirm ? 'Cancel' : 'Understood'}
-              onClick={props.onDismiss}
+              onPress={props.onDismiss}
               gradients={Constants.TERTIARY_GRADIENT}
               styles={[defaultStyles.flex1, styles.margin]}
             />
             {props.onConfirm && (
               <GradientButton
                 title={'Confirm'}
-                onClick={props.onConfirm}
+                onPress={props.onConfirm}
                 gradients={
                   props.overrideConfirmGradient || Constants.TERTIARY_GRADIENT
                 }

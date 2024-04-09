@@ -174,7 +174,7 @@ const ExercisesScreen: React.FC<Props> = props => {
         onUpdate={onUpdateExercise}
       />
       <PopupModal
-        message={'Are you sure you want to delete this exercisedetails?'}
+        message={'Are you sure you want to delete this exercise?'}
         isOpen={Boolean(deleteExerciseId)}
         type={'WARNING'}
         onDismiss={() => setDeleteExerciseId('')}

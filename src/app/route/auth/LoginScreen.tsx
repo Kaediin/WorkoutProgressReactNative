@@ -4,7 +4,6 @@ import GradientButton from '../../components/common/GradientButton';
 import useAuth from '../../hooks/useAuth';
 import {CognitoUser} from 'amazon-cognito-identity-js';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {AuthStackParamList} from '../AppRoute';
 import Loader from '../../components/common/Loader';
 import GradientBackground from '../../components/common/GradientBackground';
 import Constants from '../../utils/Constants';
@@ -12,6 +11,7 @@ import {defaultStyles} from '../../utils/DefaultStyles';
 import {errorCodeToMessage} from '../../utils/String';
 import ClickableText from '../../components/common/ClickableText';
 import AppText from '../../components/common/AppText';
+import {AuthStackParamList} from '../../stacks/AuthStack';
 
 type Props = NativeStackScreenProps<AuthStackParamList, 'Login'>;
 
@@ -72,7 +72,7 @@ const LoginScreen: React.FC<Props> = props => {
               <View style={styles.loginButton}>
                 <GradientButton
                   title={'Login'}
-                  onClick={async () => {
+                  onPress={async () => {
                     setLoading(true);
                     const {user, error: signInError} = await signIn(
                       email,
@@ -102,7 +102,7 @@ const LoginScreen: React.FC<Props> = props => {
             <View style={styles.warmup}>
               <GradientButton
                 title={'Signup'}
-                onClick={() => props.navigation.navigate('Signup')}
+                onPress={() => props.navigation.navigate('Signup')}
               />
             </View>
           </View>

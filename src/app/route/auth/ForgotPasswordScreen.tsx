@@ -1,6 +1,5 @@
 import React, {useMemo, useState} from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {AuthStackParamList} from '../AppRoute';
 import GradientBackground from '../../components/common/GradientBackground';
 import {StyleSheet, TextInput, View} from 'react-native';
 import Constants from '../../utils/Constants';
@@ -10,6 +9,7 @@ import useAuth from '../../hooks/useAuth';
 import Loader from '../../components/common/Loader';
 import {isValidPassword} from '../../utils/String';
 import AppText from '../../components/common/AppText';
+import {AuthStackParamList} from '../../stacks/AuthStack';
 
 type Props = NativeStackScreenProps<AuthStackParamList, 'ForgotPassword'>;
 
@@ -153,7 +153,7 @@ const ForgotPasswordScreen: React.FC<Props> = ({navigation}) => {
                   ? 'Confirm password change'
                   : 'Request password change'
               }
-              onClick={
+              onPress={
                 showVerificationCode && passwordChangeSubmitEnabled
                   ? onResetSubmit
                   : onResetClicked

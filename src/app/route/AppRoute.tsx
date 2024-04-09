@@ -1,22 +1,10 @@
 import React, {useRef} from 'react';
 import {NavigationContainer} from '@react-navigation/native';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import LoginScreen from './auth/LoginScreen';
-import SignupScreen from './auth/SignupScreen';
 import useAuthStore, {AuthState} from '../stores/authStore';
-import ConfirmUserScreen from './auth/ConfirmUserScreen';
 import TabNavigator from '../components/nav/TabNavigator';
 import useRouteStore from '../stores/routeStore';
-import ForgotPasswordScreen from './auth/ForgotPasswordScreen';
-
-export type AuthStackParamList = {
-  Login: undefined;
-  Signup: undefined;
-  ConfirmUser: {email: string};
-  ForgotPassword: undefined;
-};
-
-const AuthStackNavigator = createNativeStackNavigator<AuthStackParamList>();
+import OnboardingStack from '../stacks/OnboardingStack';
+import AuthStack from '../stacks/AuthStack';
 
 const AppRoute: React.FC = () => {
   const authState: AuthState = useAuthStore(state => state.state);
@@ -41,32 +29,16 @@ const AppRoute: React.FC = () => {
         }
       }}>
       {authState === AuthState.AUTHENTICATED && authToken ? (
+        // Main Tabs
         <TabNavigator />
       ) : [AuthState.UNAUTHENTICATED, AuthState.USER_NOT_CONFIRMED].includes(
           authState,
         ) ? (
-        <AuthStackNavigator.Navigator initialRouteName="Login">
-          <AuthStackNavigator.Screen
-            name={'Login'}
-            component={LoginScreen}
-            options={{headerShown: false}}
-          />
-          <AuthStackNavigator.Screen
-            name={'Signup'}
-            component={SignupScreen}
-            options={{headerShown: false}}
-          />
-          <AuthStackNavigator.Screen
-            name={'ConfirmUser'}
-            component={ConfirmUserScreen}
-            options={{headerShown: false}}
-          />
-          <AuthStackNavigator.Screen
-            name={'ForgotPassword'}
-            component={ForgotPasswordScreen}
-            options={{headerShown: false}}
-          />
-        </AuthStackNavigator.Navigator>
+        // Login/ Sing-up stack
+        <AuthStack />
+      ) : authState === AuthState.ONBOARDING ? (
+        // Onboarding Stack
+        <OnboardingStack />
       ) : (
         <></>
       )}

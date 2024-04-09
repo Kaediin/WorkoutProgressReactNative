@@ -133,6 +133,8 @@ export type MuscleGroupChartData = {
 export type Mutation = {
   __typename?: 'Mutation';
   addExerciseLog?: Maybe<Workout>;
+  addOnboardingExercises?: Maybe<Scalars['Boolean']>;
+  completeOnboarding: User;
   createExercise?: Maybe<Exercise>;
   createUser?: Maybe<User>;
   deleteExercise: Scalars['Boolean'];
@@ -160,6 +162,11 @@ export type MutationAddExerciseLogArgs = {
   autoAdjust: Scalars['Boolean'];
   input: ExerciseLogInput;
   workoutId: Scalars['ID'];
+};
+
+
+export type MutationAddOnboardingExercisesArgs = {
+  ids: Array<Scalars['String']>;
 };
 
 
@@ -286,6 +293,7 @@ export type Query = {
   myPreference?: Maybe<Preference>;
   /** Fetch all my current workouts */
   myWorkouts?: Maybe<Array<Workout>>;
+  onboardingExercises: Array<Exercise>;
   userById?: Maybe<User>;
   users?: Maybe<Array<Maybe<User>>>;
   /** Fetch workout by ID */
@@ -337,6 +345,7 @@ export type User = {
   cognitoUser: CognitoUser;
   fid: Scalars['String'];
   id: Scalars['ID'];
+  onboardingCompleted?: Maybe<Scalars['Boolean']>;
 };
 
 export type UserInput = {

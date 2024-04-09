@@ -1,6 +1,7 @@
 fragment User on User {
     id
     fid
+    onboardingCompleted
     cognitoUser {
         ...CognitoUser
     }

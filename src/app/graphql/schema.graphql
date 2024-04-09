@@ -116,6 +116,8 @@ type MuscleGroupChartData {
 
 type Mutation {
   addExerciseLog(autoAdjust: Boolean!, input: ExerciseLogInput!, workoutId: ID!): Workout
+  addOnboardingExercises(ids: [String!]!): Boolean
+  completeOnboarding: User!
   createExercise(input: ExerciseInput): Exercise
   createUser(userInput: UserInput!): User
   deleteExercise(id: ID!): Boolean!
@@ -199,6 +201,7 @@ type Query {
 
   """Fetch all my current workouts"""
   myWorkouts: [Workout!]
+  onboardingExercises: [Exercise!]!
   userById(id: String!): User
   users: [User]
 
@@ -213,6 +216,7 @@ type User {
   cognitoUser: CognitoUser!
   fid: String!
   id: ID!
+  onboardingCompleted: Boolean
 }
 
 input UserInput {

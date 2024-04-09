@@ -28,13 +28,9 @@ export const AuthProvider: React.FC<PropsWithChildren> = props => {
         setState(AuthState.AUTHENTICATED);
       } else {
         setState(AuthState.UNAUTHENTICATED);
-        // Unlocking to show login screen underneath the PIN lock overlay
-        // unlock();
       }
     } catch (_) {
       setState(AuthState.UNAUTHENTICATED);
-      // setState to show login screen underneath the PIN lock overlay
-      // unlock();
     }
   };
 

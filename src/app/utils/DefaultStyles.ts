@@ -2,8 +2,23 @@ import {StyleSheet} from 'react-native';
 import Constants from './Constants';
 
 export const defaultStyles = StyleSheet.create({
+  centerContent: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '100%',
+    height: '100%',
+  },
+  marginHorizontal: {
+    marginHorizontal: Constants.CONTAINER_PADDING_MARGIN,
+  },
+  marginVertical: {
+    marginVertical: Constants.CONTAINER_PADDING_MARGIN,
+  },
   container: {
     margin: Constants.CONTAINER_PADDING_MARGIN,
+  },
+  marginTopLarge: {
+    marginTop: 100,
   },
   marginTop: {
     marginTop: Constants.CONTAINER_PADDING_MARGIN,
@@ -122,6 +137,10 @@ export const defaultStyles = StyleSheet.create({
   },
   absoluteCenterContent: {
     height: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  centerInRow: {
     justifyContent: 'center',
     alignItems: 'center',
   },

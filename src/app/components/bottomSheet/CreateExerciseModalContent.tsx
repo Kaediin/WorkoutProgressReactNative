@@ -150,7 +150,7 @@ const CreateExerciseModalContent: React.FC<
             ref={bottomSheetModalRefMain}
             index={55}
             onDismissClicked={() => props.onDismiss(false)}
-            rightText={'Save'}
+            rightText={props.existingExercise ? 'Adjust' : 'Save'}
             onRightTextClicked={saveExercise}
             disableRightText={
               exerciseName.length === 0 || primaryMuscleGroups.length === 0

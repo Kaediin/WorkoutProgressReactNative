@@ -11,7 +11,6 @@ import {
 import GradientButton from '../../components/common/GradientButton';
 import LinearGradient from 'react-native-linear-gradient';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {AuthStackParamList} from '../AppRoute';
 import {Gender} from '../../types/Type';
 import {isValidEmail, isValidPassword} from '../../utils/String';
 import useAuth from '../../hooks/useAuth';
@@ -19,6 +18,7 @@ import DropDownPicker from 'react-native-dropdown-picker';
 import {defaultStyles} from '../../utils/DefaultStyles';
 import ClickableText from '../../components/common/ClickableText';
 import AppText from '../../components/common/AppText';
+import {AuthStackParamList} from '../../stacks/AuthStack';
 
 type Props = NativeStackScreenProps<AuthStackParamList, 'Signup'>;
 
@@ -218,7 +218,7 @@ const SignupScreen: React.FC<Props> = props => {
         <View style={styles.continueButton}>
           <GradientButton
             title={'Create'}
-            onClick={async () => {
+            onPress={async () => {
               const {cognitoUser, error} = await signUp(
                 firstName,
                 middleName,

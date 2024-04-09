@@ -6,10 +6,10 @@ import Constants from '../../utils/Constants';
 import useAuth from '../../hooks/useAuth';
 import Loader from '../../components/common/Loader';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {AuthStackParamList} from '../AppRoute';
 import useAuthStore, {AuthState} from '../../stores/authStore';
 import {defaultStyles} from '../../utils/DefaultStyles';
 import AppText from '../../components/common/AppText';
+import {AuthStackParamList} from '../../stacks/AuthStack';
 
 type Props = NativeStackScreenProps<AuthStackParamList, 'ConfirmUser'>;
 
@@ -86,7 +86,7 @@ const ConfirmUserScreen: React.FC<Props> = props => {
               <View style={styles.confirmButton}>
                 <GradientButton
                   title={'Confirm'}
-                  onClick={async () => {
+                  onPress={async () => {
                     setLoading(true);
                     const {error} = await confirmSignUp(
                       props.route.params.email,
@@ -101,7 +101,7 @@ const ConfirmUserScreen: React.FC<Props> = props => {
               </View>
               <GradientButton
                 title={'Request new code'}
-                onClick={async () => {
+                onPress={async () => {
                   setLoading(true);
                   const {error} = await requestNewCode(
                     props.route.params.email,
@@ -120,7 +120,7 @@ const ConfirmUserScreen: React.FC<Props> = props => {
           <View style={styles.footer}>
             <GradientButton
               title={'Signup'}
-              onClick={() => props.navigation.navigate('Signup')}
+              onPress={() => props.navigation.navigate('Signup')}
             />
           </View>
         </View>
