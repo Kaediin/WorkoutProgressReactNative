@@ -12,60 +12,56 @@ import { useMeLazyQuery, useMyPreferenceLazyQuery } from "../graphql/operations"
 const UserProvider: React.FC<PropsWithChildren> = props => {
   // Local state hooks for user data, authentication state, and user preferences
   const me = useUserStore(state => state.me);
-  const authState = useAuthStore(state => state.state);
+  const authToken = useAuthStore(state => state.authToken);
   const setAuthState = useAuthStore(state => state.setState);
   const setUser = useUserStore(state => state.setMe);
   const setPreference = usePreferenceStore(state => state.setPreference);
 
   // Lazy queries to fetch user data and preferences from the server
-  const [getMe, {data: getMeData}] = useMeLazyQuery({fetchPolicy: 'no-cache'});
-  const [myPreference, {data: preferenceData}] = useMyPreferenceLazyQuery({
+  const [getMe] = useMeLazyQuery({
     fetchPolicy: 'no-cache',
+    onCompleted: data => {
+      if (data?.me) {
+        console.log('[UserProvider] Setting me');
+        setUser(data.me);
+        myPreference();
+      }
+    },
+  });
+  const [myPreference] = useMyPreferenceLazyQuery({
+    fetchPolicy: 'no-cache',
+    onCompleted: data => {
+      if (data?.myPreference) {
+        setPreference(data?.myPreference);
+      }
+    },
   });
 
   // Effect to fetch user data when the user is authenticated or onboarding
   useEffect(() => {
-    if (authState === AuthState.AUTHENTICATED) {
+    if (authToken) {
       getMe();
     }
-  }, [authState]);
-
-  // Effect to update local user data and fetch preferences when user data is fetched
-  useEffect(() => {
-    if (getMeData?.me) {
-      console.log('[UserProvider] Setting me');
-      setUser(getMeData.me);
-      myPreference();
-    }
-  }, [getMeData?.me]);
-
-  // Effect to update local user preferences when preferences data is fetched
-  useEffect(() => {
-    if (preferenceData?.myPreference) {
-      setPreference(preferenceData?.myPreference);
-    }
-  }, [preferenceData]);
+  }, [authToken]);
 
   // Effect to update authentication state based on whether the user has completed onboarding
-  // useEffect(() => {
-  //   if (!me) {
-  //     console.log('[UserProvider] No me');
-  //     return;
-  //   }
-  //   if (
-  //     authState === AuthState.AUTHENTICATED &&
-  //     (me?.onboardingCompleted === undefined ||
-  //       me?.onboardingCompleted === false)
-  //   ) {
-  //     setAuthState(AuthState.ONBOARDING);
-  //   } else if (
-  //     authState === AuthState.ONBOARDING &&
-  //     me?.onboardingCompleted === true
-  //   ) {
-  //     console.log('[UserProvider] Setting authenticated');
-  //     setAuthState(AuthState.AUTHENTICATED);
-  //   }
-  // }, [authState, me]);
+  useEffect(() => {
+    // If the user is not authenticated or there is no auth token, return
+    if (!me || !authToken) {
+      return;
+    }
+    // If the user is onboarding and has not completed onboarding, set the state to onboarding
+    if (
+      me?.onboardingCompleted === undefined ||
+      me?.onboardingCompleted === false
+    ) {
+      setAuthState(AuthState.ONBOARDING);
+    }
+    // If the user has completed onboarding, set the state to authenticated
+    else if (me?.onboardingCompleted === true) {
+      setAuthState(AuthState.AUTHENTICATED);
+    }
+  }, [me, authToken]);
 
   // Render children components
   return <>{props.children}</>;

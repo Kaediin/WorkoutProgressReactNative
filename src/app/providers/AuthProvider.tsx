@@ -24,8 +24,6 @@ export const AuthProvider: React.FC<PropsWithChildren> = props => {
           'AuthProvider: getAndUpdateAuthToken: Setting AUTHENTICATED',
         );
         setAuthToken(token);
-        console.log(token);
-        setState(AuthState.AUTHENTICATED);
       } else {
         setState(AuthState.UNAUTHENTICATED);
       }
@@ -39,8 +37,7 @@ export const AuthProvider: React.FC<PropsWithChildren> = props => {
     switch (data.payload.event) {
       case 'signIn':
         console.log('[AuthProvider] User signed in');
-        setState(AuthState.AUTHENTICATED);
-        // getAndUpdateAuthToken();
+        getAndUpdateAuthToken();
         break;
       case 'signUp':
         console.log('[AuthProvider] User signed up');
@@ -67,7 +64,6 @@ export const AuthProvider: React.FC<PropsWithChildren> = props => {
         break;
       case 'autoSignIn':
         getAndUpdateAuthToken();
-        setState(AuthState.AUTHENTICATED);
         break;
       case 'forgotPassword':
         break;
