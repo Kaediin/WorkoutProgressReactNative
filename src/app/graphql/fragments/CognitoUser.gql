@@ -1,3 +1,4 @@
 fragment CognitoUser on CognitoUser {
     name
+    gender
 }

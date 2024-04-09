@@ -214,10 +214,12 @@ const WorkoutsOverviewScreen: React.FC<Props> = ({navigation}) => {
       variables: {
         workoutId: workout.id,
       },
+      onCompleted: () => {
+        refetchActiveWorkout();
+        refetchWorkouts();
+        navigation.navigate('WorkoutDetail', {workoutId: workout.id});
+      },
     });
-    refetchActiveWorkout();
-    refetchWorkouts();
-    navigation.navigate('WorkoutDetail', {workoutId: workout.id});
   };
 
   return (

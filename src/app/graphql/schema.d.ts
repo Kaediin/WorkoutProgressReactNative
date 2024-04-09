@@ -17,7 +17,7 @@ export type CognitoUser = {
   __typename?: 'CognitoUser';
   email: Scalars['String'];
   family_name: Scalars['String'];
-  gender: Scalars['String'];
+  gender?: Maybe<Scalars['String']>;
   given_name: Scalars['String'];
   locale: Scalars['String'];
   name: Scalars['String'];
@@ -75,6 +75,12 @@ export type ExerciseLogInput = {
 export enum ExternalHealthProvider {
   AppleHealth = 'APPLE_HEALTH'
 }
+
+export type ExternalHealthProviderData = {
+  __typename?: 'ExternalHealthProviderData';
+  appleHealthId: Scalars['ID'];
+  provider: ExternalHealthProvider;
+};
 
 export type ExternalHealthProviderDataInput = {
   appleHealthId: Scalars['ID'];
@@ -379,6 +385,7 @@ export type Workout = {
   active?: Maybe<Scalars['Boolean']>;
   endDateTime?: Maybe<Scalars['LocalDateTime']>;
   exerciseLogs: Array<ExerciseLog>;
+  externalHealthProviderData?: Maybe<ExternalHealthProviderData>;
   groupedExerciseLogs: Array<GroupedExerciseLog>;
   id: Scalars['ID'];
   muscleGroups: Array<MuscleGroup>;

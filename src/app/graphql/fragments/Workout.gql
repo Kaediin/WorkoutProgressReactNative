@@ -19,6 +19,10 @@ fragment WorkoutLong on Workout {
         ...GroupedExerciseLog
     }
     remark
+    externalHealthProviderData {
+        appleHealthId
+        provider
+    }
 }
 
 

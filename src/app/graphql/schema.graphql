@@ -4,7 +4,7 @@ directive @oneOf on INPUT_OBJECT
 type CognitoUser {
   email: String!
   family_name: String!
-  gender: String!
+  gender: String
   given_name: String!
   locale: String!
   name: String!
@@ -58,6 +58,11 @@ input ExerciseLogInput {
 
 enum ExternalHealthProvider {
   APPLE_HEALTH
+}
+
+type ExternalHealthProviderData {
+  appleHealthId: ID!
+  provider: ExternalHealthProvider!
 }
 
 input ExternalHealthProviderDataInput {
@@ -244,6 +249,7 @@ type Workout {
   active: Boolean
   endDateTime: LocalDateTime
   exerciseLogs: [ExerciseLog!]!
+  externalHealthProviderData: ExternalHealthProviderData
   groupedExerciseLogs: [GroupedExerciseLog!]!
   id: ID!
   muscleGroups: [MuscleGroup!]!

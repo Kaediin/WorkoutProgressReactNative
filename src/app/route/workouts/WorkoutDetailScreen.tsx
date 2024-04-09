@@ -60,7 +60,7 @@ import {Fab} from '../../utils/Fab';
 import {IActionProps} from 'react-native-floating-action';
 import useTimerStore from '../../stores/timerStore';
 import useRouteStore from '../../stores/routeStore';
-import {DATE_TIME_FORMAT} from '../../utils/Date';
+import {DATE_TIME_FORMAT, getDifferenceInMinutes} from '../../utils/Date';
 import AppText from '../../components/common/AppText';
 import useAppleHealthKit from '../../hooks/useAppleHealthKit';
 import AppModal from '../../components/common/AppModal';
@@ -78,7 +78,8 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
   const startTimer = useTimerStore(state => state.startTimer);
   const preference = usePreferenceStore(state => state.preference);
   const setRouteName = useRouteStore(state => state.setRouteName);
-  const {checkHealthKitStatus, saveWorkoutAppleHealthKit} = useAppleHealthKit();
+  const {checkHealthKitStatus, saveWorkoutAppleHealthKit, getCaloriesBurned} =
+    useAppleHealthKit();
 
   // State hooks
   const hideUnitSelector = preference?.hideUnitSelector || false;
@@ -89,7 +90,9 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
   const bottomSheetRef = useRef<BottomSheetModal>(null);
 
   // State
-  const [calorieBurned, setCalorieBurned] = useState(500);
+  const [overrulePreviousHealthKitSave, setOverrulePreviousHealthKitSave] =
+    useState(false);
+  const [calorieBurned, setCalorieBurned] = useState(0);
   const [calorieBurnedEditing, setCalorieBurnedEditing] = useState(false);
   const [isHealthKitEnabled, setIsHealthKitEnabled] = useState(false);
   const [hasLogInThisWorkout, setHasLogInThisWorkout] = useState(false);
@@ -143,7 +146,7 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
     },
   });
 
-  // Get latest logs
+  // Get latest logs by exercise id in other workout
   const [latestLogQuery, {loading: latestLogsLoading}] =
     useLatestLogsByExerciseIdAndNotWorkoutIdLazyQuery({
       fetchPolicy: 'no-cache',
@@ -342,7 +345,16 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
         if (data?.endWorkout) {
           console.log('[WorkoutDetailScreen] Successfully ended workout');
           toggleTimer(false);
-          saveWorkoutAppleHealthKit(data.endWorkout, calorieBurned);
+          // Save workout to Apple HealthKit if healthkit is enabled, calories burned is greater than 0 and workout is not already saved in HealthKit or user overrules previous save
+          if (
+            isHealthKitEnabled &&
+            calorieBurned > 0 &&
+            ((workout?.externalHealthProviderData !== undefined &&
+              overrulePreviousHealthKitSave) ||
+              !workout?.externalHealthProviderData)
+          ) {
+            saveWorkoutAppleHealthKit(data.endWorkout, calorieBurned);
+          }
           // @ts-ignore
           props.navigation.navigate('WorkoutsOverview', {
             cameFrom: moment().toISOString(true),
@@ -485,13 +497,32 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
     }
   }, [endWorkoutClicked]);
 
+  // If HealthKit is enabled, calculate burned calories
+  useEffect(() => {
+    const latestLog = getLatestCurrentLog();
+    if (isHealthKitEnabled && latestLog && workout?.startDateTime) {
+      getCaloriesBurned(
+        getDifferenceInMinutes(workout.startDateTime, latestLog.logDateTime),
+      ).then(setCalorieBurned);
+    }
+  }, [isHealthKitEnabled, workout?.groupedExerciseLogs]);
+
+  const loading =
+    workoutLoading ||
+    endWorkoutLoading ||
+    removeExerciseLogLoading ||
+    reLogLoading ||
+    reLogLogLoading;
+
+  useEffect(() => {
+    if (loading && flatListRef?.current) {
+      flatListRef?.current?.scrollToEnd({animated: true});
+    }
+  }, [loading]);
+
   return (
     <GradientBackground>
-      {workoutLoading ||
-      endWorkoutLoading ||
-      removeExerciseLogLoading ||
-      reLogLoading ||
-      reLogLogLoading ? (
+      {loading ? (
         <Loader />
       ) : workout ? (
         <View style={defaultStyles.container}>
@@ -502,12 +533,6 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
           ) : (
             <FlatList
               ref={flatListRef}
-              onContentSizeChange={() =>
-                flatListRef?.current?.scrollToEnd({animated: true})
-              }
-              onLayout={() =>
-                flatListRef?.current?.scrollToEnd({animated: true})
-              }
               style={styles.flatlist}
               data={workout.groupedExerciseLogs}
               ListHeaderComponent={
@@ -606,49 +631,78 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
 
               {isHealthKitEnabled && (
                 <View style={defaultStyles.marginTop50}>
-                  <AppText centerText>Estimated burned calories</AppText>
-                  <View
-                    style={[
-                      defaultStyles.row,
-                      defaultStyles.justifyCenter,
-                      defaultStyles.marginTop,
-                    ]}>
-                    {calorieBurnedEditing ? (
-                      <TextInput
-                        autoFocus
-                        defaultValue={calorieBurned.toString()}
+                  {workout.externalHealthProviderData && (
+                    <View>
+                      <AppText xSmall centerText>
+                        This workout is already saved in Apple HealthKit. If you
+                        wish to save this workout again, please remove the first
+                        save from Apple Health first to prevent a double entry.
+                      </AppText>
+                      <View
                         style={[
-                          defaultStyles.whiteTextColor,
-                          styles.calorieBurnedInput,
-                        ]}
-                        keyboardType={'numeric'}
-                        cursorColor={'white'}
-                        placeholder={''}
-                        maxLength={4}
-                        onBlur={() => setCalorieBurnedEditing(false)}
-                        onChangeText={text =>
-                          setCalorieBurned(parseInt(text, 10))
-                        }
-                      />
-                    ) : (
-                      <HeaderLabel
-                        label={calorieBurned.toString()}
-                        onPress={() =>
-                          setCalorieBurnedEditing(!calorieBurnedEditing)
-                        }
-                      />
-                    )}
-                    <AppText> kcal</AppText>
-                  </View>
-                  <AppText
-                    footNote
-                    xSmall
-                    centerText
-                    T1
-                    style={defaultStyles.marginTop}>
-                    This calculation was done based on your: weight, height and
-                    workout duration
-                  </AppText>
+                          defaultStyles.row,
+                          defaultStyles.centerInRow,
+                          defaultStyles.marginTop,
+                        ]}>
+                        <Switch
+                          value={overrulePreviousHealthKitSave}
+                          onValueChange={setOverrulePreviousHealthKitSave}
+                          ios_backgroundColor={Constants.ERROR_GRADIENT[0]}
+                        />
+                        <View style={defaultStyles.marginHorizontal}>
+                          <AppText>I wish to sync this workout again.</AppText>
+                        </View>
+                      </View>
+                    </View>
+                  )}
+                  {((workout.externalHealthProviderData &&
+                    overrulePreviousHealthKitSave) ||
+                    !workout.externalHealthProviderData) && (
+                    <View style={defaultStyles.marginTop50}>
+                      <AppText centerText>Estimated burned calories</AppText>
+                      <View
+                        style={[
+                          defaultStyles.row,
+                          defaultStyles.justifyCenter,
+                          defaultStyles.marginTop,
+                        ]}>
+                        {calorieBurnedEditing ? (
+                          <TextInput
+                            autoFocus
+                            defaultValue={calorieBurned.toString()}
+                            style={[
+                              defaultStyles.whiteTextColor,
+                              styles.calorieBurnedInput,
+                            ]}
+                            keyboardType={'numeric'}
+                            cursorColor={'white'}
+                            placeholder={''}
+                            maxLength={4}
+                            onBlur={() => setCalorieBurnedEditing(false)}
+                            onChangeText={text =>
+                              setCalorieBurned(parseInt(text, 10))
+                            }
+                          />
+                        ) : (
+                          <HeaderLabel
+                            label={calorieBurned.toString()}
+                            onPress={() =>
+                              setCalorieBurnedEditing(!calorieBurnedEditing)
+                            }
+                          />
+                        )}
+                        <AppText> kcal</AppText>
+                      </View>
+                      <AppText
+                        xSmall
+                        centerText
+                        T1
+                        style={defaultStyles.marginTop}>
+                        The calculation for burned calories was based on the
+                        your gender, weight, and workout duration.
+                      </AppText>
+                    </View>
+                  )}
                 </View>
               )}
               <View

@@ -47,3 +47,12 @@ const formattedHoursMinutesString = (minutes: number): string => {
   const mins = minutes % 60;
   return `${fullHours}hrs ${mins} minutes`;
 };
+
+export const getDifferenceInMinutes = (
+  startDate: string,
+  endDate: string,
+): number => {
+  const start = moment.utc(startDate);
+  const end = moment.utc(endDate);
+  return end.diff(start, 'minutes');
+};
