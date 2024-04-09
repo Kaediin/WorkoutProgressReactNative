@@ -35,20 +35,6 @@ const useAppleHealthKit = (): {
       if (result) {
         setAuthStatus(result);
       }
-
-      /* Can now read or write to HealthKit */
-      // const options = {
-      //   startDate: new Date(2020, 1, 1).toISOString(),
-      // };
-
-      // AppleHealthKit.getHeartRateSamples(
-      //   options,
-      //   (callbackError: string, results: HealthValue[]) => {
-      //     /* Samples are now collected from HealthKit */
-      //     Sentry.captureException(callbackError);
-      //     console.log('Heart Rate Samples:', results);
-      //   },
-      // );
     });
   };
 
