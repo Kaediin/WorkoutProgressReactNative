@@ -281,6 +281,7 @@ export type Query = {
   chartDataMuscleGroups: Array<MuscleGroupChartData>;
   /** Get chart data of last x months for logs by exercise id */
   chartDataOfXMonthsByExerciseId: Array<ExerciseLineChartData>;
+  checkAppVersion: Scalars['Boolean'];
   /** Count my workouts */
   countMyWorkouts: Scalars['Int'];
   /** Get total time of all workouts */
@@ -527,6 +528,11 @@ export type UpdateWorkoutMutationVariables = Exact<{
 
 
 export type UpdateWorkoutMutation = { __typename?: 'Mutation', updateWorkout: { __typename?: 'Workout', id: string, name: string, muscleGroups: Array<MuscleGroup>, startDateTime?: any | null, endDateTime?: any | null, active?: boolean | null, remark?: string | null } };
+
+export type CheckAppVersionQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type CheckAppVersionQuery = { __typename?: 'Query', checkAppVersion: boolean };
 
 export type MyExercisesQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -1097,6 +1103,34 @@ export function useUpdateWorkoutMutation(baseOptions?: Apollo.MutationHookOption
 export type UpdateWorkoutMutationHookResult = ReturnType<typeof useUpdateWorkoutMutation>;
 export type UpdateWorkoutMutationResult = Apollo.MutationResult<UpdateWorkoutMutation>;
 export type UpdateWorkoutMutationOptions = Apollo.BaseMutationOptions<UpdateWorkoutMutation, UpdateWorkoutMutationVariables>;
+export const CheckAppVersionDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"checkAppVersion"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"checkAppVersion"}}]}}]} as unknown as DocumentNode;
+
+/**
+ * __useCheckAppVersionQuery__
+ *
+ * To run a query within a React component, call `useCheckAppVersionQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCheckAppVersionQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCheckAppVersionQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useCheckAppVersionQuery(baseOptions?: Apollo.QueryHookOptions<CheckAppVersionQuery, CheckAppVersionQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<CheckAppVersionQuery, CheckAppVersionQueryVariables>(CheckAppVersionDocument, options);
+      }
+export function useCheckAppVersionLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<CheckAppVersionQuery, CheckAppVersionQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<CheckAppVersionQuery, CheckAppVersionQueryVariables>(CheckAppVersionDocument, options);
+        }
+export type CheckAppVersionQueryHookResult = ReturnType<typeof useCheckAppVersionQuery>;
+export type CheckAppVersionLazyQueryHookResult = ReturnType<typeof useCheckAppVersionLazyQuery>;
+export type CheckAppVersionQueryResult = Apollo.QueryResult<CheckAppVersionQuery, CheckAppVersionQueryVariables>;
 export const MyExercisesDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"myExercises"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"myExercises"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"Exercise"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"Exercise"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Exercise"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"primaryMuscles"}},{"kind":"Field","name":{"kind":"Name","value":"secondaryMuscles"}},{"kind":"Field","name":{"kind":"Name","value":"defaultAppliedWeight"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"LogValue"}}]}},{"kind":"Field","name":{"kind":"Name","value":"notes"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"LogValue"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"LogValue"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"unit"}},{"kind":"Field","name":{"kind":"Name","value":"base"}},{"kind":"Field","name":{"kind":"Name","value":"fraction"}}]}}]} as unknown as DocumentNode;
 
 /**

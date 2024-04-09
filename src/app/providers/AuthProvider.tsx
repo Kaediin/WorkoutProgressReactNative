@@ -21,7 +21,7 @@ export const AuthProvider: React.FC<PropsWithChildren> = props => {
       const tokenNotExpired = moment.unix(decoded.exp).isAfter(moment());
       if (token && tokenNotExpired) {
         console.log(
-          'AuthProvider: getAndUpdateAuthToken: Setting AUTHENTICATED',
+          '[AuthProvider] getAndUpdateAuthToken: Setting AUTHENTICATED',
         );
         setAuthToken(token);
       } else {

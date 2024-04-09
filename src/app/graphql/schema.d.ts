@@ -278,6 +278,7 @@ export type Query = {
   chartDataMuscleGroups: Array<MuscleGroupChartData>;
   /** Get chart data of last x months for logs by exercise id */
   chartDataOfXMonthsByExerciseId: Array<ExerciseLineChartData>;
+  checkAppVersion: Scalars['Boolean'];
   /** Count my workouts */
   countMyWorkouts: Scalars['Int'];
   /** Get total time of all workouts */

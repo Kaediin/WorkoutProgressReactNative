@@ -6,6 +6,7 @@
     "android": "ENVFILE=.env.development react-native run-android",
     "ios": "ENVFILE=.env.development react-native run-ios --scheme \"WorkoutProgressDev\" --simulator=\"iPhone 15 Pro Max\"",
     "ios-dev": "ENVFILE=.env.development react-native run-ios --scheme \"WorkoutProgressDev\" --simulator=\"iPhone 15 Pro Max\"",
+    "ios-dev-device": "ENVFILE=.env.development react-native run-ios --scheme \"WorkoutProgressDev\" --device=\"Kaedin\"",
     "ios-prod": "ENVFILE=.env.production react-native run-ios --scheme \"WorkoutProgress\" --simulator=\"iPhone 15 Pro Max\"",
     "lint": "eslint .",
     "start": "react-native start",
@@ -60,6 +61,7 @@
     "react-native-sound": "^0.11.2",
     "react-native-svg": "^13.10.0",
     "react-native-vector-icons": "^9.2.0",
+    "react-native-version-check": "^3.4.7",
     "zustand": "^4.3.7"
   },
   "devDependencies": {
