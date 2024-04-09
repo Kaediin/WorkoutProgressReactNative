@@ -22,7 +22,7 @@ import Constants from '../../utils/Constants';
 import HeaderLabel from '../nav/headerComponents/HeaderLabel';
 import {Delete} from '../../icons/svg';
 import SinglePicker from '../bottomSheet/SinglePicker';
-import PopupModal from '../common/PopupModal';
+import ConfirmModal from '../common/ConfirmModal';
 
 interface AdjustPreferencesProps {
   hidePermaDelete?: boolean;
@@ -383,7 +383,7 @@ const AdjustPreferences: React.FC<AdjustPreferencesProps> = props => {
         hideRightText
       />
 
-      <PopupModal
+      <ConfirmModal
         message={
           'Are you sure you want to permanently delete your account? This action cannot be reversed and your account along with its data will be erased forever'
         }

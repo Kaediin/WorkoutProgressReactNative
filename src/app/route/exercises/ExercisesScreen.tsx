@@ -12,7 +12,7 @@ import ContextMenu from 'react-native-context-menu-view';
 import {ContextMenuActions} from '../../types/ContextMenuActions';
 import ExerciseProfileListItem from '../../components/exercise/ExerciseProfileListItem';
 import CreateExerciseModal from '../../components/bottomSheet/CreateExerciseModal';
-import PopupModal from '../../components/common/PopupModal';
+import ConfirmModal from '../../components/common/ConfirmModal';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {defaultStyles} from '../../utils/DefaultStyles';
 import {BottomSheetModal, BottomSheetModalProvider} from '@gorhom/bottom-sheet';
@@ -173,7 +173,7 @@ const ExercisesScreen: React.FC<Props> = props => {
         existingExercise={editExercise}
         onUpdate={onUpdateExercise}
       />
-      <PopupModal
+      <ConfirmModal
         message={'Are you sure you want to delete this exercise?'}
         isOpen={Boolean(deleteExerciseId)}
         type={'WARNING'}

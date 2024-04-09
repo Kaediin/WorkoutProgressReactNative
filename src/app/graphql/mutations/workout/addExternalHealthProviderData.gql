@@ -1,0 +1,5 @@
+mutation addExternalHealthProviderData($workoutId: ID!, $externalHealthProviderData: ExternalHealthProviderDataInput!) {
+    addExternalHealthProviderData(workoutId: $workoutId, input: $externalHealthProviderData) {
+        ...WorkoutShort
+    }
+}

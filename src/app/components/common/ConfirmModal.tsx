@@ -19,7 +19,7 @@ interface PopupModalProps {
   overrideConfirmGradient?: string[];
 }
 
-const PopupModal: React.FC<PopupModalProps> = props => {
+const ConfirmModal: React.FC<PopupModalProps> = props => {
   return (
     <Modal
       isVisible={props.isOpen}
@@ -77,4 +77,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default PopupModal;
+export default ConfirmModal;

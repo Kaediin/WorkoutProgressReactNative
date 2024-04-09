@@ -75,6 +75,15 @@ export type ExerciseLogInput = {
   zonedDateTimeString: Scalars['String'];
 };
 
+export enum ExternalHealthProvider {
+  APPLE_HEALTH = 'APPLE_HEALTH'
+}
+
+export type ExternalHealthProviderDataInput = {
+  appleHealthId: Scalars['ID'];
+  provider: ExternalHealthProvider;
+};
+
 export type GroupedExerciseLog = {
   __typename?: 'GroupedExerciseLog';
   exercise: Exercise;
@@ -136,6 +145,8 @@ export type MuscleGroupChartData = {
 export type Mutation = {
   __typename?: 'Mutation';
   addExerciseLog?: Maybe<Workout>;
+  /** Add external health provider data to workout */
+  addExternalHealthProviderData: Workout;
   addOnboardingExercises?: Maybe<Scalars['Boolean']>;
   completeOnboarding: User;
   createExercise?: Maybe<Exercise>;
@@ -164,6 +175,12 @@ export type Mutation = {
 export type MutationAddExerciseLogArgs = {
   autoAdjust: Scalars['Boolean'];
   input: ExerciseLogInput;
+  workoutId: Scalars['ID'];
+};
+
+
+export type MutationAddExternalHealthProviderDataArgs = {
+  input: ExternalHealthProviderDataInput;
   workoutId: Scalars['ID'];
 };
 
@@ -491,6 +508,14 @@ export type CreateUserMutationVariables = Exact<{
 
 
 export type CreateUserMutation = { __typename?: 'Mutation', createUser?: { __typename?: 'User', id: string } | null };
+
+export type AddExternalHealthProviderDataMutationVariables = Exact<{
+  workoutId: Scalars['ID'];
+  externalHealthProviderData: ExternalHealthProviderDataInput;
+}>;
+
+
+export type AddExternalHealthProviderDataMutation = { __typename?: 'Mutation', addExternalHealthProviderData: { __typename?: 'Workout', id: string, name: string, muscleGroups: Array<MuscleGroup>, startDateTime?: any | null, endDateTime?: any | null, active?: boolean | null, remark?: string | null } };
 
 export type DeleteWorkoutMutationVariables = Exact<{
   id: Scalars['ID'];
@@ -966,6 +991,34 @@ export function useCreateUserMutation(baseOptions?: Apollo.MutationHookOptions<C
 export type CreateUserMutationHookResult = ReturnType<typeof useCreateUserMutation>;
 export type CreateUserMutationResult = Apollo.MutationResult<CreateUserMutation>;
 export type CreateUserMutationOptions = Apollo.BaseMutationOptions<CreateUserMutation, CreateUserMutationVariables>;
+export const AddExternalHealthProviderDataDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"addExternalHealthProviderData"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"workoutId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"externalHealthProviderData"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ExternalHealthProviderDataInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"addExternalHealthProviderData"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"workoutId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"workoutId"}}},{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"externalHealthProviderData"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"WorkoutShort"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"WorkoutShort"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Workout"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"muscleGroups"}},{"kind":"Field","name":{"kind":"Name","value":"startDateTime"}},{"kind":"Field","name":{"kind":"Name","value":"endDateTime"}},{"kind":"Field","name":{"kind":"Name","value":"active"}},{"kind":"Field","name":{"kind":"Name","value":"remark"}}]}}]} as unknown as DocumentNode;
+export type AddExternalHealthProviderDataMutationFn = Apollo.MutationFunction<AddExternalHealthProviderDataMutation, AddExternalHealthProviderDataMutationVariables>;
+
+/**
+ * __useAddExternalHealthProviderDataMutation__
+ *
+ * To run a mutation, you first call `useAddExternalHealthProviderDataMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAddExternalHealthProviderDataMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [addExternalHealthProviderDataMutation, { data, loading, error }] = useAddExternalHealthProviderDataMutation({
+ *   variables: {
+ *      workoutId: // value for 'workoutId'
+ *      externalHealthProviderData: // value for 'externalHealthProviderData'
+ *   },
+ * });
+ */
+export function useAddExternalHealthProviderDataMutation(baseOptions?: Apollo.MutationHookOptions<AddExternalHealthProviderDataMutation, AddExternalHealthProviderDataMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<AddExternalHealthProviderDataMutation, AddExternalHealthProviderDataMutationVariables>(AddExternalHealthProviderDataDocument, options);
+      }
+export type AddExternalHealthProviderDataMutationHookResult = ReturnType<typeof useAddExternalHealthProviderDataMutation>;
+export type AddExternalHealthProviderDataMutationResult = Apollo.MutationResult<AddExternalHealthProviderDataMutation>;
+export type AddExternalHealthProviderDataMutationOptions = Apollo.BaseMutationOptions<AddExternalHealthProviderDataMutation, AddExternalHealthProviderDataMutationVariables>;
 export const DeleteWorkoutDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"deleteWorkout"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"deleteWorkout"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}]}]}}]} as unknown as DocumentNode;
 export type DeleteWorkoutMutationFn = Apollo.MutationFunction<DeleteWorkoutMutation, DeleteWorkoutMutationVariables>;
 

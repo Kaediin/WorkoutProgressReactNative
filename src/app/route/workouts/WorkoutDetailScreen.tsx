@@ -4,9 +4,11 @@ import {
   Dimensions,
   FlatList,
   Platform,
+  Pressable,
   ScrollView,
   StyleSheet,
   Switch,
+  TextInput,
   TouchableOpacity,
   View,
 } from 'react-native';
@@ -51,7 +53,7 @@ import {logValueToString} from '../../utils/String';
 import Loader from '../../components/common/Loader';
 import {stripTypenames} from '../../utils/GrahqlUtils';
 import {nonNullable} from '../../utils/List';
-import PopupModal from '../../components/common/PopupModal';
+import ConfirmModal from '../../components/common/ConfirmModal';
 import ExpandableView from '../../components/common/ExpandableView';
 import {Add, Retry, Timer} from '../../icons/svg';
 import {Fab} from '../../utils/Fab';
@@ -60,6 +62,9 @@ import useTimerStore from '../../stores/timerStore';
 import useRouteStore from '../../stores/routeStore';
 import {DATE_TIME_FORMAT} from '../../utils/Date';
 import AppText from '../../components/common/AppText';
+import useAppleHealthKit from '../../hooks/useAppleHealthKit';
+import AppModal from '../../components/common/AppModal';
+import GradientButton from '../../components/common/GradientButton';
 
 type Props = NativeStackScreenProps<WorkoutStackParamList, 'WorkoutDetail'>;
 
@@ -67,16 +72,26 @@ const windowDimensions = Dimensions.get('window');
 const screenDimensions = Dimensions.get('screen');
 
 const WorkoutDetailScreen: React.FC<Props> = props => {
+  // Store hooks
   const toggleTimerVisibility = useTimerStore(state => state.toggleVisibility);
   const timerActive = useTimerStore(state => state.timerActive);
   const startTimer = useTimerStore(state => state.startTimer);
   const preference = usePreferenceStore(state => state.preference);
+  const setRouteName = useRouteStore(state => state.setRouteName);
+  const {checkHealthKitStatus, saveWorkoutAppleHealthKit} = useAppleHealthKit();
+
+  // State hooks
   const hideUnitSelector = preference?.hideUnitSelector || false;
   const autoAdjust = preference?.autoAdjustWorkoutMuscleGroups || false;
-  const flatListRef = useRef<FlatList>(null);
 
+  // Refs
+  const flatListRef = useRef<FlatList>(null);
   const bottomSheetRef = useRef<BottomSheetModal>(null);
-  const setRouteName = useRouteStore(state => state.setRouteName);
+
+  // State
+  const [calorieBurned, setCalorieBurned] = useState(500);
+  const [calorieBurnedEditing, setCalorieBurnedEditing] = useState(false);
+  const [isHealthKitEnabled, setIsHealthKitEnabled] = useState(false);
   const [hasLogInThisWorkout, setHasLogInThisWorkout] = useState(false);
   const [disableLogButton, setDisableLogButton] = useState(false);
   const [showPicker, setShowPicker] = useState(true);
@@ -89,6 +104,7 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
     useState<ExerciseLogFragment>();
   const [myExercises, setMyExercises] = useState<ExerciseFragment[]>([]);
 
+  // Get my exercises
   const {loading: myExercisesLoading, refetch: refetchMyExercises} =
     useMyExercisesQuery({
       fetchPolicy: 'no-cache',
@@ -96,15 +112,25 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
         setMyExercises(data?.myExercises || []);
       },
     });
+
+  // Get workout by id
   const [workoutById, {data: workoutData, loading: workoutLoading}] =
     useWorkoutByIdLazyQuery({fetchPolicy: 'no-cache'});
+
+  // Log exercise
   const [logExercise, {data: logExerciseData, loading: logExeciseLoading}] =
     useAddExerciseLogMutation({fetchPolicy: 'no-cache'});
+
+  // Update exercise log
   const [
     updateExerciseLog,
     {data: updateExerciseLogData, loading: updateExeciseLoading},
   ] = useUpdateExerciseLogMutation({fetchPolicy: 'no-cache'});
+
+  // End workout
   const [endWorkout, {loading: endWorkoutLoading}] = useEndWorkoutMutation();
+
+  // Remove exercise log
   const [
     removeExerciseLog,
     {data: removeExerciseLogData, loading: removeExerciseLogLoading},
@@ -116,6 +142,8 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
       }
     },
   });
+
+  // Get latest logs
   const [latestLogQuery, {loading: latestLogsLoading}] =
     useLatestLogsByExerciseIdAndNotWorkoutIdLazyQuery({
       fetchPolicy: 'no-cache',
@@ -143,6 +171,8 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
         }
       },
     });
+
+  // Re-log latest log
   const [reLogLatestLog, {loading: reLogLoading}] = useReLogLatestLogMutation({
     fetchPolicy: 'no-cache',
     onCompleted: data => {
@@ -151,6 +181,8 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
       }
     },
   });
+
+  // Re-log selected log
   const [reLogLog, {loading: reLogLogLoading}] = useReLogLogMutation({
     fetchPolicy: 'no-cache',
     onCompleted: data => {
@@ -160,6 +192,7 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
     },
   });
 
+  // Set title
   useEffect(() => {
     if (!workoutData?.workoutById) {
       props.navigation.setOptions({
@@ -168,6 +201,7 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
     }
   }, []);
 
+  // Get workout by param id
   useEffect(() => {
     if (props.route.params.workoutId) {
       workoutById({
@@ -178,6 +212,7 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
     }
   }, [props.route.params.workoutId]);
 
+  // Set workout and title
   useEffect(() => {
     if (workoutData?.workoutById) {
       setWorkout(workoutData?.workoutById);
@@ -198,6 +233,7 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
     }
   }, [workoutData?.workoutById]);
 
+  // Set workout after log
   useEffect(() => {
     if (logExerciseData?.addExerciseLog) {
       setDisableLogButton(false);
@@ -209,6 +245,7 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
     }
   }, [logExerciseData?.addExerciseLog]);
 
+  // Set workout after update log
   useEffect(() => {
     if (updateExerciseLogData?.updateExerciseLog) {
       setDisableLogButton(false);
@@ -217,6 +254,7 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
     }
   }, [updateExerciseLogData?.updateExerciseLog]);
 
+  // Set workout after removeing log
   useEffect(() => {
     if (removeExerciseLogData?.removeExerciseLog) {
       workoutById({
@@ -227,6 +265,7 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
     }
   }, [removeExerciseLogData?.removeExerciseLog]);
 
+  // Define initial log
   const initialLog: ExerciseLogInput = {
     exerciseId: '',
     repetitions:
@@ -242,6 +281,7 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
 
   const [exerciseLog, setExerciseLog] = useState<ExerciseLogInput>(initialLog);
 
+  // Log exercise
   const doLogExercise = (): void => {
     if (
       !workout?.id ||
@@ -287,6 +327,7 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
     }
   };
 
+  // End workout
   const doEndWorkout = (id: string | undefined): void => {
     if (!id) {
       return;
@@ -297,16 +338,24 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
         workoutId: id,
         zonedDateTimeString: moment().toISOString(true),
       },
-    }).finally(() => {
-      toggleTimer(false);
-
-      // @ts-ignore
-      props.navigation.navigate('WorkoutsOverview', {
-        cameFrom: moment().toISOString(true),
-      });
+      onCompleted: data => {
+        if (data?.endWorkout) {
+          console.log('[WorkoutDetailScreen] Successfully ended workout');
+          toggleTimer(false);
+          saveWorkoutAppleHealthKit(data.endWorkout, calorieBurned);
+          // @ts-ignore
+          props.navigation.navigate('WorkoutsOverview', {
+            cameFrom: moment().toISOString(true),
+          });
+        }
+      },
+      onError: error => {
+        console.log('Error ending workout', error);
+      },
     });
   };
 
+  // Toggle bottom sheet
   const toggleBottomSheetRef = (show: boolean): void => {
     if (show) {
       setRouteName('draggableBottomOpen');
@@ -318,6 +367,7 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
     }
   };
 
+  // Get dimensions
   const [dimensions, setDimensions] = useState({
     window: windowDimensions,
     screen: screenDimensions,
@@ -370,6 +420,7 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
     return actions;
   };
 
+  // Preset exercise log with last logged from this workout
   const presetExerciseLogWithThisWorkoutAndUpdateLastLogged = (
     exerciseId: string,
   ): void => {
@@ -409,10 +460,12 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
     });
   };
 
+  // Toggle timer
   const toggleTimer = (active: boolean): void => {
     startTimer(active);
   };
 
+  // Get latest log
   const getLatestCurrentLog = (): ExerciseLogFragment | null => {
     if (!workout?.groupedExerciseLogs) {
       return null;
@@ -424,6 +477,13 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
           new Date(b.logDateTime).getTime() - new Date(a.logDateTime).getTime(),
       )[0];
   };
+
+  // Fetch and store HealthKitStatus in state
+  useEffect(() => {
+    if (endWorkoutClicked) {
+      checkHealthKitStatus().then(setIsHealthKitEnabled);
+    }
+  }, [endWorkoutClicked]);
 
   return (
     <GradientBackground>
@@ -517,7 +577,7 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
               numColumns={dimensions.screen.width > 500 ? 2 : 1}
             />
           )}
-          <PopupModal
+          <ConfirmModal
             message={'Are you sure you want to remove this log?'}
             isOpen={Boolean(deleteLogId)}
             type={'WARNING'}
@@ -531,14 +591,83 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
               });
             }}
           />
-          <PopupModal
-            overrideTitle={'End workout'}
-            message={'Are you sure you want to end this workout?'}
-            isOpen={Boolean(endWorkoutClicked)}
-            type={'WARNING'}
-            onDismiss={() => setEndWorkoutClicked(false)}
-            onConfirm={() => doEndWorkout(workoutData?.workoutById?.id)}
-          />
+          <AppModal
+            isVisible={Boolean(endWorkoutClicked)}
+            onDismiss={() => {
+              setEndWorkoutClicked(false);
+              setCalorieBurnedEditing(false);
+            }}>
+            <Pressable
+              onPress={() => setCalorieBurnedEditing(false)}
+              style={[defaultStyles.container]}>
+              <AppText h4 centerText>
+                Are you sure you want to end this workout?
+              </AppText>
+
+              {isHealthKitEnabled && (
+                <View style={defaultStyles.marginTop50}>
+                  <AppText centerText>Estimated burned calories</AppText>
+                  <View
+                    style={[
+                      defaultStyles.row,
+                      defaultStyles.justifyCenter,
+                      defaultStyles.marginTop,
+                    ]}>
+                    {calorieBurnedEditing ? (
+                      <TextInput
+                        autoFocus
+                        defaultValue={calorieBurned.toString()}
+                        style={[
+                          defaultStyles.whiteTextColor,
+                          styles.calorieBurnedInput,
+                        ]}
+                        keyboardType={'numeric'}
+                        cursorColor={'white'}
+                        placeholder={''}
+                        maxLength={4}
+                        onBlur={() => setCalorieBurnedEditing(false)}
+                        onChangeText={text =>
+                          setCalorieBurned(parseInt(text, 10))
+                        }
+                      />
+                    ) : (
+                      <HeaderLabel
+                        label={calorieBurned.toString()}
+                        onPress={() =>
+                          setCalorieBurnedEditing(!calorieBurnedEditing)
+                        }
+                      />
+                    )}
+                    <AppText> kcal</AppText>
+                  </View>
+                  <AppText
+                    footNote
+                    xSmall
+                    centerText
+                    T1
+                    style={defaultStyles.marginTop}>
+                    This calculation was done based on your: weight, height and
+                    workout duration
+                  </AppText>
+                </View>
+              )}
+              <View
+                style={[defaultStyles.centerInRow, defaultStyles.marginTop50]}>
+                <View style={defaultStyles.marginBottom}>
+                  <GradientButton
+                    styles={styles.buttonWidth}
+                    title={'End workout'}
+                    onPress={() => doEndWorkout(workoutData?.workoutById?.id)}
+                    gradients={Constants.TERTIARY_GRADIENT}
+                  />
+                </View>
+                <HeaderLabel
+                  label={'Cancel'}
+                  onPress={() => setEndWorkoutClicked(false)}
+                />
+              </View>
+            </Pressable>
+          </AppModal>
         </View>
       ) : (
         <></>
@@ -860,6 +989,10 @@ const styles = StyleSheet.create({
     color: 'white',
     textAlign: 'center',
   },
+  buttonWidth: {
+    width: 200,
+  },
+  calorieBurnedInput: {},
 });
 
 export default WorkoutDetailScreen;

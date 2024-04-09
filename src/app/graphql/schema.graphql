@@ -56,6 +56,15 @@ input ExerciseLogInput {
   zonedDateTimeString: String!
 }
 
+enum ExternalHealthProvider {
+  APPLE_HEALTH
+}
+
+input ExternalHealthProviderDataInput {
+  appleHealthId: ID!
+  provider: ExternalHealthProvider!
+}
+
 type GroupedExerciseLog {
   exercise: Exercise!
   logs: [ExerciseLog!]!
@@ -116,6 +125,9 @@ type MuscleGroupChartData {
 
 type Mutation {
   addExerciseLog(autoAdjust: Boolean!, input: ExerciseLogInput!, workoutId: ID!): Workout
+
+  """Add external health provider data to workout"""
+  addExternalHealthProviderData(input: ExternalHealthProviderDataInput!, workoutId: ID!): Workout!
   addOnboardingExercises(ids: [String!]!): Boolean
   completeOnboarding: User!
   createExercise(input: ExerciseInput): Exercise

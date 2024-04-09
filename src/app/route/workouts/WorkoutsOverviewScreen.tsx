@@ -3,7 +3,6 @@ import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import GradientBackground from '../../components/common/GradientBackground';
 import {
   useDeleteWorkoutMutation,
-  useEndWorkoutMutation,
   useHasActiveWorkoutQuery,
   useRestartWorkoutMutation,
   useStartWorkoutMutation,
@@ -26,7 +25,7 @@ import Constants from '../../utils/Constants';
 import {nonNullable} from '../../utils/List';
 import ErrorMessage from '../../components/common/ErrorMessage';
 import WorkoutListItem from '../../components/workouts/WorkoutListItem';
-import PopupModal from '../../components/common/PopupModal';
+import ConfirmModal from '../../components/common/ConfirmModal';
 import {WorkoutStackParamList} from '../../stacks/WorkoutStack';
 import {ContextMenuActions} from '../../types/ContextMenuActions';
 import ContextMenu, {ContextMenuAction} from 'react-native-context-menu-view';
@@ -71,7 +70,7 @@ const WorkoutsOverviewScreen: React.FC<Props> = ({navigation}) => {
   } = useWorkoutsQuery({
     fetchPolicy: 'no-cache',
   });
-  const [endWorkout, {loading: endWorkoutLoading}] = useEndWorkoutMutation();
+
   const [reactivateWorkout, {loading: reactivateLoading}] =
     useRestartWorkoutMutation();
   const [updateWorkout, {loading: updateWorkoutLoading}] =
@@ -149,7 +148,6 @@ const WorkoutsOverviewScreen: React.FC<Props> = ({navigation}) => {
   const loading =
     startWorkoutLoading ||
     getWorkoutsLoading ||
-    endWorkoutLoading ||
     reactivateLoading ||
     updateWorkoutLoading ||
     hasActiveWorkoutLoading;
@@ -198,33 +196,16 @@ const WorkoutsOverviewScreen: React.FC<Props> = ({navigation}) => {
     bottomSheetModalRef.current?.present();
   };
 
-  const getActions = (
-    workout: WorkoutShortFragment,
-  ): Array<ContextMenuAction> => {
+  const getActions = (): Array<ContextMenuAction> => {
     const actions: Array<ContextMenuAction> = [
       {title: ContextMenuActions.EDIT},
     ];
     if (!hasActiveWorkout) {
       actions.push({title: ContextMenuActions.REACTIVATE_WORKOUT});
     }
-    if (workout.active) {
-      actions.push({destructive: true, title: ContextMenuActions.END_WORKOUT});
-    }
+
     actions.push({destructive: true, title: ContextMenuActions.DELETE});
     return actions;
-  };
-
-  const doEndWorkout = (workout: WorkoutShortFragment): void => {
-    endWorkout({
-      fetchPolicy: 'no-cache',
-      variables: {
-        workoutId: workout.id,
-        zonedDateTimeString: moment().toISOString(true),
-      },
-    });
-    startTimer(false);
-    refetchActiveWorkout();
-    refetchWorkouts();
   };
 
   const doReactivateWorkout = (workout: WorkoutShortFragment): void => {
@@ -236,6 +217,7 @@ const WorkoutsOverviewScreen: React.FC<Props> = ({navigation}) => {
     });
     refetchActiveWorkout();
     refetchWorkouts();
+    navigation.navigate('WorkoutDetail', {workoutId: workout.id});
   };
 
   return (
@@ -264,14 +246,12 @@ const WorkoutsOverviewScreen: React.FC<Props> = ({navigation}) => {
           }
           renderItem={({item}) => (
             <ContextMenu
-              actions={getActions(item)}
+              actions={getActions()}
               onPress={event => {
                 event.nativeEvent.name === ContextMenuActions.DELETE
                   ? setDeleteWorkoutId(item.id)
                   : event.nativeEvent.name === ContextMenuActions.EDIT
                   ? editWorkout(item)
-                  : event.nativeEvent.name === ContextMenuActions.END_WORKOUT
-                  ? doEndWorkout(item)
                   : event.nativeEvent.name ===
                     ContextMenuActions.REACTIVATE_WORKOUT
                   ? doReactivateWorkout(item)
@@ -357,7 +337,7 @@ const WorkoutsOverviewScreen: React.FC<Props> = ({navigation}) => {
           <FloatingButton onClick={onFloatingButtonClicked} />
         )}
       </BottomSheetModalProvider>
-      <PopupModal
+      <ConfirmModal
         message={
           'You still have an active workout. Starting a new one will automatically end it.'
         }
@@ -368,7 +348,7 @@ const WorkoutsOverviewScreen: React.FC<Props> = ({navigation}) => {
           bottomSheetModalRef.current?.present();
         }}
       />
-      <PopupModal
+      <ConfirmModal
         message={'Are you sure you want to remove this workout?'}
         isOpen={!!deleteWorkoutId}
         type={'WARNING'}

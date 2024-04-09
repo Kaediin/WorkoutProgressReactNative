@@ -17,6 +17,9 @@ export const defaultStyles = StyleSheet.create({
   container: {
     margin: Constants.CONTAINER_PADDING_MARGIN,
   },
+  marginTop50: {
+    marginTop: 50,
+  },
   marginTopLarge: {
     marginTop: 100,
   },
@@ -68,6 +71,12 @@ export const defaultStyles = StyleSheet.create({
     width: '100%',
     flexDirection: 'row',
     justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  justifyCenter: {
+    width: '100%',
+    flexDirection: 'row',
+    justifyContent: 'center',
     alignItems: 'center',
   },
   spaceEvenly: {

@@ -72,6 +72,15 @@ export type ExerciseLogInput = {
   zonedDateTimeString: Scalars['String'];
 };
 
+export enum ExternalHealthProvider {
+  AppleHealth = 'APPLE_HEALTH'
+}
+
+export type ExternalHealthProviderDataInput = {
+  appleHealthId: Scalars['ID'];
+  provider: ExternalHealthProvider;
+};
+
 export type GroupedExerciseLog = {
   __typename?: 'GroupedExerciseLog';
   exercise: Exercise;
@@ -133,6 +142,8 @@ export type MuscleGroupChartData = {
 export type Mutation = {
   __typename?: 'Mutation';
   addExerciseLog?: Maybe<Workout>;
+  /** Add external health provider data to workout */
+  addExternalHealthProviderData: Workout;
   addOnboardingExercises?: Maybe<Scalars['Boolean']>;
   completeOnboarding: User;
   createExercise?: Maybe<Exercise>;
@@ -161,6 +172,12 @@ export type Mutation = {
 export type MutationAddExerciseLogArgs = {
   autoAdjust: Scalars['Boolean'];
   input: ExerciseLogInput;
+  workoutId: Scalars['ID'];
+};
+
+
+export type MutationAddExternalHealthProviderDataArgs = {
+  input: ExternalHealthProviderDataInput;
   workoutId: Scalars['ID'];
 };
 

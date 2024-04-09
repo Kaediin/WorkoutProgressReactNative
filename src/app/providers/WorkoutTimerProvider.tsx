@@ -10,7 +10,7 @@ import {
   View,
 } from 'react-native';
 import usePreferenceStore from '../stores/preferenceStore';
-import PopupModal from '../components/common/PopupModal';
+import ConfirmModal from '../components/common/ConfirmModal';
 import useRouteStore from '../stores/routeStore';
 // @ts-ignore
 import BackgroundTimer from 'react-native-background-timer';
@@ -153,7 +153,7 @@ const WorkoutTimerProvider: React.FC<PropsWithChildren> = props => {
 
   return (
     <>
-      <PopupModal
+      <ConfirmModal
         message={'Are you sure you want to clear the countdown?'}
         isOpen={showClearCountdownPopup}
         type={'WARNING'}

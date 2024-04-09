@@ -1,6 +1,6 @@
 import {useNetInfo} from '@react-native-community/netinfo';
 import React, {PropsWithChildren} from 'react';
-import PopupModal from '../components/common/PopupModal';
+import ConfirmModal from '../components/common/ConfirmModal';
 
 const NetworkProvider: React.FC<PropsWithChildren> = props => {
   const netInfo = useNetInfo();
@@ -8,7 +8,7 @@ const NetworkProvider: React.FC<PropsWithChildren> = props => {
   return (
     <>
       {props.children}
-      <PopupModal
+      <ConfirmModal
         isOpen={netInfo.isConnected === false}
         message={'Connection error. Device is not connected to the internet'}
         onDismiss={() => {}}
