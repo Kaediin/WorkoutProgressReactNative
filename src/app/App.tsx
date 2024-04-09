@@ -35,6 +35,11 @@ const App: React.FC = () => {
         routingInstrumentation,
       }),
     ],
+    _experiments: {
+      // The sampling rate for profiling is relative to TracesSampleRate.
+      // In this case, we'll capture profiles for 100% of transactions.
+      profilesSampleRate: 1.0,
+    },
   });
 
   return (
