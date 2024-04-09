@@ -372,6 +372,8 @@ PODS:
     - React-perflogger (= 0.71.7)
   - ReactNativeExceptionHandler (2.10.10):
     - React-Core
+  - RNAppleHealthKit (1.7.0):
+    - React
   - RNAWSCognito (6.3.13):
     - React-Core
   - RNCAsyncStorage (1.18.1):
@@ -452,6 +454,7 @@ DEPENDENCIES:
   - React-runtimeexecutor (from `../node_modules/react-native/ReactCommon/runtimeexecutor`)
   - ReactCommon/turbomodule/core (from `../node_modules/react-native/ReactCommon`)
   - ReactNativeExceptionHandler (from `../node_modules/react-native-exception-handler`)
+  - RNAppleHealthKit (from `../node_modules/react-native-health`)
   - RNAWSCognito (from `../node_modules/amazon-cognito-identity-js`)
   - "RNCAsyncStorage (from `../node_modules/@react-native-async-storage/async-storage`)"
   - "RNCPicker (from `../node_modules/@react-native-picker/picker`)"
@@ -556,6 +559,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon"
   ReactNativeExceptionHandler:
     :path: "../node_modules/react-native-exception-handler"
+  RNAppleHealthKit:
+    :path: "../node_modules/react-native-health"
   RNAWSCognito:
     :path: "../node_modules/amazon-cognito-identity-js"
   RNCAsyncStorage:
@@ -627,6 +632,7 @@ SPEC CHECKSUMS:
   React-runtimeexecutor: c5c89f8f543842dd864b63ded1b0bbb9c9445328
   ReactCommon: dbfbe2f7f3c5ce4ce44f43f2fd0d5950d1eb67c5
   ReactNativeExceptionHandler: b11ff67c78802b2f62eed0e10e75cb1ef7947c60
+  RNAppleHealthKit: 60a6beefdd89a75811e9a8873a5e24f351dee681
   RNAWSCognito: cb58fd45efe752ea69a806d5e2afe840000e9c20
   RNCAsyncStorage: b90b71f45b8b97be43bc4284e71a6af48ac9f547
   RNCPicker: 0bc2f0a29abcca7b7ed44a2d036aac9ab6d25700

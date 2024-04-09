@@ -2,7 +2,13 @@ import React, {useEffect, useState} from 'react';
 import {OnboardingStackParamList} from '../../stacks/OnboardingStack';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import GradientBackground from '../../components/common/GradientBackground';
-import {FlatList, StyleSheet, TouchableOpacity, View} from 'react-native';
+import {
+  FlatList,
+  Platform,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import GradientButton from '../../components/common/GradientButton';
 import useUserStore from '../../stores/userStore';
 import {
@@ -33,7 +39,7 @@ type Props = NativeStackScreenProps<
   'OnboardingExerciseSelect'
 >;
 
-const OnboardingExerciseSelect: React.FC<Props> = () => {
+const OnboardingExerciseSelect: React.FC<Props> = props => {
   const setMe = useUserStore(state => state.setMe);
 
   // Keep track of selected exercises
@@ -202,13 +208,25 @@ const OnboardingExerciseSelect: React.FC<Props> = () => {
               );
             }}
           />
-          <View style={defaultStyles.centerInRow}>
-            <GradientButton
-              styles={styles.buttonContainer}
-              title="Complete Onboarding"
-              onPress={completeOnboarding}
-            />
-          </View>
+          {Platform.OS === 'ios' ? (
+            <View style={defaultStyles.centerInRow}>
+              <GradientButton
+                styles={styles.buttonContainer}
+                title="Next"
+                onPress={() =>
+                  props.navigation.navigate('OnboardingAppleHealthKit')
+                }
+              />
+            </View>
+          ) : (
+            <View style={defaultStyles.centerInRow}>
+              <GradientButton
+                styles={styles.buttonContainer}
+                title="Complete Onboarding"
+                onPress={completeOnboarding}
+              />
+            </View>
+          )}
         </>
       )}
       <CreateExerciseModal

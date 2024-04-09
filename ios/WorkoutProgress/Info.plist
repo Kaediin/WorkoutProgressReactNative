@@ -62,6 +62,9 @@
     <array>
         <string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
     </array>
-
+    <key>NSHealthShareUsageDescription</key>
+    <string>Read and import workouts from Apple Health.</string>
+    <key>NSHealthUpdateUsageDescription</key>
+    <string>Sync logged workouts to Apple Health.</string>
 </dict>
 </plist>

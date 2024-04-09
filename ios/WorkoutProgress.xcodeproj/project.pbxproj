@@ -42,6 +42,7 @@
 		013E3D302BA9FDE000EA927E /* silence.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = silence.mp3; sourceTree = "<group>"; };
 		014D687A2B7522AF0016E83B /* AudioSessionManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AudioSessionManager.h; sourceTree = "<group>"; };
 		014D687B2B7522F30016E83B /* AudioSessionManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AudioSessionManager.m; sourceTree = "<group>"; };
+		01C21C822BC546BF00B0B684 /* WorkoutProgress.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = WorkoutProgress.entitlements; path = WorkoutProgress/WorkoutProgress.entitlements; sourceTree = "<group>"; };
 		01DDD6C32A60017C002AB598 /* assets */ = {isa = PBXFileReference; lastKnownFileType = folder; path = assets; sourceTree = "<group>"; };
 		01DDD6C42A60017C002AB598 /* main.jsbundle */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = main.jsbundle; sourceTree = "<group>"; };
 		13B07F961A680F5B00A75B9A /* WorkoutProgress.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WorkoutProgress.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -100,6 +101,7 @@
 		13B07FAE1A68108700A75B9A /* WorkoutProgress */ = {
 			isa = PBXGroup;
 			children = (
+				01C21C822BC546BF00B0B684 /* WorkoutProgress.entitlements */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.mm */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
@@ -529,6 +531,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = WorkoutProgress/WorkoutProgress.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 9NP5RW49Q5;
 				ENABLE_BITCODE = NO;
@@ -559,6 +562,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = WorkoutProgress/WorkoutProgress.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;

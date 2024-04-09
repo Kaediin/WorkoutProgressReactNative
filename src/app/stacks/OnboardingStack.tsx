@@ -3,11 +3,13 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import OnboardingWorkoutTypeSelect from '../route/onboarding/OnboardingWorkoutTypeSelect';
 import OnboardingPreferences from '../route/onboarding/OnboardingPreferences';
 import OnboardingExerciseSelect from '../route/onboarding/OnboardingExerciseSelect';
+import OnboardingAppleHealthKit from '../route/onboarding/OnboardingAppleHealthKit';
 
 export type OnboardingStackParamList = {
   OnboardingWorkoutTypeSelect: undefined;
   OnboardingPreferences: undefined;
   OnboardingExerciseSelect: undefined;
+  OnboardingAppleHealthKit: undefined;
 };
 const OnboardingStackNavigator =
   createNativeStackNavigator<OnboardingStackParamList>();
@@ -29,6 +31,11 @@ const OnboardingStack: React.FC = () => {
         name={'OnboardingExerciseSelect'}
         component={OnboardingExerciseSelect}
         options={{headerTitle: 'Exercises'}}
+      />
+      <OnboardingStackNavigator.Screen
+        name={'OnboardingAppleHealthKit'}
+        component={OnboardingAppleHealthKit}
+        options={{headerTitle: 'Apple Health'}}
       />
     </OnboardingStackNavigator.Navigator>
   );
