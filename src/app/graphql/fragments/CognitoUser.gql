@@ -1,4 +1,9 @@
 fragment CognitoUser on CognitoUser {
+    given_name
+    middle_name
+    family_name
+    createdDate
     name
     gender
+    email
 }

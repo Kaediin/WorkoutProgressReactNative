@@ -2,13 +2,15 @@ import React from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import ProfileScreen from '../route/profile/ProfileScreen';
 import useUserStore from '../stores/userStore';
-import HeaderLabel from '../components/nav/headerComponents/HeaderLabel';
-import useAuth from '../hooks/useAuth';
 import PreferencesScreen from '../route/profile/PreferencesScreen';
+import SettingsScreen from '../route/profile/SettingsScreen';
+import UserSettingsScreen from '../route/profile/settings/UserSettings';
 
 export type ProfileStackParamList = {
   ProfileScreen: undefined;
   PreferencesScreen: undefined;
+  SettingsScreen: undefined;
+  UserSettingsScreen: undefined;
 };
 
 const ProfileStackNavigator =
@@ -16,7 +18,6 @@ const ProfileStackNavigator =
 
 const ProfileStack: React.FC = () => {
   const me = useUserStore(state => state.me);
-  const {signOut} = useAuth();
 
   return (
     <ProfileStackNavigator.Navigator initialRouteName={'ProfileScreen'}>
@@ -25,9 +26,6 @@ const ProfileStack: React.FC = () => {
         component={ProfileScreen}
         options={{
           headerTitle: me?.cognitoUser?.name,
-          headerRight: () => (
-            <HeaderLabel label={'Log out'} color={'red'} onPress={signOut} />
-          ),
         }}
       />
       <ProfileStackNavigator.Screen
@@ -35,6 +33,20 @@ const ProfileStack: React.FC = () => {
         component={PreferencesScreen}
         options={{
           headerTitle: 'Preferences',
+        }}
+      />
+      <ProfileStackNavigator.Screen
+        name={'SettingsScreen'}
+        component={SettingsScreen}
+        options={{
+          headerTitle: 'Settings',
+        }}
+      />
+      <ProfileStackNavigator.Screen
+        name={'UserSettingsScreen'}
+        component={UserSettingsScreen}
+        options={{
+          headerTitle: me?.cognitoUser?.name,
         }}
       />
     </ProfileStackNavigator.Navigator>

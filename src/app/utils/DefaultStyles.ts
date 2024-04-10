@@ -153,4 +153,9 @@ export const defaultStyles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  separator: {
+    height: 1,
+    backgroundColor: 'lightgrey',
+    width: '100%',
+  },
 });

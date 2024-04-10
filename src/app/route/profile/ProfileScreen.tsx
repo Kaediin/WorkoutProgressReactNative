@@ -11,7 +11,7 @@ import {WorkoutShortFragment} from '../../graphql/operations';
 import WorkoutListItem from '../../components/workouts/WorkoutListItem';
 import TotalWorkoutTime from './insights/TotalWorkoutTime';
 import TotalWorkouts from './insights/TotalWorkouts';
-import {Preferences} from '../../icons/svg';
+import {Settings} from '../../icons/svg';
 import Constants from '../../utils/Constants';
 import MuscleGroupDistribution from './insights/MuscleGroupDistribution';
 
@@ -34,6 +34,17 @@ const ProfileScreen: React.FC<Props> = ({navigation}) => {
     }
   }, [selectedWorkouts]);
 
+  // Set settings icon in topright corner
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <TouchableOpacity onPress={() => navigation.navigate('SettingsScreen')}>
+          <Settings />
+        </TouchableOpacity>
+      ),
+    });
+  }, []);
+
   return (
     <GradientBackground>
       <ScrollView style={defaultStyles.container}>
@@ -45,11 +56,6 @@ const ProfileScreen: React.FC<Props> = ({navigation}) => {
           ]}>
           <TotalWorkoutTime />
           <TotalWorkouts />
-          <TouchableOpacity
-            style={styles.containerIcons}
-            onPress={() => navigation.navigate('PreferencesScreen')}>
-            <Preferences />
-          </TouchableOpacity>
         </View>
         <View style={[styles.marginTopLarge, styles.containerCalendar]}>
           <WorkoutCalendarView onSelectDay={setSelectedWorkouts} />

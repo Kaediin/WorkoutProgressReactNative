@@ -15,13 +15,16 @@ export type Scalars = {
 
 export type CognitoUser = {
   __typename?: 'CognitoUser';
+  createdDate?: Maybe<Scalars['LocalDateTime']>;
   email: Scalars['String'];
   family_name: Scalars['String'];
   gender?: Maybe<Scalars['String']>;
   given_name: Scalars['String'];
   locale: Scalars['String'];
+  middle_name?: Maybe<Scalars['String']>;
   name: Scalars['String'];
   nickname: Scalars['String'];
+  userName: Scalars['String'];
   zoneinfo: Scalars['String'];
 };
 

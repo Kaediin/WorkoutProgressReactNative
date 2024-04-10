@@ -5,6 +5,7 @@ import * as Keychain from 'react-native-keychain';
 import useAuthStore, {AuthState} from '../stores/authStore';
 import {useApolloClient} from '@apollo/client';
 import {NativeModules, Platform} from 'react-native';
+import * as Sentry from '@sentry/react-native';
 
 export enum CognitoResponse {
   NOT_AUTHORIZED_EXCEPTION = 'NotAuthorizedException',
@@ -53,6 +54,7 @@ const useAuth = (): {
     error?: string;
   }>;
   deleteUser: () => Promise<string | void>;
+  updateUserAttributes: (userAttributes: object) => Promise<string | void>;
 } => {
   const setAuthToken = useAuthStore(state => state.setAuthToken);
   const setState = useAuthStore(state => state.setState);
@@ -265,6 +267,18 @@ const useAuth = (): {
     }
   };
 
+  const updateUserAttributes = async (
+    userAttributes: any,
+  ): Promise<string | void> => {
+    try {
+      const user = await Auth.currentAuthenticatedUser();
+      return await Auth.updateUserAttributes(user, userAttributes);
+    } catch (error) {
+      console.log(error);
+      Sentry.captureException(error);
+    }
+  };
+
   return {
     getToken,
     signIn,
@@ -276,6 +290,7 @@ const useAuth = (): {
     handleResetPassword,
     handleResetPasswordSubmit,
     deleteUser,
+    updateUserAttributes,
   };
 };
 

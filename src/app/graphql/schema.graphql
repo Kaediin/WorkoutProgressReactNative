@@ -2,13 +2,16 @@
 directive @oneOf on INPUT_OBJECT
 
 type CognitoUser {
+  createdDate: LocalDateTime
   email: String!
   family_name: String!
   gender: String
   given_name: String!
   locale: String!
+  middle_name: String
   name: String!
   nickname: String!
+  userName: String!
   zoneinfo: String!
 }
 
