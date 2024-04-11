@@ -13,6 +13,7 @@ import Loader from '../../../components/common/Loader';
 import GradientButton from '../../../components/common/GradientButton';
 import {HealthStatusResult} from 'react-native-health';
 import {nonNullable} from '../../../utils/List';
+import useAppleHealthStore from '../../../stores/appleHealthStore';
 
 type Props = NativeStackScreenProps<
   ProfileStackParamList,
@@ -20,6 +21,8 @@ type Props = NativeStackScreenProps<
 >;
 const AppleHealthConfigScreen: React.FC<Props> = () => {
   const {initHealthKit, isAvailable, getAuthStatus} = useAppleHealthKit();
+
+  const authStatus = useAppleHealthStore(state => state.authStatus);
 
   const [healthStatusResult, setHealthStatusResult] =
     useState<HealthStatusResult>();
@@ -56,7 +59,7 @@ const AppleHealthConfigScreen: React.FC<Props> = () => {
   useEffect(() => {
     getAuthStatus().then(setHealthStatusResult);
     isAvailable().then(setIsHealthKitAvailable);
-  }, []);
+  }, [authStatus]);
 
   return (
     <GradientBackground>

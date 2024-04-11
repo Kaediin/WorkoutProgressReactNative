@@ -208,53 +208,25 @@ const useAppleHealthKit = (): {
   const getCaloriesBurned = async (
     workoutDurationInMinutes: number,
   ): Promise<number> => {
-    let gender: string =
-      // Get from Apple HealthKit
-      await new Promise((resolve, reject) => {
-        // @ts-ignore
-        AppleHealthKit.getBiologicalSex(null, (error, results) => {
-          if (error) {
-            console.log(
-              'Gender error returned from Apple HealthKit: ' +
-                JSON.stringify(error),
-            );
-            reject(error);
-          }
-          if (results) {
-            resolve(results.value.toString());
-          }
-        });
-      });
+    let gender = me?.cognitoUser?.gender;
 
-    if (!gender || gender.toLowerCase() === 'unknown') {
-      gender = me?.cognitoUser.gender || 'other';
+    if (
+      !gender ||
+      (gender.toLowerCase() !== 'male' && gender.toLowerCase() !== 'female')
+    ) {
+      gender = // Get from Apple HealthKit
+        (await new Promise((resolve, _) => {
+          // @ts-ignore
+          AppleHealthKit.getBiologicalSex(null, (error, results) => {
+            if (error) {
+              resolve('');
+            }
+            if (results) {
+              resolve(results.value.toString());
+            }
+          });
+        })) || 'other';
     }
-
-    // data.height = await new Promise((resolve, reject) => {
-    //   AppleHealthKit.getLatestHeight({unit: 'meter'}, (error, results) => {
-    //     if (error) {
-    //       console.log(error);
-    //       reject(error);
-    //     }
-    //     if (results) {
-    //       resolve(results.value);
-    //     }
-    //   });
-    // });
-
-    // data.age = await new Promise((resolve, reject) => {
-    //   AppleHealthKit.getDateOfBirth(
-    //     null,
-    //     (error, results: HealthDateOfBirth) => {
-    //       if (error) {
-    //         console.log(error);
-    //         reject(error);
-    //       }
-    //       console.log(results.age);
-    //       resolve(results.age);
-    //     },
-    //   );
-    // });
 
     if (!me?.weight || !me?.weight?.value) {
       return -1;
