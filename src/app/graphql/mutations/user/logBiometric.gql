@@ -1,0 +1,5 @@
+mutation logBiometric($input: BiometricsLogInput!) {
+    logBiometrics(biometricsLogInput: $input) {
+        ...User
+    }
+}

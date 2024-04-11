@@ -13,9 +13,30 @@ export type Scalars = {
   LocalDateTime: any;
 };
 
+export type BiometricsLog = {
+  __typename?: 'BiometricsLog';
+  dataSource?: Maybe<ExternalHealthProvider>;
+  id: Scalars['ID'];
+  logDate: Scalars['LocalDateTime'];
+  type: BiometricsType;
+  value: Scalars['Float'];
+};
+
+export type BiometricsLogInput = {
+  dataSource?: InputMaybe<ExternalHealthProvider>;
+  logDate: Scalars['String'];
+  type: BiometricsType;
+  unit: LogUnit;
+  value: Scalars['Float'];
+};
+
+export enum BiometricsType {
+  Weight = 'WEIGHT'
+}
+
 export type CognitoUser = {
   __typename?: 'CognitoUser';
-  createdDate?: Maybe<Scalars['LocalDateTime']>;
+  createdDate?: Maybe<Scalars['String']>;
   email: Scalars['String'];
   family_name: Scalars['String'];
   gender?: Maybe<Scalars['String']>;
@@ -162,6 +183,7 @@ export type Mutation = {
   deleteWorkout?: Maybe<Scalars['Boolean']>;
   /** End workout by ID */
   endWorkout?: Maybe<Workout>;
+  logBiometrics: User;
   /** Start a new workout for me */
   meStartWorkout?: Maybe<Workout>;
   reLogLatestLog?: Maybe<Workout>;
@@ -219,6 +241,11 @@ export type MutationDeleteWorkoutArgs = {
 export type MutationEndWorkoutArgs = {
   workoutId: Scalars['ID'];
   zonedDateTimeString: Scalars['String'];
+};
+
+
+export type MutationLogBiometricsArgs = {
+  biometricsLogInput: BiometricsLogInput;
 };
 
 
@@ -373,6 +400,7 @@ export type User = {
   fid: Scalars['String'];
   id: Scalars['ID'];
   onboardingCompleted?: Maybe<Scalars['Boolean']>;
+  weight?: Maybe<BiometricsLog>;
 };
 
 export type UserInput = {

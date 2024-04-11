@@ -158,4 +158,10 @@ export const defaultStyles = StyleSheet.create({
     backgroundColor: 'lightgrey',
     width: '100%',
   },
+  separatorWithHeight: {
+    height: 1,
+    backgroundColor: 'lightgrey',
+    width: '100%',
+    marginVertical: Constants.CONTAINER_PADDING_MARGIN * 2,
+  },
 });

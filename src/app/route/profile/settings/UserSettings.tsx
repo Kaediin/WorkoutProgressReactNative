@@ -8,6 +8,7 @@ import SettingsRowEditable from '../../../components/common/SettingsRowEditable'
 import useUserStore from '../../../stores/userStore';
 import HeaderLabel from '../../../components/nav/headerComponents/HeaderLabel';
 import useAuth from '../../../hooks/useAuth';
+import {upperCaseFirstLetter} from '../../../utils/String';
 
 type Props = NativeStackScreenProps<
   ProfileStackParamList,
@@ -31,8 +32,9 @@ const UserSettingsScreen: React.FC<Props> = props => {
       name: middleName.trim()
         ? `${firstName.trim()} ${middleName.trim()} ${lastName.trim()}`
         : `${firstName.trim()} ${lastName.trim()}`,
+      gender: upperCaseFirstLetter(gender),
     };
-  }, [firstName, middleName, lastName]);
+  }, [firstName, middleName, lastName, gender]);
 
   useEffect(() => {
     props.navigation.setOptions({

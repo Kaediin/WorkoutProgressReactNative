@@ -13,7 +13,6 @@ const useUserStore = create<UserStore>()(set => ({
   setMe: (me): void => {
     set({me});
   },
-
   resetStore: (): void => {
     set({
       me: undefined,

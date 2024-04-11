@@ -45,6 +45,7 @@
     "react-native-context-menu-view": "^1.9.2",
     "react-native-countdown-circle-timer": "^3.2.1",
     "react-native-dropdown-picker": "^5.4.6",
+    "react-native-element-dropdown": "^2.10.4",
     "react-native-exception-handler": "^2.10.10",
     "react-native-floating-action": "^1.22.0",
     "react-native-gesture-handler": "^2.9.0",

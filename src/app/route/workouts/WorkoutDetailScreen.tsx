@@ -65,6 +65,7 @@ import AppText from '../../components/common/AppText';
 import useAppleHealthKit from '../../hooks/useAppleHealthKit';
 import AppModal from '../../components/common/AppModal';
 import GradientButton from '../../components/common/GradientButton';
+import useUserStore from '../../stores/userStore';
 
 type Props = NativeStackScreenProps<WorkoutStackParamList, 'WorkoutDetail'>;
 
@@ -73,6 +74,7 @@ const screenDimensions = Dimensions.get('screen');
 
 const WorkoutDetailScreen: React.FC<Props> = props => {
   // Store hooks
+  const me = useUserStore(state => state.me);
   const toggleTimerVisibility = useTimerStore(state => state.toggleVisibility);
   const timerActive = useTimerStore(state => state.timerActive);
   const startTimer = useTimerStore(state => state.startTimer);
@@ -505,7 +507,7 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
         getDifferenceInMinutes(workout.startDateTime, latestLog.logDateTime),
       ).then(setCalorieBurned);
     }
-  }, [isHealthKitEnabled, workout?.groupedExerciseLogs]);
+  }, [isHealthKitEnabled, workout?.groupedExerciseLogs, me?.weight]);
 
   const loading =
     workoutLoading ||
@@ -630,7 +632,7 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
               </AppText>
 
               {isHealthKitEnabled && (
-                <View style={defaultStyles.marginTop50}>
+                <View style={defaultStyles.marginTop}>
                   {workout.externalHealthProviderData && (
                     <View>
                       <AppText xSmall centerText>
@@ -657,56 +659,66 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
                   )}
                   {((workout.externalHealthProviderData &&
                     overrulePreviousHealthKitSave) ||
-                    !workout.externalHealthProviderData) && (
-                    <View style={defaultStyles.marginTop50}>
-                      <AppText centerText>Estimated burned calories</AppText>
-                      <View
-                        style={[
-                          defaultStyles.row,
-                          defaultStyles.justifyCenter,
-                          defaultStyles.marginTop,
-                        ]}>
-                        {calorieBurnedEditing ? (
-                          <TextInput
-                            autoFocus
-                            defaultValue={calorieBurned.toString()}
-                            style={[
-                              defaultStyles.whiteTextColor,
-                              styles.calorieBurnedInput,
-                            ]}
-                            keyboardType={'numeric'}
-                            cursorColor={'white'}
-                            placeholder={''}
-                            maxLength={4}
-                            onBlur={() => setCalorieBurnedEditing(false)}
-                            onChangeText={text =>
-                              setCalorieBurned(parseInt(text, 10))
-                            }
-                          />
-                        ) : (
-                          <HeaderLabel
-                            label={calorieBurned.toString()}
-                            onPress={() =>
-                              setCalorieBurnedEditing(!calorieBurnedEditing)
-                            }
-                          />
-                        )}
-                        <AppText> kcal</AppText>
+                    !workout.externalHealthProviderData) &&
+                    me?.weight?.value && (
+                      <View style={defaultStyles.marginTop}>
+                        <AppText centerText>Estimated burned calories</AppText>
+                        <View
+                          style={[
+                            defaultStyles.row,
+                            defaultStyles.justifyCenter,
+                            defaultStyles.marginTop,
+                          ]}>
+                          {calorieBurnedEditing ? (
+                            <TextInput
+                              autoFocus
+                              defaultValue={calorieBurned.toString()}
+                              style={[
+                                defaultStyles.whiteTextColor,
+                                styles.calorieBurnedInput,
+                              ]}
+                              keyboardType={'numeric'}
+                              cursorColor={'white'}
+                              placeholder={''}
+                              maxLength={4}
+                              onBlur={() => setCalorieBurnedEditing(false)}
+                              onChangeText={text => {
+                                // Check if text is a number
+                                if (!isNaN(parseInt(text, 10))) {
+                                  setCalorieBurned(parseInt(text, 10));
+                                }
+                              }}
+                            />
+                          ) : (
+                            <HeaderLabel
+                              label={calorieBurned.toString()}
+                              onPress={() =>
+                                setCalorieBurnedEditing(!calorieBurnedEditing)
+                              }
+                            />
+                          )}
+                          <AppText> kcal</AppText>
+                        </View>
+                        <AppText
+                          xSmall
+                          centerText
+                          T1
+                          style={defaultStyles.marginTop}>
+                          The calculation for burned calories was based on the
+                          your gender, weight, and workout duration.
+                        </AppText>
                       </View>
-                      <AppText
-                        xSmall
-                        centerText
-                        T1
-                        style={defaultStyles.marginTop}>
-                        The calculation for burned calories was based on the
-                        your gender, weight, and workout duration.
-                      </AppText>
-                    </View>
-                  )}
+                    )}
                 </View>
               )}
+              {!me?.weight?.value && (
+                <AppText xSmall centerText>
+                  To enable the calorie burned feature, please add your weight &
+                  gender in the settings.
+                </AppText>
+              )}
               <View
-                style={[defaultStyles.centerInRow, defaultStyles.marginTop50]}>
+                style={[defaultStyles.centerInRow, defaultStyles.marginTop]}>
                 <View style={defaultStyles.marginBottom}>
                   <GradientButton
                     styles={styles.buttonWidth}

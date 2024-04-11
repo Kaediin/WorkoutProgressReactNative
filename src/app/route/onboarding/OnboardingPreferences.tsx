@@ -27,7 +27,7 @@ const OnboardingPreferences: React.FC<Props> = props => {
           <GradientButton
             title={'Next'}
             onPress={() =>
-              props.navigation.navigate('OnboardingAppleHealthKit')
+              props.navigation.navigate('OnboardingExerciseSelect')
             }
           />
         </View>

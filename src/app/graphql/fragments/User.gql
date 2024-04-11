@@ -4,5 +4,9 @@ fragment User on User {
     onboardingCompleted
     cognitoUser {
         ...CognitoUser
+
+    }
+    weight {
+        ...BiometricsLog
     }
 }

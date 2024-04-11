@@ -1,20 +1,28 @@
 import React, {useState} from 'react';
-import {TextInput, TouchableOpacity, View} from 'react-native';
+import {
+  StyleSheet,
+  Switch,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import AppText from './AppText';
 import {defaultStyles} from '../../utils/DefaultStyles';
 import {StyleProp} from 'react-native/Libraries/StyleSheet/StyleSheet';
 import {ViewStyle} from 'react-native/Libraries/StyleSheet/StyleSheetTypes';
+import {Dropdown} from 'react-native-element-dropdown';
 import {Gender} from '../../types/Type';
-import DropDownPicker from 'react-native-dropdown-picker';
+import {upperCaseFirstLetter} from '../../utils/String';
 
 interface SettingsRowProps {
   label: string;
-  value: string;
+  value: string | number | undefined;
   description?: string;
   disabled?: boolean;
   style?: StyleProp<ViewStyle>;
-  onValueChange?: (value: string) => void;
-  inputType?: 'gender';
+  onValueChange?: (value: string | number) => void;
+  inputType?: 'gender' | 'switch' | 'number';
+  number?: boolean;
 }
 
 const SettingsRowEditable: React.FC<SettingsRowProps> = props => {
@@ -34,54 +42,95 @@ const SettingsRowEditable: React.FC<SettingsRowProps> = props => {
           </AppText>
         )}
       </View>
-      {isEditing ? (
-        props.inputType === 'gender' ? (
-          <View>
-            <DropDownPicker
-              onClose={() => setIsEditing(false)}
-              closeOnBackPressed
-              setValue={value =>
-                props.onValueChange && props.onValueChange(value.name)
-              }
-              value={props.value || ''}
-              placeholder={'Biological gender'}
-              items={[
-                {
-                  label: Gender.Male,
-                  value: Gender.Female,
-                },
-                {
-                  label: Gender.Female,
-                  value: Gender.Female,
-                },
-                {
-                  label: Gender.Other,
-                  value: Gender.Other,
-                },
-              ]}
-              open={true}
-              setOpen={() => setIsEditing(false)}
-            />
-          </View>
-        ) : (
+      {!props.inputType ? (
+        // Text input (default)
+        isEditing ? (
           <View>
             <TextInput
               onBlur={() => setIsEditing(false)}
               placeholder={props.label}
-              defaultValue={props.value}
+              defaultValue={(props.value || '').toString()}
               style={defaultStyles.whiteTextColor}
               onChangeText={props.onValueChange}
               autoFocus
             />
           </View>
+        ) : (
+          <View>
+            <AppText T1={props.disabled}>{props.value}</AppText>
+          </View>
+        )
+      ) : props.inputType === 'gender' ? (
+        // Gender dropdown
+        <View>
+          <Dropdown
+            value={upperCaseFirstLetter(props.value.toString())}
+            data={[
+              {label: Gender.Male, value: Gender.Male},
+              {label: Gender.Female, value: Gender.Female},
+              {label: Gender.Other, value: Gender.Other},
+            ]}
+            labelField={'label'}
+            valueField={'value'}
+            onChange={item =>
+              props.onValueChange && props.onValueChange(item.value)
+            }
+            style={styles.dropdownStyles}
+            placeholderStyle={defaultStyles.whiteTextColor}
+            selectedTextStyle={defaultStyles.whiteTextColor}
+            iconColor={'white'}
+            placeholder={'Gender'}
+          />
+        </View>
+      ) : props.inputType === 'switch' ? (
+        // Switch
+        <Switch
+          value={props.value === 'true'}
+          ios_backgroundColor={'red'}
+          onValueChange={value =>
+            props.onValueChange && props.onValueChange(value.toString())
+          }
+          thumbColor={'white'}
+          trackColor={{false: 'red', true: 'green'}}
+        />
+      ) : props.inputType === 'number' ? (
+        isEditing ? (
+          // Number input
+          <View>
+            <TextInput
+              onBlur={() => setIsEditing(false)}
+              placeholder={props.label}
+              defaultValue={props.value ? props.value.toString() : undefined}
+              style={defaultStyles.whiteTextColor}
+              onChangeText={text => {
+                // Check if text is a number
+                if (!isNaN(parseInt(text, 10)) && props.onValueChange) {
+                  const value = parseInt(text, 10);
+                  if (value > 0 && value < 1000) {
+                    props.onValueChange(parseInt(text, 10));
+                  }
+                }
+              }}
+              keyboardType={'numeric'}
+              autoFocus
+            />
+          </View>
+        ) : (
+          <View>
+            <AppText T1={props.disabled}>{props.value ?? 'Not set'}</AppText>
+          </View>
         )
       ) : (
-        <View>
-          <AppText T1={props.disabled}>{props.value}</AppText>
-        </View>
+        <View />
       )}
     </TouchableOpacity>
   );
 };
+
+const styles = StyleSheet.create({
+  dropdownStyles: {
+    width: 90,
+  },
+});
 
 export default SettingsRowEditable;

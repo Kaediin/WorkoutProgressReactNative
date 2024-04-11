@@ -40,3 +40,11 @@ export const errorCodeToMessage = (code: string): string => {
   }
   return '';
 };
+
+export const upperCaseFirstLetter = (str: string): string => {
+  return str.charAt(0).toUpperCase() + str.slice(1);
+};
+
+export const spaceCamelCase = (str: string): string => {
+  return str.replace(/([A-Z])/g, ' $1').trim();
+};

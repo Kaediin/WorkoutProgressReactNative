@@ -1,11 +1,15 @@
 import AppleHealthKit, {
   HealthKitPermissions,
   HealthPermission,
+  HealthStatusResult,
+  HealthUnit,
+  HealthValue,
 } from 'react-native-health';
 import * as Sentry from '@sentry/react-native';
 import useAppleHealthStore from '../stores/appleHealthStore';
 import {
   ExternalHealthProvider,
+  LogUnit,
   useAddExternalHealthProviderDataMutation,
   WorkoutShortFragment,
 } from '../graphql/operations';
@@ -13,22 +17,55 @@ import moment from 'moment/moment';
 import {calculateCalories} from '../utils/Calorie';
 import useUserStore from '../stores/userStore';
 
-const permissionConstants: HealthPermission[] = [
+export const readPermissionConstants: HealthPermission[] = [
   AppleHealthKit.Constants.Permissions.BiologicalSex,
-  AppleHealthKit.Constants.Permissions.DateOfBirth,
-  AppleHealthKit.Constants.Permissions.Height,
-  AppleHealthKit.Constants.Permissions.Workout,
+  // AppleHealthKit.Constants.Permissions.Height,
   AppleHealthKit.Constants.Permissions.Weight,
+  // AppleHealthKit.Constants.Permissions.,
 ];
 
+export const writePermissionConstants: HealthPermission[] = [
+  // AppleHealthKit.Constants.Permissions.Height,
+  AppleHealthKit.Constants.Permissions.Weight,
+  AppleHealthKit.Constants.Permissions.Workout,
+];
+
+export const descriptionForPermission = (
+  permission: HealthPermission,
+  read: boolean,
+): string => {
+  switch (permission) {
+    case AppleHealthKit.Constants.Permissions.BiologicalSex:
+      return read ? 'Used to calculate calories burned' : '';
+    case AppleHealthKit.Constants.Permissions.Height:
+      return read
+        ? 'Used to calculate calories burned'
+        : 'Used to save height in-app and syncing to Apple Health';
+    case AppleHealthKit.Constants.Permissions.Weight:
+      return read
+        ? 'Used to calculate calories burned'
+        : 'Used to save weight in-app and syncing to Apple Health';
+    case AppleHealthKit.Constants.Permissions.Workout:
+      return read
+        ? 'Used for display all workouts in profile page'
+        : 'Used to save workouts';
+    default:
+      return '';
+  }
+};
+
 const useAppleHealthKit = (): {
-  prompt: () => void;
+  initHealthKit: () => void;
   checkHealthKitStatus: () => Promise<boolean>;
   saveWorkoutAppleHealthKit: (
     workout: WorkoutShortFragment,
     energyBurned: number,
   ) => void;
+  saveWeight: (weight: number, logUnit: LogUnit) => Promise<number>;
+  getWeight: (unit: LogUnit) => Promise<HealthValue | undefined>;
   getCaloriesBurned: (workoutDurationInMinutes: number) => Promise<number>;
+  isAvailable: () => Promise<boolean>;
+  getAuthStatus: () => Promise<HealthStatusResult>;
 } => {
   const setAuthStatus = useAppleHealthStore(state => state.setAuthStatus);
   const [addExternalHealthProviderData] =
@@ -36,8 +73,8 @@ const useAppleHealthKit = (): {
 
   const permissions = {
     permissions: {
-      read: permissionConstants,
-      write: permissionConstants,
+      read: readPermissionConstants,
+      write: writePermissionConstants,
     },
   } as HealthKitPermissions;
 
@@ -46,13 +83,15 @@ const useAppleHealthKit = (): {
   /**
    * Prompt the user to give permissions to access Apple HealthKit
    */
-  const prompt = () => {
+  const initHealthKit = () => {
     AppleHealthKit.initHealthKit(permissions, (error: string, result) => {
       /* Called after we receive a response from the system */
       if (error) {
+        console.log('error initializing Healthkit: ', error);
         Sentry.captureException(error);
       }
       if (result) {
+        console.log(result);
         setAuthStatus(result);
       }
     });
@@ -99,6 +138,34 @@ const useAppleHealthKit = (): {
   };
 
   /**
+   * Save weight to Apple HealthKit
+   * @param weight weight to save to Apple HealthKit
+   * @param unit unit of the weight
+   */
+  const saveWeight = (weight: number, unit: LogUnit): Promise<number> => {
+    return new Promise((resolve, _) => {
+      let options = {
+        value: unit === LogUnit.KG ? weight * 1000 : weight,
+        unit:
+          unit === LogUnit.KG
+            ? AppleHealthKit.Constants.Units.gram
+            : AppleHealthKit.Constants.Units.pound,
+        startDate: moment().local(true).toISOString(),
+      };
+
+      AppleHealthKit.saveWeight(options, (error, result) => {
+        if (error) {
+          return;
+        }
+
+        console.log('weight saved to HealthKit: ', result);
+        resolve(result.value);
+        // weight successfully saved
+      });
+    });
+  };
+
+  /**
    * Check if Apple HealthKit is available on the device
    */
   const checkHealthKitStatus = (): Promise<boolean> => {
@@ -114,41 +181,54 @@ const useAppleHealthKit = (): {
   };
 
   /**
+   * Get weight from Apple HealthKit
+   * @param unit unit of the weight
+   */
+  const getWeight = (unit: LogUnit): Promise<HealthValue | undefined> => {
+    return new Promise((resolve, _) => {
+      AppleHealthKit.getLatestWeight(
+        {unit: (unit === LogUnit.KG ? 'gram' : 'pound') as HealthUnit},
+        (error, results) => {
+          if (error) {
+            console.log('Perhaps user has no logged weight in Apple HealthKit');
+            resolve(undefined);
+          }
+          if (results) {
+            resolve(results);
+          }
+        },
+      );
+    });
+  };
+
+  /**
    * Get calories burned during a workout
    * @param workoutDurationInMinutes duration of the workout in minutes
    */
   const getCaloriesBurned = async (
     workoutDurationInMinutes: number,
   ): Promise<number> => {
-    const weight: number = await new Promise((resolve, reject) => {
-      AppleHealthKit.getLatestWeight({unit: 'gram'}, (error, results) => {
-        if (error) {
-          console.log(error);
-          reject(error);
-        }
-        if (results) {
-          resolve(results.value);
-        }
-      });
-    });
-
-    const gender: string =
+    let gender: string =
       // Get from Apple HealthKit
-      (await new Promise((resolve, reject) => {
+      await new Promise((resolve, reject) => {
+        // @ts-ignore
         AppleHealthKit.getBiologicalSex(null, (error, results) => {
           if (error) {
-            console.log(error);
+            console.log(
+              'Gender error returned from Apple HealthKit: ' +
+                JSON.stringify(error),
+            );
             reject(error);
           }
           if (results) {
             resolve(results.value.toString());
           }
         });
-      })) ||
-      // Get from cognito user
-      me?.cognitoUser.gender ||
-      // Default to other
-      'other';
+      });
+
+    if (!gender || gender.toLowerCase() === 'unknown') {
+      gender = me?.cognitoUser.gender || 'other';
+    }
 
     // data.height = await new Promise((resolve, reject) => {
     //   AppleHealthKit.getLatestHeight({unit: 'meter'}, (error, results) => {
@@ -176,19 +256,53 @@ const useAppleHealthKit = (): {
     //   );
     // });
 
+    if (!me?.weight || !me?.weight?.value) {
+      return -1;
+    }
+
     // Return calories burned by calculating it with weight and height
     return calculateCalories(
       gender,
-      weight / 1000, // Convert to kg
+      me.weight.value, // Convert to kg
       workoutDurationInMinutes,
     );
   };
 
+  const isAvailable = async (): Promise<boolean> => {
+    return new Promise((resolve, reject) => {
+      AppleHealthKit.isAvailable((err: Object, available: boolean) => {
+        if (err) {
+          console.log('error initializing Healthkit: ', err);
+          reject(err);
+        }
+        console.log('HealthKit is available: ', available);
+        resolve(available);
+      });
+    });
+  };
+
+  const getAuthStatus = async (): Promise<HealthStatusResult> => {
+    return new Promise((resolve, reject) => {
+      AppleHealthKit.getAuthStatus(permissions, (err, results) => {
+        if (err) {
+          console.log('error getting auth status: ', err);
+          reject(err);
+        }
+        console.log('auth status: ', results);
+        resolve(results);
+      });
+    });
+  };
+
   return {
-    prompt,
+    initHealthKit,
     saveWorkoutAppleHealthKit,
+    saveWeight,
     checkHealthKitStatus,
+    getWeight,
     getCaloriesBurned,
+    isAvailable,
+    getAuthStatus,
   };
 };
 

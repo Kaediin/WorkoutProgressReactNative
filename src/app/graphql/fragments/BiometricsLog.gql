@@ -1,0 +1,5 @@
+fragment BiometricsLog on BiometricsLog {
+    logDate
+    value
+    type
+}

@@ -2,15 +2,19 @@ import React from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import ProfileScreen from '../route/profile/ProfileScreen';
 import useUserStore from '../stores/userStore';
-import PreferencesScreen from '../route/profile/PreferencesScreen';
+import PreferencesScreen from '../route/profile/settings/PreferencesScreen';
 import SettingsScreen from '../route/profile/SettingsScreen';
 import UserSettingsScreen from '../route/profile/settings/UserSettings';
+import AppleHealthConfigScreen from '../route/profile/settings/AppleHealthConfigScreen';
+import BiometricsScreen from '../route/profile/settings/BiometricsScreen';
 
 export type ProfileStackParamList = {
   ProfileScreen: undefined;
   PreferencesScreen: undefined;
   SettingsScreen: undefined;
   UserSettingsScreen: undefined;
+  AppleHealthConfigScreen: undefined;
+  BiometricsScreen: undefined;
 };
 
 const ProfileStackNavigator =
@@ -47,6 +51,20 @@ const ProfileStack: React.FC = () => {
         component={UserSettingsScreen}
         options={{
           headerTitle: me?.cognitoUser?.name,
+        }}
+      />
+      <ProfileStackNavigator.Screen
+        name={'AppleHealthConfigScreen'}
+        component={AppleHealthConfigScreen}
+        options={{
+          headerTitle: 'Apple Health',
+        }}
+      />
+      <ProfileStackNavigator.Screen
+        name={'BiometricsScreen'}
+        component={BiometricsScreen}
+        options={{
+          headerTitle: 'Biometrics',
         }}
       />
     </ProfileStackNavigator.Navigator>

@@ -1,8 +1,28 @@
 """Indicates an Input Object is a OneOf Input Object."""
 directive @oneOf on INPUT_OBJECT
 
+type BiometricsLog {
+  dataSource: ExternalHealthProvider
+  id: ID!
+  logDate: LocalDateTime!
+  type: BiometricsType!
+  value: Float!
+}
+
+input BiometricsLogInput {
+  dataSource: ExternalHealthProvider
+  logDate: String!
+  type: BiometricsType!
+  unit: LogUnit!
+  value: Float!
+}
+
+enum BiometricsType {
+  WEIGHT
+}
+
 type CognitoUser {
-  createdDate: LocalDateTime
+  createdDate: String
   email: String!
   family_name: String!
   gender: String
@@ -147,6 +167,7 @@ type Mutation {
 
   """End workout by ID"""
   endWorkout(workoutId: ID!, zonedDateTimeString: String!): Workout
+  logBiometrics(biometricsLogInput: BiometricsLogInput!): User!
 
   """Start a new workout for me"""
   meStartWorkout(input: WorkoutInput!): Workout
@@ -238,6 +259,7 @@ type User {
   fid: String!
   id: ID!
   onboardingCompleted: Boolean
+  weight: BiometricsLog
 }
 
 input UserInput {

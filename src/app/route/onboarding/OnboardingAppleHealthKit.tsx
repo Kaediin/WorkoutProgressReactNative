@@ -24,7 +24,7 @@ const OnboardingAppleHealthKit: React.FC<Props> = () => {
   // Get the auth status from the store
   const authStatus = useAppleHealthKitStore(state => state.authStatus);
   // Get the prompt function from the useAppleHealthKit hook
-  const {prompt} = useAppleHealthKit();
+  const {initHealthKit} = useAppleHealthKit();
   // Get the setMe function from the user store
   const setMe = useUserStore(state => state.setMe);
 
@@ -72,7 +72,7 @@ const OnboardingAppleHealthKit: React.FC<Props> = () => {
             <GradientButton
               styles={styles.button}
               title={'Sync workouts with Apple Health'}
-              onPress={prompt}
+              onPress={initHealthKit}
             />
             <View style={[defaultStyles.spaceEvenly, styles.buttonSpacing]}>
               <HeaderLabel
