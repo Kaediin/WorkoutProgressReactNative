@@ -23,6 +23,7 @@ import {ExercisesStackParamList} from '../../../stacks/ExercisesStack';
 import Loader from '../../../components/common/Loader';
 import ContextMenu from 'react-native-context-menu-view';
 import ClickableText from '../../../components/common/ClickableText';
+import {SegmentedButtons} from 'react-native-paper';
 
 type Props = NativeStackScreenProps<
   ExercisesStackParamList,
@@ -30,10 +31,18 @@ type Props = NativeStackScreenProps<
 >;
 
 const ExercisesDetailScreen: React.FC<Props> = props => {
+  // Get preference from store
   const preferences = usePreferenceStore(state => state.preference);
+
+  // State for month range
+  const [monthRange, setMonthRange] = useState<string>('3');
+
+  // State for filter mode
   const [filterMode, setFilterMode] = useState<
     'ONLY_WARMUP' | 'ONLY_LOGS' | 'MIX'
   >('MIX');
+
+  // State for logs and chart data
   const [allLogs, setAllLogs] = useState<ExerciseLogFragment[]>([]);
   const [filteredLogs, setFilteredLogs] = useState<ExerciseLogFragment[]>([]);
   const [chartData, setChartData] = useState<ExerciseLineChartDataFragment[]>(
@@ -72,12 +81,12 @@ const ExercisesDetailScreen: React.FC<Props> = props => {
         fetchPolicy: 'no-cache',
         variables: {
           exerciseId: props.route.params.exerciseId,
-          months: 6,
+          months: parseInt(monthRange, 10),
           zonedDateTimeString: moment().toISOString(true),
         },
       });
     }
-  }, [props.route.params]);
+  }, [props.route.params, monthRange]);
 
   // Change header when new logs are fetched
   useEffect(() => {
@@ -211,6 +220,47 @@ const ExercisesDetailScreen: React.FC<Props> = props => {
               <Loader isLoading style={defaultStyles.container} />
             ) : (
               <View style={[defaultStyles.marginBottom, styles.containerChart]}>
+                <SegmentedButtons
+                  buttons={[
+                    {
+                      value: '3',
+                      label: '3 Months',
+                      labelStyle: defaultStyles.whiteTextColor,
+                      style: {
+                        backgroundColor:
+                          monthRange === '3'
+                            ? Constants.PRIMARY_GRADIENT[0]
+                            : Constants.SECONDARY_GRADIENT[0],
+                      },
+                    },
+                    {
+                      value: '6',
+                      label: '6 Months',
+                      labelStyle: defaultStyles.whiteTextColor,
+                      style: {
+                        backgroundColor:
+                          monthRange === '6'
+                            ? Constants.PRIMARY_GRADIENT[0]
+                            : Constants.SECONDARY_GRADIENT[0],
+                      },
+                    },
+                    {
+                      value: '12',
+                      label: '12 Months',
+                      labelStyle: defaultStyles.whiteTextColor,
+                      style: {
+                        backgroundColor:
+                          monthRange === '12'
+                            ? Constants.PRIMARY_GRADIENT[0]
+                            : Constants.SECONDARY_GRADIENT[0],
+                      },
+                    },
+                  ]}
+                  value={monthRange}
+                  onValueChange={setMonthRange}
+                  style={styles.segmentedButtons}
+                  theme={{colors: {primary: Constants.PRIMARY_GRADIENT[0]}}}
+                />
                 <LineChart
                   data={{
                     labels: [],
@@ -280,6 +330,10 @@ const styles = StyleSheet.create({
   },
   footerChart: {
     marginTop: -20,
+  },
+  segmentedButtons: {
+    paddingHorizontal: Constants.CONTAINER_PADDING_MARGIN * 2,
+    paddingVertical: Constants.CONTAINER_PADDING_MARGIN,
   },
 });
 

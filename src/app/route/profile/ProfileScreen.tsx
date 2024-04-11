@@ -1,6 +1,12 @@
 import React, {useEffect, useRef, useState} from 'react';
 import GradientBackground from '../../components/common/GradientBackground';
-import {ScrollView, StyleSheet, TouchableOpacity, View} from 'react-native';
+import {
+  RefreshControl,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import {defaultStyles} from '../../utils/DefaultStyles';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {ProfileStackParamList} from '../../stacks/ProfileStack';
@@ -18,6 +24,9 @@ import MuscleGroupDistribution from './insights/MuscleGroupDistribution';
 type Props = NativeStackScreenProps<ProfileStackParamList, 'ProfileScreen'>;
 
 const ProfileScreen: React.FC<Props> = ({navigation}) => {
+  // Key state for refreshing view
+  const [key, setKey] = useState(0);
+
   // Bottom sheet ref for the calendar popup
   const bottomSheetModal = useRef<BottomSheetModal>(null);
 
@@ -47,7 +56,17 @@ const ProfileScreen: React.FC<Props> = ({navigation}) => {
 
   return (
     <GradientBackground>
-      <ScrollView style={defaultStyles.container}>
+      <ScrollView
+        style={defaultStyles.container}
+        refreshControl={
+          <RefreshControl
+            colors={['#fff', '#ccc']}
+            tintColor={'#fff'}
+            refreshing={false}
+            onRefresh={() => setKey(key + 1)}
+          />
+        }
+        key={key}>
         <View
           style={[
             defaultStyles.marginTop,
