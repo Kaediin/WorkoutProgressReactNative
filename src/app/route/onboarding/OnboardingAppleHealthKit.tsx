@@ -5,7 +5,6 @@ import GradientBackground from '../../components/common/GradientBackground';
 import {Image, StyleSheet, View} from 'react-native';
 import {defaultStyles} from '../../utils/DefaultStyles';
 import GradientButton from '../../components/common/GradientButton';
-import HeaderLabel from '../../components/nav/headerComponents/HeaderLabel';
 import {useCompleteOnboardingMutation} from '../../graphql/operations';
 import Loader from '../../components/common/Loader';
 import * as Sentry from '@sentry/react-native';
@@ -14,6 +13,7 @@ import useAppleHealthKit from '../../hooks/useAppleHealthKit';
 import AppText from '../../components/common/AppText';
 import Constants from '../../utils/Constants';
 import useAppleHealthKitStore from '../../stores/appleHealthStore';
+import ClickableText from '../../components/common/ClickableText';
 
 type Props = NativeStackScreenProps<
   OnboardingStackParamList,
@@ -75,8 +75,8 @@ const OnboardingAppleHealthKit: React.FC<Props> = () => {
               onPress={initHealthKit}
             />
             <View style={[defaultStyles.spaceEvenly, styles.buttonSpacing]}>
-              <HeaderLabel
-                label={"Don't sync workouts with Apple Health"}
+              <ClickableText
+                text={"Don't sync workouts with Apple Health"}
                 onPress={() => completeOnboarding()}
               />
             </View>

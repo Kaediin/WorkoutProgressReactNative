@@ -19,7 +19,6 @@ import AppText from '../common/AppText';
 import DropDownPicker from 'react-native-dropdown-picker';
 import ClickableText from '../common/ClickableText';
 import Constants from '../../utils/Constants';
-import HeaderLabel from '../nav/headerComponents/HeaderLabel';
 import {Delete} from '../../icons/svg';
 import SinglePicker from '../bottomSheet/SinglePicker';
 import ConfirmModal from '../common/ConfirmModal';
@@ -106,7 +105,6 @@ const AdjustPreferences: React.FC<AdjustPreferencesProps> = props => {
       <ScrollView style={defaultStyles.container}>
         <View style={defaultStyles.container}>
           <AppText style={[defaultStyles.h4]}>Value logging</AppText>
-
           <View
             style={[
               defaultStyles.spaceBetween,
@@ -319,15 +317,14 @@ const AdjustPreferences: React.FC<AdjustPreferencesProps> = props => {
               </View>
             </View>
           )}
-
+          //TODO: MOVE THIS!
           {!props.hidePermaDelete && (
             <TouchableOpacity
               style={styles.deleteRow}
               onPress={() => setShowDeleteAccountModal(true)}>
-              <HeaderLabel
-                label={'Permanently delete account'}
+              <ClickableText
+                text={'Permanently delete account'}
                 onPress={() => setShowDeleteAccountModal(true)}
-                color={Constants.ERROR_GRADIENT[1]}
               />
               <Delete />
             </TouchableOpacity>

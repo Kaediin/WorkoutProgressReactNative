@@ -48,24 +48,23 @@ const LoginScreen: React.FC<Props> = props => {
             <View>
               <TextInput
                 style={styles.input}
-                onChangeText={setEmail}
-                defaultValue={email}
                 placeholder="Email"
-                textContentType="emailAddress"
-                autoComplete="email"
-                placeholderTextColor="darkgrey"
                 keyboardType="email-address"
-                inputMode="email"
+                textContentType="emailAddress"
+                placeholderTextColor="darkgrey"
+                autoCapitalize="none"
+                autoCorrect={false}
+                onChangeText={setEmail}
               />
               <TextInput
                 style={styles.input}
                 onChangeText={setPassword}
-                defaultValue={password}
-                textContentType="password"
                 placeholder="Password"
-                inputMode="text"
+                textContentType="password"
                 placeholderTextColor="darkgrey"
-                autoComplete="password-new"
+                autoCapitalize="none"
+                autoCorrect={false}
+                inputMode="text"
                 secureTextEntry
               />
               <AppText style={defaultStyles.error}>{error}</AppText>

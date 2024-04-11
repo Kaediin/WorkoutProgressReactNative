@@ -22,7 +22,7 @@ import usePreferenceStore from '../../../stores/preferenceStore';
 import {ExercisesStackParamList} from '../../../stacks/ExercisesStack';
 import Loader from '../../../components/common/Loader';
 import ContextMenu from 'react-native-context-menu-view';
-import HeaderLabel from '../../../components/nav/headerComponents/HeaderLabel';
+import ClickableText from '../../../components/common/ClickableText';
 
 type Props = NativeStackScreenProps<
   ExercisesStackParamList,
@@ -144,7 +144,11 @@ const ExercisesDetailScreen: React.FC<Props> = props => {
             }
           }}
           dropdownMenuMode>
-          <HeaderLabel label="Filter" onPress={() => {}} />
+          <ClickableText
+            text="Filter"
+            styles={defaultStyles.p20}
+            onPress={() => {}}
+          />
         </ContextMenu>
       ),
     });

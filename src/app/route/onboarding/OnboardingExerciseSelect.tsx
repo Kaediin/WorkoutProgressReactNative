@@ -21,7 +21,6 @@ import {
 } from '../../graphql/operations';
 import * as Sentry from '@sentry/react-native';
 import Loader from '../../components/common/Loader';
-import HeaderLabel from '../../components/nav/headerComponents/HeaderLabel';
 import CreateExerciseModal from '../../components/bottomSheet/CreateExerciseModal';
 import ExerciseProfileListItem from '../../components/exercise/ExerciseProfileListItem';
 import ContextMenu from 'react-native-context-menu-view';
@@ -171,16 +170,16 @@ const OnboardingExerciseSelect: React.FC<Props> = props => {
                   </AppText>
                 </View>
                 <View style={defaultStyles.centerInRow}>
-                  <HeaderLabel
-                    label={'Create new exercise'}
+                  <ClickableText
+                    text={'Create new exercise'}
                     onPress={() => {
                       setEditExercise(undefined);
                       setCreateExerciseModalActive(true);
                     }}
                   />
                   <View style={defaultStyles.marginTop} />
-                  <HeaderLabel
-                    label={'Add from list'}
+                  <ClickableText
+                    text={'Add from list'}
                     onPress={() => setShowOnboardingExerciseModal(true)}
                   />
                 </View>

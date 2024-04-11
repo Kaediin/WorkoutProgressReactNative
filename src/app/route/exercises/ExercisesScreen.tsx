@@ -21,9 +21,9 @@ import SelectMuscleGroups from '../../components/workouts/SelectMuscleGroups';
 import {nonNullable} from '../../utils/List';
 import FloatingButton from '../../components/common/FloatingButton';
 import {ExercisesStackParamList} from '../../stacks/ExercisesStack';
-import HeaderLabel from '../../components/nav/headerComponents/HeaderLabel';
 import useRouteStore from '../../stores/routeStore';
 import AppText from '../../components/common/AppText';
+import ClickableText from '../../components/common/ClickableText';
 
 type Props = NativeStackScreenProps<ExercisesStackParamList, 'ExercisesScreen'>;
 
@@ -84,8 +84,9 @@ const ExercisesScreen: React.FC<Props> = props => {
   useEffect(() => {
     props.navigation.setOptions({
       headerRight: () => (
-        <HeaderLabel
-          label={'Filter'}
+        <ClickableText
+          text={'Filter'}
+          styles={defaultStyles.p20}
           onPress={() => refMuscleGroupFilterSelect?.current?.present()}
         />
       ),

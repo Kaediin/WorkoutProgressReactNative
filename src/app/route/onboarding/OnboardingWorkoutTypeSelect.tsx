@@ -6,11 +6,11 @@ import {Image, StyleSheet, View} from 'react-native';
 import {defaultStyles} from '../../utils/DefaultStyles';
 import AppText from '../../components/common/AppText';
 import GradientButton from '../../components/common/GradientButton';
-import HeaderLabel from '../../components/nav/headerComponents/HeaderLabel';
 import {useCompleteOnboardingMutation} from '../../graphql/operations';
 import Loader from '../../components/common/Loader';
 import * as Sentry from '@sentry/react-native';
 import useUserStore from '../../stores/userStore';
+import ClickableText from '../../components/common/ClickableText';
 
 type Props = NativeStackScreenProps<
   OnboardingStackParamList,
@@ -68,8 +68,8 @@ const OnboardingWorkoutTypeSelect: React.FC<Props> = props => {
               onPress={() => props.navigation.navigate('OnboardingPreferences')}
             />
             <View style={[defaultStyles.spaceEvenly, styles.buttonSpacing]}>
-              <HeaderLabel
-                label={"I won't be logging strength training workouts"}
+              <ClickableText
+                text={"I won't be logging strength training workouts"}
                 onPress={() => completeOnboarding()}
               />
             </View>

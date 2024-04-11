@@ -45,7 +45,6 @@ import Constants from '../../utils/Constants';
 import moment from 'moment';
 import GroupedExerciseLogListItem from '../../components/exercise/GroupedExerciseLogListItem';
 import CreateExerciseModalContent from '../../components/bottomSheet/CreateExerciseModalContent';
-import HeaderLabel from '../../components/nav/headerComponents/HeaderLabel';
 import usePreferenceStore from '../../stores/preferenceStore';
 import LogValueSelect from '../../components/common/LogValueSelect';
 import {Picker} from '@react-native-picker/picker';
@@ -66,6 +65,7 @@ import useAppleHealthKit from '../../hooks/useAppleHealthKit';
 import AppModal from '../../components/common/AppModal';
 import GradientButton from '../../components/common/GradientButton';
 import useUserStore from '../../stores/userStore';
+import ClickableText from '../../components/common/ClickableText';
 
 type Props = NativeStackScreenProps<WorkoutStackParamList, 'WorkoutDetail'>;
 
@@ -227,9 +227,9 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
       if (workoutData?.workoutById?.active && workoutData?.workoutById?.id) {
         props.navigation.setOptions({
           headerRight: () => (
-            <HeaderLabel
-              label={'End Workout'}
-              color={'red'}
+            <ClickableText
+              text={'End Workout'}
+              styles={[defaultStyles.error, defaultStyles.p14]}
               onPress={() => setEndWorkoutClicked(true)}
             />
           ),
@@ -690,8 +690,8 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
                               }}
                             />
                           ) : (
-                            <HeaderLabel
-                              label={calorieBurned.toString()}
+                            <ClickableText
+                              text={calorieBurned.toString()}
                               onPress={() =>
                                 setCalorieBurnedEditing(!calorieBurnedEditing)
                               }
@@ -727,8 +727,8 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
                     gradients={Constants.TERTIARY_GRADIENT}
                   />
                 </View>
-                <HeaderLabel
-                  label={'Cancel'}
+                <ClickableText
+                  text={'Cancel'}
                   onPress={() => setEndWorkoutClicked(false)}
                 />
               </View>

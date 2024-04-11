@@ -6,9 +6,9 @@ import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {defaultStyles} from '../../../utils/DefaultStyles';
 import SettingsRowEditable from '../../../components/common/SettingsRowEditable';
 import useUserStore from '../../../stores/userStore';
-import HeaderLabel from '../../../components/nav/headerComponents/HeaderLabel';
 import useAuth from '../../../hooks/useAuth';
 import {upperCaseFirstLetter} from '../../../utils/String';
+import ClickableText from '../../../components/common/ClickableText';
 
 type Props = NativeStackScreenProps<
   ProfileStackParamList,
@@ -39,8 +39,9 @@ const UserSettingsScreen: React.FC<Props> = props => {
   useEffect(() => {
     props.navigation.setOptions({
       headerRight: () => (
-        <HeaderLabel
-          label={'Save'}
+        <ClickableText
+          text={'Save'}
+          styles={defaultStyles.p20}
           onPress={() => updateUserAttributes(data)}
         />
       ),
@@ -55,21 +56,21 @@ const UserSettingsScreen: React.FC<Props> = props => {
             label={'First name'}
             value={firstName}
             style={styles.row}
-            onValueChange={setFirstName}
+            onValueChange={value => setFirstName(value as string)}
           />
           <View style={defaultStyles.separator} />
           <SettingsRowEditable
             label={'Middle name'}
             value={middleName}
             style={styles.row}
-            onValueChange={setMiddleName}
+            onValueChange={value => setMiddleName(value as string)}
           />
           <View style={defaultStyles.separator} />
           <SettingsRowEditable
             label={'Last name'}
             value={lastName}
             style={styles.row}
-            onValueChange={setLastName}
+            onValueChange={value => setLastName(value as string)}
           />
           <View style={defaultStyles.separator} />
           <SettingsRowEditable
@@ -77,7 +78,7 @@ const UserSettingsScreen: React.FC<Props> = props => {
             description={'Used for calorie calculations'}
             value={gender}
             style={styles.row}
-            onValueChange={setGender}
+            onValueChange={value => setGender(value as string)}
             inputType={'gender'}
           />
           <View style={defaultStyles.separator} />

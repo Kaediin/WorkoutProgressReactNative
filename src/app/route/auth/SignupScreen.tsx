@@ -14,11 +14,11 @@ import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {Gender} from '../../types/Type';
 import {isValidEmail, isValidPassword} from '../../utils/String';
 import useAuth from '../../hooks/useAuth';
-import DropDownPicker from 'react-native-dropdown-picker';
 import {defaultStyles} from '../../utils/DefaultStyles';
 import ClickableText from '../../components/common/ClickableText';
 import AppText from '../../components/common/AppText';
 import {AuthStackParamList} from '../../stacks/AuthStack';
+import {Dropdown} from 'react-native-element-dropdown';
 
 type Props = NativeStackScreenProps<AuthStackParamList, 'Signup'>;
 
@@ -32,7 +32,6 @@ const SignupScreen: React.FC<Props> = props => {
   const [gender, setGender] = useState<Gender>();
   const [password, setPassword] = useState<string>('');
   const [passwordConfirmation, setPasswordConfirmation] = useState<string>('');
-  const [genderPickerOpen, setGenderPickerOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const buttonEnabled = useMemo<boolean>(
     () =>
@@ -105,28 +104,21 @@ const SignupScreen: React.FC<Props> = props => {
             />
           </View>
           <View style={[styles.signupInputContainer, styles.zIndex]}>
-            <DropDownPicker
-              setValue={setGender}
-              value={gender || ''}
-              placeholder={'Biological gender'}
-              items={[
-                {
-                  label: Gender.Male,
-                  value: Gender.Male,
-                },
-                {
-                  label: Gender.Female,
-                  value: Gender.Female,
-                },
-                {
-                  label: Gender.Other,
-                  value: Gender.Other,
-                },
+            <Dropdown
+              value={gender}
+              data={[
+                {label: Gender.Male, value: Gender.Male},
+                {label: Gender.Female, value: Gender.Female},
+                {label: Gender.Other, value: Gender.Other},
               ]}
-              open={genderPickerOpen}
-              setOpen={setGenderPickerOpen}
+              labelField={'label'}
+              valueField={'value'}
+              onChange={item => setGender(item.value)}
               style={styles.dropdownPicker}
-              dropDownContainerStyle={styles.dropdownPicker}
+              placeholder={'Gender'}
+              selectedTextStyle={defaultStyles.p14}
+              itemTextStyle={defaultStyles.p14}
+              placeholderStyle={[{color: 'darkgrey'}, defaultStyles.p14]}
             />
           </View>
           <View style={styles.signupInputContainer}>
@@ -278,9 +270,9 @@ const styles = StyleSheet.create({
     padding: 5,
   },
   dropdownPicker: {
-    borderWidth: 0,
-    margin: 0,
-    padding: 0,
+    backgroundColor: 'white',
+    borderRadius: Constants.BORDER_RADIUS_SMALL,
+    paddingHorizontal: 7,
   },
   zIndex: {
     zIndex: 10,

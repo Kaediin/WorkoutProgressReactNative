@@ -64,6 +64,14 @@ export const defaultStyles = StyleSheet.create({
     textAlign: 'center',
     color: 'white',
   },
+  p20: {
+    fontSize: 20,
+    lineHeight: 24,
+  },
+  p14: {
+    fontSize: 14,
+    lineHeight: 20,
+  },
   whiteTextColor: {
     color: 'white',
   },
