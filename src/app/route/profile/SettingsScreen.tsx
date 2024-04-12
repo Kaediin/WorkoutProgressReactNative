@@ -83,7 +83,9 @@ const SettingsScreen: React.FC<Props> = props => {
             <Chevron />
           </TouchableOpacity>
         )}
-        <TouchableOpacity style={rowStyles} onPress={signOut}>
+        <TouchableOpacity
+          style={[rowStyles, defaultStyles.marginTop]}
+          onPress={signOut}>
           <View style={defaultStyles.row}>
             <AppText style={styles.colorRed}>Sign out</AppText>
           </View>

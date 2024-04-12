@@ -20,7 +20,7 @@ const OnboardingPreferences: React.FC<Props> = props => {
           <AppText centerText footNote>
             Feel free to adjust the preferences to your standards
           </AppText>
-          <AdjustPreferences hidePermaDelete />
+          <AdjustPreferences />
         </View>
 
         <View style={styles.containerButton}>

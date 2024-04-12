@@ -1,45 +1,29 @@
 import React, {useEffect, useState} from 'react';
-import useAuth from '../../hooks/useAuth';
 import usePreferenceStore from '../../stores/preferenceStore';
 import {
   LogUnit,
   PreferenceInput,
   useUpdatePreferenceMutation,
 } from '../../graphql/operations';
-import {
-  Platform,
-  ScrollView,
-  StyleSheet,
-  Switch,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import {Platform, ScrollView, StyleSheet, Switch, View} from 'react-native';
 import {defaultStyles} from '../../utils/DefaultStyles';
 import AppText from '../common/AppText';
-import DropDownPicker from 'react-native-dropdown-picker';
 import ClickableText from '../common/ClickableText';
 import Constants from '../../utils/Constants';
-import {Delete} from '../../icons/svg';
 import SinglePicker from '../bottomSheet/SinglePicker';
-import ConfirmModal from '../common/ConfirmModal';
+import {Dropdown} from 'react-native-element-dropdown';
 
-interface AdjustPreferencesProps {
-  hidePermaDelete?: boolean;
-}
-
-const AdjustPreferences: React.FC<AdjustPreferencesProps> = props => {
-  const {deleteUser} = useAuth();
+const AdjustPreferences: React.FC = () => {
   const preference = usePreferenceStore(state => state.preference);
   const setPreference = usePreferenceStore(state => state.setPreference);
 
-  const [showDeleteAccountModal, setShowDeleteAccountModal] = useState(false);
   const [pickerActiveDuration, setPickerActiveDuration] = useState(false);
   const [pickerActiveReps, setPickerActiveReps] = useState(false);
-  const [weightUnitSelect, setWeightUnitSelect] = useState<LogUnit.KG>();
-  const [distanceUnitSelect, setDistanceUnitSelect] = useState<LogUnit.KM>();
+  const [weightUnitSelect, setWeightUnitSelect] = useState<LogUnit>(LogUnit.KG);
+  const [distanceUnitSelect, setDistanceUnitSelect] = useState<LogUnit>(
+    LogUnit.KM,
+  );
   const [preferenceInput, setPreferenceInput] = useState<PreferenceInput>();
-  const [distanceUnitSelectOpen, setDistanceUnitSelectOpen] = useState(false);
-  const [weightSelectOpen, setWeightSelectOpen] = useState(false);
 
   const [updateMyPreferences, {data: dataUpdateMyPreferences}] =
     useUpdatePreferenceMutation({
@@ -104,7 +88,8 @@ const AdjustPreferences: React.FC<AdjustPreferencesProps> = props => {
     <>
       <ScrollView style={defaultStyles.container}>
         <View style={defaultStyles.container}>
-          <AppText style={[defaultStyles.h4]}>Value logging</AppText>
+          <AppText h4>Value logging</AppText>
+          <View style={defaultStyles.separator} />
           <View
             style={[
               defaultStyles.spaceBetween,
@@ -119,14 +104,8 @@ const AdjustPreferences: React.FC<AdjustPreferencesProps> = props => {
             </View>
             <View style={styles.controlContainer}>
               <View style={defaultStyles.row}>
-                <DropDownPicker
-                  setValue={setWeightUnitSelect}
-                  value={
-                    weightUnitSelect ||
-                    preferenceInput?.weightUnit ||
-                    LogUnit.KG
-                  }
-                  items={[
+                <Dropdown
+                  data={[
                     {
                       value: LogUnit.KG,
                       label: LogUnit.KG,
@@ -136,24 +115,22 @@ const AdjustPreferences: React.FC<AdjustPreferencesProps> = props => {
                       label: LogUnit.LBS,
                     },
                   ]}
-                  open={weightSelectOpen}
-                  setOpen={setWeightSelectOpen}
-                  style={styles.dropdownStyle}
-                  labelStyle={[
-                    defaultStyles.clickableText,
-                    defaultStyles.textAlignRight,
-                  ]}
-                  dropDownContainerStyle={styles.dropdownContainerStyle}
-                  showArrowIcon={false}
-                />
-                <DropDownPicker
-                  setValue={setDistanceUnitSelect}
+                  labelField={'label'}
+                  valueField={'value'}
                   value={
-                    distanceUnitSelect ||
-                    preferenceInput?.distanceUnit ||
-                    LogUnit.KM
+                    weightUnitSelect ||
+                    preferenceInput?.weightUnit ||
+                    LogUnit.KG
                   }
-                  items={[
+                  style={styles.dropdownStyle}
+                  placeholderStyle={defaultStyles.clickableText}
+                  iconColor={'white'}
+                  selectedTextStyle={defaultStyles.clickableText}
+                  onChange={item => setWeightUnitSelect(item.value as LogUnit)}
+                />
+                <View style={defaultStyles.marginHorizontal} />
+                <Dropdown
+                  data={[
                     {
                       value: LogUnit.KM,
                       label: LogUnit.KM,
@@ -163,15 +140,20 @@ const AdjustPreferences: React.FC<AdjustPreferencesProps> = props => {
                       label: LogUnit.MI,
                     },
                   ]}
-                  open={distanceUnitSelectOpen}
-                  setOpen={setDistanceUnitSelectOpen}
+                  labelField={'label'}
+                  valueField={'value'}
+                  value={
+                    distanceUnitSelect ||
+                    preferenceInput?.distanceUnit ||
+                    LogUnit.KM
+                  }
                   style={styles.dropdownStyle}
-                  labelStyle={[
-                    defaultStyles.clickableText,
-                    defaultStyles.textAlignRight,
-                  ]}
-                  dropDownContainerStyle={styles.dropdownContainerStyle}
-                  showArrowIcon={false}
+                  placeholderStyle={defaultStyles.clickableText}
+                  iconColor={'white'}
+                  selectedTextStyle={defaultStyles.clickableText}
+                  onChange={item =>
+                    setDistanceUnitSelect(item.value as LogUnit)
+                  }
                 />
               </View>
             </View>
@@ -228,7 +210,8 @@ const AdjustPreferences: React.FC<AdjustPreferencesProps> = props => {
               />
             </View>
           </View>
-          <AppText style={defaultStyles.h4}>Timer</AppText>
+          <AppText h4>Timer</AppText>
+          <View style={defaultStyles.separator} />
           <View style={[defaultStyles.spaceBetween, styles.padding]}>
             <View style={styles.labelContainer}>
               <AppText>Default timer duration</AppText>
@@ -317,18 +300,6 @@ const AdjustPreferences: React.FC<AdjustPreferencesProps> = props => {
               </View>
             </View>
           )}
-          //TODO: MOVE THIS!
-          {!props.hidePermaDelete && (
-            <TouchableOpacity
-              style={styles.deleteRow}
-              onPress={() => setShowDeleteAccountModal(true)}>
-              <ClickableText
-                text={'Permanently delete account'}
-                onPress={() => setShowDeleteAccountModal(true)}
-              />
-              <Delete />
-            </TouchableOpacity>
-          )}
         </View>
       </ScrollView>
       <SinglePicker
@@ -379,20 +350,6 @@ const AdjustPreferences: React.FC<AdjustPreferencesProps> = props => {
         )}
         hideRightText
       />
-
-      <ConfirmModal
-        message={
-          'Are you sure you want to permanently delete your account? This action cannot be reversed and your account along with its data will be erased forever'
-        }
-        isOpen={showDeleteAccountModal}
-        type={'WARNING'}
-        onDismiss={() => setShowDeleteAccountModal(false)}
-        onConfirm={() => {
-          const response = deleteUser();
-          console.log(response);
-        }}
-        overrideConfirmGradient={Constants.ERROR_GRADIENT}
-      />
     </>
   );
 };
@@ -408,13 +365,7 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
   },
   dropdownStyle: {
-    width: 80,
-    borderWidth: 0,
-    backgroundColor: '0000000',
-  },
-  dropdownContainerStyle: {
-    width: 80,
-    borderWidth: 0,
+    width: 60,
   },
   input: {
     backgroundColor: 'white',
@@ -436,17 +387,6 @@ const styles = StyleSheet.create({
   },
   marginTopLarge: {
     marginTop: 100,
-  },
-  deleteRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginTop: 200,
-    borderRadius: Constants.BORDER_RADIUS_SMALL,
-    padding: Constants.CONTAINER_PADDING_MARGIN,
-    borderColor: Constants.ERROR_GRADIENT[1],
-    borderWidth: 1,
-    marginLeft: 10,
   },
 });
 
