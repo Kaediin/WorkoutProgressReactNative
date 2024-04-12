@@ -19,6 +19,7 @@ import {
   ExerciseLogInput,
   LatestLogsByExerciseIdAndNotWorkoutIdQuery,
   LogUnit,
+  useAddEstimatedCaloriesBurnedMutation,
   useAddExerciseLogMutation,
   useEndWorkoutMutation,
   useLatestLogsByExerciseIdAndNotWorkoutIdLazyQuery,
@@ -117,6 +118,11 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
         setMyExercises(data?.myExercises || []);
       },
     });
+
+  // Add calorie burned to workout
+  const [addCalorieBurnedToWorkout] = useAddEstimatedCaloriesBurnedMutation({
+    fetchPolicy: 'no-cache',
+  });
 
   // Get workout by id
   const [workoutById, {data: workoutData, loading: workoutLoading}] =
@@ -357,6 +363,16 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
           ) {
             saveWorkoutAppleHealthKit(data.endWorkout, calorieBurned);
           }
+
+          if (calorieBurned > 0) {
+            addCalorieBurnedToWorkout({
+              variables: {
+                workoutId: data.endWorkout.id,
+                estimatedCaloriesBurned: calorieBurned,
+              },
+            });
+          }
+
           // @ts-ignore
           props.navigation.navigate('WorkoutsOverview', {
             cameFrom: moment().toISOString(true),

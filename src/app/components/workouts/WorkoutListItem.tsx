@@ -11,6 +11,7 @@ import {
   getFormattedHoursMinutesString,
 } from '../../utils/Date';
 import AppText from '../common/AppText';
+import {Fire} from '../../icons/svg';
 
 interface WorkoutListItemProps {
   workout: WorkoutShortFragment;
@@ -49,6 +50,17 @@ const WorkoutListItem: React.FC<WorkoutListItemProps> = ({
           </AppText>
         </View>
         <AppText style={styles.headerText}>{workout.name}</AppText>
+        {workout.estimatedCaloriesBurned && (
+          <View
+            style={[
+              defaultStyles.row,
+              defaultStyles.centerInRow,
+              defaultStyles.marginBottom,
+            ]}>
+            <Fire />
+            <AppText>{workout.estimatedCaloriesBurned} kcal</AppText>
+          </View>
+        )}
         {workout.remark && (
           <AppText
             style={[defaultStyles.footnote, defaultStyles.textAlignCenter]}>

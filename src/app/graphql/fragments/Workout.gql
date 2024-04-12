@@ -6,6 +6,7 @@ fragment WorkoutShort on Workout {
     endDateTime
     active
     remark
+    estimatedCaloriesBurned
 }
 
 fragment WorkoutLong on Workout {

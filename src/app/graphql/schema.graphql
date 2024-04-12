@@ -152,6 +152,8 @@ type MuscleGroupChartData {
 }
 
 type Mutation {
+  """Add calories burned to workout"""
+  addEstimatedCaloriesBurned(estimatedCaloriesBurned: Float!, workoutId: ID!): Workout!
   addExerciseLog(autoAdjust: Boolean!, input: ExerciseLogInput!, workoutId: ID!): Workout
 
   """Add external health provider data to workout"""
@@ -273,6 +275,7 @@ input UserInput {
 type Workout {
   active: Boolean
   endDateTime: LocalDateTime
+  estimatedCaloriesBurned: Float
   exerciseLogs: [ExerciseLog!]!
   externalHealthProviderData: ExternalHealthProviderData
   groupedExerciseLogs: [GroupedExerciseLog!]!

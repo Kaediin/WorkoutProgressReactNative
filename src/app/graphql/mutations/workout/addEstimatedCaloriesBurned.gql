@@ -1,0 +1,5 @@
+mutation addEstimatedCaloriesBurned($workoutId: ID!, $estimatedCaloriesBurned: Float!) {
+    addEstimatedCaloriesBurned(workoutId: $workoutId, estimatedCaloriesBurned: $estimatedCaloriesBurned) {
+        ...WorkoutShort
+    }
+}

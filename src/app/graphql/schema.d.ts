@@ -171,6 +171,8 @@ export type MuscleGroupChartData = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  /** Add calories burned to workout */
+  addEstimatedCaloriesBurned: Workout;
   addExerciseLog?: Maybe<Workout>;
   /** Add external health provider data to workout */
   addExternalHealthProviderData: Workout;
@@ -197,6 +199,12 @@ export type Mutation = {
   updateMyPreference: Preference;
   /** Update workout by ID */
   updateWorkout: Workout;
+};
+
+
+export type MutationAddEstimatedCaloriesBurnedArgs = {
+  estimatedCaloriesBurned: Scalars['Float'];
+  workoutId: Scalars['ID'];
 };
 
 
@@ -415,6 +423,7 @@ export type Workout = {
   __typename?: 'Workout';
   active?: Maybe<Scalars['Boolean']>;
   endDateTime?: Maybe<Scalars['LocalDateTime']>;
+  estimatedCaloriesBurned?: Maybe<Scalars['Float']>;
   exerciseLogs: Array<ExerciseLog>;
   externalHealthProviderData?: Maybe<ExternalHealthProviderData>;
   groupedExerciseLogs: Array<GroupedExerciseLog>;
