@@ -64,7 +64,7 @@ const SettingsRowEditable: React.FC<SettingsRowProps> = props => {
         // Gender dropdown
         <View>
           <Dropdown
-            value={upperCaseFirstLetter(props.value.toString())}
+            value={upperCaseFirstLetter((props.value ?? '').toString())}
             data={[
               {label: Gender.Male, value: Gender.Male},
               {label: Gender.Female, value: Gender.Female},

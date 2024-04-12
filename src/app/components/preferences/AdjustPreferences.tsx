@@ -19,16 +19,16 @@ const AdjustPreferences: React.FC = () => {
 
   const [pickerActiveDuration, setPickerActiveDuration] = useState(false);
   const [pickerActiveReps, setPickerActiveReps] = useState(false);
-  const [weightUnitSelect, setWeightUnitSelect] = useState<LogUnit>(LogUnit.KG);
-  const [distanceUnitSelect, setDistanceUnitSelect] = useState<LogUnit>(
-    LogUnit.KM,
-  );
   const [preferenceInput, setPreferenceInput] = useState<PreferenceInput>();
 
-  const [updateMyPreferences, {data: dataUpdateMyPreferences}] =
-    useUpdatePreferenceMutation({
-      fetchPolicy: 'no-cache',
-    });
+  const [updateMyPreferences] = useUpdatePreferenceMutation({
+    fetchPolicy: 'no-cache',
+    onCompleted: data => {
+      if (data?.updateMyPreference) {
+        setPreference(data.updateMyPreference);
+      }
+    },
+  });
 
   useEffect(() => {
     if (preference) {
@@ -45,45 +45,6 @@ const AdjustPreferences: React.FC = () => {
     }
   }, [preference]);
 
-  useEffect(() => {
-    if (weightUnitSelect) {
-      setPreferenceInput(prevState => ({
-        ...prevState,
-        weightUnit: weightUnitSelect,
-      }));
-      updateMyPreferences({
-        variables: {
-          input: {
-            ...preferenceInput,
-            weightUnit: weightUnitSelect,
-          },
-        },
-      });
-    }
-  }, [weightUnitSelect]);
-
-  useEffect(() => {
-    if (distanceUnitSelect) {
-      setPreferenceInput(prevState => ({
-        ...prevState,
-        distanceUnit: distanceUnitSelect,
-      }));
-      updateMyPreferences({
-        variables: {
-          input: {
-            ...preferenceInput,
-            distanceUnit: distanceUnitSelect,
-          },
-        },
-      });
-    }
-  }, [distanceUnitSelect]);
-
-  useEffect(() => {
-    if (dataUpdateMyPreferences?.updateMyPreference) {
-      setPreference(dataUpdateMyPreferences?.updateMyPreference);
-    }
-  }, [dataUpdateMyPreferences?.updateMyPreference]);
   return (
     <>
       <ScrollView style={defaultStyles.container}>
@@ -117,16 +78,25 @@ const AdjustPreferences: React.FC = () => {
                   ]}
                   labelField={'label'}
                   valueField={'value'}
-                  value={
-                    weightUnitSelect ||
-                    preferenceInput?.weightUnit ||
-                    LogUnit.KG
-                  }
+                  value={preferenceInput?.weightUnit || LogUnit.KG}
                   style={styles.dropdownStyle}
                   placeholderStyle={defaultStyles.clickableText}
                   iconColor={'white'}
                   selectedTextStyle={defaultStyles.clickableText}
-                  onChange={item => setWeightUnitSelect(item.value as LogUnit)}
+                  onChange={item => {
+                    setPreferenceInput(prevState => ({
+                      ...prevState,
+                      weightUnit: item.value as LogUnit,
+                    }));
+                    updateMyPreferences({
+                      variables: {
+                        input: {
+                          ...preferenceInput,
+                          weightUnit: item.value as LogUnit,
+                        },
+                      },
+                    });
+                  }}
                 />
                 <View style={defaultStyles.marginHorizontal} />
                 <Dropdown
@@ -142,18 +112,25 @@ const AdjustPreferences: React.FC = () => {
                   ]}
                   labelField={'label'}
                   valueField={'value'}
-                  value={
-                    distanceUnitSelect ||
-                    preferenceInput?.distanceUnit ||
-                    LogUnit.KM
-                  }
+                  value={preferenceInput?.distanceUnit || LogUnit.KM}
                   style={styles.dropdownStyle}
                   placeholderStyle={defaultStyles.clickableText}
                   iconColor={'white'}
                   selectedTextStyle={defaultStyles.clickableText}
-                  onChange={item =>
-                    setDistanceUnitSelect(item.value as LogUnit)
-                  }
+                  onChange={item => {
+                    setPreferenceInput(prevState => ({
+                      ...prevState,
+                      distanceUnit: item.value as LogUnit,
+                    }));
+                    updateMyPreferences({
+                      variables: {
+                        input: {
+                          ...preferenceInput,
+                          distanceUnit: item.value as LogUnit,
+                        },
+                      },
+                    });
+                  }}
                 />
               </View>
             </View>

@@ -151,7 +151,9 @@ const useAuth = (): {
         username: email,
         password: password,
         attributes: {
-          name: `${firstName} ${middleName + ' '}${lastName}`,
+          name: middleName.trim()
+            ? `${firstName.trim()} ${middleName.trim()} ${lastName.trim()}`
+            : `${firstName.trim()} ${lastName.trim()}`,
           given_name: firstName,
           family_name: lastName,
           middle_name: middleName,

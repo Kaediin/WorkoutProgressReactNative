@@ -3,7 +3,7 @@ import {ProfileStackParamList} from '../../../stacks/ProfileStack';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import GradientBackground from '../../../components/common/GradientBackground';
 import {defaultStyles} from '../../../utils/DefaultStyles';
-import {Platform, StyleSheet, View} from 'react-native';
+import {Platform, ScrollView, StyleSheet, View} from 'react-native';
 import useUserStore from '../../../stores/userStore';
 import SettingsRowEditable from '../../../components/common/SettingsRowEditable';
 import {
@@ -16,6 +16,7 @@ import ClickableText from '../../../components/common/ClickableText';
 import AppText from '../../../components/common/AppText';
 import usePreferenceStore from '../../../stores/preferenceStore';
 import useAppleHealthKit from '../../../hooks/useAppleHealthKit';
+import Loader from '../../../components/common/Loader';
 
 type Props = NativeStackScreenProps<ProfileStackParamList, 'BiometricsScreen'>;
 
@@ -26,7 +27,7 @@ const BiometricsScreen: React.FC<Props> = props => {
 
   const {saveWeight} = useAppleHealthKit();
 
-  const [logWeight] = useLogBiometricMutation({
+  const [logWeight, {loading: logWeightLoading}] = useLogBiometricMutation({
     onCompleted: data => {
       if (data?.logBiometrics) {
         setMe(data.logBiometrics);
@@ -64,7 +65,12 @@ const BiometricsScreen: React.FC<Props> = props => {
               },
             });
           }}
-          disabled={!weight || weight === me?.weight?.value || weight < 1}
+          disabled={
+            !weight ||
+            weight === me?.weight?.value ||
+            weight < 1 ||
+            logWeightLoading
+          }
         />
       ),
     });
@@ -72,17 +78,25 @@ const BiometricsScreen: React.FC<Props> = props => {
 
   return (
     <GradientBackground>
-      <View style={[defaultStyles.container, styles.container]}>
+      <ScrollView style={[defaultStyles.container, styles.container]}>
         <View style={[defaultStyles.row, styles.row]}>
-          <SettingsRowEditable
-            label={'Weight'}
-            value={weight}
-            inputType={'number'}
-            onValueChange={value => setWeight(value as number)}
-          />
-          {weight && <AppText>{preference?.weightUnit}</AppText>}
+          {logWeightLoading ? (
+            <Loader isLoading />
+          ) : (
+            <>
+              <SettingsRowEditable
+                label={'Weight'}
+                value={weight}
+                inputType={'number'}
+                onValueChange={value => setWeight(value as number)}
+              />
+              {weight && (
+                <AppText>{preference?.weightUnit || LogUnit.KG}</AppText>
+              )}
+            </>
+          )}
         </View>
-      </View>
+      </ScrollView>
     </GradientBackground>
   );
 };
