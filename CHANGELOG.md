@@ -1,3 +1,23 @@
+## [0.3.0]
+
+### Added
+
+- #95: Sentry profiling for performance monitoring
+- #101: Onboarding flow for new users
+- #102: Password validation text on sign up
+- #104: Apple Health Kit integration
+- #105: Prompt user to update app if the current installed version in out of date
+- #106: Added new settings screen
+- #106: Fixed flickering on login screen
+- #106: Increased size on filter button
+- #106: Added segmented button for filtering on months in exercise chart view
+- #106: Profile screen can be refreshed on scroll
+- #107: Calorie burned now shows on workout list item
+
+### Changed
+
+- #103: Moved permanently delete account button
+
 ## [0.2.4]
 
 ### Added
