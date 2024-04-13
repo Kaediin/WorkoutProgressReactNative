@@ -149,7 +149,7 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   deleteRowText: {
-    color: Constants.ERROR_GRADIENT[0],
+    color: Constants.ERROR_GRADIENT[1],
   },
   deleteRow: {
     flexDirection: 'row',

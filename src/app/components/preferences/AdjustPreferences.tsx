@@ -13,7 +13,11 @@ import Constants from '../../utils/Constants';
 import SinglePicker from '../bottomSheet/SinglePicker';
 import {Dropdown} from 'react-native-element-dropdown';
 
-const AdjustPreferences: React.FC = () => {
+interface AdjustPreferencesProps {
+  onPickerActive?: (active: boolean) => void;
+}
+
+const AdjustPreferences: React.FC<AdjustPreferencesProps> = props => {
   const preference = usePreferenceStore(state => state.preference);
   const setPreference = usePreferenceStore(state => state.setPreference);
 
@@ -44,6 +48,11 @@ const AdjustPreferences: React.FC = () => {
       });
     }
   }, [preference]);
+
+  useEffect(() => {
+    props.onPickerActive &&
+      props.onPickerActive(pickerActiveDuration || pickerActiveReps);
+  }, [pickerActiveDuration, pickerActiveReps, props.onPickerActive]);
 
   return (
     <>

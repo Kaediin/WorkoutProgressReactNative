@@ -24,10 +24,6 @@ const SinglePicker: React.FC<SinglePickerProps> = props => {
     }
   }, [props.active]);
 
-  // useEffect(() => {
-  //   console.log(props.pickerValue);
-  // }, [props.pickerValue]);
-
   return (
     <BottomSheetModalProvider>
       <View style={styles.absolute}>
@@ -53,6 +49,7 @@ const SinglePicker: React.FC<SinglePickerProps> = props => {
 const styles = StyleSheet.create({
   absolute: {
     position: 'absolute',
+    zIndex: 100,
   },
 });
 

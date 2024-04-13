@@ -297,7 +297,7 @@ const ExercisesDetailScreen: React.FC<Props> = props => {
                         defaultStyles.footnote,
                         defaultStyles.textAlignCenter,
                       ]}>
-                      Logs plotted of past 6 months
+                      Logs plotted of past {monthRange} months
                     </AppText>
                   </View>
                 </View>
