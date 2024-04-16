@@ -13,6 +13,12 @@
 - #106: Added segmented button for filtering on months in exercise chart view
 - #106: Profile screen can be refreshed on scroll
 - #107: Calorie burned now shows on workout list item
+- #109: Swipe down to refresh on workout detail screen
+- #109: Auto scroll down on workout detail screen
+
+### Fixed
+
+- #108: Permanently delete account colors are easier on the eyes
 
 ### Changed
 
