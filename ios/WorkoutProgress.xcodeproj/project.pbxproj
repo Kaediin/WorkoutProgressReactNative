@@ -537,6 +537,8 @@
 				ENABLE_BITCODE = NO;
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "i386 arm64";
 				INFOPLIST_FILE = WorkoutProgress/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "Workout Logbook";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.sports";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -569,6 +571,8 @@
 				DEVELOPMENT_TEAM = 9NP5RW49Q5;
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "i386 arm64";
 				INFOPLIST_FILE = WorkoutProgress/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "Workout Logbook";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.sports";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

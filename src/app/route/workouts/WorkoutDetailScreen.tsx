@@ -5,6 +5,7 @@ import {
   FlatList,
   Platform,
   Pressable,
+  RefreshControl,
   ScrollView,
   StyleSheet,
   Switch,
@@ -184,14 +185,15 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
     });
 
   // Re-log latest log
-  const [reLogLatestLog, {loading: reLogLoading}] = useReLogLatestLogMutation({
-    fetchPolicy: 'no-cache',
-    onCompleted: data => {
-      if (data?.reLogLatestLog) {
-        setWorkout(data.reLogLatestLog);
-      }
-    },
-  });
+  const [reLogLatestLog, {loading: reLogLatestLogLoading}] =
+    useReLogLatestLogMutation({
+      fetchPolicy: 'no-cache',
+      onCompleted: data => {
+        if (data?.reLogLatestLog) {
+          setWorkout(data.reLogLatestLog);
+        }
+      },
+    });
 
   // Re-log selected log
   const [reLogLog, {loading: reLogLogLoading}] = useReLogLogMutation({
@@ -529,14 +531,8 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
     workoutLoading ||
     endWorkoutLoading ||
     removeExerciseLogLoading ||
-    reLogLoading ||
+    reLogLatestLogLoading ||
     reLogLogLoading;
-
-  useEffect(() => {
-    if (loading && flatListRef?.current) {
-      flatListRef?.current?.scrollToEnd({animated: true});
-    }
-  }, [loading]);
 
   return (
     <GradientBackground>
@@ -551,6 +547,23 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
           ) : (
             <FlatList
               ref={flatListRef}
+              refreshControl={
+                <RefreshControl
+                  colors={['#fff', '#ccc']}
+                  tintColor={'#fff'}
+                  refreshing={workoutLoading}
+                  onRefresh={() => {
+                    workoutById({
+                      variables: {
+                        id: props.route.params.workoutId,
+                      },
+                    });
+                  }}
+                />
+              }
+              onContentSizeChange={() =>
+                flatListRef?.current?.scrollToEnd({animated: true})
+              }
               style={styles.flatlist}
               data={workout.groupedExerciseLogs}
               ListHeaderComponent={
