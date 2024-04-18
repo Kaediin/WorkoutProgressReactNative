@@ -18,7 +18,7 @@ class TimerWidgetModule: NSObject {
   private func areActivitiesEnabled() -> Bool {
     return ActivityAuthorizationInfo().areActivitiesEnabled
   }
-  
+
   private func resetValues() {
     startedAt = nil
     pausedAt = nil
@@ -58,7 +58,7 @@ class TimerWidgetModule: NSObject {
       }
     }
   }
-  
+
   @objc
   func pause(_ timestamp: Double, duration: Int) -> Void {
     pausedAt = Date(timeIntervalSince1970: timestamp)
@@ -73,25 +73,26 @@ class TimerWidgetModule: NSObject {
       )
     }
   }
-  
-  @objc
-  func resume(duration: Int) -> Void {
-    guard let startDate = self.startedAt else { return }
-    guard let pauseDate = self.pausedAt else { return }
-    
-    let elapsedSincePaused = Date().timeIntervalSince1970 - pauseDate.timeIntervalSince1970
-    startedAt = Date(timeIntervalSince1970: startDate.timeIntervalSince1970 + elapsedSincePaused)
-    durationGoal = duration
-    pausedAt = nil
-    
-    let contentState = TimerWidgetAttributes.ContentState(startedAt: startedAt, pausedAt: nil, durationGoal: duration)
-    Task {
-      await currentActivity?.update(
-        ActivityContent<TimerWidgetAttributes.ContentState>(
-          state: contentState,
-          staleDate: nil
-        )
-      )
-    }
-  }
+
+//  @objc
+//  func resume() -> Void {
+//    guard let startDate = self.startedAt else { return }
+//    guard let pauseDate = self.pausedAt else { return }
+//
+//    let elapsedDuration = pauseDate.timeIntervalSince1970 - startDate.timeIntervalSince1970
+//    let elapsedSincePaused = Date().timeIntervalSince1970 - pauseDate.timeIntervalSince1970
+//
+//    startedAt = Date(timeIntervalSince1970: startDate.timeIntervalSince1970 + elapsedSincePaused + elapsedDuration + elapsedDuration)
+//    pausedAt = nil
+//
+//    let contentState = TimerWidgetAttributes.ContentState(startedAt: startedAt, pausedAt: nil, durationGoal: self.durationGoal)
+//    Task {
+//      await currentActivity?.update(
+//        ActivityContent<TimerWidgetAttributes.ContentState>(
+//          state: contentState,
+//          staleDate: nil
+//        )
+//      )
+//    }
+//  }
 }

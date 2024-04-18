@@ -39,6 +39,12 @@ const useLiveActivityTimer = () => {
     [elapsedTimeInMs, duration],
   );
 
+  const secondUnits = remainingTime % 10;
+  const secondTens = Math.floor(remainingTime / 10) % 6;
+  const minutes = Math.floor(remainingTime / 60);
+
+  const remainingTimeFormatted = `${minutes}:${secondTens}${secondUnits}`;
+
   const play = useCallback((durationGoal: number) => {
     setIsPlaying(true);
     // Already playing, returning early
@@ -58,14 +64,14 @@ const useLiveActivityTimer = () => {
       const elapsedSincePaused = Date.now() - pausedTime.current;
       endTime.current = endTime.current! + elapsedSincePaused;
       pausedTime.current = null;
-      TimerWidgetModule.resume(durationGoal);
+      TimerWidgetModule.resume();
     } else {
       TimerWidgetModule.startLiveActivity(endTime.current / 1000, durationGoal);
     }
 
     intervalId.current = setInterval(() => {
       setElapsedTimeInMs(Date.now() - endTime.current!);
-    }, 32);
+    }, 200);
   }, []);
 
   const pause = useCallback((durationGoal: number) => {
@@ -184,11 +190,12 @@ const useLiveActivityTimer = () => {
 
   return {
     play,
-    pause,
+    // pause,
     reset,
     remainingTime,
     isPlaying,
     isActive: !!endTime.current,
+    remainingTimeFormatted,
   };
 };
 

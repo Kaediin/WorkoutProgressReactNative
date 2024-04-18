@@ -39,6 +39,9 @@ struct TimerWidgetAttributes: ActivityAttributes {
       guard let startedAt = self.startedAt else {
         return 0
       }
+      if (Double(durationGoal ?? 0) == 0) {
+        return startedAt.timeIntervalSince1970 - Date().timeIntervalSince1970
+      }
       return Double(durationGoal ?? 0) - (startedAt.timeIntervalSince1970 - Date().timeIntervalSince1970)
     }
     
@@ -66,29 +69,39 @@ struct TimerWidgetLiveActivity: Widget {
             .frame(width: 50, height: 50) // Adjust size as needed
             .padding()
           
-          Text(
-            Date(timeIntervalSinceNow: context.state.getTimeIntervalSinceNow()),
-            style: .timer
-          )
-          .font(.title)
-          .fontWeight(.medium)
-          .multilineTextAlignment(.trailing)
-          .foregroundColor(.white) // Assuming your text color should be white on the blue gradient
-          .padding()
-          .frame(maxWidth: .infinity, alignment: .trailing)
+          if (!context.state.isRunning()) {
+            Text(
+              context.state.getPausedTime()
+            )
+            .font(.title)
+            .fontWeight(.medium)
+            .multilineTextAlignment(.trailing)
+            .foregroundColor(.white) // Assuming your text color should be white on the blue gradient
+            .padding()
+            .frame(maxWidth: .infinity, alignment: .trailing)
+          } else {
+            Text(
+              Date(timeIntervalSinceNow: context.state.getTimeIntervalSinceNow()),
+              style: .timer
+            )
+            .font(.title)
+            .fontWeight(.medium)
+            .multilineTextAlignment(.trailing)
+            .foregroundColor(.white) // Assuming your text color should be white on the blue gradient
+            .padding()
+            .frame(maxWidth: .infinity, alignment: .trailing)
+          }
         }
       }
     } dynamicIsland: { context in
       DynamicIsland {
         // Expanded Region
         DynamicIslandExpandedRegion(.center) {
-          ZStack {
-            LinearGradient(gradient: Gradient(colors: [Color(red: 50/255.0, green: 204/255.0, blue: 200/255.0), Color(red: 41/255.0, green: 175/255.0, blue: 190/255.0)]), startPoint: .trailing, endPoint: .leading)
             HStack {
               HStack(spacing: 8.0, content: {
                 Button(intent: ResetIntent()) {
                   ZStack {
-                    Circle().fill(.black.opacity(0.5))
+                    Circle().fill(.gray.opacity(0.5))
                     Image(systemName: "xmark")
                       .imageScale(.medium)
                       .foregroundColor(.white)
@@ -103,7 +116,7 @@ struct TimerWidgetLiveActivity: Widget {
                   context.state.getPausedTime()
                 )
                 .font(.title)
-                .foregroundColor(.white)
+                .foregroundColor(.cyan)
                 .fontWeight(.medium)
                 .monospacedDigit()
                 .transition(.identity)
@@ -115,17 +128,13 @@ struct TimerWidgetLiveActivity: Widget {
                   style: .timer
                 )
                 .font(.title)
-                .foregroundColor(.white)
+                .foregroundColor(.cyan)
                 .fontWeight(.medium)
                 .monospacedDigit()
                 .frame(width: 60)
                 .transition(.identity)
               }
             }
-//            .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity)
-//            .edgesIgnoringSafeArea(.all)
-          }
-          
         }
       } compactLeading: {
         Image(systemName: "timer")
@@ -158,9 +167,9 @@ struct TimerWidgetLiveActivity: Widget {
         .monospacedDigit()
         .font(.system(size: 14))
         
-//        Image(systemName: "timer")
-//          .imageScale(.medium)
-//          .foregroundColor(.cyan)
+        //        Image(systemName: "timer")
+        //          .imageScale(.medium)
+        //          .foregroundColor(.cyan)
       }
       .widgetURL(URL(string: "http://www.apple.com"))
       .keylineTint(.white)

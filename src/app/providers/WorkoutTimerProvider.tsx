@@ -5,9 +5,8 @@ import {StyleSheet, TouchableOpacity, View} from 'react-native';
 import usePreferenceStore from '../stores/preferenceStore';
 import ConfirmModal from '../components/common/ConfirmModal';
 import useRouteStore from '../stores/routeStore'; // @ts-ignore
-import {Pause} from '../icons/svg';
-import CircularProgress from 'react-native-circular-progress-indicator';
 import useLiveActivityTimer from '../hooks/useLiveActivityTimer';
+import CircularProgress from 'react-native-circular-progress-indicator';
 
 export const TimerContext = React.createContext({
   toggle: (resetTimer: boolean) => {},
@@ -15,8 +14,14 @@ export const TimerContext = React.createContext({
 
 const WorkoutTimerProvider: React.FC<PropsWithChildren> = props => {
   // Hook for live activities
-  const {reset, play, pause, remainingTime, isPlaying, isActive} =
-    useLiveActivityTimer();
+  const {
+    reset,
+    play,
+    remainingTime,
+    isPlaying,
+    isActive,
+    remainingTimeFormatted,
+  } = useLiveActivityTimer();
 
   const preference = usePreferenceStore(state => state.preference);
   const hideTimer = useTimerStore(state => state.timerHidden);
@@ -73,29 +78,17 @@ const WorkoutTimerProvider: React.FC<PropsWithChildren> = props => {
         <TouchableOpacity
           // Conditionally hide button offscreen
           style={[styles.countDownCircle, {bottom: hideTimer ? -100 : height}]}
-          onPress={() => {
-            if (isPlaying) {
-              console.log(
-                '[WorkoutTimerProvider] Pausing timer',
-                timerDuration,
-              );
-              pause(timerDuration);
-            } else {
-              // Resume
-              play(timerDuration);
-            }
-          }}
           onLongPress={() => setShowClearCountdownPopup(true)}>
           <View style={styles.innerCircleCountdown}>
-            {isPlaying ? (
-              <CircularProgress
-                value={remainingTime}
-                maxValue={timerDuration}
-                radius={30}
-              />
-            ) : (
-              <Pause />
-            )}
+            <CircularProgress
+              value={remainingTime}
+              maxValue={timerDuration}
+              initialValue={timerDuration}
+              radius={30}
+              title={remainingTimeFormatted}
+              titleFontSize={16}
+              showProgressValue={false}
+            />
           </View>
         </TouchableOpacity>
       )}
