@@ -57,7 +57,7 @@ struct TimerWidgetLiveActivity: Widget {
     ActivityConfiguration(for: TimerWidgetAttributes.self) { context in
       // Lock screen/banner UI goes here
       ZStack {
-        LinearGradient(gradient: Gradient(colors: [Color(red: 50/255.0, green: 204/255.0, blue: 200/255.0), Color(red: 41/255.0, green: 175/255.0, blue: 190/255.0)]), startPoint: .top, endPoint: .bottom)
+        LinearGradient(gradient: Gradient(colors: [Color(red: 50/255.0, green: 204/255.0, blue: 200/255.0), Color(red: 41/255.0, green: 175/255.0, blue: 190/255.0)]), startPoint: .trailing, endPoint: .leading)
           .edgesIgnoringSafeArea(.all)
         HStack {
           Image("Logo")
@@ -83,36 +83,12 @@ struct TimerWidgetLiveActivity: Widget {
         // Expanded Region
         DynamicIslandExpandedRegion(.center) {
           ZStack {
-//            LinearGradient(gradient: Gradient(colors: [Color(red: 50/255.0, green: 204/255.0, blue: 200/255.0), Color(red: 41/255.0, green: 175/255.0, blue: 190/255.0)]), startPoint: .top, endPoint: .bottom)
-//              .edgesIgnoringSafeArea(.all)
+            LinearGradient(gradient: Gradient(colors: [Color(red: 50/255.0, green: 204/255.0, blue: 200/255.0), Color(red: 41/255.0, green: 175/255.0, blue: 190/255.0)]), startPoint: .trailing, endPoint: .leading)
             HStack {
               HStack(spacing: 8.0, content: {
-                //                if (context.state.isRunning()) {
-                //                  Button(intent: PauseIntent()) {
-                //                    ZStack {
-                //                      Circle().fill(Color.cyan.opacity(0.5))
-                //                      Image(systemName: "pause.fill")
-                //                        .imageScale(.large)
-                //                        .foregroundColor(.cyan)
-                //                    }
-                //                  }
-                //                  .buttonStyle(PlainButtonStyle()) // Removes default button styling
-                //                  .contentShape(Rectangle()) // Ensures the tap arFea includes the entire custom content
-                //                } else {
-                //                  Button(intent: ResumeIntent()) {
-                //                    ZStack {
-                //                      Circle().fill(Color.cyan.opacity(0.5))
-                //                      Image(systemName: "play.fill")
-                //                        .imageScale(.large)
-                //                        .foregroundColor(.cyan)
-                //                    }
-                //                  }
-                //                  .buttonStyle(PlainButtonStyle()) // Removes default button styling
-                //                  .contentShape(Rectangle()) // Ensures the tap area includes the entire custom content
-                //                }
                 Button(intent: ResetIntent()) {
                   ZStack {
-                    Circle().fill(.gray.opacity(0.5))
+                    Circle().fill(.black.opacity(0.5))
                     Image(systemName: "xmark")
                       .imageScale(.medium)
                       .foregroundColor(.white)
@@ -127,7 +103,7 @@ struct TimerWidgetLiveActivity: Widget {
                   context.state.getPausedTime()
                 )
                 .font(.title)
-                .foregroundColor(.cyan)
+                .foregroundColor(.white)
                 .fontWeight(.medium)
                 .monospacedDigit()
                 .transition(.identity)
@@ -139,16 +115,17 @@ struct TimerWidgetLiveActivity: Widget {
                   style: .timer
                 )
                 .font(.title)
-                .foregroundColor(.cyan)
+                .foregroundColor(.white)
                 .fontWeight(.medium)
                 .monospacedDigit()
                 .frame(width: 60)
                 .transition(.identity)
               }
             }
-            .padding()
+//            .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity)
+//            .edgesIgnoringSafeArea(.all)
           }
-          .padding()
+          
         }
       } compactLeading: {
         Image(systemName: "timer")
@@ -171,12 +148,22 @@ struct TimerWidgetLiveActivity: Widget {
           .frame(maxWidth: 32)
         }
       } minimal: {
-        Image(systemName: "timer")
-          .imageScale(.medium)
-          .foregroundColor(.cyan)
+        Text(
+          Date(
+            timeIntervalSinceNow: context.state.getTimeIntervalSinceNow()
+          ),
+          style: .timer
+        )
+        .foregroundColor(.cyan)
+        .monospacedDigit()
+        .font(.system(size: 14))
+        
+//        Image(systemName: "timer")
+//          .imageScale(.medium)
+//          .foregroundColor(.cyan)
       }
       .widgetURL(URL(string: "http://www.apple.com"))
-      .keylineTint(Color.red)
+      .keylineTint(.white)
     }
   }
 }
