@@ -66,5 +66,7 @@
     <string>Read and import workouts from Apple Health.</string>
     <key>NSHealthUpdateUsageDescription</key>
     <string>Sync logged workouts to Apple Health.</string>
+    <key>NSSupportsLiveActivities</key>
+    <true/>
 </dict>
 </plist>

@@ -4,10 +4,10 @@
   "private": true,
   "scripts": {
     "android": "ENVFILE=.env.development react-native run-android",
-    "ios": "ENVFILE=.env.development react-native run-ios --scheme \"WorkoutProgressDev\" --simulator=\"iPhone 15 Pro Max\"",
-    "ios-dev": "ENVFILE=.env.development react-native run-ios --scheme \"WorkoutProgressDev\" --simulator=\"iPhone 15 Pro Max\"",
+    "ios": "ENVFILE=.env.development react-native run-ios --scheme \"WorkoutProgressDev\" --simulator=\"iPhone 15 Pro\"",
+    "ios-dev": "ENVFILE=.env.development react-native run-ios --scheme \"WorkoutProgressDev\" --simulator=\"iPhone 15 Pro\"",
     "ios-dev-device": "ENVFILE=.env.development react-native run-ios --scheme \"WorkoutProgressDev\" --device=\"Kaedin\"",
-    "ios-prod": "ENVFILE=.env.production react-native run-ios --scheme \"WorkoutProgress\" --simulator=\"iPhone 15 Pro Max\"",
+    "ios-prod": "ENVFILE=.env.production react-native run-ios --scheme \"WorkoutProgress\" --simulator=\"iPhone 15 Pro\"",
     "lint": "eslint .",
     "start": "react-native start",
     "test": "jest",
