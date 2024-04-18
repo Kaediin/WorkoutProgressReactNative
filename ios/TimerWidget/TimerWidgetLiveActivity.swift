@@ -56,49 +56,60 @@ struct TimerWidgetLiveActivity: Widget {
   var body: some WidgetConfiguration {
     ActivityConfiguration(for: TimerWidgetAttributes.self) { context in
       // Lock screen/banner UI goes here
-      VStack {
-        Text(
-          Date(
-            timeIntervalSinceNow: context.state.getTimeIntervalSinceNow()
-          ),
-          style: .timer
-        )
-        .font(.title)
-        .fontWeight(.medium)
+      ZStack {
+        LinearGradient(gradient: Gradient(colors: [Color(red: 50/255.0, green: 204/255.0, blue: 200/255.0), Color(red: 41/255.0, green: 175/255.0, blue: 190/255.0)]), startPoint: .top, endPoint: .bottom)
+          .edgesIgnoringSafeArea(.all)
+        HStack {
+          Image("Logo")
+            .resizable()
+            .aspectRatio(contentMode: .fit)
+            .frame(width: 50, height: 50) // Adjust size as needed
+            .padding()
+          
+          Text(
+            Date(timeIntervalSinceNow: context.state.getTimeIntervalSinceNow()),
+            style: .timer
+          )
+          .font(.title)
+          .fontWeight(.medium)
+          .multilineTextAlignment(.trailing)
+          .foregroundColor(.white) // Assuming your text color should be white on the blue gradient
+          .padding()
+          .frame(maxWidth: .infinity, alignment: .trailing)
+        }
       }
-      .activityBackgroundTint(Color.cyan)
-      .activitySystemActionForegroundColor(Color.black)
     } dynamicIsland: { context in
       DynamicIsland {
         // Expanded Region
         DynamicIslandExpandedRegion(.center) {
           ZStack {
-//            RoundedRectangle(cornerRadius: 24).strokeBorder(Color(red: 148/255.0, green: 163/255.0, blue: 184/255.0), lineWidth: 2)
+//            LinearGradient(gradient: Gradient(colors: [Color(red: 50/255.0, green: 204/255.0, blue: 200/255.0), Color(red: 41/255.0, green: 175/255.0, blue: 190/255.0)]), startPoint: .top, endPoint: .bottom)
+//              .edgesIgnoringSafeArea(.all)
             HStack {
               HStack(spacing: 8.0, content: {
-//                if (context.state.isRunning()) {
-//                  Button(intent: PauseIntent()) {
-//                    ZStack {
-//                      Circle().fill(Color.cyan.opacity(0.5))
-//                      Image(systemName: "pause.fill")
-//                        .imageScale(.large)
-//                        .foregroundColor(.cyan)
-//                    }
-//                  }
-//                  .buttonStyle(PlainButtonStyle()) // Removes default button styling
-//                  .contentShape(Rectangle()) // Ensures the tap area includes the entire custom content
-//                } else {
-//                  Button(intent: ResumeIntent()) {
-//                    ZStack {
-//                      Circle().fill(Color.cyan.opacity(0.5))
-//                      Image(systemName: "play.fill")
-//                        .imageScale(.large)
-//                        .foregroundColor(.cyan)
-//                    }
-//                  }
-//                  .buttonStyle(PlainButtonStyle()) // Removes default button styling
-//                  .contentShape(Rectangle()) // Ensures the tap area includes the entire custom content
-//                }
+                //                if (context.state.isRunning()) {
+                //                  Button(intent: PauseIntent()) {
+                //                    ZStack {
+                //                      Circle().fill(Color.cyan.opacity(0.5))
+                //                      Image(systemName: "pause.fill")
+                //                        .imageScale(.large)
+                //                        .foregroundColor(.cyan)
+                //                    }
+                //                  }
+                //                  .buttonStyle(PlainButtonStyle()) // Removes default button styling
+                //                  .contentShape(Rectangle()) // Ensures the tap arFea includes the entire custom content
+                //                } else {
+                //                  Button(intent: ResumeIntent()) {
+                //                    ZStack {
+                //                      Circle().fill(Color.cyan.opacity(0.5))
+                //                      Image(systemName: "play.fill")
+                //                        .imageScale(.large)
+                //                        .foregroundColor(.cyan)
+                //                    }
+                //                  }
+                //                  .buttonStyle(PlainButtonStyle()) // Removes default button styling
+                //                  .contentShape(Rectangle()) // Ensures the tap area includes the entire custom content
+                //                }
                 Button(intent: ResetIntent()) {
                   ZStack {
                     Circle().fill(.gray.opacity(0.5))
@@ -178,7 +189,7 @@ extension TimerWidgetAttributes {
 
 extension TimerWidgetAttributes.ContentState {
   fileprivate static var initState: TimerWidgetAttributes.ContentState {
-    TimerWidgetAttributes.ContentState(startedAt: Date())
+    TimerWidgetAttributes.ContentState(startedAt: Date(), durationGoal: 100)
   }
 }
 
