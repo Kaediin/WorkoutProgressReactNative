@@ -1,25 +1,27 @@
 import {create} from 'zustand';
 
 interface TimerStore {
-  timerActive?: boolean;
+  isTimerPlaying?: boolean;
+  setIsTimerPlaying: (isPlaying: boolean) => void;
   timerHidden?: boolean;
   toggleVisibility: (toggleVisibility: boolean) => void;
-  startTimer: (timerActive: boolean) => void;
   resetStore: () => void;
 }
 
 const useTimerStore = create<TimerStore>()(set => ({
-  timerActive: false,
+  isTimerPlaying: false,
   timerHidden: false,
+  setIsTimerPlaying: (isPlaying): void => {
+    set({isTimerPlaying: isPlaying});
+  },
   toggleVisibility: (hideTimer): void => {
     set({timerHidden: hideTimer});
   },
-  startTimer: (timerActive): void => {
-    set({timerActive});
-  },
+
   resetStore: (): void => {
     set({
-      timerActive: false,
+      isTimerPlaying: false,
+      timerHidden: false,
     });
   },
 }));

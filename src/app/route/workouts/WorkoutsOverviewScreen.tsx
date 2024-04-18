@@ -35,14 +35,12 @@ import Loader from '../../components/common/Loader';
 import {useIsFocused} from '@react-navigation/native';
 import useAuth from '../../hooks/useAuth';
 import AppText from '../../components/common/AppText';
-import useTimerStore from '../../stores/timerStore';
 
 type Props = NativeStackScreenProps<WorkoutStackParamList, 'WorkoutsOverview'>;
 
 const WorkoutsOverviewScreen: React.FC<Props> = ({navigation}) => {
   const {getToken} = useAuth();
 
-  const startTimer = useTimerStore(state => state.startTimer);
   const isFocussed = useIsFocused();
   const [deleteWorkoutId, setDeleteWorkoutId] = useState<string>('');
   const [editingExistingWorkoutId, setEditingExistingWorkoutId] =
@@ -178,7 +176,6 @@ const WorkoutsOverviewScreen: React.FC<Props> = ({navigation}) => {
         id,
       },
     }).finally(() => {
-      startTimer(false);
       setDeleteWorkoutId('');
       refetchActiveWorkout();
       refetchWorkouts();

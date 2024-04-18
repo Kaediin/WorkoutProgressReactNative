@@ -13,9 +13,9 @@
   return NO;
 }
 
-RCT_EXTERN_METHOD(startLiveActivity:(nonnull double *)timestamp)
-RCT_EXTERN_METHOD(pause:(nonnull double *)timestamp)
-RCT_EXTERN_METHOD(resume)
+RCT_EXTERN_METHOD(startLiveActivity:(nonnull double *)timestamp duration:(nonnull int *)duration)
+RCT_EXTERN_METHOD(pause:(nonnull double *)timestamp duration:(nonnull int *)duration)
+RCT_EXTERN_METHOD(resume:(nonnull int *)duration)
 RCT_EXTERN_METHOD(stopLiveActivity)
 
 @end

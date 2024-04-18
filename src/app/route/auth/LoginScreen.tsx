@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Image, StyleSheet, Text, TextInput, View} from 'react-native';
+import {Image, StyleSheet, TextInput, View} from 'react-native';
 import GradientButton from '../../components/common/GradientButton';
 import useAuth from '../../hooks/useAuth';
 import {CognitoUser} from 'amazon-cognito-identity-js';
@@ -12,13 +12,11 @@ import {errorCodeToMessage} from '../../utils/String';
 import ClickableText from '../../components/common/ClickableText';
 import AppText from '../../components/common/AppText';
 import {AuthStackParamList} from '../../stacks/AuthStack';
-import useLiveActivityTimer from '../../hooks/useLiveActivityTimer';
 
 type Props = NativeStackScreenProps<AuthStackParamList, 'Login'>;
 
 const LoginScreen: React.FC<Props> = props => {
   const {signIn} = useAuth();
-  const {value, reset, play, pause, isPlaying} = useLiveActivityTimer();
 
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -93,27 +91,6 @@ const LoginScreen: React.FC<Props> = props => {
                   text={'Forgot your password? Click here!'}
                   onPress={() => props.navigation.navigate('ForgotPassword')}
                 />
-              </View>
-              <View style={{padding: 32, alignItems: 'center'}}>
-                <View style={{paddingTop: 32, paddingBottom: 16}}>
-                  <Text style={{fontSize: 80, fontVariant: ['tabular-nums']}}>
-                    {value}
-                  </Text>
-                </View>
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    justifyContent: 'space-between',
-                    paddingHorizontal: 48,
-                  }}>
-                  <View style={{marginRight: 32}}>
-                    <GradientButton
-                      title={isPlaying ? 'pause' : 'play'}
-                      onPress={isPlaying ? pause : play}
-                    />
-                  </View>
-                  <GradientButton title={'Reset'} onPress={reset} />
-                </View>
               </View>
             </View>
           </View>

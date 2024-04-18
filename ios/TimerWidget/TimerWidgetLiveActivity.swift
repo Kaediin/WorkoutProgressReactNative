@@ -15,6 +15,7 @@ struct TimerWidgetAttributes: ActivityAttributes {
     // Unix timestamp in seconds
     var startedAt: Date?
     var pausedAt: Date?
+    var durationGoal: Int?
     
     func getElapsedTimeInSeconds() -> Int {
       let now = Date()
@@ -28,7 +29,7 @@ struct TimerWidgetAttributes: ActivityAttributes {
     }
     
     func getPausedTime() -> String {
-      let elapsedTimeInSeconds = getElapsedTimeInSeconds()
+      let elapsedTimeInSeconds = (durationGoal ?? 0) - getElapsedTimeInSeconds()
       let minutes = (elapsedTimeInSeconds % 3600) / 60
       let seconds = elapsedTimeInSeconds % 60
       return String(format: "%d:%02d", minutes, seconds)
@@ -38,7 +39,7 @@ struct TimerWidgetAttributes: ActivityAttributes {
       guard let startedAt = self.startedAt else {
         return 0
       }
-      return startedAt.timeIntervalSince1970 - Date().timeIntervalSince1970
+      return Double(durationGoal ?? 0) - (startedAt.timeIntervalSince1970 - Date().timeIntervalSince1970)
     }
     
     func isRunning() -> Bool {
@@ -72,32 +73,32 @@ struct TimerWidgetLiveActivity: Widget {
         // Expanded Region
         DynamicIslandExpandedRegion(.center) {
           ZStack {
-            RoundedRectangle(cornerRadius: 24).strokeBorder(Color(red: 148/255.0, green: 163/255.0, blue: 184/255.0), lineWidth: 2)
+//            RoundedRectangle(cornerRadius: 24).strokeBorder(Color(red: 148/255.0, green: 163/255.0, blue: 184/255.0), lineWidth: 2)
             HStack {
               HStack(spacing: 8.0, content: {
-                if (context.state.isRunning()) {
-                  Button(intent: PauseIntent()) {
-                    ZStack {
-                      Circle().fill(Color.cyan.opacity(0.5))
-                      Image(systemName: "pause.fill")
-                        .imageScale(.large)
-                        .foregroundColor(.cyan)
-                    }
-                  }
-                  .buttonStyle(PlainButtonStyle()) // Removes default button styling
-                  .contentShape(Rectangle()) // Ensures the tap area includes the entire custom content
-                } else {
-                  Button(intent: ResumeIntent()) {
-                    ZStack {
-                      Circle().fill(Color.cyan.opacity(0.5))
-                      Image(systemName: "play.fill")
-                        .imageScale(.large)
-                        .foregroundColor(.cyan)
-                    }
-                  }
-                  .buttonStyle(PlainButtonStyle()) // Removes default button styling
-                  .contentShape(Rectangle()) // Ensures the tap area includes the entire custom content
-                }
+//                if (context.state.isRunning()) {
+//                  Button(intent: PauseIntent()) {
+//                    ZStack {
+//                      Circle().fill(Color.cyan.opacity(0.5))
+//                      Image(systemName: "pause.fill")
+//                        .imageScale(.large)
+//                        .foregroundColor(.cyan)
+//                    }
+//                  }
+//                  .buttonStyle(PlainButtonStyle()) // Removes default button styling
+//                  .contentShape(Rectangle()) // Ensures the tap area includes the entire custom content
+//                } else {
+//                  Button(intent: ResumeIntent()) {
+//                    ZStack {
+//                      Circle().fill(Color.cyan.opacity(0.5))
+//                      Image(systemName: "play.fill")
+//                        .imageScale(.large)
+//                        .foregroundColor(.cyan)
+//                    }
+//                  }
+//                  .buttonStyle(PlainButtonStyle()) // Removes default button styling
+//                  .contentShape(Rectangle()) // Ensures the tap area includes the entire custom content
+//                }
                 Button(intent: ResetIntent()) {
                   ZStack {
                     Circle().fill(.gray.opacity(0.5))

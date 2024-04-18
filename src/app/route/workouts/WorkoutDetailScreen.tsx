@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useContext, useEffect, useRef, useState} from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {
   Dimensions,
@@ -68,6 +68,7 @@ import AppModal from '../../components/common/AppModal';
 import GradientButton from '../../components/common/GradientButton';
 import useUserStore from '../../stores/userStore';
 import ClickableText from '../../components/common/ClickableText';
+import {TimerContext} from '../../providers/WorkoutTimerProvider';
 
 type Props = NativeStackScreenProps<WorkoutStackParamList, 'WorkoutDetail'>;
 
@@ -75,11 +76,15 @@ const windowDimensions = Dimensions.get('window');
 const screenDimensions = Dimensions.get('screen');
 
 const WorkoutDetailScreen: React.FC<Props> = props => {
+  const {toggle} = useContext(TimerContext);
+
   // Store hooks
   const me = useUserStore(state => state.me);
   const toggleTimerVisibility = useTimerStore(state => state.toggleVisibility);
-  const timerActive = useTimerStore(state => state.timerActive);
-  const startTimer = useTimerStore(state => state.startTimer);
+  const isPlaying = useTimerStore(state => state.isTimerPlaying);
+
+  // const timerActive = useTimerStore(state => state.timerActive);
+  // const startTimer = useTimerStore(state => state.startTimer);
   const preference = usePreferenceStore(state => state.preference);
   const setRouteName = useRouteStore(state => state.setRouteName);
   const {checkHealthKitStatus, saveWorkoutAppleHealthKit, getCaloriesBurned} =
@@ -422,10 +427,10 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
 
     const actions: IActionProps[] = [
       {
-        text: timerActive ? 'Clear timer' : 'Start timer',
+        text: isPlaying ? 'Clear timer' : 'Start timer',
         icon: isIOS ? <Timer /> : require('../../icons/timer.png'),
         name: Fab.TIMER,
-        color: timerActive
+        color: isPlaying
           ? Constants.ERROR_GRADIENT[0]
           : Constants.FAB_ACTION_COLOR,
       },
@@ -494,7 +499,11 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
 
   // Toggle timer
   const toggleTimer = (active: boolean): void => {
-    startTimer(active);
+    if (active) {
+      toggle(false);
+    } else {
+      toggle(true);
+    }
   };
 
   // Get latest log
@@ -782,7 +791,7 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
             onPressAction={name => {
               switch (name) {
                 case Fab.TIMER:
-                  toggleTimer(!timerActive);
+                  toggleTimer(!isPlaying);
                   break;
                 case Fab.RELOG:
                   reLogLatestLog({
