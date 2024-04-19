@@ -21,6 +21,8 @@ const TimerEventEmitter = new NativeEventEmitter(
 const useLiveActivityTimer = () => {
   // Constants
   const isiOS = Platform.OS === 'ios';
+  const iosMajorVersion = parseInt(Platform.Version as string, 10);
+
   const preference = usePreferenceStore(state => state.preference);
   const setIsTimerPlaying = useTimerStore(state => state.setIsTimerPlaying);
 
@@ -64,9 +66,16 @@ const useLiveActivityTimer = () => {
       const elapsedSincePaused = Date.now() - pausedTime.current;
       endTime.current = endTime.current! + elapsedSincePaused;
       pausedTime.current = null;
-      TimerWidgetModule.resume();
+      if (isiOS && iosMajorVersion >= 17) {
+        TimerWidgetModule.resume();
+      }
     } else {
-      TimerWidgetModule.startLiveActivity(endTime.current / 1000, durationGoal);
+      if (isiOS && iosMajorVersion >= 17) {
+        TimerWidgetModule.startLiveActivity(
+          endTime.current / 1000,
+          durationGoal,
+        );
+      }
     }
 
     intervalId.current = setInterval(() => {
@@ -81,7 +90,9 @@ const useLiveActivityTimer = () => {
     removeInterval();
     if (endTime.current && !pausedTime.current && durationGoal) {
       pausedTime.current = Date.now();
-      TimerWidgetModule.pause(pausedTime.current / 1000, durationGoal);
+      if (isiOS && iosMajorVersion >= 17) {
+        TimerWidgetModule.pause(pausedTime.current / 1000, durationGoal);
+      }
       setElapsedTimeInMs(pausedTime.current! - endTime.current!);
     }
   }, []);
@@ -95,7 +106,9 @@ const useLiveActivityTimer = () => {
     endTime.current = null;
     pausedTime.current = null;
     setElapsedTimeInMs(0);
-    TimerWidgetModule.stopLiveActivity();
+    if (isiOS && iosMajorVersion >= 17) {
+      TimerWidgetModule.stopLiveActivity();
+    }
   }, []);
 
   const startBGSilence = () => {

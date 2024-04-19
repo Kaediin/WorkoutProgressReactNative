@@ -8,8 +8,10 @@
 import Foundation
 import ActivityKit
 
+@available(iOS 16.4, *)
 @objc(TimerWidgetModule)
 class TimerWidgetModule: NSObject {
+  @available(iOS 16.4, *)
   private var currentActivity: Activity<TimerWidgetAttributes>?
   private var startedAt: Date?
   private var pausedAt: Date?

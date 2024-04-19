@@ -8,6 +8,7 @@
 import Foundation
 import AppIntents
 
+@available(iOS 16.0, *)
 public struct PauseIntent: LiveActivityIntent {
   public init() {}
   public static var title: LocalizedStringResource = "Pause timer"
@@ -17,6 +18,7 @@ public struct PauseIntent: LiveActivityIntent {
   }
 }
 
+@available(iOS 16.0, *)
 public struct ResumeIntent: LiveActivityIntent {
   public init() {}
   public static var title: LocalizedStringResource = "Resume timer"
@@ -26,6 +28,7 @@ public struct ResumeIntent: LiveActivityIntent {
   }
 }
 
+@available(iOS 16.0, *)
 public struct ResetIntent: LiveActivityIntent {
   public init() {}
   public static var title: LocalizedStringResource = "Reset timer"

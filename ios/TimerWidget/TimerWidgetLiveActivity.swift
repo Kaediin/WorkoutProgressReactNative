@@ -50,7 +50,7 @@ struct TimerWidgetAttributes: ActivityAttributes {
     }
   }
 }
-
+@available(iOS 17.0, *)
 struct TimerWidgetLiveActivity: Widget {
   func rgb(_ red: Double, _ green: Double, _ blue: Double) -> Color {
     return Color(red: red/255.0, green: green/255.0, blue: blue/255.0)
@@ -107,6 +107,7 @@ struct TimerWidgetLiveActivity: Widget {
                       .foregroundColor(.white)
                   }
                 }
+                .frame(width: 50, height: 50)
                 .buttonStyle(PlainButtonStyle()) // Removes default button styling
                 .contentShape(Rectangle()) // Ensures the tap area includes the entire custom content
                 Spacer()
@@ -189,6 +190,7 @@ extension TimerWidgetAttributes.ContentState {
   }
 }
 
+@available(iOS 17.0, *)
 #Preview("Notification", as: .content, using: TimerWidgetAttributes.preview) {
   TimerWidgetLiveActivity()
 } contentStates: {

@@ -208,7 +208,8 @@ const AdjustPreferences: React.FC<AdjustPreferencesProps> = props => {
             <View style={styles.controlContainer}>
               <ClickableText
                 text={
-                  preferenceInput?.timerDuration || Constants.DEFAULT_DURATION
+                  (preferenceInput?.timerDuration ||
+                    Constants.DEFAULT_DURATION) + ' sec'
                 }
                 onPress={() => setPickerActiveDuration(true)}
                 containerStyles={styles.containerDefaultRepetitionValue}
