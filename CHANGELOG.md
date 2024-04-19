@@ -1,3 +1,10 @@
+## [0.3.1]
+
+### Added
+
+- Live activities for time
+- Backwards compatibility for older versions
+
 ## [0.3.0]
 
 ### Added
