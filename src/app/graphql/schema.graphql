@@ -216,8 +216,10 @@ type Query {
   """Get all logs by excerice id"""
   allLogsByExerciseId(exerciseId: ID!): [ExerciseLog!]!
 
-  """Get chart data per muscle group"""
-  chartDataMuscleGroups: [MuscleGroupChartData!]!
+  """
+  Get chart data per muscle group for all workouts of user by current month with given timestamp
+  """
+  chartDataMuscleGroups(zonedDateTimeString: String!): [MuscleGroupChartData!]!
 
   """Get chart data of last x months for logs by exercise id"""
   chartDataOfXMonthsByExerciseId(exerciseId: ID!, months: Int!, zonedDateTimeString: String!): [ExerciseLineChartData!]!

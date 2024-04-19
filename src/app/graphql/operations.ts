@@ -338,7 +338,7 @@ export type Query = {
   __typename?: 'Query';
   /** Get all logs by excerice id */
   allLogsByExerciseId: Array<ExerciseLog>;
-  /** Get chart data per muscle group */
+  /** Get chart data per muscle group for all workouts of user by current month with given timestamp */
   chartDataMuscleGroups: Array<MuscleGroupChartData>;
   /** Get chart data of last x months for logs by exercise id */
   chartDataOfXMonthsByExerciseId: Array<ExerciseLineChartData>;
@@ -370,6 +370,11 @@ export type Query = {
 
 export type QueryAllLogsByExerciseIdArgs = {
   exerciseId: Scalars['ID'];
+};
+
+
+export type QueryChartDataMuscleGroupsArgs = {
+  zonedDateTimeString: Scalars['String'];
 };
 
 
@@ -674,7 +679,9 @@ export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type MeQuery = { __typename?: 'Query', me?: { __typename?: 'User', id: string, fid: string, onboardingCompleted?: boolean | null, cognitoUser: { __typename?: 'CognitoUser', given_name: string, middle_name?: string | null, family_name: string, createdDate?: string | null, name: string, gender?: string | null, email: string }, weight?: { __typename?: 'BiometricsLog', logDate: any, value: number, type: BiometricsType } | null } | null };
 
-export type ChartDataMuscleGroupsQueryVariables = Exact<{ [key: string]: never; }>;
+export type ChartDataMuscleGroupsQueryVariables = Exact<{
+  zonedDateTime: Scalars['String'];
+}>;
 
 
 export type ChartDataMuscleGroupsQuery = { __typename?: 'Query', chartDataMuscleGroups: Array<{ __typename?: 'MuscleGroupChartData', color: string, muscleGroup: MuscleGroup, count: number }> };
@@ -1535,7 +1542,7 @@ export function useMeLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<MeQuery
 export type MeQueryHookResult = ReturnType<typeof useMeQuery>;
 export type MeLazyQueryHookResult = ReturnType<typeof useMeLazyQuery>;
 export type MeQueryResult = Apollo.QueryResult<MeQuery, MeQueryVariables>;
-export const ChartDataMuscleGroupsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"chartDataMuscleGroups"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"chartDataMuscleGroups"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"MuscleGroupChartData"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"MuscleGroupChartData"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"MuscleGroupChartData"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"color"}},{"kind":"Field","name":{"kind":"Name","value":"muscleGroup"}},{"kind":"Field","name":{"kind":"Name","value":"count"}}]}}]} as unknown as DocumentNode;
+export const ChartDataMuscleGroupsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"chartDataMuscleGroups"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"zonedDateTime"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"chartDataMuscleGroups"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"zonedDateTimeString"},"value":{"kind":"Variable","name":{"kind":"Name","value":"zonedDateTime"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"MuscleGroupChartData"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"MuscleGroupChartData"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"MuscleGroupChartData"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"color"}},{"kind":"Field","name":{"kind":"Name","value":"muscleGroup"}},{"kind":"Field","name":{"kind":"Name","value":"count"}}]}}]} as unknown as DocumentNode;
 
 /**
  * __useChartDataMuscleGroupsQuery__
@@ -1549,10 +1556,11 @@ export const ChartDataMuscleGroupsDocument = {"kind":"Document","definitions":[{
  * @example
  * const { data, loading, error } = useChartDataMuscleGroupsQuery({
  *   variables: {
+ *      zonedDateTime: // value for 'zonedDateTime'
  *   },
  * });
  */
-export function useChartDataMuscleGroupsQuery(baseOptions?: Apollo.QueryHookOptions<ChartDataMuscleGroupsQuery, ChartDataMuscleGroupsQueryVariables>) {
+export function useChartDataMuscleGroupsQuery(baseOptions: Apollo.QueryHookOptions<ChartDataMuscleGroupsQuery, ChartDataMuscleGroupsQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<ChartDataMuscleGroupsQuery, ChartDataMuscleGroupsQueryVariables>(ChartDataMuscleGroupsDocument, options);
       }

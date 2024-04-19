@@ -335,7 +335,7 @@ export type Query = {
   __typename?: 'Query';
   /** Get all logs by excerice id */
   allLogsByExerciseId: Array<ExerciseLog>;
-  /** Get chart data per muscle group */
+  /** Get chart data per muscle group for all workouts of user by current month with given timestamp */
   chartDataMuscleGroups: Array<MuscleGroupChartData>;
   /** Get chart data of last x months for logs by exercise id */
   chartDataOfXMonthsByExerciseId: Array<ExerciseLineChartData>;
@@ -367,6 +367,11 @@ export type Query = {
 
 export type QueryAllLogsByExerciseIdArgs = {
   exerciseId: Scalars['ID'];
+};
+
+
+export type QueryChartDataMuscleGroupsArgs = {
+  zonedDateTimeString: Scalars['String'];
 };
 
 

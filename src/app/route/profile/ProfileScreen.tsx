@@ -10,7 +10,7 @@ import {
 import {defaultStyles} from '../../utils/DefaultStyles';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {ProfileStackParamList} from '../../stacks/ProfileStack';
-import WorkoutCalendarView from './calendar/WorkoutCalendarView';
+import WorkoutCalendarView from './insights/WorkoutCalendarView';
 import {BottomSheetModal, BottomSheetModalProvider} from '@gorhom/bottom-sheet';
 import {CustomBottomSheet} from '../../components/bottomSheet/CustomBottomSheet';
 import {WorkoutShortFragment} from '../../graphql/operations';
@@ -19,7 +19,6 @@ import TotalWorkoutTime from './insights/TotalWorkoutTime';
 import TotalWorkouts from './insights/TotalWorkouts';
 import {Settings} from '../../icons/svg';
 import Constants from '../../utils/Constants';
-import MuscleGroupDistribution from './insights/MuscleGroupDistribution';
 
 type Props = NativeStackScreenProps<ProfileStackParamList, 'ProfileScreen'>;
 
@@ -76,11 +75,8 @@ const ProfileScreen: React.FC<Props> = ({navigation}) => {
           <TotalWorkoutTime />
           <TotalWorkouts />
         </View>
-        <View style={[styles.marginTopLarge, styles.containerCalendar]}>
+        <View style={[styles.marginTopLarge, defaultStyles.marginBottom]}>
           <WorkoutCalendarView onSelectDay={setSelectedWorkouts} />
-        </View>
-        <View style={styles.paddingBottom}>
-          <MuscleGroupDistribution />
         </View>
       </ScrollView>
       <BottomSheetModalProvider>
@@ -119,9 +115,6 @@ const styles = StyleSheet.create({
   },
   paddingBottom: {
     paddingBottom: Constants.CONTAINER_PADDING_MARGIN,
-  },
-  containerCalendar: {
-    height: 250,
   },
 });
 

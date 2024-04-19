@@ -11,6 +11,7 @@ import Loader from '../../../components/common/Loader';
 import {nonNullable} from '../../../utils/List';
 import {Chevron} from '../../../icons/svg';
 import AppText from '../../../components/common/AppText';
+import MuscleGroupDistribution from './MuscleGroupDistribution';
 
 interface WorkoutCalendarViewProps {
   onSelectDay: (ids: WorkoutShortFragment[]) => void;
@@ -76,6 +77,7 @@ const WorkoutCalendarView: React.FC<WorkoutCalendarViewProps> = props => {
   ) : (
     currentDate && (
       <View>
+        {/*Header*/}
         <View
           style={[
             defaultStyles.row,
@@ -109,6 +111,7 @@ const WorkoutCalendarView: React.FC<WorkoutCalendarViewProps> = props => {
             </TouchableOpacity>
           )}
         </View>
+        {/*Calendar*/}
         <View style={styles.calendarContainer}>
           {Array.from({length: currentDate.daysInMonth()}).map((day, index) =>
             workoutLoggedOnDayOfMonth[index + 1] ? (
@@ -151,6 +154,8 @@ const WorkoutCalendarView: React.FC<WorkoutCalendarViewProps> = props => {
             ),
           )}
         </View>
+        {/*Pie chart*/}
+        <MuscleGroupDistribution date={currentDate} />
       </View>
     )
   );

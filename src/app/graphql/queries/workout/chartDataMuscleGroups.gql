@@ -1,5 +1,5 @@
-query chartDataMuscleGroups{
-    chartDataMuscleGroups {
+query chartDataMuscleGroups($zonedDateTime: String!) {
+    chartDataMuscleGroups(zonedDateTimeString: $zonedDateTime) {
         ...MuscleGroupChartData
     }
 }

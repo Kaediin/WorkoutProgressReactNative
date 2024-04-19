@@ -1,16 +1,23 @@
-import React, {useMemo, useState} from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import {StyleSheet, View} from 'react-native';
 import AppText from '../../../components/common/AppText';
 import PieChart from 'react-native-pie-chart';
 import {
   MuscleGroupChartDataFragment,
-  useChartDataMuscleGroupsQuery,
+  useChartDataMuscleGroupsLazyQuery,
 } from '../../../graphql/operations';
 import {enumToReadableString} from '../../../utils/String';
 import {defaultStyles} from '../../../utils/DefaultStyles';
 import Constants from '../../../utils/Constants';
+import {Moment} from 'moment/moment';
 
-const MuscleGroupDistribution: React.FC = () => {
+interface MuscleGroupDistributionProps {
+  date: Moment;
+}
+
+const MuscleGroupDistribution: React.FC<
+  MuscleGroupDistributionProps
+> = props => {
   const [chartData, setChartData] = useState<MuscleGroupChartDataFragment[]>(
     [],
   );
@@ -23,7 +30,7 @@ const MuscleGroupDistribution: React.FC = () => {
       : 0;
   }, [chartData]);
 
-  const {} = useChartDataMuscleGroupsQuery({
+  const [fetchChartData] = useChartDataMuscleGroupsLazyQuery({
     fetchPolicy: 'no-cache',
     onCompleted: data => {
       if (data?.chartDataMuscleGroups) {
@@ -32,13 +39,20 @@ const MuscleGroupDistribution: React.FC = () => {
     },
   });
 
+  useEffect(() => {
+    if (props.date) {
+      fetchChartData({
+        variables: {
+          zonedDateTime: props.date.toISOString(true),
+        },
+      });
+    }
+  }, [props.date]);
+
   const widthAndHeight = 250;
 
   return chartData && chartData.length > 0 ? (
     <View style={styles.container}>
-      <AppText style={[defaultStyles.h3, defaultStyles.container]}>
-        Muscle groups
-      </AppText>
       <PieChart
         widthAndHeight={widthAndHeight}
         series={chartData.map(data => data.count)}
@@ -67,6 +81,7 @@ const MuscleGroupDistribution: React.FC = () => {
 
 const styles = StyleSheet.create({
   container: {
+    marginTop: Constants.CONTAINER_PADDING_MARGIN * 2,
     alignItems: 'center',
   },
   legend: {

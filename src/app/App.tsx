@@ -41,6 +41,7 @@ const App: React.FC = () => {
       // In this case, we'll capture profiles for 100% of transactions.
       profilesSampleRate: 1.0,
     },
+    enabled: Config.SENTRY_ENV === 'production',
   });
 
   return (
