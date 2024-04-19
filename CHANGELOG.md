@@ -5,6 +5,10 @@
 - Live activities for time
 - Backwards compatibility for older versions
 
+### Changed
+
+- Improved muscle group distribution pie chart by showing the muscle group distribution of selected month
+
 ## [0.3.0]
 
 ### Added
