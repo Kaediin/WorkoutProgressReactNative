@@ -90,6 +90,11 @@ const SettingsScreen: React.FC<Props> = props => {
             <AppText style={styles.colorRed}>Sign out</AppText>
           </View>
         </TouchableOpacity>
+        <View>
+          <AppText xSmall T2>
+            Release version {require('../../../../package.json').version}
+          </AppText>
+        </View>
       </View>
     </GradientBackground>
   );
