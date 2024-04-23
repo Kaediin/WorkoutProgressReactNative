@@ -11,9 +11,10 @@ import AppText from './AppText';
 import {Dropdown} from 'react-native-element-dropdown';
 import {upperCaseFirstLetter} from '../../utils/String';
 import {Gender} from '../../types/Type';
+import {InputMaybe} from '../../graphql/operations';
 
 interface AppTextEditableProps {
-  value: string | number | undefined;
+  value: InputMaybe<number> | string | number | undefined;
   placeholder: string | number;
   onValueChange: (value: string | number) => void;
   inputType?: 'gender' | 'switch' | 'number';

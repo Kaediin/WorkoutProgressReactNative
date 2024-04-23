@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import {defaultStyles} from '../../utils/DefaultStyles';
 import {StyleSheet, TouchableOpacity, View} from 'react-native';
 import AppText from '../common/AppText';
@@ -13,22 +13,33 @@ import Constants from '../../utils/Constants';
 import ClickableText from '../common/ClickableText';
 import ExpandableView from '../common/ExpandableView';
 import SelectExercises from '../workouts/SelectExercises';
+import {ProgramLogAdvancedSettings} from '../../route/activity/program/ProgramCreateLogScreen';
 
 interface ProgramLogListItemEditableProps {
   exerciseLog: ProgramLogInput;
   onExerciseLogChange: (exerciseLog: ProgramLogInput) => void;
+  advancedSettings: ProgramLogAdvancedSettings;
   exercises?: ExerciseFragment[];
-  isSubdivision?: boolean;
   showLabels?: boolean;
 }
 
 const ProgramLogListItemEditable: React.FC<
   ProgramLogListItemEditableProps
 > = props => {
+  // State
   const [showPickerExercise, setShowPickerExercise] = useState(false);
   const [exerciseLog, setExerciseLog] = useState<ProgramLogInput>(
     props.exerciseLog,
   );
+
+  const showCooldownOrIntervalTimer = useMemo(() => {
+    return (
+      (!props.advancedSettings.separateTimePerSubdivision &&
+        !props.advancedSettings.enableSubdivisions) ||
+      (props.advancedSettings.enableSubdivisions &&
+        props.advancedSettings.separateTimePerSubdivision)
+    );
+  }, [props.advancedSettings]);
 
   // Update state with new exerciseLog
   useEffect(() => {
@@ -49,9 +60,9 @@ const ProgramLogListItemEditable: React.FC<
         <View
           style={[
             defaultStyles.row,
-            props.isSubdivision && styles.isSubdivision,
+            props.advancedSettings.enableSubdivisions && styles.isSubdivision,
           ]}>
-          {!props.isSubdivision && (
+          {!props.advancedSettings.enableSubdivisions && (
             <>
               <View style={styles.containerRepetitions}>
                 <AppText xSmall T2>
@@ -66,7 +77,7 @@ const ProgramLogListItemEditable: React.FC<
               Value
             </AppText>
           </View>
-          {!props.isSubdivision ? (
+          {!props.advancedSettings.enableSubdivisions ? (
             <>
               <View style={styles.containerUnit}>
                 <AppText xSmall T2>
@@ -91,14 +102,31 @@ const ProgramLogListItemEditable: React.FC<
               </View>
             </>
           )}
+
+          {showCooldownOrIntervalTimer &&
+            (props.advancedSettings.timerState === 'cooldown' ? (
+              <View style={styles.containerTimerSeconds}>
+                <AppText xSmall T2>
+                  Cooldown
+                </AppText>
+              </View>
+            ) : props.advancedSettings.timerState === 'interval' ? (
+              <View style={styles.containerTimerSeconds}>
+                <AppText xSmall T2>
+                  Interval
+                </AppText>
+              </View>
+            ) : (
+              <></>
+            ))}
         </View>
       )}
       <View
         style={[
           defaultStyles.row,
-          props.isSubdivision && styles.isSubdivision,
+          props.advancedSettings.enableSubdivisions && styles.isSubdivision,
         ]}>
-        {!props.isSubdivision && (
+        {!props.advancedSettings.enableSubdivisions && (
           <>
             <View style={styles.containerRepetitions}>
               <AppTextEditable
@@ -135,7 +163,7 @@ const ProgramLogListItemEditable: React.FC<
             showAsClickable
           />
         </View>
-        {props.isSubdivision ? (
+        {props.advancedSettings.enableSubdivisions ? (
           <View style={styles.containerUnitDisabled}>
             <AppText T1>{exerciseLog.logValue?.unit ?? 'Unit'}</AppText>
           </View>
@@ -157,6 +185,7 @@ const ProgramLogListItemEditable: React.FC<
                 defaultStyles.clickableText,
                 styles.dropdownFontSize,
               ]}
+              style={styles.containerUnitSelector}
               itemTextStyle={styles.dropdownFontSize}
               onChange={item => {
                 if (item.value === undefined) {
@@ -189,6 +218,44 @@ const ProgramLogListItemEditable: React.FC<
             </TouchableOpacity>
           </View>
         )}
+
+        {showCooldownOrIntervalTimer &&
+          (props.advancedSettings.timerState === 'cooldown' ? (
+            <View style={[styles.containerTimerSeconds, defaultStyles.row]}>
+              <AppTextEditable
+                value={exerciseLog.cooldownSeconds}
+                placeholder={'Seconds'}
+                onValueChange={value =>
+                  setExerciseLog(prevState => ({
+                    ...prevState,
+                    intervalSeconds: undefined,
+                    cooldownSeconds: value as number,
+                  }))
+                }
+                inputType="number"
+                showAsClickable
+              />
+            </View>
+          ) : props.advancedSettings.timerState === 'interval' ? (
+            <View style={[styles.containerTimerSeconds, defaultStyles.row]}>
+              <AppTextEditable
+                value={exerciseLog.intervalSeconds}
+                placeholder={'Seconds'}
+                onValueChange={value =>
+                  setExerciseLog(prevState => ({
+                    ...prevState,
+                    cooldownSeconds: undefined,
+                    intervalSeconds: value as number,
+                  }))
+                }
+                inputType="number"
+                showAsClickable
+              />
+            </View>
+          ) : (
+            <></>
+          ))}
+
         {/*{cooldownOrIntervalTimer && (*/}
         {/*  <View style={[styles.containerTimerSeconds, defaultStyles.row]}>*/}
         {/*    <AppText T1>*/}
@@ -254,12 +321,14 @@ const styles = StyleSheet.create({
     width: 65,
     marginLeft: 10,
   },
-  containerUnitSelector: {},
+  containerUnitSelector: {
+    paddingRight: 10,
+  },
   dropdownFontSize: {
     fontSize: 14,
   },
   containerTimerSeconds: {
-    marginLeft: Constants.CONTAINER_PADDING_MARGIN,
+    width: 60,
   },
   containerExercise: {
     width: 100,
@@ -274,7 +343,7 @@ const styles = StyleSheet.create({
     borderRadius: Constants.BORDER_RADIUS_SMALL,
   },
   containerUnitDisabled: {
-    width: 20,
+    width: 30,
   },
 });
 

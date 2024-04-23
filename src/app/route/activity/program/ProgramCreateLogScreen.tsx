@@ -22,8 +22,16 @@ import Loader from '../../../components/common/Loader';
 import ProgramLogListItemEditable from '../../../components/program/ProgramLogListItemEditable';
 import ClickableText from '../../../components/common/ClickableText';
 import {Add, ArrowDownRight, Delete} from '../../../icons/svg';
+import AppSegmentedButtons from '../../../components/common/AppSegmentedButtons';
+import {enumToReadableString} from '../../../utils/String';
 
 type Props = NativeStackScreenProps<ActivityStackParamList, 'ProgramCreateLog'>;
+
+export type ProgramLogAdvancedSettings = {
+  separateTimePerSubdivision: boolean;
+  enableSubdivisions: boolean;
+  timerState: 'disabled' | 'interval' | 'cooldown';
+};
 
 const ProgramCreateLogScreen: React.FC<Props> = props => {
   // Constants
@@ -47,11 +55,14 @@ const ProgramCreateLogScreen: React.FC<Props> = props => {
   };
 
   // States
-  const [separateTimePerSubdivision, setSeparateTimePerSubdivision] =
-    useState(false);
-  const [enableSubdivisions, setEnableSubdivisions] = useState(false);
   const [exerciseLog, setExerciseLog] = useState<ProgramLogInput>(initial);
   const [myExercises, setMyExercises] = useState<ExerciseFragment[]>([]);
+  const [advancedSettings, setAdvancedSettings] =
+    useState<ProgramLogAdvancedSettings>({
+      separateTimePerSubdivision: false,
+      enableSubdivisions: false,
+      timerState: 'disabled',
+    });
 
   // Queries
   const {loading: myExercisesLoading} = useMyExercisesQuery({
@@ -63,27 +74,21 @@ const ProgramCreateLogScreen: React.FC<Props> = props => {
 
   // Add subdivision
   const addSubdivision = () => {
-    // Add new subdivision with same unit as main exercise and 1 repetition
+    // Duplicate the last subdivision
+    const newSubdivisions = [...(exerciseLog.subdivisions || [])];
+    newSubdivisions.push({
+      ...newSubdivisions[newSubdivisions.length - 1],
+    });
     setExerciseLog(prevState => ({
       ...prevState,
-      subdivisions: [
-        ...(prevState.subdivisions || []),
-        {
-          ...initial,
-          logValue: {
-            ...initial.logValue,
-            unit: exerciseLog.logValue.unit,
-          },
-          repetitions: 1,
-        },
-      ],
+      subdivisions: newSubdivisions,
     }));
   };
 
   // Add initial subdivision if enabled
   useEffect(() => {
     if (
-      enableSubdivisions &&
+      advancedSettings.enableSubdivisions &&
       (!exerciseLog?.subdivisions || exerciseLog.subdivisions.length === 0)
     ) {
       // Add new subdivision with same unit as main exercise and 1 repetition
@@ -101,7 +106,7 @@ const ProgramCreateLogScreen: React.FC<Props> = props => {
         ],
       }));
     }
-  }, [enableSubdivisions]);
+  }, [advancedSettings.enableSubdivisions]);
 
   // Enable header right button if exercise is correct, else disable
   useEffect(() => {
@@ -111,7 +116,7 @@ const ProgramCreateLogScreen: React.FC<Props> = props => {
       !exerciseLog.logValue ||
       !exerciseLog.logValue.base ||
       !exerciseLog.logValue.unit ||
-      (enableSubdivisions
+      (advancedSettings.enableSubdivisions
         ? // Check if all subdivisions are correct, meaning they have an exerciseId, logValue base, repetitions and unit
           !exerciseLog.subdivisions?.every(
             sub =>
@@ -127,7 +132,11 @@ const ProgramCreateLogScreen: React.FC<Props> = props => {
 
     props.navigation.setOptions({
       headerRight: () => (
-        <ClickableText text={'Next'} onPress={() => {}} disabled={disabled} />
+        <ClickableText
+          text={'Next'}
+          onPress={() => console.log(JSON.stringify(exerciseLog))}
+          disabled={disabled}
+        />
       ),
     });
   }, [exerciseLog]);
@@ -171,12 +180,17 @@ const ProgramCreateLogScreen: React.FC<Props> = props => {
                   </AppText>
                 </View>
                 <Switch
-                  value={enableSubdivisions}
-                  onValueChange={setEnableSubdivisions}
+                  value={advancedSettings.enableSubdivisions}
+                  onValueChange={value => {
+                    setAdvancedSettings(prevState => ({
+                      ...prevState,
+                      enableSubdivisions: value,
+                    }));
+                  }}
                   ios_backgroundColor={Constants.ERROR_GRADIENT[0]}
                 />
               </View>
-              {enableSubdivisions && (
+              {advancedSettings.enableSubdivisions && (
                 <View
                   style={[
                     defaultStyles.row,
@@ -192,41 +206,96 @@ const ProgramCreateLogScreen: React.FC<Props> = props => {
                     </AppText>
                   </View>
                   <Switch
-                    value={separateTimePerSubdivision}
-                    onValueChange={setSeparateTimePerSubdivision}
+                    value={advancedSettings.separateTimePerSubdivision}
+                    onValueChange={value => {
+                      setAdvancedSettings(prevState => ({
+                        ...prevState,
+                        separateTimePerSubdivision: value,
+                      }));
+                    }}
                     ios_backgroundColor={Constants.ERROR_GRADIENT[0]}
                   />
                 </View>
               )}
+              <View style={defaultStyles.marginTop}>
+                <View>
+                  <AppText xSmall>Timer state</AppText>
+                  <AppText xSmall T2>
+                    Specify if the timer should be disabled, represent an
+                    interval, or cooldown
+                  </AppText>
+                  <View style={defaultStyles.marginTop}>
+                    <AppSegmentedButtons
+                      buttons={[
+                        {
+                          label: 'Disabled',
+                          value: 'disabled',
+                        },
+                        {
+                          label: 'Interval',
+                          value: 'interval',
+                        },
+                        {
+                          label: 'Cooldown',
+                          value: 'cooldown',
+                        },
+                      ]}
+                      value={advancedSettings.timerState}
+                      onValueChange={value =>
+                        setAdvancedSettings(prevState => ({
+                          ...prevState,
+                          timerState: value as
+                            | 'disabled'
+                            | 'interval'
+                            | 'cooldown',
+                        }))
+                      }
+                    />
+                  </View>
+                </View>
+              </View>
             </View>
           </View>
+          <AppText
+            T1
+            style={[defaultStyles.marginBottom, defaultStyles.marginTop]}>
+            Program log for {enumToReadableString(props.route.params.type)}
+          </AppText>
           <View style={[styles.border, defaultStyles.padding]}>
             <ProgramLogListItemEditable
               exerciseLog={exerciseLog}
               onExerciseLogChange={setExerciseLog}
-              exercises={!enableSubdivisions ? myExercises : []}
+              exercises={
+                !advancedSettings.enableSubdivisions ? myExercises : []
+              }
+              advancedSettings={{
+                ...advancedSettings,
+                enableSubdivisions: false,
+              }}
               showLabels
             />
-            {enableSubdivisions && (
+            {advancedSettings.enableSubdivisions && (
               <>
-                {exerciseLog.subdivisions?.map((sub, i) => (
+                {exerciseLog.subdivisions?.map((sub, i, array) => (
                   <View
                     style={[defaultStyles.row, defaultStyles.spaceBetween]}
                     key={`view_sub_${i}`}>
                     <View style={defaultStyles.row}>
-                      <TouchableOpacity
-                        onPress={() => {
-                          const newSubdivisions = [
-                            ...(exerciseLog.subdivisions || []),
-                          ];
-                          newSubdivisions.splice(i, 1);
-                          setExerciseLog(prevState => ({
-                            ...prevState,
-                            subdivisions: newSubdivisions,
-                          }));
-                        }}>
-                        <Delete />
-                      </TouchableOpacity>
+                      {array.length > 1 && (
+                        <TouchableOpacity
+                          onPress={() => {
+                            const newSubdivisions = [
+                              ...(exerciseLog.subdivisions || []),
+                            ];
+                            newSubdivisions.splice(i, 1);
+                            setExerciseLog(prevState => ({
+                              ...prevState,
+                              subdivisions: newSubdivisions,
+                            }));
+                          }}>
+                          <Delete />
+                        </TouchableOpacity>
+                      )}
                       <View style={[defaultStyles.rotate90, styles.arrowStyle]}>
                         <ArrowDownRight />
                       </View>
@@ -245,9 +314,9 @@ const ProgramCreateLogScreen: React.FC<Props> = props => {
                             subdivisions: newSubdivisions,
                           }));
                         }}
+                        advancedSettings={advancedSettings}
                         exercises={myExercises}
                         showLabels={i === 0}
-                        isSubdivision
                       />
                     </View>
                   </View>
