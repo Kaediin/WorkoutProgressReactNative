@@ -29,7 +29,7 @@ const ProfileScreen: React.FC<Props> = ({navigation}) => {
   // Bottom sheet ref for the calendar popup
   const bottomSheetModal = useRef<BottomSheetModal>(null);
 
-  // Keep track of selected workouts which is set by tapping on a day
+  // Keep track of selected activity which is set by tapping on a day
   const [selectedWorkouts, setSelectedWorkouts] =
     useState<WorkoutShortFragment[]>();
 

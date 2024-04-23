@@ -1,0 +1,7 @@
+fragment ProgramLogGroup on ProgramLogGroup {
+    id
+    type
+    logs {
+        ...ProgramLog
+    }
+}

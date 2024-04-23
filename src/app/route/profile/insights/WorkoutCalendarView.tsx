@@ -18,16 +18,16 @@ interface WorkoutCalendarViewProps {
 }
 
 const WorkoutCalendarView: React.FC<WorkoutCalendarViewProps> = props => {
-  // Record for workouts logged on day of the month as key
+  // Record for activity logged on day of the month as key
   const [workoutLoggedOnDayOfMonth, setWorkoutLoggedOnDayOfMonth] = useState<
     Record<number, string[]>
   >({});
   // Keep track of current date that is manipulated by the chevrons
   const [currentDate, setCurrentDate] = useState<Moment>(moment());
-  // Workouts fetched by query (workouts of current month selected)
+  // Workouts fetched by query (activity of current month selected)
   const [workouts, setWorkouts] = useState<(WorkoutShortFragment | null)[]>([]);
 
-  // Fetch all workouts of month
+  // Fetch all activity of month
   const [fetchWorkouts, {loading}] = useWorkoutsOfMonthLazyQuery({
     fetchPolicy: 'no-cache',
     onCompleted: data => {
@@ -53,7 +53,7 @@ const WorkoutCalendarView: React.FC<WorkoutCalendarViewProps> = props => {
     }
   }, [currentDate]);
 
-  // React to query fetching new workouts (if month changes)
+  // React to query fetching new activity (if month changes)
   useEffect(() => {
     if (workouts) {
       const dataMap: Record<number, string[]> = {};

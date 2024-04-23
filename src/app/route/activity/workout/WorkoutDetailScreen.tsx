@@ -13,7 +13,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import GradientBackground from '../../components/common/GradientBackground';
+import GradientBackground from '../../../components/common/GradientBackground';
 import {
   ExerciseFragment,
   ExerciseLogFragment,
@@ -31,46 +31,46 @@ import {
   useUpdateExerciseLogMutation,
   useWorkoutByIdLazyQuery,
   WorkoutLongFragment,
-} from '../../graphql/operations';
-import {defaultStyles} from '../../utils/DefaultStyles';
-import MuscleGroupList from '../../components/workouts/MuscleGroupList';
-import FloatingButton from '../../components/common/FloatingButton';
-import {WorkoutStackParamList} from '../../stacks/WorkoutStack';
+} from '../../../graphql/operations';
+import {defaultStyles} from '../../../utils/DefaultStyles';
+import MuscleGroupList from '../../../components/workouts/MuscleGroupList';
+import FloatingButton from '../../../components/common/FloatingButton';
+import {ActivityStackParamList} from '../../../stacks/ActivityStack';
 import {
   BottomSheetModal,
   BottomSheetModalProvider,
   BottomSheetTextInput,
 } from '@gorhom/bottom-sheet';
-import {CustomBottomSheet} from '../../components/bottomSheet/CustomBottomSheet';
-import SelectExercises from '../../components/workouts/SelectExercises';
-import Constants from '../../utils/Constants';
+import {CustomBottomSheet} from '../../../components/bottomSheet/CustomBottomSheet';
+import SelectExercises from '../../../components/workouts/SelectExercises';
+import Constants from '../../../utils/Constants';
 import moment from 'moment';
-import GroupedExerciseLogListItem from '../../components/exercise/GroupedExerciseLogListItem';
-import CreateExerciseModalContent from '../../components/bottomSheet/CreateExerciseModalContent';
-import usePreferenceStore from '../../stores/preferenceStore';
-import LogValueSelect from '../../components/common/LogValueSelect';
+import GroupedExerciseLogListItem from '../../../components/exercise/GroupedExerciseLogListItem';
+import CreateExerciseModalContent from '../../../components/bottomSheet/CreateExerciseModalContent';
+import usePreferenceStore from '../../../stores/preferenceStore';
+import LogValueSelect from '../../../components/common/LogValueSelect';
 import {Picker} from '@react-native-picker/picker';
-import {logValueToString} from '../../utils/String';
-import Loader from '../../components/common/Loader';
-import {stripTypenames} from '../../utils/GrahqlUtils';
-import {nonNullable} from '../../utils/List';
-import ConfirmModal from '../../components/common/ConfirmModal';
-import ExpandableView from '../../components/common/ExpandableView';
-import {Add, Retry, Timer} from '../../icons/svg';
-import {Fab} from '../../utils/Fab';
+import {logValueToString} from '../../../utils/String';
+import Loader from '../../../components/common/Loader';
+import {stripTypenames} from '../../../utils/GrahqlUtils';
+import {nonNullable} from '../../../utils/List';
+import ConfirmModal from '../../../components/common/ConfirmModal';
+import ExpandableView from '../../../components/common/ExpandableView';
+import {Add, Retry, Timer} from '../../../icons/svg';
+import {Fab} from '../../../utils/Fab';
 import {IActionProps} from 'react-native-floating-action';
-import useTimerStore from '../../stores/timerStore';
-import useRouteStore from '../../stores/routeStore';
-import {DATE_TIME_FORMAT, getDifferenceInMinutes} from '../../utils/Date';
-import AppText from '../../components/common/AppText';
-import useAppleHealthKit from '../../hooks/useAppleHealthKit';
-import AppModal from '../../components/common/AppModal';
-import GradientButton from '../../components/common/GradientButton';
-import useUserStore from '../../stores/userStore';
-import ClickableText from '../../components/common/ClickableText';
-import {TimerContext} from '../../providers/WorkoutTimerProvider';
+import useTimerStore from '../../../stores/timerStore';
+import useRouteStore from '../../../stores/routeStore';
+import {DATE_TIME_FORMAT, getDifferenceInMinutes} from '../../../utils/Date';
+import AppText from '../../../components/common/AppText';
+import useAppleHealthKit from '../../../hooks/useAppleHealthKit';
+import AppModal from '../../../components/common/AppModal';
+import GradientButton from '../../../components/common/GradientButton';
+import useUserStore from '../../../stores/userStore';
+import ClickableText from '../../../components/common/ClickableText';
+import {TimerContext} from '../../../providers/WorkoutTimerProvider';
 
-type Props = NativeStackScreenProps<WorkoutStackParamList, 'WorkoutDetail'>;
+type Props = NativeStackScreenProps<ActivityStackParamList, 'WorkoutDetail'>;
 
 const windowDimensions = Dimensions.get('window');
 const screenDimensions = Dimensions.get('screen');
@@ -428,7 +428,7 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
     const actions: IActionProps[] = [
       {
         text: isPlaying ? 'Clear timer' : 'Start timer',
-        icon: isIOS ? <Timer /> : require('../../icons/timer.png'),
+        icon: isIOS ? <Timer /> : require('../../../icons/timer.png'),
         name: Fab.TIMER,
         color: isPlaying
           ? Constants.ERROR_GRADIENT[0]
@@ -443,14 +443,14 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
     ) {
       actions.push({
         text: 'Re-log latest log',
-        icon: isIOS ? <Retry /> : require('../../icons/redo.png'),
+        icon: isIOS ? <Retry /> : require('../../../icons/redo.png'),
         name: Fab.RELOG,
         color: Constants.FAB_ACTION_COLOR,
       });
     }
     actions.push({
       text: 'New log',
-      icon: isIOS ? <Add /> : require('../../icons/plus.png'),
+      icon: isIOS ? <Add /> : require('../../../icons/plus.png'),
       name: Fab.NEWLOG,
       color: Constants.FAB_ACTION_COLOR,
     });

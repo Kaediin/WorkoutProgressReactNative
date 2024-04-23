@@ -1,0 +1,9 @@
+query programLogGroupsByProgramId($programId: ID!) {
+    programLogGroupsByProgramId(programId: $programId) {
+        id
+        logs {
+            ...ProgramLog
+        }
+        type
+    }
+}

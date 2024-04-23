@@ -47,8 +47,8 @@ export const descriptionForPermission = (
         : 'Used to save weight in-app and syncing to Apple Health';
     case AppleHealthKit.Constants.Permissions.Workout:
       return read
-        ? 'Used for display all workouts in profile page'
-        : 'Used to save workouts';
+        ? 'Used for display all activity in profile page'
+        : 'Used to save activity';
     default:
       return '';
   }

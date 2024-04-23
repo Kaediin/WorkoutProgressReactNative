@@ -13,6 +13,8 @@ interface SelectExerciseProps {
   exercises: ExerciseFragment[];
   selectedId: string;
   sort?: boolean;
+  pickerItemColor?: string;
+  selectionColor?: string;
 }
 
 const SelectExercises: React.FC<SelectExerciseProps> = props => {
@@ -29,8 +31,9 @@ const SelectExercises: React.FC<SelectExerciseProps> = props => {
       <Picker
         selectedValue={props.exercises.find(it => it.id === props.selectedId)}
         onValueChange={setSelected}
+        selectionColor={props.selectionColor}
         itemStyle={styles.pickerItemStyle}>
-        <Picker.Item label={''} value={''} />
+        <Picker.Item label={''} value={''} color={props.pickerItemColor} />
         {props.exercises
           .sort((a, b) => (props.sort ? a.name.localeCompare(b.name) : 0))
           .map(exercise => (
@@ -38,6 +41,7 @@ const SelectExercises: React.FC<SelectExerciseProps> = props => {
               key={exercise.id}
               label={exercise.name}
               value={exercise}
+              color={props.pickerItemColor}
             />
           ))}
       </Picker>

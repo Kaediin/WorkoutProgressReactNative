@@ -68,7 +68,7 @@ const AppText: React.FC<AppTextProps> = props => {
         props.callout && styles.callout,
         props.footNote && styles.footNote,
         props.T1 && styles.T1,
-        props.T2 && styles.T1,
+        props.T2 && styles.T2,
         props.bold && styles.bold,
         props.italic && styles.italic,
         props.semibold && styles.semibold,

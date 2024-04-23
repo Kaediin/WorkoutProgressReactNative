@@ -1,0 +1,5 @@
+mutation updateProgram($id: ID!, $input: ProgramInput!) {
+    updateProgram(id: $id,input: $input) {
+        ...ProgramShort
+    }
+}

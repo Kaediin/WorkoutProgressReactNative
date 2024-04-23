@@ -1,0 +1,25 @@
+fragment ProgramLog on ProgramLog {
+    id
+    effort
+    exercise {
+        ...Exercise
+    }
+    logValue {
+        ...LogValue
+    }
+    repetitions
+    subdivisions {
+        repetitions
+        logValue {
+            ...LogValue
+        }
+        effort
+        exercise {
+            ...Exercise
+        }
+        intervalSeconds
+        cooldownSeconds
+    }
+    intervalSeconds
+    cooldownSeconds
+}

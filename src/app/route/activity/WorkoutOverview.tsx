@@ -1,6 +1,5 @@
 import React, {useEffect, useMemo, useRef, useState} from 'react';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import GradientBackground from '../../components/common/GradientBackground';
+import {useIsFocused} from '@react-navigation/native';
 import {
   useDeleteWorkoutMutation,
   useHasActiveWorkoutQuery,
@@ -11,36 +10,32 @@ import {
   WorkoutInput,
   WorkoutShortFragment,
 } from '../../graphql/operations';
-import FloatingButton from '../../components/common/FloatingButton';
 import {
   BottomSheetModal,
   BottomSheetModalProvider,
   BottomSheetTextInput,
 } from '@gorhom/bottom-sheet';
-import {CustomBottomSheet} from '../../components/bottomSheet/CustomBottomSheet';
-import SelectMuscleGroups from '../../components/workouts/SelectMuscleGroups';
-import {FlatList, RefreshControl, StyleSheet, View} from 'react-native';
-import moment from 'moment';
-import Constants from '../../utils/Constants';
+import moment from 'moment/moment';
 import {nonNullable} from '../../utils/List';
-import ErrorMessage from '../../components/common/ErrorMessage';
-import WorkoutListItem from '../../components/workouts/WorkoutListItem';
-import ConfirmModal from '../../components/common/ConfirmModal';
-import {WorkoutStackParamList} from '../../stacks/WorkoutStack';
-import {ContextMenuActions} from '../../types/ContextMenuActions';
 import ContextMenu, {ContextMenuAction} from 'react-native-context-menu-view';
+import {ContextMenuActions} from '../../types/ContextMenuActions';
+import {FlatList, RefreshControl, StyleSheet, View} from 'react-native';
 import {defaultStyles} from '../../utils/DefaultStyles';
-import ClickableText from '../../components/common/ClickableText';
-import Loader from '../../components/common/Loader';
-import {useIsFocused} from '@react-navigation/native';
-import useAuth from '../../hooks/useAuth';
 import AppText from '../../components/common/AppText';
+import WorkoutListItem from '../../components/workouts/WorkoutListItem';
+import {CustomBottomSheet} from '../../components/bottomSheet/CustomBottomSheet';
+import ClickableText from '../../components/common/ClickableText';
+import Constants from '../../utils/Constants';
+import SelectMuscleGroups from '../../components/workouts/SelectMuscleGroups';
+import FloatingButton from '../../components/common/FloatingButton';
+import ConfirmModal from '../../components/common/ConfirmModal';
 
-type Props = NativeStackScreenProps<WorkoutStackParamList, 'WorkoutsOverview'>;
+interface WorkoutOverviewProps {
+  onNavigateToWorkout: (workoutId: string) => void;
+  setNavTitle: (title: string) => void;
+}
 
-const WorkoutsOverviewScreen: React.FC<Props> = ({navigation}) => {
-  const {getToken} = useAuth();
-
+const WorkoutOverview: React.FC<WorkoutOverviewProps> = props => {
   const isFocussed = useIsFocused();
   const [deleteWorkoutId, setDeleteWorkoutId] = useState<string>('');
   const [editingExistingWorkoutId, setEditingExistingWorkoutId] =
@@ -63,7 +58,6 @@ const WorkoutsOverviewScreen: React.FC<Props> = ({navigation}) => {
   const {
     data: getWorkoutsData,
     loading: getWorkoutsLoading,
-    error: getWorkoutsError,
     refetch: refetchWorkouts,
   } = useWorkoutsQuery({
     fetchPolicy: 'no-cache',
@@ -132,7 +126,7 @@ const WorkoutsOverviewScreen: React.FC<Props> = ({navigation}) => {
   useEffect(() => {
     if (startWorkoutData?.meStartWorkout) {
       refetchActiveWorkout();
-      navigateToWorkout(startWorkoutData.meStartWorkout.id);
+      props.onNavigateToWorkout(startWorkoutData.meStartWorkout.id);
     }
   }, [startWorkoutData?.meStartWorkout]);
 
@@ -142,6 +136,10 @@ const WorkoutsOverviewScreen: React.FC<Props> = ({navigation}) => {
       refetchActiveWorkout();
     }
   }, [isFocussed]);
+
+  useEffect(() => {
+    props.setNavTitle('Workouts');
+  }, []);
 
   const loading =
     startWorkoutLoading ||
@@ -165,11 +163,6 @@ const WorkoutsOverviewScreen: React.FC<Props> = ({navigation}) => {
     () => hasActiveWorkoutData?.meHasActiveWorkout,
     [hasActiveWorkoutData],
   );
-
-  const navigateToWorkout = (id: string): void => {
-    navigation.navigate('WorkoutDetail', {workoutId: id});
-  };
-
   const removeWorkout = (id: string): void => {
     deleteWorkout({
       variables: {
@@ -214,60 +207,56 @@ const WorkoutsOverviewScreen: React.FC<Props> = ({navigation}) => {
       onCompleted: () => {
         refetchActiveWorkout();
         refetchWorkouts();
-        navigation.navigate('WorkoutDetail', {workoutId: workout.id});
+        props.onNavigateToWorkout(workout.id);
       },
     });
   };
 
   return (
-    <GradientBackground>
-      {getWorkoutsError?.message ? (
-        <ErrorMessage message={getWorkoutsError?.message} onRetry={getToken} />
-      ) : loading ? (
-        <Loader isLoading={loading} />
-      ) : existingWorkouts.length === 0 ? (
-        <View style={defaultStyles.absoluteCenterContent}>
-          <AppText>Click on the + to start your first workout!</AppText>
-        </View>
-      ) : (
-        <FlatList
-          data={existingWorkouts}
-          refreshControl={
-            <RefreshControl
-              colors={['#fff', '#ccc']}
-              tintColor={'#fff'}
-              refreshing={getWorkoutsLoading}
-              onRefresh={() => {
-                refetchWorkouts();
-                refetchActiveWorkout();
-              }}
+    <View style={defaultStyles.flex1}>
+      <FlatList
+        data={existingWorkouts}
+        ListEmptyComponent={() => (
+          <AppText style={defaultStyles.marginTop50} centerText>
+            Click on the + to start your first workout!
+          </AppText>
+        )}
+        refreshing={getWorkoutsLoading}
+        refreshControl={
+          <RefreshControl
+            colors={['#fff', '#ccc']}
+            tintColor={'#fff'}
+            refreshing={getWorkoutsLoading}
+            onRefresh={() => {
+              refetchWorkouts();
+              refetchActiveWorkout();
+            }}
+          />
+        }
+        renderItem={({item}) => (
+          <ContextMenu
+            actions={getActions()}
+            onPress={event => {
+              event.nativeEvent.name === ContextMenuActions.DELETE
+                ? setDeleteWorkoutId(item.id)
+                : event.nativeEvent.name === ContextMenuActions.EDIT
+                ? editWorkout(item)
+                : event.nativeEvent.name ===
+                  ContextMenuActions.REACTIVATE_WORKOUT
+                ? doReactivateWorkout(item)
+                : undefined;
+            }}
+            style={defaultStyles.shadow}>
+            <WorkoutListItem
+              key={item.id}
+              workout={item}
+              onWorkoutPressed={props.onNavigateToWorkout}
+              hasActiveWorkout={hasActiveWorkout || false}
             />
-          }
-          renderItem={({item}) => (
-            <ContextMenu
-              actions={getActions()}
-              onPress={event => {
-                event.nativeEvent.name === ContextMenuActions.DELETE
-                  ? setDeleteWorkoutId(item.id)
-                  : event.nativeEvent.name === ContextMenuActions.EDIT
-                  ? editWorkout(item)
-                  : event.nativeEvent.name ===
-                    ContextMenuActions.REACTIVATE_WORKOUT
-                  ? doReactivateWorkout(item)
-                  : undefined;
-              }}
-              style={defaultStyles.shadow}>
-              <WorkoutListItem
-                key={item.id}
-                workout={item}
-                onWorkoutPressed={navigateToWorkout}
-                hasActiveWorkout={hasActiveWorkout || false}
-              />
-            </ContextMenu>
-          )}
-          style={defaultStyles.container}
-        />
-      )}
+          </ContextMenu>
+        )}
+        style={defaultStyles.container}
+      />
 
       <BottomSheetModalProvider>
         <CustomBottomSheet
@@ -354,7 +343,7 @@ const WorkoutsOverviewScreen: React.FC<Props> = ({navigation}) => {
         onDismiss={() => setDeleteWorkoutId('')}
         onConfirm={() => removeWorkout(deleteWorkoutId)}
       />
-    </GradientBackground>
+    </View>
   );
 };
 
@@ -381,4 +370,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default WorkoutsOverviewScreen;
+export default WorkoutOverview;

@@ -4,7 +4,7 @@ import {
   initialWindowMetrics,
   SafeAreaProvider,
 } from 'react-native-safe-area-context';
-import WorkoutStack from '../../stacks/WorkoutStack';
+import ActivityStack from '../../stacks/ActivityStack';
 import ProfileStack from '../../stacks/ProfileStack';
 import {Dumbbell, Profile, Workout} from '../../icons/svg';
 import {StyleSheet, View} from 'react-native';
@@ -17,8 +17,8 @@ const TabNavigator: React.FC = () => {
     <SafeAreaProvider initialMetrics={initialWindowMetrics}>
       <Tab.Navigator>
         <Tab.Screen
-          name={'Workouts'}
-          component={WorkoutStack}
+          name={'Activity'}
+          component={ActivityStack}
           options={{
             tabBarIcon: () => (
               <View style={styles.marginTop}>

@@ -1,0 +1,5 @@
+query programById($id: ID!) {
+    programById(id: $id) {
+        ...ProgramLong
+    }
+}

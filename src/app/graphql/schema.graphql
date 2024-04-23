@@ -161,8 +161,12 @@ type Mutation {
   addOnboardingExercises(ids: [String!]!): Boolean
   completeOnboarding: User!
   createExercise(input: ExerciseInput): Exercise
+  createProgram(input: ProgramInput): Program!
+  createProgramLogGroup(input: ProgramLogGroupInput): ProgramLogGroup
   createUser(userInput: UserInput!): User
   deleteExercise(id: ID!): Boolean!
+  deleteProgram(id: ID!): Boolean!
+  deleteProgramLogGroup(id: ID!): Boolean!
 
   """Delete workout by ID"""
   deleteWorkout(id: ID!): Boolean
@@ -185,6 +189,8 @@ type Mutation {
   updateExercise(id: ID!, input: ExerciseInput): Exercise
   updateExerciseLog(exerciseLogId: ID!, input: ExerciseLogInput!): Workout
   updateMyPreference(input: PreferenceInput!): Preference!
+  updateProgram(id: ID!, input: ProgramInput): Program!
+  updateProgramLogGroup(id: ID!, type: ProgramLogGroupType): ProgramLogGroup!
 
   """Update workout by ID"""
   updateWorkout(id: ID!, input: WorkoutInput!): Workout!
@@ -212,6 +218,92 @@ input PreferenceInput {
   weightUnit: LogUnit
 }
 
+type Program {
+  active: Boolean!
+
+  """The date and time when the program was created."""
+  createdDateTime: LocalDateTime!
+
+  """The date and time when the program ends."""
+  endDateTime: LocalDateTime
+
+  """The estimated calories burned by the program."""
+  estimatedCaloriesBurned: Int
+
+  """The external health provider data. (e.g. Apple Health)"""
+  externalHealthProviderData: ExternalHealthProviderData
+  id: ID!
+
+  """The groups of the program."""
+  logGroups: [ProgramLogGroup!]!
+  name: String!
+  remark: String
+
+  """The date and time when the program starts."""
+  startDateTime: LocalDateTime
+}
+
+input ProgramInput {
+  name: String!
+  remark: String
+  startDateTime: String
+  zonedDateTime: String!
+}
+
+type ProgramLog {
+  """Cooldown in seconds."""
+  cooldownSeconds: Int
+
+  """Effort on scale of 1 to 100"""
+  effort: Int
+  exercise: Exercise!
+  id: ID!
+
+  """Interval in seconds."""
+  intervalSeconds: Int
+  logValue: LogValue!
+
+  """The program attached"""
+  program: Program!
+
+  """The program log group of the program log."""
+  programLogGroup: ProgramLogGroup!
+  repetitions: Int!
+
+  """The subdivision of the program log."""
+  subdivisions: [ProgramLog!]!
+}
+
+type ProgramLogGroup {
+  id: ID!
+  logs: [ProgramLog!]!
+  program: Program!
+  type: ProgramLogGroupType!
+}
+
+input ProgramLogGroupInput {
+  logs: [ProgramLogInput!]!
+  programId: ID!
+  type: ProgramLogGroupType!
+}
+
+enum ProgramLogGroupType {
+  COOLDOWN
+  MAIN
+  WARMUP
+}
+
+input ProgramLogInput {
+  cooldownSeconds: Int
+  effort: Int
+  exerciseId: ID!
+  intervalSeconds: Int
+  logValue: LogValueInput!
+  programLogGroupId: ID!
+  repetitions: Int!
+  subdivisions: [ProgramLogInput!]
+}
+
 type Query {
   """Get all logs by excerice id"""
   allLogsByExerciseId(exerciseId: ID!): [ExerciseLog!]!
@@ -219,7 +311,7 @@ type Query {
   """
   Get chart data per muscle group for all workouts of user by current month with given timestamp
   """
-  chartDataMuscleGroups(zonedDateTimeString: String!): [MuscleGroupChartData!]!
+  chartDataMuscleGroups(zonedDateTimeString: String): [MuscleGroupChartData!]!
 
   """Get chart data of last x months for logs by exercise id"""
   chartDataOfXMonthsByExerciseId(exerciseId: ID!, months: Int!, zonedDateTimeString: String!): [ExerciseLineChartData!]!
@@ -244,10 +336,13 @@ type Query {
   meHasActiveWorkout: Boolean!
   myExercises: [Exercise!]
   myPreference: Preference
+  myPrograms: [Program!]
 
   """Fetch all my current workouts"""
   myWorkouts: [Workout!]
   onboardingExercises: [Exercise!]!
+  programById(id: ID!): Program
+  programLogGroupsByProgramId(programId: ID!): [ProgramLogGroup!]
   userById(id: String!): User
   users: [User]
 

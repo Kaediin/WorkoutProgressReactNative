@@ -69,7 +69,7 @@ const OnboardingWorkoutTypeSelect: React.FC<Props> = props => {
             />
             <View style={[defaultStyles.spaceEvenly, styles.buttonSpacing]}>
               <ClickableText
-                text={"I won't be logging strength training workouts"}
+                text={"I won't be logging strength training activity"}
                 onPress={() => completeOnboarding()}
               />
             </View>

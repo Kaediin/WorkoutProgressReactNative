@@ -11,6 +11,12 @@ export const defaultStyles = StyleSheet.create({
   marginHorizontal: {
     marginHorizontal: Constants.CONTAINER_PADDING_MARGIN,
   },
+  paddingLeft: {
+    paddingLeft: Constants.CONTAINER_PADDING_MARGIN,
+  },
+  padding: {
+    padding: Constants.CONTAINER_PADDING_MARGIN,
+  },
   marginVertical: {
     marginVertical: Constants.CONTAINER_PADDING_MARGIN,
   },
@@ -171,5 +177,11 @@ export const defaultStyles = StyleSheet.create({
     backgroundColor: 'lightgrey',
     width: '100%',
     marginVertical: Constants.CONTAINER_PADDING_MARGIN * 2,
+  },
+  mirror: {
+    transform: [{rotateY: '180deg'}],
+  },
+  rotate90: {
+    transform: [{rotate: '180deg'}],
   },
 });

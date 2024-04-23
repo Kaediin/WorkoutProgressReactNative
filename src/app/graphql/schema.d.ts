@@ -179,8 +179,12 @@ export type Mutation = {
   addOnboardingExercises?: Maybe<Scalars['Boolean']>;
   completeOnboarding: User;
   createExercise?: Maybe<Exercise>;
+  createProgram: Program;
+  createProgramLogGroup?: Maybe<ProgramLogGroup>;
   createUser?: Maybe<User>;
   deleteExercise: Scalars['Boolean'];
+  deleteProgram: Scalars['Boolean'];
+  deleteProgramLogGroup: Scalars['Boolean'];
   /** Delete workout by ID */
   deleteWorkout?: Maybe<Scalars['Boolean']>;
   /** End workout by ID */
@@ -197,6 +201,8 @@ export type Mutation = {
   updateExercise?: Maybe<Exercise>;
   updateExerciseLog?: Maybe<Workout>;
   updateMyPreference: Preference;
+  updateProgram: Program;
+  updateProgramLogGroup: ProgramLogGroup;
   /** Update workout by ID */
   updateWorkout: Workout;
 };
@@ -231,12 +237,32 @@ export type MutationCreateExerciseArgs = {
 };
 
 
+export type MutationCreateProgramArgs = {
+  input?: InputMaybe<ProgramInput>;
+};
+
+
+export type MutationCreateProgramLogGroupArgs = {
+  input?: InputMaybe<ProgramLogGroupInput>;
+};
+
+
 export type MutationCreateUserArgs = {
   userInput: UserInput;
 };
 
 
 export type MutationDeleteExerciseArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type MutationDeleteProgramArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type MutationDeleteProgramLogGroupArgs = {
   id: Scalars['ID'];
 };
 
@@ -303,6 +329,18 @@ export type MutationUpdateMyPreferenceArgs = {
 };
 
 
+export type MutationUpdateProgramArgs = {
+  id: Scalars['ID'];
+  input?: InputMaybe<ProgramInput>;
+};
+
+
+export type MutationUpdateProgramLogGroupArgs = {
+  id: Scalars['ID'];
+  type?: InputMaybe<ProgramLogGroupType>;
+};
+
+
 export type MutationUpdateWorkoutArgs = {
   id: Scalars['ID'];
   input: WorkoutInput;
@@ -331,6 +369,84 @@ export type PreferenceInput = {
   weightUnit?: InputMaybe<LogUnit>;
 };
 
+export type Program = {
+  __typename?: 'Program';
+  active: Scalars['Boolean'];
+  /** The date and time when the program was created. */
+  createdDateTime: Scalars['LocalDateTime'];
+  /** The date and time when the program ends. */
+  endDateTime?: Maybe<Scalars['LocalDateTime']>;
+  /** The estimated calories burned by the program. */
+  estimatedCaloriesBurned?: Maybe<Scalars['Int']>;
+  /** The external health provider data. (e.g. Apple Health) */
+  externalHealthProviderData?: Maybe<ExternalHealthProviderData>;
+  id: Scalars['ID'];
+  /** The groups of the program. */
+  logGroups: Array<ProgramLogGroup>;
+  name: Scalars['String'];
+  remark?: Maybe<Scalars['String']>;
+  /** The date and time when the program starts. */
+  startDateTime?: Maybe<Scalars['LocalDateTime']>;
+};
+
+export type ProgramInput = {
+  name: Scalars['String'];
+  remark?: InputMaybe<Scalars['String']>;
+  startDateTime?: InputMaybe<Scalars['String']>;
+  zonedDateTime: Scalars['String'];
+};
+
+export type ProgramLog = {
+  __typename?: 'ProgramLog';
+  /** Cooldown in seconds. */
+  cooldownSeconds?: Maybe<Scalars['Int']>;
+  /** Effort on scale of 1 to 100 */
+  effort?: Maybe<Scalars['Int']>;
+  exercise: Exercise;
+  id: Scalars['ID'];
+  /** Interval in seconds. */
+  intervalSeconds?: Maybe<Scalars['Int']>;
+  logValue: LogValue;
+  /** The program attached */
+  program: Program;
+  /** The program log group of the program log. */
+  programLogGroup: ProgramLogGroup;
+  repetitions: Scalars['Int'];
+  /** The subdivision of the program log. */
+  subdivisions: Array<ProgramLog>;
+};
+
+export type ProgramLogGroup = {
+  __typename?: 'ProgramLogGroup';
+  id: Scalars['ID'];
+  logs: Array<ProgramLog>;
+  program: Program;
+  type: ProgramLogGroupType;
+};
+
+export type ProgramLogGroupInput = {
+  logs: Array<ProgramLogInput>;
+  programId: Scalars['ID'];
+  type: ProgramLogGroupType;
+};
+
+export enum ProgramLogGroupType {
+  Cooldown = 'COOLDOWN',
+  Main = 'MAIN',
+  Warmup = 'WARMUP'
+}
+
+export type ProgramLogInput = {
+  cooldownSeconds?: InputMaybe<Scalars['Int']>;
+  effort?: InputMaybe<Scalars['Int']>;
+  exerciseId: Scalars['ID'];
+  intervalSeconds?: InputMaybe<Scalars['Int']>;
+  logValue: LogValueInput;
+  programLogGroupId: Scalars['ID'];
+  repetitions: Scalars['Int'];
+  subdivisions?: InputMaybe<Array<ProgramLogInput>>;
+};
+
 export type Query = {
   __typename?: 'Query';
   /** Get all logs by excerice id */
@@ -353,9 +469,12 @@ export type Query = {
   meHasActiveWorkout: Scalars['Boolean'];
   myExercises?: Maybe<Array<Exercise>>;
   myPreference?: Maybe<Preference>;
+  myPrograms?: Maybe<Array<Program>>;
   /** Fetch all my current workouts */
   myWorkouts?: Maybe<Array<Workout>>;
   onboardingExercises: Array<Exercise>;
+  programById?: Maybe<Program>;
+  programLogGroupsByProgramId?: Maybe<Array<ProgramLogGroup>>;
   userById?: Maybe<User>;
   users?: Maybe<Array<Maybe<User>>>;
   /** Fetch workout by ID */
@@ -371,7 +490,7 @@ export type QueryAllLogsByExerciseIdArgs = {
 
 
 export type QueryChartDataMuscleGroupsArgs = {
-  zonedDateTimeString: Scalars['String'];
+  zonedDateTimeString?: InputMaybe<Scalars['String']>;
 };
 
 
@@ -390,6 +509,16 @@ export type QueryLatestLogsByExerciseIdArgs = {
 export type QueryLatestLogsByExerciseIdAndNotWorkoutIdArgs = {
   exerciseId: Scalars['ID'];
   workoutId: Scalars['String'];
+};
+
+
+export type QueryProgramByIdArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type QueryProgramLogGroupsByProgramIdArgs = {
+  programId: Scalars['ID'];
 };
 
 

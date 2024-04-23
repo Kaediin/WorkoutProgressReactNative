@@ -1,0 +1,15 @@
+mutation createProgramLogGroup($input: ProgramLogGroupInput!) {
+    createProgramLogGroup(input: $input) {
+        ...ProgramLogGroup
+    }
+}
+
+mutation updateProgramLogGroup($id: ID!, $type: ProgramLogGroupType!) {
+    updateProgramLogGroup(id: $id, type: $type) {
+        ...ProgramLogGroup
+    }
+}
+
+mutation deleteProgramLogGroup($id: ID!) {
+    deleteProgramLogGroup(id: $id)
+}

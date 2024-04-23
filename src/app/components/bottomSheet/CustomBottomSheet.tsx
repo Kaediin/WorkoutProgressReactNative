@@ -8,6 +8,8 @@ import {
 } from '@gorhom/bottom-sheet';
 import ClickableText from '../common/ClickableText';
 import {defaultStyles} from '../../utils/DefaultStyles';
+import {ViewStyle} from 'react-native/Libraries/StyleSheet/StyleSheetTypes';
+import {StyleProp} from 'react-native/Libraries/StyleSheet/StyleSheet';
 
 type CustomBottomSheetProps = {
   children: React.ReactNode;
@@ -18,6 +20,9 @@ type CustomBottomSheetProps = {
   rightText?: string;
   leftText?: string;
   disableRightText?: boolean;
+  backgroundColor?: StyleProp<
+    Omit<ViewStyle, 'bottom' | 'left' | 'position' | 'right' | 'top'>
+  >;
 };
 
 export const CustomBottomSheet = React.forwardRef<
@@ -34,6 +39,7 @@ export const CustomBottomSheet = React.forwardRef<
       onDismissClicked,
       leftText,
       disableRightText,
+      backgroundColor,
     },
     ref,
   ) => {
@@ -63,7 +69,11 @@ export const CustomBottomSheet = React.forwardRef<
         index={index || 90}
         snapPoints={Constants.BOTTOM_SHEET_SNAPPOINTS}
         backdropComponent={renderBackdrop}
-        onDismiss={onDismissClicked}>
+        backgroundStyle={backgroundColor}
+        onDismiss={onDismissClicked}
+        handleIndicatorStyle={
+          backgroundColor ? {backgroundColor: 'white'} : {}
+        }>
         <View style={defaultStyles.spaceBetween}>
           {leftText ? (
             <ClickableText

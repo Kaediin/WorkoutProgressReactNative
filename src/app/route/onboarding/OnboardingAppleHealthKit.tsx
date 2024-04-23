@@ -71,12 +71,12 @@ const OnboardingAppleHealthKit: React.FC<Props> = () => {
           <View>
             <GradientButton
               styles={styles.button}
-              title={'Sync workouts with Apple Health'}
+              title={'Sync activity with Apple Health'}
               onPress={initHealthKit}
             />
             <View style={[defaultStyles.spaceEvenly, styles.buttonSpacing]}>
               <ClickableText
-                text={"Don't sync workouts with Apple Health"}
+                text={"Don't sync activity with Apple Health"}
                 onPress={() => completeOnboarding()}
               />
             </View>
