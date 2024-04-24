@@ -102,12 +102,15 @@ type GroupedExerciseLog {
 scalar LocalDateTime
 
 enum LogUnit {
+  FT
   KG
   KM
   LBS
+  M
   MI
   MIN
   SEC
+  YD
 }
 
 type LogValue {

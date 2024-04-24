@@ -121,12 +121,15 @@ export type GroupedExerciseLog = {
 };
 
 export enum LogUnit {
+  FT = 'FT',
   KG = 'KG',
   KM = 'KM',
   LBS = 'LBS',
+  M = 'M',
   MI = 'MI',
   MIN = 'MIN',
-  SEC = 'SEC'
+  SEC = 'SEC',
+  YD = 'YD'
 }
 
 export type LogValue = {
