@@ -6,13 +6,15 @@ import {
   ProgramLogGroupFragment,
   ProgramLogGroupType,
   useCreateProgramLogGroupMutation,
+  useDeleteProgramLogGroupMutation,
+  useDeleteProgramLogMutation,
   useProgramByIdLazyQuery,
   useProgramLogGroupsByProgramIdLazyQuery,
 } from '../../../graphql/operations';
 import FloatingButton from '../../../components/common/FloatingButton';
 import {Add} from '../../../icons/svg';
 import Constants from '../../../utils/Constants';
-import {Platform, StyleSheet} from 'react-native';
+import {Platform, RefreshControl, StyleSheet} from 'react-native';
 import {Fab} from '../../../utils/Fab';
 import {IActionProps} from 'react-native-floating-action';
 import {FlashList} from '@shopify/flash-list';
@@ -22,16 +24,21 @@ import {CustomBottomSheet} from '../../../components/bottomSheet/CustomBottomShe
 import {Picker} from '@react-native-picker/picker';
 import {enumToReadableString} from '../../../utils/String';
 import ProgramLogGroupListItem from '../../../components/program/ProgramLogGroupListItem';
+import ConfirmModal from '../../../components/common/ConfirmModal';
+import {useIsFocused} from '@react-navigation/native';
 
 type Props = NativeStackScreenProps<ActivityStackParamList, 'ProgramDetail'>;
 
 const ProgramDetailScreen: React.FC<Props> = props => {
   const isIOS = Platform.OS === 'ios';
+  const isFocussed = useIsFocused();
 
   // Refs
   const refCreateLogGoup = useRef<BottomSheetModal>(null);
 
   // State
+  const [deleteLogGroupId, setDeleteLogGroupId] = useState<string>();
+  const [deleteLogId, setDeleteLogId] = useState<string>();
   const [actions, setActions] = useState<IActionProps[]>([]);
   const [programLogGroups, setProgramLogGroups] = useState<
     ProgramLogGroupFragment[]
@@ -40,38 +47,62 @@ const ProgramDetailScreen: React.FC<Props> = props => {
     useState<ProgramLogGroupType>();
 
   // Queries
-  const [fetchProgramById, {data: programByIdData}] = useProgramByIdLazyQuery({
+  // Fetch program by id
+  const [
+    fetchProgramById,
+    {data: programByIdData, loading: fetchProgramByIdLoading},
+  ] = useProgramByIdLazyQuery({
     fetchPolicy: 'no-cache',
   });
 
-  const [fetchProgramGroups] = useProgramLogGroupsByProgramIdLazyQuery({
+  // Fetch program log groups by program id
+  const [fetchProgramGroups, {loading: fetchProgramGroupsLoading}] =
+    useProgramLogGroupsByProgramIdLazyQuery({
+      fetchPolicy: 'no-cache',
+      onCompleted: data => {
+        if (data.programLogGroupsByProgramId) {
+          setProgramLogGroups(data.programLogGroupsByProgramId);
+
+          const _actions = [];
+          if (data.programLogGroupsByProgramId.length < 3) {
+            _actions.push({
+              text: 'Add group',
+              icon: isIOS ? <Add /> : require('../../../icons/plus.png'),
+              name: Fab.RELOG,
+              color: Constants.FAB_ACTION_COLOR,
+            });
+          }
+          setActions(_actions);
+        }
+      },
+    });
+
+  // Mutations
+  // Create program log group
+  const [createProgramLogGroup] = useCreateProgramLogGroupMutation({
+    fetchPolicy: 'no-cache',
+    onCompleted: () => {
+      refetch();
+      refCreateLogGoup?.current?.close();
+    },
+  });
+
+  // Delete program log
+  const [deleteProgramLog] = useDeleteProgramLogMutation({
     fetchPolicy: 'no-cache',
     onCompleted: data => {
-      if (data.programLogGroupsByProgramId) {
-        setProgramLogGroups(data.programLogGroupsByProgramId);
-
-        const _actions = [];
-        if (data.programLogGroupsByProgramId.length < 3) {
-          _actions.push({
-            text: 'Add group',
-            icon: isIOS ? <Add /> : require('../../../icons/plus.png'),
-            name: Fab.RELOG,
-            color: Constants.FAB_ACTION_COLOR,
-          });
-        }
-        setActions(_actions);
+      if (data.deleteProgramLog) {
+        refetch();
       }
     },
   });
 
-  // Mutations
-  const [createProgramLogGroup] = useCreateProgramLogGroupMutation({
+  const [deleteProgramLogGroup] = useDeleteProgramLogGroupMutation({
     fetchPolicy: 'no-cache',
-    onCompleted: () => {
-      fetchProgramGroups({
-        variables: {programId: props.route.params.programId},
-      });
-      refCreateLogGoup?.current?.close();
+    onCompleted: data => {
+      if (data.deleteProgramLogGroup) {
+        refetch();
+      }
     },
   });
 
@@ -87,25 +118,57 @@ const ProgramDetailScreen: React.FC<Props> = props => {
   // Fetch program and groups on programId change
   useEffect(() => {
     if (props.route.params.programId) {
-      fetchProgramById({variables: {id: props.route.params.programId}});
-      fetchProgramGroups({
-        variables: {programId: props.route.params.programId},
-      });
+      refetch();
     }
   }, [props.route.params.programId]);
 
+  // Refetch on focus
+  useEffect(() => {
+    if (isFocussed) {
+      refetch();
+    }
+  }, [isFocussed]);
+
+  // Refetch program and groups
+  const refetch = () => {
+    fetchProgramById({variables: {id: props.route.params.programId}});
+    fetchProgramGroups({
+      variables: {programId: props.route.params.programId},
+    });
+  };
+
+  const loading = fetchProgramByIdLoading || fetchProgramGroupsLoading;
   return (
     <GradientBackground>
       <FlashList
+        refreshControl={
+          <RefreshControl
+            colors={['#fff', '#ccc']}
+            tintColor={'#fff'}
+            refreshing={loading}
+            onRefresh={() =>
+              fetchProgramById({variables: {id: props.route.params.programId}})
+            }
+          />
+        }
         renderItem={({item}) => (
           <ProgramLogGroupListItem
             programLogGroup={item}
             onCreateLogPress={() =>
               props.navigation.navigate('ProgramCreateLog', {
-                programId: props.route.params.programId,
+                programLogGroupId: item.id,
                 type: item.type,
               })
             }
+            onEditLogPress={log =>
+              props.navigation.navigate('ProgramCreateLog', {
+                programLogGroupId: item.id,
+                type: item.type,
+                log: log,
+              })
+            }
+            onDeleteLogPress={setDeleteLogId}
+            onDeleteGroupPress={setDeleteLogGroupId}
           />
         )}
         data={programLogGroups}
@@ -164,6 +227,30 @@ const ProgramDetailScreen: React.FC<Props> = props => {
           </Picker>
         </CustomBottomSheet>
       </BottomSheetModalProvider>
+      <ConfirmModal
+        message={'Are you sure you want to delete this log?'}
+        isOpen={!!deleteLogId}
+        type={'WARNING'}
+        onDismiss={() => setDeleteLogId(undefined)}
+        onConfirm={() => {
+          if (deleteLogId) {
+            deleteProgramLog({variables: {id: deleteLogId}});
+            setDeleteLogId(undefined);
+          }
+        }}
+      />
+      <ConfirmModal
+        message={'Are you sure you want to delete this log group?'}
+        isOpen={!!deleteLogGroupId}
+        type={'WARNING'}
+        onDismiss={() => setDeleteLogGroupId(undefined)}
+        onConfirm={() => {
+          if (deleteLogGroupId) {
+            deleteProgramLogGroup({variables: {id: deleteLogGroupId}});
+            setDeleteLogGroupId(undefined);
+          }
+        }}
+      />
     </GradientBackground>
   );
 };

@@ -180,10 +180,12 @@ export type Mutation = {
   completeOnboarding: User;
   createExercise?: Maybe<Exercise>;
   createProgram: Program;
-  createProgramLogGroup?: Maybe<ProgramLogGroup>;
+  createProgramLog: ProgramLog;
+  createProgramLogGroup: ProgramLogGroup;
   createUser?: Maybe<User>;
   deleteExercise: Scalars['Boolean'];
   deleteProgram: Scalars['Boolean'];
+  deleteProgramLog: Scalars['Boolean'];
   deleteProgramLogGroup: Scalars['Boolean'];
   /** Delete workout by ID */
   deleteWorkout?: Maybe<Scalars['Boolean']>;
@@ -202,6 +204,7 @@ export type Mutation = {
   updateExerciseLog?: Maybe<Workout>;
   updateMyPreference: Preference;
   updateProgram: Program;
+  updateProgramLog: ProgramLog;
   updateProgramLogGroup: ProgramLogGroup;
   /** Update workout by ID */
   updateWorkout: Workout;
@@ -242,6 +245,11 @@ export type MutationCreateProgramArgs = {
 };
 
 
+export type MutationCreateProgramLogArgs = {
+  input?: InputMaybe<ProgramLogInput>;
+};
+
+
 export type MutationCreateProgramLogGroupArgs = {
   input?: InputMaybe<ProgramLogGroupInput>;
 };
@@ -258,6 +266,11 @@ export type MutationDeleteExerciseArgs = {
 
 
 export type MutationDeleteProgramArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type MutationDeleteProgramLogArgs = {
   id: Scalars['ID'];
 };
 
@@ -335,6 +348,12 @@ export type MutationUpdateProgramArgs = {
 };
 
 
+export type MutationUpdateProgramLogArgs = {
+  id: Scalars['ID'];
+  input?: InputMaybe<ProgramLogInput>;
+};
+
+
 export type MutationUpdateProgramLogGroupArgs = {
   id: Scalars['ID'];
   type?: InputMaybe<ProgramLogGroupType>;
@@ -402,18 +421,18 @@ export type ProgramLog = {
   cooldownSeconds?: Maybe<Scalars['Int']>;
   /** Effort on scale of 1 to 100 */
   effort?: Maybe<Scalars['Int']>;
-  exercise: Exercise;
-  id: Scalars['ID'];
+  exercise?: Maybe<Exercise>;
+  id?: Maybe<Scalars['ID']>;
   /** Interval in seconds. */
   intervalSeconds?: Maybe<Scalars['Int']>;
   logValue: LogValue;
   /** The program attached */
-  program: Program;
+  program?: Maybe<Program>;
   /** The program log group of the program log. */
-  programLogGroup: ProgramLogGroup;
+  programLogGroup?: Maybe<ProgramLogGroup>;
   repetitions: Scalars['Int'];
   /** The subdivision of the program log. */
-  subdivisions: Array<ProgramLog>;
+  subdivisions?: Maybe<Array<ProgramLog>>;
 };
 
 export type ProgramLogGroup = {
@@ -439,7 +458,7 @@ export enum ProgramLogGroupType {
 export type ProgramLogInput = {
   cooldownSeconds?: InputMaybe<Scalars['Int']>;
   effort?: InputMaybe<Scalars['Int']>;
-  exerciseId: Scalars['ID'];
+  exerciseId?: InputMaybe<Scalars['ID']>;
   intervalSeconds?: InputMaybe<Scalars['Int']>;
   logValue: LogValueInput;
   programLogGroupId: Scalars['ID'];

@@ -1,5 +1,8 @@
 fragment ProgramLog on ProgramLog {
     id
+    programLogGroup {
+        id
+    }
     effort
     exercise {
         ...Exercise
@@ -9,6 +12,9 @@ fragment ProgramLog on ProgramLog {
     }
     repetitions
     subdivisions {
+        programLogGroup {
+            id
+        }
         repetitions
         logValue {
             ...LogValue

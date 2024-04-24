@@ -162,10 +162,12 @@ type Mutation {
   completeOnboarding: User!
   createExercise(input: ExerciseInput): Exercise
   createProgram(input: ProgramInput): Program!
-  createProgramLogGroup(input: ProgramLogGroupInput): ProgramLogGroup
+  createProgramLog(input: ProgramLogInput): ProgramLog!
+  createProgramLogGroup(input: ProgramLogGroupInput): ProgramLogGroup!
   createUser(userInput: UserInput!): User
   deleteExercise(id: ID!): Boolean!
   deleteProgram(id: ID!): Boolean!
+  deleteProgramLog(id: ID!): Boolean!
   deleteProgramLogGroup(id: ID!): Boolean!
 
   """Delete workout by ID"""
@@ -190,6 +192,7 @@ type Mutation {
   updateExerciseLog(exerciseLogId: ID!, input: ExerciseLogInput!): Workout
   updateMyPreference(input: PreferenceInput!): Preference!
   updateProgram(id: ID!, input: ProgramInput): Program!
+  updateProgramLog(id: ID!, input: ProgramLogInput): ProgramLog!
   updateProgramLogGroup(id: ID!, type: ProgramLogGroupType): ProgramLogGroup!
 
   """Update workout by ID"""
@@ -256,22 +259,22 @@ type ProgramLog {
 
   """Effort on scale of 1 to 100"""
   effort: Int
-  exercise: Exercise!
-  id: ID!
+  exercise: Exercise
+  id: ID
 
   """Interval in seconds."""
   intervalSeconds: Int
   logValue: LogValue!
 
   """The program attached"""
-  program: Program!
+  program: Program
 
   """The program log group of the program log."""
-  programLogGroup: ProgramLogGroup!
+  programLogGroup: ProgramLogGroup
   repetitions: Int!
 
   """The subdivision of the program log."""
-  subdivisions: [ProgramLog!]!
+  subdivisions: [ProgramLog!]
 }
 
 type ProgramLogGroup {
@@ -296,7 +299,7 @@ enum ProgramLogGroupType {
 input ProgramLogInput {
   cooldownSeconds: Int
   effort: Int
-  exerciseId: ID!
+  exerciseId: ID
   intervalSeconds: Int
   logValue: LogValueInput!
   programLogGroupId: ID!

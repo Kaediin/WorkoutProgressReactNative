@@ -1,0 +1,15 @@
+mutation createProgramLog($input: ProgramLogInput!) {
+    createProgramLog(input: $input) {
+        ...ProgramLog
+    }
+}
+
+mutation updateProgramLog($id: ID!, $input: ProgramLogInput!) {
+    updateProgramLog(id: $id, input: $input) {
+        ...ProgramLog
+    }
+}
+
+mutation deleteProgramLog($id: ID!) {
+    deleteProgramLog(id: $id)
+}

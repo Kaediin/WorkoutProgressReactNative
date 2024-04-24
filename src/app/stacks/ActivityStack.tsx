@@ -4,13 +4,17 @@ import ActivityScreen from '../route/activity/ActivityScreen';
 import WorkoutDetailScreen from '../route/activity/workout/WorkoutDetailScreen';
 import ProgramDetailScreen from '../route/activity/program/ProgramDetailScreen';
 import ProgramCreateLogScreen from '../route/activity/program/ProgramCreateLogScreen';
-import {ProgramLogGroupType} from '../graphql/operations';
+import {ProgramLogFragment, ProgramLogGroupType} from '../graphql/operations';
 
 export type ActivityStackParamList = {
   ActivityOverview: undefined;
   WorkoutDetail: {workoutId: string};
   ProgramDetail: {programId: string};
-  ProgramCreateLog: {programId: string; type: ProgramLogGroupType};
+  ProgramCreateLog: {
+    programLogGroupId: string;
+    type: ProgramLogGroupType;
+    log?: ProgramLogFragment;
+  };
 };
 
 const ActivityStackNavigator =

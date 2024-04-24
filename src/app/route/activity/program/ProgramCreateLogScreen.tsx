@@ -13,7 +13,9 @@ import Constants from '../../../utils/Constants';
 import {
   ExerciseFragment,
   ProgramLogInput,
+  useCreateProgramLogMutation,
   useMyExercisesQuery,
+  useUpdateProgramLogMutation,
 } from '../../../graphql/operations';
 import usePreferenceStore from '../../../stores/preferenceStore';
 import AppText from '../../../components/common/AppText';
@@ -38,7 +40,7 @@ const ProgramCreateLogScreen: React.FC<Props> = props => {
   const preferences = usePreferenceStore(state => state.preference);
 
   const initial: ProgramLogInput = {
-    programLogGroupId: props.route.params.programId,
+    programLogGroupId: props.route.params.programLogGroupId,
     exerciseId: '',
     subdivisions: undefined,
     logValue: {
@@ -72,6 +74,25 @@ const ProgramCreateLogScreen: React.FC<Props> = props => {
     },
   });
 
+  // Mutations
+  const [createProgramLog] = useCreateProgramLogMutation({
+    fetchPolicy: 'no-cache',
+    onCompleted: data => {
+      if (data?.createProgramLog) {
+        props.navigation.goBack();
+      }
+    },
+  });
+
+  const [updateProgramLog] = useUpdateProgramLogMutation({
+    fetchPolicy: 'no-cache',
+    onCompleted: data => {
+      if (data?.updateProgramLog) {
+        props.navigation.goBack();
+      }
+    },
+  });
+
   // Add subdivision
   const addSubdivision = () => {
     // Duplicate the last subdivision
@@ -83,6 +104,54 @@ const ProgramCreateLogScreen: React.FC<Props> = props => {
       ...prevState,
       subdivisions: newSubdivisions,
     }));
+  };
+
+  // Save clicked
+  const onSaveClicked = () => {
+    // If subdivisions are enabled, remove the exerciseId from the main exercise
+    const exerciseId = advancedSettings.enableSubdivisions
+      ? undefined
+      : exerciseLog.exerciseId;
+    const subdivisions = advancedSettings.enableSubdivisions
+      ? exerciseLog.subdivisions
+      : undefined;
+    const intervalSeconds =
+      advancedSettings.enableSubdivisions &&
+      advancedSettings.separateTimePerSubdivision
+        ? undefined
+        : exerciseLog.intervalSeconds;
+    const cooldownSeconds =
+      advancedSettings.enableSubdivisions &&
+      advancedSettings.separateTimePerSubdivision
+        ? undefined
+        : exerciseLog.cooldownSeconds;
+
+    if (props.route.params.log?.id) {
+      updateProgramLog({
+        variables: {
+          id: props.route.params.log.id,
+          input: {
+            ...exerciseLog,
+            exerciseId,
+            subdivisions,
+            intervalSeconds,
+            cooldownSeconds,
+          },
+        },
+      });
+    } else {
+      createProgramLog({
+        variables: {
+          input: {
+            ...exerciseLog,
+            exerciseId,
+            subdivisions,
+            intervalSeconds,
+            cooldownSeconds,
+          },
+        },
+      });
+    }
   };
 
   // Add initial subdivision if enabled
@@ -101,6 +170,7 @@ const ProgramCreateLogScreen: React.FC<Props> = props => {
               ...initial.logValue,
               unit: exerciseLog.logValue.unit,
             },
+            programLogGroupId: '',
             repetitions: 1,
           },
         ],
@@ -133,18 +203,17 @@ const ProgramCreateLogScreen: React.FC<Props> = props => {
     props.navigation.setOptions({
       headerRight: () => (
         <ClickableText
-          text={'Next'}
-          onPress={() => console.log(JSON.stringify(exerciseLog))}
+          text={props.route.params.log?.id ? 'Adjust' : 'Save'}
+          onPress={onSaveClicked}
           disabled={disabled}
         />
       ),
     });
-  }, [exerciseLog]);
+  }, [exerciseLog, props.route.params.log]);
 
   // Update all the subdivisions units when the main unit is changed
   useEffect(() => {
     if (exerciseLog.subdivisions && exerciseLog.logValue.unit) {
-      console.log('Updating subdivisions');
       const newSubdivisions = exerciseLog.subdivisions.map(sub => ({
         ...sub,
         logValue: {
@@ -158,6 +227,54 @@ const ProgramCreateLogScreen: React.FC<Props> = props => {
       }));
     }
   }, [exerciseLog.logValue.unit]);
+
+  useEffect(() => {
+    if (props.route.params.log) {
+      const paramLog = props.route.params.log;
+      setExerciseLog({
+        programLogGroupId: paramLog.programLogGroup?.id || '',
+        exerciseId: paramLog.exercise?.id || '',
+        logValue: paramLog.logValue,
+        repetitions: paramLog.repetitions,
+        cooldownSeconds: paramLog.cooldownSeconds,
+        intervalSeconds: paramLog.intervalSeconds,
+        effort: paramLog.effort,
+        // @ts-ignore
+        subdivisions: paramLog.subdivisions?.map(sub => ({
+          exerciseId: sub.exercise?.id || '',
+          logValue: sub.logValue,
+          repetitions: sub.repetitions,
+          cooldownSeconds: sub.cooldownSeconds,
+          intervalSeconds: sub.intervalSeconds,
+          effort: sub.effort,
+        })),
+      });
+
+      // Check if subdivisions are enabled
+      const enableSubdivisions = !!(
+        paramLog.subdivisions && paramLog.subdivisions.length > 0
+      );
+
+      setAdvancedSettings({
+        // Check if subdivisions are enabled and if they have different cooldown/ interval times
+        separateTimePerSubdivision: !!(
+          enableSubdivisions &&
+          paramLog.subdivisions?.some(
+            sub => sub.intervalSeconds || sub.cooldownSeconds,
+          )
+        ),
+        enableSubdivisions,
+        timerState:
+          paramLog.intervalSeconds ||
+          paramLog.subdivisions?.some(sub => sub.intervalSeconds)
+            ? 'interval'
+            : paramLog.cooldownSeconds ||
+              paramLog.subdivisions?.some(sub => sub.cooldownSeconds)
+            ? 'cooldown'
+            : 'disabled',
+      });
+    }
+  }, [props.route.params.log]);
 
   const loading = myExercisesLoading;
 

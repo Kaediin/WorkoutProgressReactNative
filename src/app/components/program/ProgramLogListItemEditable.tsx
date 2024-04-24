@@ -255,37 +255,6 @@ const ProgramLogListItemEditable: React.FC<
           ) : (
             <></>
           ))}
-
-        {/*{cooldownOrIntervalTimer && (*/}
-        {/*  <View style={[styles.containerTimerSeconds, defaultStyles.row]}>*/}
-        {/*    <AppText T1>*/}
-        {/*      {cooldownOrIntervalTimer === 'Cooldown' ? '@' : 'R'}{' '}*/}
-        {/*    </AppText>*/}
-        {/*    <AppTextEditable*/}
-        {/*      value={*/}
-        {/*        cooldownOrIntervalTimer === 'Cooldown'*/}
-        {/*          ? exerciseLog.cooldownSeconds*/}
-        {/*          : exerciseLog.intervalSeconds*/}
-        {/*      }*/}
-        {/*      placeholder={'Seconds'}*/}
-        {/*      onValueChange={value =>*/}
-        {/*        cooldownOrIntervalTimer === 'Cooldown'*/}
-        {/*          ? setExerciseLog(prevState => ({*/}
-        {/*              ...prevState,*/}
-        {/*              intervalSeconds: undefined,*/}
-        {/*              cooldownSeconds: value as number,*/}
-        {/*            }))*/}
-        {/*          : setExerciseLog(prevState => ({*/}
-        {/*              ...prevState,*/}
-        {/*              cooldownSeconds: undefined,*/}
-        {/*              intervalSeconds: value as number,*/}
-        {/*            }))*/}
-        {/*      }*/}
-        {/*      inputType="number"*/}
-        {/*      showAsClickable*/}
-        {/*    />*/}
-        {/*  </View>*/}
-        {/*)}*/}
       </View>
       <ExpandableView showChildren={showPickerExercise} contentHeight={275}>
         <View style={[styles.border, defaultStyles.marginBottom]}>
