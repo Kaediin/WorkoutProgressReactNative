@@ -1,6 +1,5 @@
 import React, {useEffect, useState} from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {ActivityStackParamList} from '../../../stacks/ActivityStack';
 import GradientBackground from '../../../components/common/GradientBackground';
 import {
   ScrollView,
@@ -26,8 +25,12 @@ import ClickableText from '../../../components/common/ClickableText';
 import {Add, ArrowDownRight, Delete} from '../../../icons/svg';
 import AppSegmentedButtons from '../../../components/common/AppSegmentedButtons';
 import {enumToReadableString} from '../../../utils/String';
+import {ProgramStackParamList} from '../../../stacks/ProgramStack';
 
-type Props = NativeStackScreenProps<ActivityStackParamList, 'ProgramCreateLog'>;
+type Props = NativeStackScreenProps<
+  ProgramStackParamList,
+  'ProgramCreateLogScreen'
+>;
 
 export type ProgramLogAdvancedSettings = {
   separateTimePerSubdivision: boolean;

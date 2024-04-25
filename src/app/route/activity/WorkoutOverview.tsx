@@ -32,7 +32,6 @@ import ConfirmModal from '../../components/common/ConfirmModal';
 
 interface WorkoutOverviewProps {
   onNavigateToWorkout: (workoutId: string) => void;
-  setNavTitle: (title: string) => void;
 }
 
 const WorkoutOverview: React.FC<WorkoutOverviewProps> = props => {
@@ -136,10 +135,6 @@ const WorkoutOverview: React.FC<WorkoutOverviewProps> = props => {
       refetchActiveWorkout();
     }
   }, [isFocussed]);
-
-  useEffect(() => {
-    props.setNavTitle('Workouts');
-  }, []);
 
   const loading =
     startWorkoutLoading ||

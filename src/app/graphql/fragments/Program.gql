@@ -1,20 +1,16 @@
 fragment ProgramShort on Program {
     id
     name
-    startDateTime
     createdDateTime
     active
-    endDateTime
     remark
 }
 
 fragment ProgramLong on Program {
     id
     name
-    startDateTime
     createdDateTime
     active
-    endDateTime
     remark
     logGroups {
         ...ProgramLogGroup

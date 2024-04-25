@@ -396,8 +396,6 @@ export type Program = {
   active: Scalars['Boolean'];
   /** The date and time when the program was created. */
   createdDateTime: Scalars['LocalDateTime'];
-  /** The date and time when the program ends. */
-  endDateTime?: Maybe<Scalars['LocalDateTime']>;
   /** The estimated calories burned by the program. */
   estimatedCaloriesBurned?: Maybe<Scalars['Int']>;
   /** The external health provider data. (e.g. Apple Health) */
@@ -407,14 +405,11 @@ export type Program = {
   logGroups: Array<ProgramLogGroup>;
   name: Scalars['String'];
   remark?: Maybe<Scalars['String']>;
-  /** The date and time when the program starts. */
-  startDateTime?: Maybe<Scalars['LocalDateTime']>;
 };
 
 export type ProgramInput = {
   name: Scalars['String'];
   remark?: InputMaybe<Scalars['String']>;
-  startDateTime?: InputMaybe<Scalars['String']>;
   zonedDateTime: Scalars['String'];
 };
 

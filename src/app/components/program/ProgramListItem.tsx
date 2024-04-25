@@ -4,9 +4,9 @@ import {ProgramShortFragment} from '../../graphql/operations';
 import Constants from '../../utils/Constants';
 import LinearGradient from 'react-native-linear-gradient';
 import AppText from '../common/AppText';
-import moment from 'moment/moment';
-import {DATE_TIME_FORMAT} from '../../utils/Date';
 import {defaultStyles} from '../../utils/DefaultStyles';
+import {DATE_TIME_FORMAT} from '../../utils/Date';
+import moment from 'moment/moment';
 
 interface ProgramListItemProps {
   program: ProgramShortFragment;
@@ -24,11 +24,11 @@ const ProgramListItem: React.FC<ProgramListItemProps> = props => {
         <View>
           <AppText h4>{props.program.name}</AppText>
           <AppText xSmall>
-            {moment(props.program.startDateTime).format(DATE_TIME_FORMAT)}
+            Created on{' '}
+            {moment(props.program.createdDateTime).format(DATE_TIME_FORMAT)}
           </AppText>
           <AppText T2 style={defaultStyles.marginTop}>
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Animi
-            beatae commodi cumque,
+            {props.program.remark}
           </AppText>
         </View>
       </LinearGradient>

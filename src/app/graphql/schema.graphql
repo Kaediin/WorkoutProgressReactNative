@@ -230,9 +230,6 @@ type Program {
   """The date and time when the program was created."""
   createdDateTime: LocalDateTime!
 
-  """The date and time when the program ends."""
-  endDateTime: LocalDateTime
-
   """The estimated calories burned by the program."""
   estimatedCaloriesBurned: Int
 
@@ -244,15 +241,11 @@ type Program {
   logGroups: [ProgramLogGroup!]!
   name: String!
   remark: String
-
-  """The date and time when the program starts."""
-  startDateTime: LocalDateTime
 }
 
 input ProgramInput {
   name: String!
   remark: String
-  startDateTime: String
   zonedDateTime: String!
 }
 

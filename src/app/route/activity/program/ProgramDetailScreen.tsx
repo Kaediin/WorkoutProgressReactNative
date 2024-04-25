@@ -1,6 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react';
 import GradientBackground from '../../../components/common/GradientBackground';
-import {ActivityStackParamList} from '../../../stacks/ActivityStack';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {
   ProgramLogGroupFragment,
@@ -26,8 +25,12 @@ import {enumToReadableString} from '../../../utils/String';
 import ProgramLogGroupListItem from '../../../components/program/ProgramLogGroupListItem';
 import ConfirmModal from '../../../components/common/ConfirmModal';
 import {useIsFocused} from '@react-navigation/native';
+import {ProgramStackParamList} from '../../../stacks/ProgramStack';
 
-type Props = NativeStackScreenProps<ActivityStackParamList, 'ProgramDetail'>;
+type Props = NativeStackScreenProps<
+  ProgramStackParamList,
+  'ProgramDetailScreen'
+>;
 
 const ProgramDetailScreen: React.FC<Props> = props => {
   const isIOS = Platform.OS === 'ios';
@@ -155,13 +158,13 @@ const ProgramDetailScreen: React.FC<Props> = props => {
           <ProgramLogGroupListItem
             programLogGroup={item}
             onCreateLogPress={() =>
-              props.navigation.navigate('ProgramCreateLog', {
+              props.navigation.navigate('ProgramCreateLogScreen', {
                 programLogGroupId: item.id,
                 type: item.type,
               })
             }
             onEditLogPress={log =>
-              props.navigation.navigate('ProgramCreateLog', {
+              props.navigation.navigate('ProgramCreateLogScreen', {
                 programLogGroupId: item.id,
                 type: item.type,
                 log: log,

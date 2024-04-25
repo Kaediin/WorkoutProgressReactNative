@@ -6,9 +6,10 @@ import {
 } from 'react-native-safe-area-context';
 import ActivityStack from '../../stacks/ActivityStack';
 import ProfileStack from '../../stacks/ProfileStack';
-import {Dumbbell, Profile, Workout} from '../../icons/svg';
+import {Dumbbell, Profile, Program, Workout} from '../../icons/svg';
 import {StyleSheet, View} from 'react-native';
 import ExercisesStack from '../../stacks/ExercisesStack';
+import ProgramStack from '../../stacks/ProgramStack';
 
 const Tab = createMaterialBottomTabNavigator();
 
@@ -39,6 +40,17 @@ const TabNavigator: React.FC = () => {
           }}
         />
         <Tab.Screen
+          name={'Programs'}
+          component={ProgramStack}
+          options={{
+            tabBarIcon: () => (
+              <View style={styles.marginLeft}>
+                <Program />
+              </View>
+            ),
+          }}
+        />
+        <Tab.Screen
           name={'Profile'}
           component={ProfileStack}
           options={{
@@ -57,6 +69,9 @@ const TabNavigator: React.FC = () => {
 const styles = StyleSheet.create({
   marginTop: {
     marginTop: -2,
+  },
+  marginLeft: {
+    marginLeft: 5,
   },
 });
 
