@@ -1,3 +1,0 @@
-mutation deleteProgram($id: ID!) {
-    deleteProgram(id: $id)
-}

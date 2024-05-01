@@ -16,3 +16,12 @@ fragment ProgramLong on Program {
         ...ProgramLogGroup
     }
 }
+
+fragment ScheduledProgram on ScheduledProgram {
+    id
+    program {
+        ...ProgramShort
+    }
+    scheduledDateTime
+    remark
+}

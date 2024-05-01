@@ -11,9 +11,11 @@ import {CustomBottomSheet} from '../../components/bottomSheet/CustomBottomSheet'
 import AppText from '../../components/common/AppText';
 import {
   ProgramInput,
+  ScheduledProgramInput,
   useCreateProgramMutation,
   useDeleteProgramMutation,
   useMyProgramsQuery,
+  useScheduleProgramMutation,
   useUpdateProgramMutation,
 } from '../../graphql/operations';
 import Constants from '../../utils/Constants';
@@ -22,6 +24,9 @@ import Loader from '../../components/common/Loader';
 import ProgramListItem from '../../components/program/ProgramListItem';
 import ContextMenu from 'react-native-context-menu-view';
 import ConfirmModal from '../../components/common/ConfirmModal';
+import {Fab} from '../../utils/Fab';
+import {Add, Schedule} from '../../icons/svg';
+import ScheduleProgramBottomSheetContent from '../../components/program/ScheduleProgramBottomSheetContent';
 
 interface ProgramOverviewProps {
   onProgramPressed: (programId: string) => void;
@@ -36,13 +41,15 @@ const ProgramOverview: React.FC<ProgramOverviewProps> = props => {
   };
 
   // Refs
-  const bottomSheetModalRef = useRef<BottomSheetModal>(null);
+  const createProgramBottomSheetModalRef = useRef<BottomSheetModal>(null);
+  const scheduleProgramBottomSheetModalRef = useRef<BottomSheetModal>(null);
 
   // States
   const [deleteProgramId, setDeleteProgramId] = useState<string>('');
   const [editID, setEditID] = useState<string>();
-  const [openDateTimePicker, setOpenDateTimePicker] = useState(false);
   const [program, setProgram] = useState<ProgramInput>(initialProgram);
+  const [scheduleProgramInput, setScheduleProgramInput] =
+    useState<ScheduledProgramInput>();
 
   // Queries
   const {
@@ -61,7 +68,7 @@ const ProgramOverview: React.FC<ProgramOverviewProps> = props => {
         if (data.createProgram) {
           refetchMyPrograms();
           setProgram(initialProgram);
-          bottomSheetModalRef.current?.dismiss();
+          createProgramBottomSheetModalRef.current?.dismiss();
         }
       },
     });
@@ -73,7 +80,7 @@ const ProgramOverview: React.FC<ProgramOverviewProps> = props => {
         if (data?.updateProgram) {
           refetchMyPrograms();
           setProgram(initialProgram);
-          bottomSheetModalRef.current?.dismiss();
+          createProgramBottomSheetModalRef.current?.dismiss();
         }
       },
     });
@@ -83,6 +90,13 @@ const ProgramOverview: React.FC<ProgramOverviewProps> = props => {
     onCompleted: () => {
       setDeleteProgramId('');
       refetchMyPrograms();
+    },
+  });
+
+  const [scheduleProgram] = useScheduleProgramMutation({
+    fetchPolicy: 'no-cache',
+    onCompleted: () => {
+      scheduleProgramBottomSheetModalRef.current?.dismiss();
     },
   });
 
@@ -98,9 +112,9 @@ const ProgramOverview: React.FC<ProgramOverviewProps> = props => {
    * Function to handle the click event of the FAB
    */
   const onFABClicked = () => {
-    if (bottomSheetModalRef.current) {
+    if (createProgramBottomSheetModalRef.current) {
       setEditID(undefined);
-      bottomSheetModalRef.current.present();
+      createProgramBottomSheetModalRef.current.present();
     }
   };
 
@@ -136,7 +150,7 @@ const ProgramOverview: React.FC<ProgramOverviewProps> = props => {
                   zonedDateTime: item.createdDateTime,
                   remark: item.remark,
                 });
-                bottomSheetModalRef.current?.present();
+                createProgramBottomSheetModalRef.current?.present();
               } else if (e.nativeEvent.name === 'Delete') {
                 setDeleteProgramId(item.id);
               }
@@ -157,7 +171,7 @@ const ProgramOverview: React.FC<ProgramOverviewProps> = props => {
       />
       <BottomSheetModalProvider>
         <CustomBottomSheet
-          ref={bottomSheetModalRef}
+          ref={createProgramBottomSheetModalRef}
           index={40}
           rightText={editID ? 'Adjust program' : 'Create program'}
           disableRightText={disabled}
@@ -222,7 +236,59 @@ const ProgramOverview: React.FC<ProgramOverviewProps> = props => {
             </>
           )}
         </CustomBottomSheet>
-        <FloatingButton onClick={onFABClicked} />
+        <CustomBottomSheet
+          ref={scheduleProgramBottomSheetModalRef}
+          rightText={'Schedule'}
+          disableRightText={
+            scheduleProgramInput?.programId.length === 0 ||
+            !scheduleProgramInput?.scheduleZonedDateTime
+          }
+          onRightTextClicked={() => {
+            if (
+              !scheduleProgramInput?.programId ||
+              !scheduleProgramInput?.scheduleZonedDateTime
+            ) {
+              return;
+            }
+            scheduleProgram({
+              variables: {
+                input: {
+                  programId: scheduleProgramInput?.programId,
+                  scheduleZonedDateTime:
+                    scheduleProgramInput?.scheduleZonedDateTime,
+                  zonedDateTime: moment().toISOString(true),
+                  remark: scheduleProgramInput?.remark,
+                },
+              },
+            });
+          }}>
+          <ScheduleProgramBottomSheetContent
+            onProgramScheduleChanged={setScheduleProgramInput}
+          />
+        </CustomBottomSheet>
+        <FloatingButton
+          actions={[
+            {
+              text: 'Create program',
+              icon: <Add />,
+              name: Fab.NEWLOG,
+              color: Constants.PRIMARY_GRADIENT[0],
+            },
+            {
+              text: 'Schedule program',
+              icon: <Schedule />,
+              name: Fab.SCHEDULE,
+              color: Constants.PRIMARY_GRADIENT[0],
+            },
+          ]}
+          onPressAction={name =>
+            name === Fab.NEWLOG
+              ? onFABClicked()
+              : name === Fab.SCHEDULE
+              ? scheduleProgramBottomSheetModalRef.current?.present()
+              : null
+          }
+        />
       </BottomSheetModalProvider>
       <ConfirmModal
         message={'Are you sure you want to remove this program?'}

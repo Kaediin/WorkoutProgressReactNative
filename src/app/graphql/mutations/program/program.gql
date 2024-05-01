@@ -1,0 +1,18 @@
+mutation createProgram($input: ProgramInput!) {
+    createProgram(input: $input) {
+        ...ProgramShort
+    }
+}
+mutation updateProgram($id: ID!, $input: ProgramInput!) {
+    updateProgram(id: $id,input: $input) {
+        ...ProgramShort
+    }
+}
+mutation deleteProgram($id: ID!) {
+    deleteProgram(id: $id)
+}
+mutation scheduleProgram($input: ScheduledProgramInput!) {
+    scheduleProgram(input: $input) {
+        ...ScheduledProgram
+    }
+}

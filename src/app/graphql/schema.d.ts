@@ -203,6 +203,7 @@ export type Mutation = {
   /** Restart workout by ID. This only removes end date and set active to false */
   restartWorkout: Workout;
   runFetchWorkoutsTask?: Maybe<Scalars['Boolean']>;
+  scheduleProgram: ScheduledProgram;
   updateExercise?: Maybe<Exercise>;
   updateExerciseLog?: Maybe<Workout>;
   updateMyPreference: Preference;
@@ -325,6 +326,11 @@ export type MutationRemoveExerciseLogArgs = {
 
 export type MutationRestartWorkoutArgs = {
   id: Scalars['ID'];
+};
+
+
+export type MutationScheduleProgramArgs = {
+  input: ScheduledProgramInput;
 };
 
 
@@ -551,6 +557,25 @@ export type QueryWorkoutByIdArgs = {
 
 export type QueryWorkoutsOfCurrentMonthArgs = {
   zonedDateTimeString: Scalars['String'];
+};
+
+export type ScheduledProgram = {
+  __typename?: 'ScheduledProgram';
+  createdDateTime: Scalars['LocalDateTime'];
+  endedDateTime?: Maybe<Scalars['LocalDateTime']>;
+  id: Scalars['ID'];
+  program: Program;
+  remark?: Maybe<Scalars['String']>;
+  /** The date and time when the program is scheduled for. */
+  scheduledDateTime: Scalars['LocalDateTime'];
+  user: User;
+};
+
+export type ScheduledProgramInput = {
+  programId: Scalars['ID'];
+  remark?: InputMaybe<Scalars['String']>;
+  scheduleZonedDateTime: Scalars['String'];
+  zonedDateTime: Scalars['String'];
 };
 
 export type User = {

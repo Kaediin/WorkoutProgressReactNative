@@ -191,6 +191,7 @@ type Mutation {
   """
   restartWorkout(id: ID!): Workout!
   runFetchWorkoutsTask: Boolean
+  scheduleProgram(input: ScheduledProgramInput!): ScheduledProgram!
   updateExercise(id: ID!, input: ExerciseInput): Exercise
   updateExerciseLog(exerciseLogId: ID!, input: ExerciseLogInput!): Workout
   updateMyPreference(input: PreferenceInput!): Preference!
@@ -350,6 +351,25 @@ type Query {
 
   """Fetch all workouts of user by current month with given timestamp"""
   workoutsOfCurrentMonth(zonedDateTimeString: String!): [Workout!]!
+}
+
+type ScheduledProgram {
+  createdDateTime: LocalDateTime!
+  endedDateTime: LocalDateTime
+  id: ID!
+  program: Program!
+  remark: String
+
+  """The date and time when the program is scheduled for."""
+  scheduledDateTime: LocalDateTime!
+  user: User!
+}
+
+input ScheduledProgramInput {
+  programId: ID!
+  remark: String
+  scheduleZonedDateTime: String!
+  zonedDateTime: String!
 }
 
 type User {
