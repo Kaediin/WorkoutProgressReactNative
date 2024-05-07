@@ -6,6 +6,7 @@ import {logValueToString} from '../../utils/String';
 import Constants from '../../utils/Constants';
 import {defaultStyles} from '../../utils/DefaultStyles';
 import {ArrowDownRight} from '../../icons/svg';
+import AppSlider from '../common/AppSlider';
 
 interface ProgramLogListItemProps {
   log: ProgramLogFragment;
@@ -58,6 +59,14 @@ const ProgramLogListItem: React.FC<ProgramLogListItemProps> = ({log}) => {
               : log.intervalSeconds
               ? '@' + log.intervalSeconds + 'sec'
               : ''}
+          </AppText>
+        </View>
+      )}
+      {!!log.effort && log.effort > 0 && (
+        <View>
+          <AppSlider value={log.effort} disabled />
+          <AppText xSmall T2>
+            Effort: {log.effort}%
           </AppText>
         </View>
       )}

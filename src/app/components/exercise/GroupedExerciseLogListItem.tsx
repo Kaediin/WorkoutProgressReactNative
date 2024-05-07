@@ -12,6 +12,7 @@ import {getRelativeTimeIfToday} from '../../utils/Date';
 import {ContextMenuActions} from '../../types/ContextMenuActions';
 import {logValueToString} from '../../utils/String';
 import AppText from '../common/AppText';
+import AppSlider from '../common/AppSlider';
 
 interface ExerciseLogListItemProps {
   groupedExercise: GroupedExerciseLogFragment;
@@ -102,6 +103,14 @@ const GroupedExerciseLogListItem: React.FC<ExerciseLogListItemProps> = ({
                       )}
                     </AppText>
                   </View>
+                  {!!item.effort && (
+                    <View style={styles.containerEffort}>
+                      <AppSlider value={item.effort} disabled />
+                      <AppText xSmall T2 style={styles.effortText}>
+                        Effort: {item.effort}%
+                      </AppText>
+                    </View>
+                  )}
                 </View>
               </ContextMenu>
             </TouchableOpacity>
@@ -146,6 +155,13 @@ const styles = StyleSheet.create({
   opacity: {
     color: 'white',
     opacity: 0.8,
+  },
+  containerEffort: {
+    marginTop: -10,
+    height: 50,
+  },
+  effortText: {
+    marginTop: -10,
   },
 });
 

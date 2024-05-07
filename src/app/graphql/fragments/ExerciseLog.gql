@@ -13,6 +13,7 @@ fragment ExerciseLog on ExerciseLog {
     workout {
         id
     }
+    effort
 }
 
 fragment ExerciseLineChartData on ExerciseLineChartData {

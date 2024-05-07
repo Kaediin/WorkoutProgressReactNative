@@ -69,6 +69,7 @@ import GradientButton from '../../../components/common/GradientButton';
 import useUserStore from '../../../stores/userStore';
 import ClickableText from '../../../components/common/ClickableText';
 import {TimerContext} from '../../../providers/WorkoutTimerProvider';
+import AppSlider from '../../../components/common/AppSlider';
 
 type Props = NativeStackScreenProps<ActivityStackParamList, 'WorkoutDetail'>;
 
@@ -295,6 +296,7 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
     },
     zonedDateTimeString: '',
     warmup: false,
+    effort: 0,
   };
 
   const [exerciseLog, setExerciseLog] = useState<ExerciseLogInput>(initialLog);
@@ -324,6 +326,7 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
             remark: exerciseLog.remark,
             warmup: exerciseLog.warmup,
             zonedDateTimeString: editExistingExercise.logDateTime,
+            effort: exerciseLog.effort,
           },
         },
       });
@@ -338,6 +341,7 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
             logValue: stripTypenames(exerciseLog.logValue),
             warmup: exerciseLog.warmup,
             remark: exerciseLog.remark,
+            effort: exerciseLog.effort,
           },
           autoAdjust: autoAdjust,
         },
@@ -485,6 +489,7 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
         remark: latestCurrentLogById.remark,
         logValue: latestCurrentLogById.logValue,
         repetitions: latestCurrentLogById.repetitions,
+        effort: latestCurrentLogById.effort,
       });
     }
 
@@ -601,6 +606,7 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
                       logValue: log.logValue,
                       warmup: log.warmup || false,
                       remark: log.remark,
+                      effort: log.effort,
                     });
                     toggleBottomSheetRef(true);
                   }}
@@ -616,6 +622,7 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
                             remark: log.remark,
                             repetitions: log.repetitions,
                             zonedDateTimeString: moment().toISOString(true),
+                            effort: log.effort,
                           },
                         },
                       });
@@ -634,6 +641,7 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
                       logValue: log.logValue,
                       warmup: log.warmup || false,
                       remark: log.remark,
+                      effort: log.effort,
                     });
                     toggleBottomSheetRef(true);
                   }}
@@ -819,6 +827,7 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
                       logValue: lastLogged.logValue,
                       warmup: lastLogged.warmup ?? false,
                       remark: lastLogged.remark,
+                      effort: lastLogged.effort,
                     });
                   }
 
@@ -911,6 +920,7 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
                                 remark: log.remark,
                                 logValue: log.logValue,
                                 repetitions: log.repetitions,
+                                effort: log.effort,
                               });
                             }}>
                             <AppText style={styles.lastLoggedButtons}>
@@ -927,6 +937,20 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
                 )}
                 {exerciseLog?.exerciseId && (
                   <>
+                    <AppText style={defaultStyles.blackTextColor}>
+                      Effort: {exerciseLog.effort ?? 0}%
+                    </AppText>
+                    <AppSlider
+                      value={exerciseLog.effort ?? 0}
+                      disabled={false}
+                      onChange={value => {
+                        setExerciseLog(prevState => ({
+                          ...prevState,
+                          effort: value,
+                        }));
+                      }}
+                      step={5}
+                    />
                     <View style={styles.border}>
                       <TouchableOpacity
                         style={[

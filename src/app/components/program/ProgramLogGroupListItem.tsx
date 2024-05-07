@@ -46,7 +46,10 @@ const ProgramLogGroupListItem: React.FC<
         <View style={defaultStyles.marginBottom} />
         <View>
           {props.programLogGroup.logs.filter(nonNullable).map(log => (
-            <View style={defaultStyles.marginBottom} key={log.id}>
+            <TouchableOpacity
+              style={defaultStyles.marginBottom}
+              key={log.id}
+              onPress={() => props.onEditLogPress(log)}>
               <ContextMenu
                 actions={[
                   {
@@ -68,7 +71,7 @@ const ProgramLogGroupListItem: React.FC<
                 }}>
                 <ProgramLogListItem log={log} />
               </ContextMenu>
-            </View>
+            </TouchableOpacity>
           ))}
         </View>
       </View>

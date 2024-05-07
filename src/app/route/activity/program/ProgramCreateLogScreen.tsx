@@ -27,6 +27,7 @@ import AppSegmentedButtons from '../../../components/common/AppSegmentedButtons'
 import {enumToReadableString} from '../../../utils/String';
 import {ProgramStackParamList} from '../../../stacks/ProgramStack';
 import {stripTypenames} from '../../../utils/GrahqlUtils';
+import AppSlider from '../../../components/common/AppSlider';
 
 type Props = NativeStackScreenProps<
   ProgramStackParamList,
@@ -88,14 +89,15 @@ const ProgramCreateLogScreen: React.FC<Props> = props => {
     },
   });
 
-  const [updateProgramLog] = useUpdateProgramLogMutation({
-    fetchPolicy: 'no-cache',
-    onCompleted: data => {
-      if (data?.updateProgramLog) {
-        props.navigation.goBack();
-      }
-    },
-  });
+  const [updateProgramLog, {loading: updateProgramLogLoading}] =
+    useUpdateProgramLogMutation({
+      fetchPolicy: 'no-cache',
+      onCompleted: data => {
+        if (data?.updateProgramLog) {
+          props.navigation.goBack();
+        }
+      },
+    });
 
   // Add subdivision
   const addSubdivision = () => {
@@ -232,8 +234,13 @@ const ProgramCreateLogScreen: React.FC<Props> = props => {
     }
   }, [exerciseLog.logValue.unit]);
 
+  // Set initial values if log already exists
   useEffect(() => {
     if (props.route.params.log) {
+      props.navigation.setOptions({
+        headerTitle: props.route.params.log.id ? 'Adjust Log' : 'Create Log',
+      });
+
       const paramLog = props.route.params.log;
       setExerciseLog({
         programLogGroupId: paramLog.programLogGroup?.id || '',
@@ -280,7 +287,7 @@ const ProgramCreateLogScreen: React.FC<Props> = props => {
     }
   }, [props.route.params.log]);
 
-  const loading = myExercisesLoading;
+  const loading = myExercisesLoading || updateProgramLogLoading;
 
   return (
     <GradientBackground>
@@ -457,6 +464,27 @@ const ProgramCreateLogScreen: React.FC<Props> = props => {
                 </View>
               </>
             )}
+            <View style={defaultStyles.marginTop}>
+              <AppText xSmall>Effort</AppText>
+              <AppText xSmall T2>
+                Indicate what the max % of effort should be used for this log.
+                Lower = easier, set on 0 to disable
+              </AppText>
+              <AppText centerText T1 style={styles.effortLabel}>
+                {exerciseLog.effort ?? 0}%
+              </AppText>
+              <AppSlider
+                value={exerciseLog.effort ?? 0}
+                onChange={value =>
+                  setExerciseLog(prevState => ({
+                    ...prevState,
+                    effort: value,
+                  }))
+                }
+                step={5}
+                disabled={false}
+              />
+            </View>
           </View>
         </ScrollView>
       )}
@@ -480,6 +508,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     alignSelf: 'flex-end',
+  },
+  effortLabel: {
+    marginTop: 5,
+    marginBottom: -10,
   },
 });
 

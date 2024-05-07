@@ -59,6 +59,7 @@ type ExerciseLineChartData {
 }
 
 type ExerciseLog {
+  effort: Int
   exercise: Exercise!
   id: ID!
   logDateTime: LocalDateTime!
@@ -71,6 +72,7 @@ type ExerciseLog {
 }
 
 input ExerciseLogInput {
+  effort: Int
   exerciseId: String!
   logValue: LogValueInput!
   remark: String

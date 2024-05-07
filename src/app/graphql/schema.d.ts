@@ -76,6 +76,7 @@ export type ExerciseLineChartData = {
 
 export type ExerciseLog = {
   __typename?: 'ExerciseLog';
+  effort?: Maybe<Scalars['Int']>;
   exercise: Exercise;
   id: Scalars['ID'];
   logDateTime: Scalars['LocalDateTime'];
@@ -88,6 +89,7 @@ export type ExerciseLog = {
 };
 
 export type ExerciseLogInput = {
+  effort?: InputMaybe<Scalars['Int']>;
   exerciseId: Scalars['String'];
   logValue: LogValueInput;
   remark?: InputMaybe<Scalars['String']>;
