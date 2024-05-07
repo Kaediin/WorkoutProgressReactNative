@@ -50,7 +50,6 @@ const WorkoutOverview: React.FC<WorkoutOverviewProps> = props => {
   };
 
   const [newWorkout, setNewWorkout] = useState<WorkoutInput>(initialWorkout);
-
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
   const bottomSheetModalRefMuscleSelect = useRef<BottomSheetModal>(null);
 

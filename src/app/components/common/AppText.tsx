@@ -126,7 +126,7 @@ const styles = StyleSheet.create({
   h3: {
     fontSize: 20,
     lineHeight: 25,
-    fontWeight: '700',
+    fontWeight: '600',
     // fontFamily: 'OpenSans-Regular',
   },
   h4: {

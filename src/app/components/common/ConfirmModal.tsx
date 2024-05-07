@@ -17,6 +17,7 @@ interface PopupModalProps {
   overrideGradient?: (string | number)[];
   overrideTitle?: string;
   overrideConfirmGradient?: string[];
+  disabledConfirm?: boolean;
 }
 
 const ConfirmModal: React.FC<PopupModalProps> = props => {
@@ -58,6 +59,7 @@ const ConfirmModal: React.FC<PopupModalProps> = props => {
                   props.overrideConfirmGradient || Constants.TERTIARY_GRADIENT
                 }
                 styles={defaultStyles.flex1}
+                disabled={props.disabledConfirm}
               />
             )}
           </View>

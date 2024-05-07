@@ -30,6 +30,7 @@ import ScheduleProgramBottomSheetContent from '../../components/program/Schedule
 
 interface ProgramOverviewProps {
   onProgramPressed: (programId: string) => void;
+  onNavigateToActivity: () => void;
 }
 
 const ProgramOverview: React.FC<ProgramOverviewProps> = props => {
@@ -93,12 +94,14 @@ const ProgramOverview: React.FC<ProgramOverviewProps> = props => {
     },
   });
 
-  const [scheduleProgram] = useScheduleProgramMutation({
-    fetchPolicy: 'no-cache',
-    onCompleted: () => {
-      scheduleProgramBottomSheetModalRef.current?.dismiss();
-    },
-  });
+  const [scheduleProgram, {loading: scheduleProgramLoading}] =
+    useScheduleProgramMutation({
+      fetchPolicy: 'no-cache',
+      onCompleted: () => {
+        scheduleProgramBottomSheetModalRef.current?.dismiss();
+        props.onNavigateToActivity();
+      },
+    });
 
   /**
    * Disable the FAB if the program name is empty
@@ -245,25 +248,29 @@ const ProgramOverview: React.FC<ProgramOverviewProps> = props => {
           }
           onRightTextClicked={() => {
             if (
+              !scheduleProgramInput ||
               !scheduleProgramInput?.programId ||
-              !scheduleProgramInput?.scheduleZonedDateTime
+              !scheduleProgramInput?.scheduleZonedDateTime ||
+              !scheduleProgramInput?.workoutName
             ) {
               return;
             }
             scheduleProgram({
               variables: {
                 input: {
-                  programId: scheduleProgramInput?.programId,
+                  programId: scheduleProgramInput.programId,
+                  workoutName: scheduleProgramInput.workoutName,
                   scheduleZonedDateTime:
-                    scheduleProgramInput?.scheduleZonedDateTime,
+                    scheduleProgramInput.scheduleZonedDateTime,
                   zonedDateTime: moment().toISOString(true),
-                  remark: scheduleProgramInput?.remark,
+                  remark: scheduleProgramInput.remark,
                 },
               },
             });
           }}>
           <ScheduleProgramBottomSheetContent
             onProgramScheduleChanged={setScheduleProgramInput}
+            loading={scheduleProgramLoading}
           />
         </CustomBottomSheet>
         <FloatingButton

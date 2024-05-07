@@ -51,7 +51,7 @@ const WorkoutTimerProvider: React.FC<PropsWithChildren> = props => {
           return;
         case 'draggablebottomclose':
         case 'workoutdetail':
-        case 'workoutsoverview':
+        case 'activityoverview':
         case 'exercisesscreen':
           setHeight(220);
           return;

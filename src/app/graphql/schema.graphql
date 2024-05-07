@@ -172,6 +172,7 @@ type Mutation {
   deleteProgram(id: ID!): Boolean!
   deleteProgramLog(id: ID!): Boolean!
   deleteProgramLogGroup(id: ID!): Boolean!
+  deleteScheduledProgram(id: ID!): Boolean!
 
   """Delete workout by ID"""
   deleteWorkout(id: ID!): Boolean
@@ -336,12 +337,21 @@ type Query {
   meHasActiveWorkout: Boolean!
   myExercises: [Exercise!]
   myPreference: Preference
+
+  """Fetch all my programs"""
   myPrograms: [Program!]
+
+  """Fetch all my scheduled programs"""
+  myScheduledPrograms: [ScheduledProgram!]
 
   """Fetch all my current workouts"""
   myWorkouts: [Workout!]
   onboardingExercises: [Exercise!]!
+
+  """Fetch program by ID"""
   programById(id: ID!): Program
+
+  """Fetch all program log groups by program ID"""
   programLogGroupsByProgramId(programId: ID!): [ProgramLogGroup!]
   userById(id: String!): User
   users: [User]
@@ -354,7 +364,10 @@ type Query {
 }
 
 type ScheduledProgram {
+  """The date and time when the program is created."""
   createdDateTime: LocalDateTime!
+
+  """The date and time when the program is ended."""
   endedDateTime: LocalDateTime
   id: ID!
   program: Program!
@@ -362,13 +375,20 @@ type ScheduledProgram {
 
   """The date and time when the program is scheduled for."""
   scheduledDateTime: LocalDateTime!
+
+  """The date and time when the program is started."""
+  startDateTime: LocalDateTime
   user: User!
+
+  """Workout created by scheduling a program"""
+  workout: Workout!
 }
 
 input ScheduledProgramInput {
   programId: ID!
   remark: String
   scheduleZonedDateTime: String!
+  workoutName: String!
   zonedDateTime: String!
 }
 
@@ -398,8 +418,10 @@ type Workout {
   id: ID!
   muscleGroups: [MuscleGroup!]!
   name: String!
+  program: Program
   remark: String
   startDateTime: LocalDateTime
+  status: WorkoutStatus!
 }
 
 input WorkoutInput {
@@ -407,4 +429,10 @@ input WorkoutInput {
   name: String!
   remark: String
   zonedDateTime: String!
+}
+
+enum WorkoutStatus {
+  ENDED
+  SCHEDULED
+  STARTED
 }

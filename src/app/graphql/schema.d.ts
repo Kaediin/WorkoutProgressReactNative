@@ -190,6 +190,7 @@ export type Mutation = {
   deleteProgram: Scalars['Boolean'];
   deleteProgramLog: Scalars['Boolean'];
   deleteProgramLogGroup: Scalars['Boolean'];
+  deleteScheduledProgram: Scalars['Boolean'];
   /** Delete workout by ID */
   deleteWorkout?: Maybe<Scalars['Boolean']>;
   /** End workout by ID */
@@ -280,6 +281,11 @@ export type MutationDeleteProgramLogArgs = {
 
 
 export type MutationDeleteProgramLogGroupArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type MutationDeleteScheduledProgramArgs = {
   id: Scalars['ID'];
 };
 
@@ -492,11 +498,16 @@ export type Query = {
   meHasActiveWorkout: Scalars['Boolean'];
   myExercises?: Maybe<Array<Exercise>>;
   myPreference?: Maybe<Preference>;
+  /** Fetch all my programs */
   myPrograms?: Maybe<Array<Program>>;
+  /** Fetch all my scheduled programs */
+  myScheduledPrograms?: Maybe<Array<ScheduledProgram>>;
   /** Fetch all my current workouts */
   myWorkouts?: Maybe<Array<Workout>>;
   onboardingExercises: Array<Exercise>;
+  /** Fetch program by ID */
   programById?: Maybe<Program>;
+  /** Fetch all program log groups by program ID */
   programLogGroupsByProgramId?: Maybe<Array<ProgramLogGroup>>;
   userById?: Maybe<User>;
   users?: Maybe<Array<Maybe<User>>>;
@@ -561,20 +572,27 @@ export type QueryWorkoutsOfCurrentMonthArgs = {
 
 export type ScheduledProgram = {
   __typename?: 'ScheduledProgram';
+  /** The date and time when the program is created. */
   createdDateTime: Scalars['LocalDateTime'];
+  /** The date and time when the program is ended. */
   endedDateTime?: Maybe<Scalars['LocalDateTime']>;
   id: Scalars['ID'];
   program: Program;
   remark?: Maybe<Scalars['String']>;
   /** The date and time when the program is scheduled for. */
   scheduledDateTime: Scalars['LocalDateTime'];
+  /** The date and time when the program is started. */
+  startDateTime?: Maybe<Scalars['LocalDateTime']>;
   user: User;
+  /** Workout created by scheduling a program */
+  workout: Workout;
 };
 
 export type ScheduledProgramInput = {
   programId: Scalars['ID'];
   remark?: InputMaybe<Scalars['String']>;
   scheduleZonedDateTime: Scalars['String'];
+  workoutName: Scalars['String'];
   zonedDateTime: Scalars['String'];
 };
 
@@ -606,8 +624,10 @@ export type Workout = {
   id: Scalars['ID'];
   muscleGroups: Array<MuscleGroup>;
   name: Scalars['String'];
+  program?: Maybe<Program>;
   remark?: Maybe<Scalars['String']>;
   startDateTime?: Maybe<Scalars['LocalDateTime']>;
+  status: WorkoutStatus;
 };
 
 export type WorkoutInput = {
@@ -616,3 +636,9 @@ export type WorkoutInput = {
   remark?: InputMaybe<Scalars['String']>;
   zonedDateTime: Scalars['String'];
 };
+
+export enum WorkoutStatus {
+  Ended = 'ENDED',
+  Scheduled = 'SCHEDULED',
+  Started = 'STARTED'
+}

@@ -22,6 +22,9 @@ fragment ScheduledProgram on ScheduledProgram {
     program {
         ...ProgramShort
     }
+    workout {
+        ...WorkoutShort
+    }
     scheduledDateTime
     remark
 }

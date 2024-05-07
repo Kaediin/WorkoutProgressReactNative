@@ -26,6 +26,7 @@ import {Add, ArrowDownRight, Delete} from '../../../icons/svg';
 import AppSegmentedButtons from '../../../components/common/AppSegmentedButtons';
 import {enumToReadableString} from '../../../utils/String';
 import {ProgramStackParamList} from '../../../stacks/ProgramStack';
+import {stripTypenames} from '../../../utils/GrahqlUtils';
 
 type Props = NativeStackScreenProps<
   ProgramStackParamList,
@@ -133,13 +134,13 @@ const ProgramCreateLogScreen: React.FC<Props> = props => {
       updateProgramLog({
         variables: {
           id: props.route.params.log.id,
-          input: {
+          input: stripTypenames({
             ...exerciseLog,
             exerciseId,
             subdivisions,
             intervalSeconds,
             cooldownSeconds,
-          },
+          }),
         },
       });
     } else {

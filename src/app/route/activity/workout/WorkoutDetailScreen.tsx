@@ -381,7 +381,7 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
           }
 
           // @ts-ignore
-          props.navigation.navigate('WorkoutsOverview', {
+          props.navigation.navigate('ActivityOverview', {
             cameFrom: moment().toISOString(true),
           });
         }

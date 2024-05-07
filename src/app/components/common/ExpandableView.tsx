@@ -1,5 +1,7 @@
 import React, {useEffect, useRef} from 'react';
 import {Animated, Easing, EasingFunction, View} from 'react-native';
+import {StyleProp} from 'react-native/Libraries/StyleSheet/StyleSheet';
+import {ViewStyle} from 'react-native/Libraries/StyleSheet/StyleSheetTypes';
 import ValueXY = Animated.ValueXY;
 import Value = Animated.Value;
 
@@ -11,6 +13,7 @@ interface AnimatedViewProps {
   onAfterAnimation?: () => void;
   contentHeight?: number;
   easing?: EasingFunction;
+  styles?: StyleProp<ViewStyle>;
 }
 
 const DEFAULT_ANIMATION_DURATION = 500;
@@ -60,7 +63,7 @@ const ExpandableView: React.FC<AnimatedViewProps> = props => {
           maxHeight,
           overflow: 'hidden',
         }}>
-        {props.children}
+        <View style={props.styles}>{props.children}</View>
       </Animated.View>
     </View>
   );
