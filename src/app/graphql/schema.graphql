@@ -201,6 +201,7 @@ type Mutation {
   updateProgram(id: ID!, input: ProgramInput): Program!
   updateProgramLog(id: ID!, input: ProgramLogInput): ProgramLog!
   updateProgramLogGroup(id: ID!, type: ProgramLogGroupType): ProgramLogGroup!
+  updateScheduledProgram(id: ID!, input: ScheduledProgramInput!): ScheduledProgram!
 
   """Update workout by ID"""
   updateWorkout(id: ID!, input: WorkoutInput!): Workout!
@@ -373,7 +374,6 @@ type ScheduledProgram {
   endedDateTime: LocalDateTime
   id: ID!
   program: Program!
-  remark: String
 
   """The date and time when the program is scheduled for."""
   scheduledDateTime: LocalDateTime!

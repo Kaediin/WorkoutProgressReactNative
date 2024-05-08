@@ -213,6 +213,7 @@ export type Mutation = {
   updateProgram: Program;
   updateProgramLog: ProgramLog;
   updateProgramLogGroup: ProgramLogGroup;
+  updateScheduledProgram: ScheduledProgram;
   /** Update workout by ID */
   updateWorkout: Workout;
 };
@@ -374,6 +375,12 @@ export type MutationUpdateProgramLogArgs = {
 export type MutationUpdateProgramLogGroupArgs = {
   id: Scalars['ID'];
   type?: InputMaybe<ProgramLogGroupType>;
+};
+
+
+export type MutationUpdateScheduledProgramArgs = {
+  id: Scalars['ID'];
+  input: ScheduledProgramInput;
 };
 
 
@@ -580,7 +587,6 @@ export type ScheduledProgram = {
   endedDateTime?: Maybe<Scalars['LocalDateTime']>;
   id: Scalars['ID'];
   program: Program;
-  remark?: Maybe<Scalars['String']>;
   /** The date and time when the program is scheduled for. */
   scheduledDateTime: Scalars['LocalDateTime'];
   /** The date and time when the program is started. */

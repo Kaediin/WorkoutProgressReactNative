@@ -5,12 +5,14 @@ import {ActivityStackParamList} from '../../stacks/ActivityStack';
 import {FlatList, RefreshControl, StyleSheet, View} from 'react-native';
 import {useFocusEffect, useIsFocused} from '@react-navigation/native';
 import {
+  ScheduledProgramFragment,
   useDeleteScheduledProgramMutation,
   useDeleteWorkoutMutation,
   useHasActiveWorkoutQuery,
   useMyScheduledProgramQuery,
   useRestartWorkoutMutation,
   useStartWorkoutMutation,
+  useUpdateScheduledProgramMutation,
   useUpdateWorkoutMutation,
   useWorkoutsQuery,
   WorkoutInput,
@@ -36,6 +38,7 @@ import FloatingButton from '../../components/common/FloatingButton';
 import ConfirmModal from '../../components/common/ConfirmModal';
 import ScheduledProgramActivityListItem from '../../components/program/ScheduledProgramActivityListItem';
 import useActivityStore from '../../stores/activityStore';
+import ActivityEditScheduledProgram from '../../components/bottomSheet/ActivityEditScheduledProgram';
 
 type Props = NativeStackScreenProps<ActivityStackParamList, 'ActivityOverview'>;
 
@@ -56,6 +59,8 @@ const ActivityScreen: React.FC<Props> = ({navigation}) => {
   // Refs
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
   const bottomSheetModalRefMuscleSelect = useRef<BottomSheetModal>(null);
+  const bottomSheetModalRefEditScheduledWorkout =
+    useRef<BottomSheetModal>(null);
 
   // State
   const [deleteScheduledProgramId, setDeleteScheduledProgramId] =
@@ -66,6 +71,8 @@ const ActivityScreen: React.FC<Props> = ({navigation}) => {
   const [activeWorkoutWarningModalOpen, setActiveWorkoutWarningModalOpen] =
     useState(false);
   const [newWorkout, setNewWorkout] = useState<WorkoutInput>(initialWorkout);
+  const [editScheduledWorkout, setEditScheduledWorkout] =
+    useState<ScheduledProgramFragment>();
 
   // GraphQL Mutations and Queries
   const [reactivateWorkout, {loading: reactivateLoading}] =
@@ -103,6 +110,14 @@ const ActivityScreen: React.FC<Props> = ({navigation}) => {
       fetchPolicy: 'no-cache',
       onCompleted: () => {
         setDeleteScheduledProgramId('');
+        refetchPrograms();
+      },
+    });
+  const [updateScheduledProgram, {loading: updateScheduledProgramLoading}] =
+    useUpdateScheduledProgramMutation({
+      fetchPolicy: 'no-cache',
+      onCompleted: () => {
+        setEditScheduledWorkout(undefined);
         refetchPrograms();
       },
     });
@@ -243,7 +258,8 @@ const ActivityScreen: React.FC<Props> = ({navigation}) => {
     updateWorkoutLoading ||
     hasActiveWorkoutLoading ||
     myScheduledProgramsLoading ||
-    deleteScheduledProgramLoading;
+    deleteScheduledProgramLoading ||
+    updateScheduledProgramLoading;
 
   const showLoaderFlatlist = getWorkoutsLoading || myScheduledProgramsLoading;
 
@@ -290,6 +306,14 @@ const ActivityScreen: React.FC<Props> = ({navigation}) => {
     }, [shouldRefetch]),
   );
 
+  useEffect(() => {
+    if (editScheduledWorkout) {
+      bottomSheetModalRefEditScheduledWorkout.current?.present();
+    } else {
+      bottomSheetModalRefEditScheduledWorkout.current?.dismiss();
+    }
+  }, [editScheduledWorkout]);
+
   return (
     <GradientBackground>
       <View style={defaultStyles.flex1}>
@@ -328,7 +352,9 @@ const ActivityScreen: React.FC<Props> = ({navigation}) => {
                   event.nativeEvent.name === ContextMenuActions.DELETE
                     ? setDeleteScheduledProgramId(item.item.id)
                     : event.nativeEvent.name === ContextMenuActions.EDIT
-                    ? undefined // TODO: Implement edit scheduled program
+                    ? setEditScheduledWorkout(
+                        item.item as ScheduledProgramFragment,
+                      )
                     : undefined;
                 }}
                 style={defaultStyles.shadow}>
@@ -427,6 +453,38 @@ const ActivityScreen: React.FC<Props> = ({navigation}) => {
               }}
               buttonText={'Select'}
             />
+          </CustomBottomSheet>
+          <CustomBottomSheet
+            ref={bottomSheetModalRefEditScheduledWorkout}
+            index={75}
+            onDismissClicked={() => {
+              setEditScheduledWorkout(undefined);
+            }}
+            rightText={'Adjust'}
+            onRightTextClicked={() => {
+              if (editScheduledWorkout) {
+                updateScheduledProgram({
+                  variables: {
+                    id: editScheduledWorkout.id,
+                    input: {
+                      scheduleZonedDateTime: moment(
+                        editScheduledWorkout.scheduledDateTime,
+                      ).toISOString(true),
+                      workoutName: editScheduledWorkout.workout.name,
+                      remark: editScheduledWorkout.workout.remark,
+                      programId: editScheduledWorkout.program.id,
+                      zonedDateTime: moment().toISOString(true),
+                    },
+                  },
+                });
+              }
+            }}>
+            {editScheduledWorkout && (
+              <ActivityEditScheduledProgram
+                scheduledProgram={editScheduledWorkout}
+                onChangeScheduledProgram={setEditScheduledWorkout}
+              />
+            )}
           </CustomBottomSheet>
           {!anyLoading && !hasActiveWorkout && (
             <FloatingButton onClick={onFloatingButtonClicked} />

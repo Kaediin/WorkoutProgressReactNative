@@ -17,6 +17,12 @@ mutation scheduleProgram($input: ScheduledProgramInput!) {
     }
 }
 
+mutation updateScheduledProgram($id: ID!, $input: ScheduledProgramInput!) {
+    updateScheduledProgram(id: $id, input: $input) {
+        ...ScheduledProgram
+    }
+}
+
 mutation deleteScheduledProgram($id: ID!) {
     deleteScheduledProgram(id: $id)
 }
