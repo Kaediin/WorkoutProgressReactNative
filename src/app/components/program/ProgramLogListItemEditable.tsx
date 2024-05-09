@@ -13,7 +13,7 @@ import Constants from '../../utils/Constants';
 import ClickableText from '../common/ClickableText';
 import ExpandableView from '../common/ExpandableView';
 import SelectExercises from '../workouts/SelectExercises';
-import {ProgramLogAdvancedSettings} from '../../route/activity/program/ProgramCreateLogScreen';
+import {ProgramLogAdvancedSettings} from '../../route/program/ProgramCreateLogScreen';
 
 interface ProgramLogListItemEditableProps {
   exerciseLog: ProgramLogInput;

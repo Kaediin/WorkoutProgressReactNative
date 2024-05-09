@@ -35,7 +35,7 @@ const ScheduledProgramActivityListItem: React.FC<
   return (
     <TouchableOpacity
       style={styles.container}
-      onPress={() => props.onPress(props.scheduledProgram.id)}>
+      onPress={() => props.onPress(props.scheduledProgram.program.id)}>
       <View>
         {isOverdue && (
           <AppText style={[defaultStyles.textAlignRight, styles.colorGreen]}>

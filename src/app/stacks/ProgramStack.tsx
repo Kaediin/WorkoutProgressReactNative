@@ -1,8 +1,8 @@
 import React from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {ProgramLogFragment, ProgramLogGroupType} from '../graphql/operations';
-import ProgramDetailScreen from '../route/activity/program/ProgramDetailScreen';
-import ProgramCreateLogScreen from '../route/activity/program/ProgramCreateLogScreen';
+import ProgramDetailScreen from '../route/program/ProgramDetailScreen';
+import ProgramCreateLogScreen from '../route/program/ProgramCreateLogScreen';
 import ProgramScreen from '../route/program/ProgramScreen';
 
 export type ProgramStackParamList = {

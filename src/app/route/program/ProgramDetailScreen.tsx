@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react';
-import GradientBackground from '../../../components/common/GradientBackground';
+import GradientBackground from '../../components/common/GradientBackground';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {
   ProgramLogGroupFragment,
@@ -9,23 +9,23 @@ import {
   useDeleteProgramLogMutation,
   useProgramByIdLazyQuery,
   useProgramLogGroupsByProgramIdLazyQuery,
-} from '../../../graphql/operations';
-import FloatingButton from '../../../components/common/FloatingButton';
-import {Add} from '../../../icons/svg';
-import Constants from '../../../utils/Constants';
+} from '../../graphql/operations';
+import FloatingButton from '../../components/common/FloatingButton';
+import {Add} from '../../icons/svg';
+import Constants from '../../utils/Constants';
 import {Platform, RefreshControl, StyleSheet} from 'react-native';
-import {Fab} from '../../../utils/Fab';
+import {Fab} from '../../utils/Fab';
 import {IActionProps} from 'react-native-floating-action';
 import {FlashList} from '@shopify/flash-list';
-import AppText from '../../../components/common/AppText';
+import AppText from '../../components/common/AppText';
 import {BottomSheetModal, BottomSheetModalProvider} from '@gorhom/bottom-sheet';
-import {CustomBottomSheet} from '../../../components/bottomSheet/CustomBottomSheet';
+import {CustomBottomSheet} from '../../components/bottomSheet/CustomBottomSheet';
 import {Picker} from '@react-native-picker/picker';
-import {enumToReadableString} from '../../../utils/String';
-import ProgramLogGroupListItem from '../../../components/program/ProgramLogGroupListItem';
-import ConfirmModal from '../../../components/common/ConfirmModal';
+import {enumToReadableString} from '../../utils/String';
+import ProgramLogGroupListItem from '../../components/program/ProgramLogGroupListItem';
+import ConfirmModal from '../../components/common/ConfirmModal';
 import {useIsFocused} from '@react-navigation/native';
-import {ProgramStackParamList} from '../../../stacks/ProgramStack';
+import {ProgramStackParamList} from '../../stacks/ProgramStack';
 
 type Props = NativeStackScreenProps<
   ProgramStackParamList,
@@ -70,7 +70,7 @@ const ProgramDetailScreen: React.FC<Props> = props => {
           if (data.programLogGroupsByProgramId.length < 3) {
             _actions.push({
               text: 'Add group',
-              icon: isIOS ? <Add /> : require('../../../icons/plus.png'),
+              icon: isIOS ? <Add /> : require('../../icons/plus.png'),
               name: Fab.RELOG,
               color: Constants.FAB_ACTION_COLOR,
             });
@@ -174,6 +174,7 @@ const ProgramDetailScreen: React.FC<Props> = props => {
             onDeleteGroupPress={setDeleteLogGroupId}
           />
         )}
+        // TODO: Sort by type: warmup, main, cooldown
         data={programLogGroups}
         estimatedItemSize={3}
       />

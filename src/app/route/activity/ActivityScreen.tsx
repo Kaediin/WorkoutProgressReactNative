@@ -360,7 +360,9 @@ const ActivityScreen: React.FC<Props> = ({navigation}) => {
                 style={defaultStyles.shadow}>
                 <ScheduledProgramActivityListItem
                   scheduledProgram={item.item}
-                  onPress={id => console.log('Pressed', id)}
+                  onPress={id =>
+                    navigation.navigate('ProgramDetail', {programId: id})
+                  }
                 />
               </ContextMenu>
             ) : item.item.__typename === 'Workout' ? (

@@ -2,10 +2,12 @@ import React from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import ActivityScreen from '../route/activity/ActivityScreen';
 import WorkoutDetailScreen from '../route/activity/workout/WorkoutDetailScreen';
+import ActivityProgramDetailScreen from '../route/activity/program/ActivityProgramDetailScreen';
 
 export type ActivityStackParamList = {
   ActivityOverview: undefined;
   WorkoutDetail: {workoutId: string};
+  ProgramDetail: {programId: string};
 };
 
 const ActivityStackNavigator =
@@ -22,6 +24,11 @@ const ActivityStack: React.FC = () => {
       <ActivityStackNavigator.Screen
         name={'WorkoutDetail'}
         component={WorkoutDetailScreen}
+      />
+      <ActivityStackNavigator.Screen
+        name={'ProgramDetail'}
+        component={ActivityProgramDetailScreen}
+        options={{headerTitle: ''}}
       />
     </ActivityStackNavigator.Navigator>
   );

@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import GradientBackground from '../../../components/common/GradientBackground';
+import GradientBackground from '../../components/common/GradientBackground';
 import {
   ScrollView,
   StyleSheet,
@@ -8,26 +8,26 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import Constants from '../../../utils/Constants';
+import Constants from '../../utils/Constants';
 import {
   ExerciseFragment,
   ProgramLogInput,
   useCreateProgramLogMutation,
   useMyExercisesQuery,
   useUpdateProgramLogMutation,
-} from '../../../graphql/operations';
-import usePreferenceStore from '../../../stores/preferenceStore';
-import AppText from '../../../components/common/AppText';
-import {defaultStyles} from '../../../utils/DefaultStyles';
-import Loader from '../../../components/common/Loader';
-import ProgramLogListItemEditable from '../../../components/program/ProgramLogListItemEditable';
-import ClickableText from '../../../components/common/ClickableText';
-import {Add, ArrowDownRight, Delete} from '../../../icons/svg';
-import AppSegmentedButtons from '../../../components/common/AppSegmentedButtons';
-import {enumToReadableString} from '../../../utils/String';
-import {ProgramStackParamList} from '../../../stacks/ProgramStack';
-import {stripTypenames} from '../../../utils/GrahqlUtils';
-import AppSlider from '../../../components/common/AppSlider';
+} from '../../graphql/operations';
+import usePreferenceStore from '../../stores/preferenceStore';
+import AppText from '../../components/common/AppText';
+import {defaultStyles} from '../../utils/DefaultStyles';
+import Loader from '../../components/common/Loader';
+import ProgramLogListItemEditable from '../../components/program/ProgramLogListItemEditable';
+import ClickableText from '../../components/common/ClickableText';
+import {Add, ArrowDownRight, Delete} from '../../icons/svg';
+import AppSegmentedButtons from '../../components/common/AppSegmentedButtons';
+import {enumToReadableString} from '../../utils/String';
+import {ProgramStackParamList} from '../../stacks/ProgramStack';
+import {stripTypenames} from '../../utils/GrahqlUtils';
+import AppSlider from '../../components/common/AppSlider';
 
 type Props = NativeStackScreenProps<
   ProgramStackParamList,
