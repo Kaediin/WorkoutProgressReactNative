@@ -27,7 +27,7 @@ const AppTextEditable: React.FC<AppTextEditableProps> = props => {
   const [isEditing, setIsEditing] = useState(false);
 
   return (
-    <TouchableOpacity onPress={() => setIsEditing(true)}>
+    <TouchableOpacity onPress={() => !props.disabled && setIsEditing(true)}>
       {!props.inputType ? (
         // Text input (default)
         isEditing ? (
@@ -99,9 +99,9 @@ const AppTextEditable: React.FC<AppTextEditableProps> = props => {
               onChangeText={text => {
                 // Check if text is a number
                 if (!isNaN(parseInt(text, 10)) && props.onValueChange) {
-                  const value = parseInt(text, 10);
+                  const value = Math.round(parseFloat(text) * 100) / 100;
                   if (value > 0 && value < 1000) {
-                    props.onValueChange(parseInt(text, 10));
+                    props.onValueChange(value);
                   }
                 }
               }}

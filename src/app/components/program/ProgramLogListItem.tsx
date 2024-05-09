@@ -31,15 +31,25 @@ const ProgramLogListItem: React.FC<ProgramLogListItemProps> = ({log}) => {
                 <View style={[defaultStyles.rotate90, styles.marginLeft]}>
                   <ArrowDownRight />
                 </View>
-                <AppText>
-                  {logValueToString(subdivision.logValue) + ' '}
-                  {subdivision.exercise?.name}
-                  {subdivision.cooldownSeconds
-                    ? " R'" + subdivision.cooldownSeconds + 'sec'
-                    : subdivision.intervalSeconds
-                    ? ' @' + subdivision.intervalSeconds + 'sec'
-                    : ''}
-                </AppText>
+                <View style={defaultStyles.flex1}>
+                  <AppText rightText>
+                    {logValueToString(subdivision.logValue) + ' '}
+                    {subdivision.exercise?.name}
+                    {subdivision.cooldownSeconds
+                      ? " R'" + subdivision.cooldownSeconds + 'sec'
+                      : subdivision.intervalSeconds
+                      ? ' @' + subdivision.intervalSeconds + 'sec'
+                      : ''}
+                  </AppText>
+                  {!!subdivision.effort && subdivision.effort > 0 && (
+                    <View>
+                      <AppSlider value={subdivision.effort} disabled />
+                      <AppText xSmall T2 rightText>
+                        Effort: {subdivision.effort}%
+                      </AppText>
+                    </View>
+                  )}
+                </View>
               </View>
               {index !== array.length - 1 && (
                 <View style={styles.separatorStyle}>
@@ -83,10 +93,10 @@ const styles = StyleSheet.create({
   separatorStyle: {
     width: 100,
     alignSelf: 'center',
-    marginVertical: 5,
+    marginVertical: 10,
   },
   marginLeft: {
-    marginLeft: 30,
+    marginLeft: 10,
   },
 });
 

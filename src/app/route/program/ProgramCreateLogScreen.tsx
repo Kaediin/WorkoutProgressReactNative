@@ -24,10 +24,9 @@ import ProgramLogListItemEditable from '../../components/program/ProgramLogListI
 import ClickableText from '../../components/common/ClickableText';
 import {Add, ArrowDownRight, Delete} from '../../icons/svg';
 import AppSegmentedButtons from '../../components/common/AppSegmentedButtons';
-import {enumToReadableString} from '../../utils/String';
+import {enumToReadableString, logValueToString} from '../../utils/String';
 import {ProgramStackParamList} from '../../stacks/ProgramStack';
 import {stripTypenames} from '../../utils/GrahqlUtils';
-import AppSlider from '../../components/common/AppSlider';
 
 type Props = NativeStackScreenProps<
   ProgramStackParamList,
@@ -106,8 +105,41 @@ const ProgramCreateLogScreen: React.FC<Props> = props => {
     newSubdivisions.push({
       ...newSubdivisions[newSubdivisions.length - 1],
     });
+
+    const repetitions = newSubdivisions.reduce(
+      (prev, curr) => prev + curr.repetitions,
+      0,
+    );
+
+    const logValue = newSubdivisions
+      .map(subDivision => subDivision.logValue)
+      .reduce(
+        (prev, curr) => {
+          const valuePrev = parseFloat(logValueToString(prev));
+          const valueCurr = parseFloat(logValueToString(curr));
+          const totalValue = valueCurr + valuePrev;
+
+          const fraction = isNaN(totalValue)
+            ? undefined
+            : parseInt(totalValue.toString().split('.')[1], 10);
+
+          return {
+            base: parseInt(totalValue.toString().split('.')[0], 10),
+            unit: curr.unit,
+            fraction: fraction,
+          };
+        },
+        {
+          base: 0,
+          unit: exerciseLog.logValue.unit,
+          fraction: undefined,
+        },
+      );
+
     setExerciseLog(prevState => ({
       ...prevState,
+      repetitions,
+      logValue,
       subdivisions: newSubdivisions,
     }));
   };
@@ -131,6 +163,7 @@ const ProgramCreateLogScreen: React.FC<Props> = props => {
       advancedSettings.separateTimePerSubdivision
         ? undefined
         : exerciseLog.cooldownSeconds;
+    const effort = advancedSettings.enableSubdivisions ? 0 : exerciseLog.effort;
 
     if (props.route.params.log?.id) {
       updateProgramLog({
@@ -142,10 +175,12 @@ const ProgramCreateLogScreen: React.FC<Props> = props => {
             subdivisions,
             intervalSeconds,
             cooldownSeconds,
+            effort,
           }),
         },
       });
     } else {
+      console.log(JSON.stringify(exerciseLog));
       createProgramLog({
         variables: {
           input: {
@@ -154,6 +189,7 @@ const ProgramCreateLogScreen: React.FC<Props> = props => {
             subdivisions,
             intervalSeconds,
             cooldownSeconds,
+            effort,
           },
         },
       });
@@ -177,7 +213,8 @@ const ProgramCreateLogScreen: React.FC<Props> = props => {
               unit: exerciseLog.logValue.unit,
             },
             programLogGroupId: '',
-            repetitions: 1,
+            repetitions:
+              preferences?.defaultRepetitions ?? Constants.DEFAULT_REPETITIONS,
           },
         ],
       }));
@@ -408,7 +445,7 @@ const ProgramCreateLogScreen: React.FC<Props> = props => {
                   <View
                     style={[defaultStyles.row, defaultStyles.spaceBetween]}
                     key={`view_sub_${i}`}>
-                    <View style={defaultStyles.row}>
+                    <View style={[defaultStyles.row, styles.arrowStyle]}>
                       {array.length > 1 && (
                         <TouchableOpacity
                           onPress={() => {
@@ -416,8 +453,51 @@ const ProgramCreateLogScreen: React.FC<Props> = props => {
                               ...(exerciseLog.subdivisions || []),
                             ];
                             newSubdivisions.splice(i, 1);
+
+                            const repetitions = newSubdivisions.reduce(
+                              (prev, curr) => prev + curr.repetitions,
+                              0,
+                            );
+
+                            const logValue = newSubdivisions
+                              .map(subDivision => subDivision.logValue)
+                              .reduce(
+                                (prev, curr) => {
+                                  const valuePrev = parseFloat(
+                                    logValueToString(prev),
+                                  );
+                                  const valueCurr = parseFloat(
+                                    logValueToString(curr),
+                                  );
+                                  const totalValue = valueCurr + valuePrev;
+
+                                  const fraction = isNaN(totalValue)
+                                    ? undefined
+                                    : parseInt(
+                                        totalValue.toString().split('.')[1],
+                                        10,
+                                      );
+
+                                  return {
+                                    base: parseInt(
+                                      totalValue.toString().split('.')[0],
+                                      10,
+                                    ),
+                                    unit: curr.unit,
+                                    fraction: fraction,
+                                  };
+                                },
+                                {
+                                  base: 0,
+                                  unit: exerciseLog.logValue.unit,
+                                  fraction: undefined,
+                                },
+                              );
+
                             setExerciseLog(prevState => ({
                               ...prevState,
+                              repetitions,
+                              logValue,
                               subdivisions: newSubdivisions,
                             }));
                           }}>
@@ -437,8 +517,51 @@ const ProgramCreateLogScreen: React.FC<Props> = props => {
                             ...(exerciseLog.subdivisions || []),
                           ];
                           newSubdivisions[i] = logInput;
+
+                          const repetitions = newSubdivisions.reduce(
+                            (prev, curr) => prev + curr.repetitions,
+                            0,
+                          );
+
+                          const logValue = newSubdivisions
+                            .map(subDivision => subDivision.logValue)
+                            .reduce(
+                              (prev, curr) => {
+                                const valuePrev = parseFloat(
+                                  logValueToString(prev),
+                                );
+                                const valueCurr = parseFloat(
+                                  logValueToString(curr),
+                                );
+                                const totalValue = valueCurr + valuePrev;
+
+                                const fraction = isNaN(totalValue)
+                                  ? undefined
+                                  : parseInt(
+                                      totalValue.toString().split('.')[1],
+                                      10,
+                                    );
+
+                                return {
+                                  base: parseInt(
+                                    totalValue.toString().split('.')[0],
+                                    10,
+                                  ),
+                                  unit: curr.unit,
+                                  fraction: fraction,
+                                };
+                              },
+                              {
+                                base: 0,
+                                unit: exerciseLog.logValue.unit,
+                                fraction: undefined,
+                              },
+                            );
+                          console.log(logValue);
                           setExerciseLog(prevState => ({
                             ...prevState,
+                            repetitions,
+                            logValue,
                             subdivisions: newSubdivisions,
                           }));
                         }}
@@ -464,27 +587,6 @@ const ProgramCreateLogScreen: React.FC<Props> = props => {
                 </View>
               </>
             )}
-            <View style={defaultStyles.marginTop}>
-              <AppText xSmall>Effort</AppText>
-              <AppText xSmall T2>
-                Indicate what the max % of effort should be used for this log.
-                Lower = easier, set on 0 to disable
-              </AppText>
-              <AppText centerText T1 style={styles.effortLabel}>
-                {exerciseLog.effort ?? 0}%
-              </AppText>
-              <AppSlider
-                value={exerciseLog.effort ?? 0}
-                onChange={value =>
-                  setExerciseLog(prevState => ({
-                    ...prevState,
-                    effort: value,
-                  }))
-                }
-                step={5}
-                disabled={false}
-              />
-            </View>
           </View>
         </ScrollView>
       )}
@@ -508,10 +610,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     alignSelf: 'flex-end',
-  },
-  effortLabel: {
-    marginTop: 5,
-    marginBottom: -10,
   },
 });
 

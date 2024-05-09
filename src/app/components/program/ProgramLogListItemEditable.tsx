@@ -14,6 +14,8 @@ import ClickableText from '../common/ClickableText';
 import ExpandableView from '../common/ExpandableView';
 import SelectExercises from '../workouts/SelectExercises';
 import {ProgramLogAdvancedSettings} from '../../route/program/ProgramCreateLogScreen';
+import AppSlider from '../common/AppSlider';
+import {logValueToString} from '../../utils/String';
 
 interface ProgramLogListItemEditableProps {
   exerciseLog: ProgramLogInput;
@@ -27,6 +29,7 @@ const ProgramLogListItemEditable: React.FC<
   ProgramLogListItemEditableProps
 > = props => {
   // State
+  const [showEffort, setShowEffort] = useState(false);
   const [showPickerExercise, setShowPickerExercise] = useState(false);
   const [exerciseLog, setExerciseLog] = useState<ProgramLogInput>(
     props.exerciseLog,
@@ -39,6 +42,15 @@ const ProgramLogListItemEditable: React.FC<
       (props.advancedSettings.enableSubdivisions &&
         props.advancedSettings.separateTimePerSubdivision)
     );
+  }, [props.advancedSettings]);
+
+  const disableRepsAndValue = useMemo(() => {
+    if (
+      !props.advancedSettings.enableSubdivisions &&
+      (!props.exercises || props.exercises.length === 0)
+    ) {
+      return true;
+    }
   }, [props.advancedSettings]);
 
   // Update state with new exerciseLog
@@ -62,16 +74,12 @@ const ProgramLogListItemEditable: React.FC<
             defaultStyles.row,
             props.advancedSettings.enableSubdivisions && styles.isSubdivision,
           ]}>
-          {!props.advancedSettings.enableSubdivisions && (
-            <>
-              <View style={styles.containerRepetitions}>
-                <AppText xSmall T2>
-                  Reps
-                </AppText>
-              </View>
-              <View style={styles.containerX} />
-            </>
-          )}
+          <View style={styles.containerRepetitions}>
+            <AppText xSmall T2>
+              Reps
+            </AppText>
+          </View>
+          <View style={styles.containerX} />
           <View style={styles.containerBaseValue}>
             <AppText xSmall T2>
               Value
@@ -85,11 +93,18 @@ const ProgramLogListItemEditable: React.FC<
                 </AppText>
               </View>
               {props.exercises && props.exercises.length > 0 && (
-                <View style={styles.containerExercise}>
-                  <AppText xSmall T2>
-                    Exercise
-                  </AppText>
-                </View>
+                <>
+                  <View style={styles.containerExercise}>
+                    <AppText xSmall T2>
+                      Exercise
+                    </AppText>
+                  </View>
+                  <View style={styles.containerEffort}>
+                    <AppText xSmall T2>
+                      Effort
+                    </AppText>
+                  </View>
+                </>
               )}
             </>
           ) : (
@@ -98,6 +113,11 @@ const ProgramLogListItemEditable: React.FC<
               <View style={styles.containerExercise}>
                 <AppText xSmall T2>
                   Exercise
+                </AppText>
+              </View>
+              <View style={styles.containerEffort}>
+                <AppText xSmall T2>
+                  Effort
                 </AppText>
               </View>
             </>
@@ -126,41 +146,45 @@ const ProgramLogListItemEditable: React.FC<
           defaultStyles.row,
           props.advancedSettings.enableSubdivisions && styles.isSubdivision,
         ]}>
-        {!props.advancedSettings.enableSubdivisions && (
-          <>
-            <View style={styles.containerRepetitions}>
-              <AppTextEditable
-                value={exerciseLog.repetitions}
-                placeholder={'value'}
-                onValueChange={value => {
-                  setExerciseLog(prevState => ({
-                    ...prevState,
-                    repetitions: value as number,
-                  }));
-                }}
-                inputType={'number'}
-                showAsClickable
-              />
-            </View>
-            <AppText style={styles.containerX}>x</AppText>
-          </>
-        )}
-        <View style={styles.containerBaseValue}>
+        <View style={styles.containerRepetitions}>
           <AppTextEditable
-            value={exerciseLog.logValue.base}
+            value={exerciseLog.repetitions}
             placeholder={'value'}
             onValueChange={value => {
-              // TODO: Validation on . and , and round to nearest .25
+              setExerciseLog(prevState => ({
+                ...prevState,
+                repetitions: value as number,
+              }));
+            }}
+            inputType={'number'}
+            showAsClickable
+            disabled={disableRepsAndValue}
+          />
+        </View>
+        <AppText style={styles.containerX}>x</AppText>
+        <View style={styles.containerBaseValue}>
+          <AppTextEditable
+            value={
+              (parseFloat(logValueToString(exerciseLog.logValue)) * 100) / 100
+            }
+            placeholder={'value'}
+            onValueChange={value => {
+              const fraction = isNaN(value as number)
+                ? undefined
+                : parseInt(value.toString().split('.')[1], 10);
+
               setExerciseLog(prevState => ({
                 ...prevState,
                 logValue: {
                   ...prevState.logValue,
-                  base: value as number,
+                  base: parseInt(value.toString().split('.')[0], 10),
+                  fraction,
                 },
               }));
             }}
             inputType={'number'}
             showAsClickable
+            disabled={disableRepsAndValue}
           />
         </View>
         {props.advancedSettings.enableSubdivisions ? (
@@ -170,9 +194,8 @@ const ProgramLogListItemEditable: React.FC<
         ) : (
           <View style={styles.containerUnit}>
             <Dropdown
-              //TODO: Redo units
               data={Object.keys(LogUnit).map(unit => ({
-                label: unit,
+                label: unit.toLowerCase(),
                 value: unit as LogUnit,
               }))}
               placeholder={'Unit'}
@@ -204,19 +227,31 @@ const ProgramLogListItemEditable: React.FC<
         )}
 
         {props.exercises && props.exercises.length > 0 && (
-          <View style={styles.containerExercise}>
-            <TouchableOpacity
-              style={defaultStyles.marginVertical}
-              onPress={() => setShowPickerExercise(!showPickerExercise)}>
-              <ClickableText
-                text={
-                  props.exercises.find(x => x.id === exerciseLog.exerciseId)
-                    ?.name ?? 'Pick exercise'
-                }
-                onPress={() => setShowPickerExercise(!showPickerExercise)}
-              />
-            </TouchableOpacity>
-          </View>
+          <>
+            <View style={styles.containerExercise}>
+              <TouchableOpacity
+                style={defaultStyles.marginVertical}
+                onPress={() => setShowPickerExercise(!showPickerExercise)}>
+                <ClickableText
+                  text={
+                    props.exercises.find(x => x.id === exerciseLog.exerciseId)
+                      ?.name ?? 'Pick exercise'
+                  }
+                  onPress={() => setShowPickerExercise(!showPickerExercise)}
+                />
+              </TouchableOpacity>
+            </View>
+            <View style={styles.containerEffort}>
+              <TouchableOpacity
+                style={defaultStyles.marginVertical}
+                onPress={() => setShowEffort(!showEffort)}>
+                <ClickableText
+                  text={props.exerciseLog.effort || 'Set'}
+                  onPress={() => setShowEffort(!showEffort)}
+                />
+              </TouchableOpacity>
+            </View>
+          </>
         )}
 
         {showCooldownOrIntervalTimer &&
@@ -272,6 +307,29 @@ const ProgramLogListItemEditable: React.FC<
           />
         </View>
       </ExpandableView>
+      <ExpandableView showChildren={showEffort} contentHeight={200}>
+        <View style={defaultStyles.marginTop}>
+          <AppText xSmall>Effort</AppText>
+          <AppText xSmall T2>
+            Indicate what the max % of effort should be used for this log. Lower
+            = easier, set on 0 to disable
+          </AppText>
+          <AppText centerText T1 style={styles.effortLabel}>
+            {exerciseLog.effort ?? 0}%
+          </AppText>
+          <AppSlider
+            value={exerciseLog.effort ?? 0}
+            onChange={value =>
+              setExerciseLog(prevState => ({
+                ...prevState,
+                effort: value,
+              }))
+            }
+            step={5}
+            disabled={false}
+          />
+        </View>
+      </ExpandableView>
     </View>
   );
 };
@@ -281,7 +339,7 @@ const styles = StyleSheet.create({
     width: 30,
   },
   containerBaseValue: {
-    width: 35,
+    minWidth: 40,
   },
   containerX: {
     width: 15,
@@ -313,6 +371,13 @@ const styles = StyleSheet.create({
   },
   containerUnitDisabled: {
     width: 30,
+  },
+  effortLabel: {
+    marginTop: 5,
+    marginBottom: -10,
+  },
+  containerEffort: {
+    width: 40,
   },
 });
 

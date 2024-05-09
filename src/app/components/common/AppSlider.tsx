@@ -36,7 +36,7 @@ const AppSlider: React.FC<AppSliderProps> = props => {
           step={props.step ?? 1}
           minimumTrackTintColor={'transparent'}
           maximumTrackTintColor={'transparent'}
-          onValueChange={props.onChange}
+          onSlidingComplete={props.onChange}
           style={styles.containerEffortSlider}
           disabled={props.disabled}
         />

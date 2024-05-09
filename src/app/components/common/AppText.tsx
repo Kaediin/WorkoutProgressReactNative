@@ -38,6 +38,7 @@ interface AppTextProps {
   h2Menco?: boolean;
   h1MencoBlack?: boolean;
   centerText?: boolean;
+  rightText?: boolean;
 }
 
 const AppText: React.FC<AppTextProps> = props => {
@@ -75,6 +76,7 @@ const AppText: React.FC<AppTextProps> = props => {
         props.weightSix && styles.weightSix,
         props.weightSeven && styles.weightSeven,
         props.centerText && defaultStyles.textAlignCenter,
+        props.rightText && defaultStyles.textAlignRight,
       ]}
       onPress={props.onPress}>
       {props.children}
