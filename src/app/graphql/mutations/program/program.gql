@@ -26,3 +26,7 @@ mutation updateScheduledProgram($id: ID!, $input: ScheduledProgramInput!) {
 mutation deleteScheduledProgram($id: ID!) {
     deleteScheduledProgram(id: $id)
 }
+
+mutation startScheduledProgram($id: ID! $zonedDateTime: String!) {
+    startScheduledProgram(id: $id, zonedDateTimeString: $zonedDateTime)
+}

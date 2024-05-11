@@ -25,7 +25,13 @@ fragment ProgramLog on ProgramLog {
         }
         intervalSeconds
         cooldownSeconds
+        exerciseLog {
+            ...ExerciseLog
+        }
     }
     intervalSeconds
     cooldownSeconds
+    exerciseLog {
+        ...ExerciseLog
+    }
 }

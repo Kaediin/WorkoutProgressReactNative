@@ -14,6 +14,9 @@ export const defaultStyles = StyleSheet.create({
   paddingLeft: {
     paddingLeft: Constants.CONTAINER_PADDING_MARGIN,
   },
+  paddingRight: {
+    paddingRight: Constants.CONTAINER_PADDING_MARGIN,
+  },
   padding: {
     padding: Constants.CONTAINER_PADDING_MARGIN,
   },

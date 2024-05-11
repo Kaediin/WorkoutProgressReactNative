@@ -7,7 +7,10 @@ import {StyleSheet, TouchableOpacity, View} from 'react-native';
 import Constants from '../../utils/Constants';
 import AppText from '../common/AppText';
 import moment from 'moment/moment';
-import {DATE_TIME_FORMAT} from '../../utils/Date';
+import {
+  DATE_TIME_FORMAT,
+  getFormattedHoursMinutesString,
+} from '../../utils/Date';
 import {defaultStyles} from '../../utils/DefaultStyles';
 import MuscleGroupList from '../workouts/MuscleGroupList';
 
@@ -19,7 +22,7 @@ interface ScheduledProgramActivityListItemProps {
 const ScheduledProgramActivityListItem: React.FC<
   ScheduledProgramActivityListItemProps
 > = props => {
-  const isOverdue = useMemo(() => {
+  const isReadyToStart = useMemo(() => {
     // Get now in local time
     const now = moment.utc();
     const scheduledDateTime = moment
@@ -34,13 +37,22 @@ const ScheduledProgramActivityListItem: React.FC<
 
   return (
     <TouchableOpacity
-      style={styles.container}
+      style={[
+        styles.container,
+        !isReadyToStart &&
+          props.scheduledProgram.workout.status === WorkoutStatus.SCHEDULED && {
+            opacity: 0.4,
+          },
+      ]}
       onPress={() => props.onPress(props.scheduledProgram.program.id)}>
       <View>
-        {isOverdue && (
+        {isReadyToStart && (
           <AppText style={[defaultStyles.textAlignRight, styles.colorGreen]}>
             • Ready to start
           </AppText>
+        )}
+        {props.scheduledProgram.workout.status === WorkoutStatus.STARTED && (
+          <AppText style={styles.colorRed}>• Active</AppText>
         )}
         <AppText h3>{props.scheduledProgram.workout.name}</AppText>
         <View style={defaultStyles.marginTop} />
@@ -56,6 +68,27 @@ const ScheduledProgramActivityListItem: React.FC<
               .format(DATE_TIME_FORMAT)}
           </AppText>
         </View>
+        {props.scheduledProgram.workout.startDateTime && (
+          <View style={[defaultStyles.row, defaultStyles.spaceBetween]}>
+            <AppText T1>Started</AppText>
+            <AppText T1>
+              {moment
+                .utc(props.scheduledProgram.workout.startDateTime)
+                .format(DATE_TIME_FORMAT)}
+            </AppText>
+          </View>
+        )}
+        {props.scheduledProgram.workout.endDateTime && (
+          <View style={[defaultStyles.row, defaultStyles.spaceBetween]}>
+            <AppText T1>Duration</AppText>
+            <AppText T1>
+              {getFormattedHoursMinutesString(
+                props.scheduledProgram.workout.startDateTime,
+                props.scheduledProgram.workout.endDateTime,
+              )}
+            </AppText>
+          </View>
+        )}
         <View style={defaultStyles.marginTop} />
         <MuscleGroupList
           muscleGroups={props.scheduledProgram.workout.muscleGroups}
@@ -77,6 +110,9 @@ const styles = StyleSheet.create({
   },
   colorGreen: {
     color: 'lightgreen',
+  },
+  colorRed: {
+    color: 'red',
   },
 });
 

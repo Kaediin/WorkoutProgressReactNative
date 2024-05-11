@@ -26,15 +26,21 @@ import ProgramLogGroupListItem from '../../components/program/ProgramLogGroupLis
 import ConfirmModal from '../../components/common/ConfirmModal';
 import {useIsFocused} from '@react-navigation/native';
 import {ProgramStackParamList} from '../../stacks/ProgramStack';
+import {defaultStyles} from '../../utils/DefaultStyles';
 
 type Props = NativeStackScreenProps<
   ProgramStackParamList,
   'ProgramDetailScreen'
 >;
 
-const ProgramDetailScreen: React.FC<Props> = props => {
+const ProgramGroupScreen: React.FC<Props> = props => {
   const isIOS = Platform.OS === 'ios';
   const isFocussed = useIsFocused();
+  const sortedTypes = [
+    ProgramLogGroupType.WARMUP,
+    ProgramLogGroupType.MAIN,
+    ProgramLogGroupType.COOLDOWN,
+  ];
 
   // Refs
   const refCreateLogGoup = useRef<BottomSheetModal>(null);
@@ -64,7 +70,13 @@ const ProgramDetailScreen: React.FC<Props> = props => {
       fetchPolicy: 'no-cache',
       onCompleted: data => {
         if (data.programLogGroupsByProgramId) {
-          setProgramLogGroups(data.programLogGroupsByProgramId);
+          // Sort by type
+          setProgramLogGroups(
+            data.programLogGroupsByProgramId.sort(
+              (a, b) =>
+                sortedTypes.indexOf(a.type) - sortedTypes.indexOf(b.type),
+            ),
+          );
 
           const _actions = [];
           if (data.programLogGroupsByProgramId.length < 3) {
@@ -144,6 +156,7 @@ const ProgramDetailScreen: React.FC<Props> = props => {
   return (
     <GradientBackground>
       <FlashList
+        refreshing={loading}
         refreshControl={
           <RefreshControl
             colors={['#fff', '#ccc']}
@@ -163,6 +176,13 @@ const ProgramDetailScreen: React.FC<Props> = props => {
                 type: item.type,
               })
             }
+            onLogPress={log =>
+              props.navigation.navigate('ProgramCreateLogScreen', {
+                programLogGroupId: item.id,
+                type: item.type,
+                log: log,
+              })
+            }
             onEditLogPress={log =>
               props.navigation.navigate('ProgramCreateLogScreen', {
                 programLogGroupId: item.id,
@@ -174,9 +194,15 @@ const ProgramDetailScreen: React.FC<Props> = props => {
             onDeleteGroupPress={setDeleteLogGroupId}
           />
         )}
-        // TODO: Sort by type: warmup, main, cooldown
         data={programLogGroups}
         estimatedItemSize={3}
+        ListEmptyComponent={() => (
+          <AppText
+            style={[defaultStyles.container, defaultStyles.marginTopLarge]}
+            centerText>
+            Click on the + to add a group
+          </AppText>
+        )}
       />
       {actions.length > 0 && (
         <FloatingButton
@@ -266,4 +292,4 @@ const styles = StyleSheet.create({
     color: 'grey',
   },
 });
-export default ProgramDetailScreen;
+export default ProgramGroupScreen;

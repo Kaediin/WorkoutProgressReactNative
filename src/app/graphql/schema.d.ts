@@ -81,6 +81,7 @@ export type ExerciseLog = {
   id: Scalars['ID'];
   logDateTime: Scalars['LocalDateTime'];
   logValue: LogValue;
+  programLog?: Maybe<ProgramLog>;
   remark?: Maybe<Scalars['String']>;
   repetitions: Scalars['Float'];
   user: User;
@@ -198,6 +199,7 @@ export type Mutation = {
   /** End workout by ID */
   endWorkout?: Maybe<Workout>;
   logBiometrics: User;
+  markLogAsCompleted: ProgramLog;
   /** Start a new workout for me */
   meStartWorkout?: Maybe<Workout>;
   reLogLatestLog?: Maybe<Workout>;
@@ -207,6 +209,7 @@ export type Mutation = {
   restartWorkout: Workout;
   runFetchWorkoutsTask?: Maybe<Scalars['Boolean']>;
   scheduleProgram: ScheduledProgram;
+  startScheduledProgram: Scalars['Boolean'];
   updateExercise?: Maybe<Exercise>;
   updateExerciseLog?: Maybe<Workout>;
   updateMyPreference: Preference;
@@ -309,6 +312,13 @@ export type MutationLogBiometricsArgs = {
 };
 
 
+export type MutationMarkLogAsCompletedArgs = {
+  id: Scalars['ID'];
+  workoutId: Scalars['String'];
+  zonedDateTimeString: Scalars['String'];
+};
+
+
 export type MutationMeStartWorkoutArgs = {
   input: WorkoutInput;
 };
@@ -340,6 +350,12 @@ export type MutationRestartWorkoutArgs = {
 
 export type MutationScheduleProgramArgs = {
   input: ScheduledProgramInput;
+};
+
+
+export type MutationStartScheduledProgramArgs = {
+  id: Scalars['ID'];
+  zonedDateTimeString: Scalars['String'];
 };
 
 
@@ -441,6 +457,8 @@ export type ProgramLog = {
   /** Effort on scale of 1 to 100 */
   effort?: Maybe<Scalars['Int']>;
   exercise?: Maybe<Exercise>;
+  /** The exercise log of the program log. */
+  exerciseLog?: Maybe<ExerciseLog>;
   id?: Maybe<Scalars['ID']>;
   /** Interval in seconds. */
   intervalSeconds?: Maybe<Scalars['Int']>;
@@ -635,6 +653,7 @@ export type Workout = {
   program?: Maybe<Program>;
   remark?: Maybe<Scalars['String']>;
   startDateTime?: Maybe<Scalars['LocalDateTime']>;
+  /** @deprecated Use status instead */
   status: WorkoutStatus;
 };
 

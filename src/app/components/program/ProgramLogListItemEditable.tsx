@@ -18,7 +18,7 @@ import AppSlider from '../common/AppSlider';
 import {logValueToString} from '../../utils/String';
 
 interface ProgramLogListItemEditableProps {
-  exerciseLog: ProgramLogInput;
+  programLogInput: ProgramLogInput;
   onExerciseLogChange: (exerciseLog: ProgramLogInput) => void;
   advancedSettings: ProgramLogAdvancedSettings;
   exercises?: ExerciseFragment[];
@@ -32,7 +32,7 @@ const ProgramLogListItemEditable: React.FC<
   const [showEffort, setShowEffort] = useState(false);
   const [showPickerExercise, setShowPickerExercise] = useState(false);
   const [exerciseLog, setExerciseLog] = useState<ProgramLogInput>(
-    props.exerciseLog,
+    props.programLogInput,
   );
 
   const showCooldownOrIntervalTimer = useMemo(() => {
@@ -55,12 +55,12 @@ const ProgramLogListItemEditable: React.FC<
 
   // Update state with new exerciseLog
   useEffect(() => {
-    setExerciseLog(props.exerciseLog);
-  }, [props.exerciseLog]);
+    setExerciseLog(props.programLogInput);
+  }, [props.programLogInput]);
 
   // When exerciseLog changes, update parent state
   useEffect(() => {
-    if (exerciseLog === props.exerciseLog) {
+    if (exerciseLog === props.programLogInput) {
       return;
     }
     props.onExerciseLogChange(exerciseLog);
@@ -246,7 +246,7 @@ const ProgramLogListItemEditable: React.FC<
                 style={defaultStyles.marginVertical}
                 onPress={() => setShowEffort(!showEffort)}>
                 <ClickableText
-                  text={props.exerciseLog.effort || 'Set'}
+                  text={props.programLogInput.effort || 'Set'}
                   onPress={() => setShowEffort(!showEffort)}
                 />
               </TouchableOpacity>

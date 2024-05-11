@@ -17,6 +17,7 @@ import {
   useWorkoutsQuery,
   WorkoutInput,
   WorkoutShortFragment,
+  WorkoutStatus,
 } from '../../graphql/operations';
 import {
   BottomSheetModal,
@@ -39,6 +40,7 @@ import ConfirmModal from '../../components/common/ConfirmModal';
 import ScheduledProgramActivityListItem from '../../components/program/ScheduledProgramActivityListItem';
 import useActivityStore from '../../stores/activityStore';
 import ActivityEditScheduledProgram from '../../components/bottomSheet/ActivityEditScheduledProgram';
+import {nearestFutureDate, nearestPastDate} from '../../utils/Date';
 
 type Props = NativeStackScreenProps<ActivityStackParamList, 'ActivityOverview'>;
 
@@ -57,6 +59,7 @@ const ActivityScreen: React.FC<Props> = ({navigation}) => {
   };
 
   // Refs
+  const flatlistRef = useRef<FlatList>(null);
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
   const bottomSheetModalRefMuscleSelect = useRef<BottomSheetModal>(null);
   const bottomSheetModalRefEditScheduledWorkout =
@@ -167,6 +170,65 @@ const ActivityScreen: React.FC<Props> = ({navigation}) => {
     getWorkoutsData?.myWorkouts,
     myScheduledProgramsData?.myScheduledPrograms,
   ]);
+
+  const timelineLabels: {
+    past: number | null;
+    future: number | null;
+    offset: number;
+  } = useMemo(() => {
+    const allDates = [...workoutAndScheduledProgramsSorted].map(
+      // @ts-ignore
+      item => new Date(item.scheduledDateTime ?? item.startDateTime),
+    );
+
+    // Get the number of started workouts
+    const startedWorkouts = workoutAndScheduledProgramsSorted.filter(item =>
+      item.__typename === 'Workout'
+        ? item.status === WorkoutStatus.STARTED
+        : item.__typename === 'ScheduledProgram'
+        ? item.workout.status === WorkoutStatus.STARTED
+        : false,
+    ).length;
+
+    // Get the number of active programs
+    const activePrograms = workoutAndScheduledProgramsSorted
+      .filter(
+        item =>
+          item.__typename === 'ScheduledProgram' &&
+          (item.workout.status === WorkoutStatus.SCHEDULED ||
+            item.workout.status === WorkoutStatus.STARTED),
+      )
+      .filter(item =>
+        moment
+          .utc((item as ScheduledProgramFragment).scheduledDateTime)
+          .isBefore(moment().utc(true)),
+      ).length;
+
+    // Get the number of started programs
+    const startedPrograms = workoutAndScheduledProgramsSorted
+      .filter(
+        item =>
+          item.__typename === 'ScheduledProgram' &&
+          item.workout.status === WorkoutStatus.STARTED,
+      )
+      .filter(item =>
+        moment
+          .utc((item as ScheduledProgramFragment).scheduledDateTime)
+          .isBefore(moment().utc(true)),
+      ).length;
+
+    const past = nearestPastDate(allDates, moment().utc(true).toDate());
+    const future = nearestFutureDate(allDates, moment().utc(true).toDate());
+    // Offset is the number of started workouts and active programs.
+    // Subtract the number of started programs as those would be counted twice as the program and workout are both counted.
+    const offset = startedWorkouts + activePrograms - startedPrograms;
+
+    return {
+      past: past === null ? null : past + offset,
+      future,
+      offset,
+    };
+  }, [workoutAndScheduledProgramsSorted]);
 
   // Edit existing workout
   const doEditWorkout = (): void => {
@@ -306,6 +368,7 @@ const ActivityScreen: React.FC<Props> = ({navigation}) => {
     }, [shouldRefetch]),
   );
 
+  // Show edit scheduled workout modal if editScheduledWorkout is set
   useEffect(() => {
     if (editScheduledWorkout) {
       bottomSheetModalRefEditScheduledWorkout.current?.present();
@@ -314,10 +377,24 @@ const ActivityScreen: React.FC<Props> = ({navigation}) => {
     }
   }, [editScheduledWorkout]);
 
+  useEffect(() => {
+    if (timelineLabels && workoutAndScheduledProgramsSorted.length > 0) {
+      setTimeout(() => {
+        flatlistRef.current?.scrollToIndex({
+          animated: true,
+          index: timelineLabels.past
+            ? timelineLabels.past - timelineLabels.offset
+            : 0,
+        });
+      }, 250);
+    }
+  }, [timelineLabels]);
+
   return (
     <GradientBackground>
       <View style={defaultStyles.flex1}>
         <FlatList
+          ref={flatlistRef}
           data={workoutAndScheduledProgramsSorted}
           ListEmptyComponent={() => (
             <AppText style={defaultStyles.marginTop50} centerText>
@@ -339,55 +416,103 @@ const ActivityScreen: React.FC<Props> = ({navigation}) => {
             />
           }
           renderItem={item => {
-            // const isBordering =
-            //   item.item.__typename === 'ScheduledProgram' &&
-            //   workoutAndScheduledProgramsSorted[item.index + 1] &&
-            //   workoutAndScheduledProgramsSorted[item.index + 1].__typename ===
-            //     'Workout';
+            const isBorderingItem =
+              timelineLabels.future === item.index
+                ? 'Upcoming'
+                : timelineLabels.past === item.index
+                ? 'Previous'
+                : null;
 
-            return item.item.__typename === 'ScheduledProgram' ? (
-              <ContextMenu
-                actions={getScheduledProgramActions()}
-                onPress={event => {
-                  event.nativeEvent.name === ContextMenuActions.DELETE
-                    ? setDeleteScheduledProgramId(item.item.id)
-                    : event.nativeEvent.name === ContextMenuActions.EDIT
-                    ? setEditScheduledWorkout(
-                        item.item as ScheduledProgramFragment,
-                      )
-                    : undefined;
-                }}
-                style={defaultStyles.shadow}>
-                <ScheduledProgramActivityListItem
-                  scheduledProgram={item.item}
-                  onPress={id =>
-                    navigation.navigate('ProgramDetail', {programId: id})
-                  }
-                />
-              </ContextMenu>
-            ) : item.item.__typename === 'Workout' ? (
-              <ContextMenu
-                actions={getWorkoutActions()}
-                onPress={event => {
-                  event.nativeEvent.name === ContextMenuActions.DELETE
-                    ? setDeleteWorkoutId(item.item.id)
-                    : event.nativeEvent.name === ContextMenuActions.EDIT
-                    ? editWorkout(item.item as WorkoutShortFragment)
-                    : event.nativeEvent.name ===
-                      ContextMenuActions.REACTIVATE_WORKOUT
-                    ? doReactivateWorkout(item.item as WorkoutShortFragment)
-                    : undefined;
-                }}
-                style={defaultStyles.shadow}>
-                <WorkoutListItem
-                  key={item.item.id}
-                  workout={item.item as WorkoutShortFragment}
-                  onWorkoutPressed={navigateToWorkout}
-                  hasActiveWorkout={hasActiveWorkout || false}
-                />
-              </ContextMenu>
-            ) : (
-              <></>
+            return (
+              <>
+                {isBorderingItem === 'Previous' && (
+                  <View>
+                    <View style={defaultStyles.separatorWithHeight} />
+                    <AppText>Past</AppText>
+                  </View>
+                )}
+                {item.item.__typename === 'ScheduledProgram' ? (
+                  <ContextMenu
+                    actions={getScheduledProgramActions()}
+                    onPress={event => {
+                      event.nativeEvent.name === ContextMenuActions.DELETE
+                        ? setDeleteScheduledProgramId(item.item.id)
+                        : event.nativeEvent.name === ContextMenuActions.EDIT
+                        ? setEditScheduledWorkout(
+                            item.item as ScheduledProgramFragment,
+                          )
+                        : undefined;
+                    }}
+                    style={defaultStyles.shadow}>
+                    <ScheduledProgramActivityListItem
+                      scheduledProgram={item.item}
+                      onPress={id => {
+                        if (
+                          item.item.workout.status === WorkoutStatus.STARTED
+                        ) {
+                          navigation.navigate('ProgramDetail', {
+                            programId: id,
+                            scheduledProgramId: item.item.id,
+                            workoutId: (item.item as ScheduledProgramFragment)
+                              .workout.id,
+                          });
+                          return;
+                        }
+
+                        const scheduledDateTime = moment
+                          .utc(item.item.scheduledDateTime)
+                          .local(true);
+
+                        const status =
+                          item.item.workout.status ===
+                            WorkoutStatus.SCHEDULED &&
+                          moment.utc().isAfter(scheduledDateTime)
+                            ? 'ready'
+                            : item.item.workout.status ===
+                                WorkoutStatus.SCHEDULED &&
+                              moment.utc().isBefore(scheduledDateTime)
+                            ? 'scheduled'
+                            : '';
+
+                        navigation.navigate('ProgramPreview', {
+                          programId: id,
+                          scheduledProgramId: item.item.id,
+                          status,
+                        });
+                      }}
+                    />
+                  </ContextMenu>
+                ) : item.item.__typename === 'Workout' ? (
+                  <ContextMenu
+                    actions={getWorkoutActions()}
+                    onPress={event => {
+                      event.nativeEvent.name === ContextMenuActions.DELETE
+                        ? setDeleteWorkoutId(item.item.id)
+                        : event.nativeEvent.name === ContextMenuActions.EDIT
+                        ? editWorkout(item.item as WorkoutShortFragment)
+                        : event.nativeEvent.name ===
+                          ContextMenuActions.REACTIVATE_WORKOUT
+                        ? doReactivateWorkout(item.item as WorkoutShortFragment)
+                        : undefined;
+                    }}
+                    style={defaultStyles.shadow}>
+                    <WorkoutListItem
+                      key={item.item.id}
+                      workout={item.item as WorkoutShortFragment}
+                      onWorkoutPressed={navigateToWorkout}
+                      hasActiveWorkout={hasActiveWorkout || false}
+                    />
+                  </ContextMenu>
+                ) : (
+                  <></>
+                )}
+                {isBorderingItem === 'Upcoming' && (
+                  <View>
+                    <AppText>{isBorderingItem}</AppText>
+                    <View style={defaultStyles.separatorWithHeight} />
+                  </View>
+                )}
+              </>
             );
           }}
           style={defaultStyles.container}

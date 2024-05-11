@@ -25,6 +25,7 @@ fragment WorkoutLong on Workout {
         appleHealthId
         provider
     }
+    status
 }
 
 

@@ -13,3 +13,9 @@ mutation updateProgramLog($id: ID!, $input: ProgramLogInput!) {
 mutation deleteProgramLog($id: ID!) {
     deleteProgramLog(id: $id)
 }
+
+mutation markLogAsCompleted($id: ID!, $workoutId: String!, $zonedDateTimeString: String!) {
+    markLogAsCompleted(id: $id, workoutId: $workoutId, zonedDateTimeString: $zonedDateTimeString) {
+        ...ProgramLog
+    }
+}

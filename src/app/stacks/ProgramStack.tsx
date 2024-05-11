@@ -1,7 +1,7 @@
 import React from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {ProgramLogFragment, ProgramLogGroupType} from '../graphql/operations';
-import ProgramDetailScreen from '../route/program/ProgramDetailScreen';
+import ProgramGroupScreen from '../route/program/ProgramGroupScreen';
 import ProgramCreateLogScreen from '../route/program/ProgramCreateLogScreen';
 import ProgramScreen from '../route/program/ProgramScreen';
 
@@ -28,7 +28,7 @@ const ProgramStack: React.FC = () => {
       />
       <ProgramStackNavigator.Screen
         name={'ProgramDetailScreen'}
-        component={ProgramDetailScreen}
+        component={ProgramGroupScreen}
         options={{headerTitle: 'Program Detail'}}
       />
       <ProgramStackNavigator.Screen

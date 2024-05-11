@@ -1,5 +1,5 @@
 import React from 'react';
-import {WorkoutShortFragment} from '../../graphql/operations';
+import {WorkoutShortFragment, WorkoutStatus} from '../../graphql/operations';
 import {StyleSheet, TouchableOpacity, View} from 'react-native';
 import Constants from '../../utils/Constants';
 import LinearGradient from 'react-native-linear-gradient';
@@ -32,11 +32,15 @@ const WorkoutListItem: React.FC<WorkoutListItemProps> = ({
         colors={Constants.SECONDARY_GRADIENT}
         style={[
           styles.container,
-          hasActiveWorkout ? (workout.active ? {} : styles.inActive) : {},
+          hasActiveWorkout
+            ? workout.status === WorkoutStatus.STARTED
+              ? {}
+              : styles.inActive
+            : {},
         ]}>
         <View style={styles.containerHeader}>
           <AppText style={styles.activeText}>
-            {workout.active ? '• active' : ''}
+            {workout.status === WorkoutStatus.STARTED ? '• active' : ''}
           </AppText>
           <AppText style={[defaultStyles.footnote, styles.dateText]}>
             {moment.utc(workout.startDateTime).format(DATE_TIME_FORMAT)}

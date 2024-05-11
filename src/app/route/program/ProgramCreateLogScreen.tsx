@@ -61,7 +61,8 @@ const ProgramCreateLogScreen: React.FC<Props> = props => {
   };
 
   // States
-  const [exerciseLog, setExerciseLog] = useState<ProgramLogInput>(initial);
+  const [programLogInput, setProgramLogInput] =
+    useState<ProgramLogInput>(initial);
   const [myExercises, setMyExercises] = useState<ExerciseFragment[]>([]);
   const [advancedSettings, setAdvancedSettings] =
     useState<ProgramLogAdvancedSettings>({
@@ -101,7 +102,7 @@ const ProgramCreateLogScreen: React.FC<Props> = props => {
   // Add subdivision
   const addSubdivision = () => {
     // Duplicate the last subdivision
-    const newSubdivisions = [...(exerciseLog.subdivisions || [])];
+    const newSubdivisions = [...(programLogInput.subdivisions || [])];
     newSubdivisions.push({
       ...newSubdivisions[newSubdivisions.length - 1],
     });
@@ -131,12 +132,12 @@ const ProgramCreateLogScreen: React.FC<Props> = props => {
         },
         {
           base: 0,
-          unit: exerciseLog.logValue.unit,
+          unit: programLogInput.logValue.unit,
           fraction: undefined,
         },
       );
 
-    setExerciseLog(prevState => ({
+    setProgramLogInput(prevState => ({
       ...prevState,
       repetitions,
       logValue,
@@ -149,28 +150,30 @@ const ProgramCreateLogScreen: React.FC<Props> = props => {
     // If subdivisions are enabled, remove the exerciseId from the main exercise
     const exerciseId = advancedSettings.enableSubdivisions
       ? undefined
-      : exerciseLog.exerciseId;
+      : programLogInput.exerciseId;
     const subdivisions = advancedSettings.enableSubdivisions
-      ? exerciseLog.subdivisions
+      ? programLogInput.subdivisions
       : undefined;
     const intervalSeconds =
       advancedSettings.enableSubdivisions &&
       advancedSettings.separateTimePerSubdivision
         ? undefined
-        : exerciseLog.intervalSeconds;
+        : programLogInput.intervalSeconds;
     const cooldownSeconds =
       advancedSettings.enableSubdivisions &&
       advancedSettings.separateTimePerSubdivision
         ? undefined
-        : exerciseLog.cooldownSeconds;
-    const effort = advancedSettings.enableSubdivisions ? 0 : exerciseLog.effort;
+        : programLogInput.cooldownSeconds;
+    const effort = advancedSettings.enableSubdivisions
+      ? 0
+      : programLogInput.effort;
 
     if (props.route.params.log?.id) {
       updateProgramLog({
         variables: {
           id: props.route.params.log.id,
           input: stripTypenames({
-            ...exerciseLog,
+            ...programLogInput,
             exerciseId,
             subdivisions,
             intervalSeconds,
@@ -180,11 +183,11 @@ const ProgramCreateLogScreen: React.FC<Props> = props => {
         },
       });
     } else {
-      console.log(JSON.stringify(exerciseLog));
+      console.log(JSON.stringify(programLogInput));
       createProgramLog({
         variables: {
           input: {
-            ...exerciseLog,
+            ...programLogInput,
             exerciseId,
             subdivisions,
             intervalSeconds,
@@ -200,17 +203,18 @@ const ProgramCreateLogScreen: React.FC<Props> = props => {
   useEffect(() => {
     if (
       advancedSettings.enableSubdivisions &&
-      (!exerciseLog?.subdivisions || exerciseLog.subdivisions.length === 0)
+      (!programLogInput?.subdivisions ||
+        programLogInput.subdivisions.length === 0)
     ) {
       // Add new subdivision with same unit as main exercise and 1 repetition
-      setExerciseLog(prevState => ({
+      setProgramLogInput(prevState => ({
         ...prevState,
         subdivisions: [
           {
             ...initial,
             logValue: {
               ...initial.logValue,
-              unit: exerciseLog.logValue.unit,
+              unit: programLogInput.logValue.unit,
             },
             programLogGroupId: '',
             repetitions:
@@ -225,23 +229,23 @@ const ProgramCreateLogScreen: React.FC<Props> = props => {
   useEffect(() => {
     const disabled =
       // Repetitions must be larger than 0
-      exerciseLog.repetitions === 0 ||
-      !exerciseLog.logValue ||
-      !exerciseLog.logValue.base ||
-      !exerciseLog.logValue.unit ||
+      programLogInput.repetitions === 0 ||
+      !programLogInput.logValue ||
+      !programLogInput.logValue.base ||
+      !programLogInput.logValue.unit ||
       (advancedSettings.enableSubdivisions
         ? // Check if all subdivisions are correct, meaning they have an exerciseId, logValue base, repetitions and unit
-          !exerciseLog.subdivisions?.every(
+          !programLogInput.subdivisions?.every(
             sub =>
               sub.exerciseId &&
               sub.logValue &&
               sub.logValue.base > 0 &&
               sub.logValue.unit &&
-              sub.logValue.unit === exerciseLog.logValue.unit &&
+              sub.logValue.unit === programLogInput.logValue.unit &&
               sub.repetitions > 0,
           )
         : // Check if exerciseId, logValue base, repetitions and unit are correct
-          !exerciseLog.exerciseId);
+          !programLogInput.exerciseId);
 
     props.navigation.setOptions({
       headerRight: () => (
@@ -252,24 +256,24 @@ const ProgramCreateLogScreen: React.FC<Props> = props => {
         />
       ),
     });
-  }, [exerciseLog, props.route.params.log]);
+  }, [programLogInput, props.route.params.log]);
 
   // Update all the subdivisions units when the main unit is changed
   useEffect(() => {
-    if (exerciseLog.subdivisions && exerciseLog.logValue.unit) {
-      const newSubdivisions = exerciseLog.subdivisions.map(sub => ({
+    if (programLogInput.subdivisions && programLogInput.logValue.unit) {
+      const newSubdivisions = programLogInput.subdivisions.map(sub => ({
         ...sub,
         logValue: {
           ...sub.logValue,
-          unit: exerciseLog.logValue.unit,
+          unit: programLogInput.logValue.unit,
         },
       }));
-      setExerciseLog(prevState => ({
+      setProgramLogInput(prevState => ({
         ...prevState,
         subdivisions: newSubdivisions,
       }));
     }
-  }, [exerciseLog.logValue.unit]);
+  }, [programLogInput.logValue.unit]);
 
   // Set initial values if log already exists
   useEffect(() => {
@@ -279,7 +283,7 @@ const ProgramCreateLogScreen: React.FC<Props> = props => {
       });
 
       const paramLog = props.route.params.log;
-      setExerciseLog({
+      setProgramLogInput({
         programLogGroupId: paramLog.programLogGroup?.id || '',
         exerciseId: paramLog.exercise?.id || '',
         logValue: paramLog.logValue,
@@ -428,8 +432,8 @@ const ProgramCreateLogScreen: React.FC<Props> = props => {
           </AppText>
           <View style={[styles.border, defaultStyles.padding]}>
             <ProgramLogListItemEditable
-              exerciseLog={exerciseLog}
-              onExerciseLogChange={setExerciseLog}
+              programLogInput={programLogInput}
+              onExerciseLogChange={setProgramLogInput}
               exercises={
                 !advancedSettings.enableSubdivisions ? myExercises : []
               }
@@ -441,7 +445,7 @@ const ProgramCreateLogScreen: React.FC<Props> = props => {
             />
             {advancedSettings.enableSubdivisions && (
               <>
-                {exerciseLog.subdivisions?.map((sub, i, array) => (
+                {programLogInput.subdivisions?.map((sub, i, array) => (
                   <View
                     style={[defaultStyles.row, defaultStyles.spaceBetween]}
                     key={`view_sub_${i}`}>
@@ -450,7 +454,7 @@ const ProgramCreateLogScreen: React.FC<Props> = props => {
                         <TouchableOpacity
                           onPress={() => {
                             const newSubdivisions = [
-                              ...(exerciseLog.subdivisions || []),
+                              ...(programLogInput.subdivisions || []),
                             ];
                             newSubdivisions.splice(i, 1);
 
@@ -489,12 +493,12 @@ const ProgramCreateLogScreen: React.FC<Props> = props => {
                                 },
                                 {
                                   base: 0,
-                                  unit: exerciseLog.logValue.unit,
+                                  unit: programLogInput.logValue.unit,
                                   fraction: undefined,
                                 },
                               );
 
-                            setExerciseLog(prevState => ({
+                            setProgramLogInput(prevState => ({
                               ...prevState,
                               repetitions,
                               logValue,
@@ -511,10 +515,10 @@ const ProgramCreateLogScreen: React.FC<Props> = props => {
                     <View style={defaultStyles.flex1}>
                       <ProgramLogListItemEditable
                         key={`sub_${i}`}
-                        exerciseLog={sub}
+                        programLogInput={sub}
                         onExerciseLogChange={logInput => {
                           const newSubdivisions = [
-                            ...(exerciseLog.subdivisions || []),
+                            ...(programLogInput.subdivisions || []),
                           ];
                           newSubdivisions[i] = logInput;
 
@@ -553,12 +557,11 @@ const ProgramCreateLogScreen: React.FC<Props> = props => {
                               },
                               {
                                 base: 0,
-                                unit: exerciseLog.logValue.unit,
+                                unit: programLogInput.logValue.unit,
                                 fraction: undefined,
                               },
                             );
-                          console.log(logValue);
-                          setExerciseLog(prevState => ({
+                          setProgramLogInput(prevState => ({
                             ...prevState,
                             repetitions,
                             logValue,

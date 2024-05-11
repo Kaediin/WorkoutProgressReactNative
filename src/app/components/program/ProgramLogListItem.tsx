@@ -25,6 +25,14 @@ const ProgramLogListItem: React.FC<ProgramLogListItemProps> = ({log}) => {
               ? '@' + log.intervalSeconds + 'sec'
               : ''}
           </AppText>
+          {!!log.effort && log.effort > 0 && (
+            <View>
+              <AppSlider value={log.effort} disabled />
+              <AppText xSmall T2>
+                Effort: {log.effort}%
+              </AppText>
+            </View>
+          )}
           {log.subdivisions.map((subdivision, index, array) => (
             <View key={index}>
               <View style={[defaultStyles.row, defaultStyles.spaceBetween]}>
@@ -69,14 +77,6 @@ const ProgramLogListItem: React.FC<ProgramLogListItemProps> = ({log}) => {
               : log.intervalSeconds
               ? '@' + log.intervalSeconds + 'sec'
               : ''}
-          </AppText>
-        </View>
-      )}
-      {!!log.effort && log.effort > 0 && (
-        <View>
-          <AppSlider value={log.effort} disabled />
-          <AppText xSmall T2>
-            Effort: {log.effort}%
           </AppText>
         </View>
       )}

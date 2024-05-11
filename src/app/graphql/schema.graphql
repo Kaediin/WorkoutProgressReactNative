@@ -64,6 +64,7 @@ type ExerciseLog {
   id: ID!
   logDateTime: LocalDateTime!
   logValue: LogValue!
+  programLog: ProgramLog
   remark: String
   repetitions: Float!
   user: User!
@@ -182,6 +183,7 @@ type Mutation {
   """End workout by ID"""
   endWorkout(workoutId: ID!, zonedDateTimeString: String!): Workout
   logBiometrics(biometricsLogInput: BiometricsLogInput!): User!
+  markLogAsCompleted(id: ID!, workoutId: String!, zonedDateTimeString: String!): ProgramLog!
 
   """Start a new workout for me"""
   meStartWorkout(input: WorkoutInput!): Workout
@@ -195,6 +197,7 @@ type Mutation {
   restartWorkout(id: ID!): Workout!
   runFetchWorkoutsTask: Boolean
   scheduleProgram(input: ScheduledProgramInput!): ScheduledProgram!
+  startScheduledProgram(id: ID!, zonedDateTimeString: String!): Boolean!
   updateExercise(id: ID!, input: ExerciseInput): Exercise
   updateExerciseLog(exerciseLogId: ID!, input: ExerciseLogInput!): Workout
   updateMyPreference(input: PreferenceInput!): Preference!
@@ -261,6 +264,9 @@ type ProgramLog {
   """Effort on scale of 1 to 100"""
   effort: Int
   exercise: Exercise
+
+  """The exercise log of the program log."""
+  exerciseLog: ExerciseLog
   id: ID
 
   """Interval in seconds."""
@@ -423,7 +429,7 @@ type Workout {
   program: Program
   remark: String
   startDateTime: LocalDateTime
-  status: WorkoutStatus!
+  status: WorkoutStatus! @deprecated(reason: "Use status instead")
 }
 
 input WorkoutInput {

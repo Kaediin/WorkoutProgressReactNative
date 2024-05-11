@@ -56,3 +56,13 @@ export const getDifferenceInMinutes = (
   const end = moment.utc(endDate);
   return end.diff(start, 'minutes');
 };
+
+export const nearestPastDate = (dateArr: Date[], date: Date) => {
+  const pastArr = dateArr.filter(n => n <= date);
+  return pastArr.length > 0 ? dateArr.indexOf(pastArr[0]) : null;
+};
+
+export const nearestFutureDate = (dateArr: Date[], date: Date) => {
+  const futArr = dateArr.filter(n => n >= date);
+  return futArr.length > 0 ? dateArr.indexOf(futArr[futArr.length - 1]) : null;
+};

@@ -16,32 +16,40 @@ import {Delete} from '../../icons/svg';
 
 interface ProgramLogGroupListItemProps {
   programLogGroup: ProgramLogGroupFragment;
-  onCreateLogPress: () => void;
-  onEditLogPress: (log: ProgramLogFragment) => void;
-  onDeleteLogPress: (id: string) => void;
-  onDeleteGroupPress: (id: string) => void;
+  onLogPress?: (log: ProgramLogFragment) => void;
+  onCreateLogPress?: () => void;
+  onEditLogPress?: (log: ProgramLogFragment) => void;
+  onDeleteLogPress?: (id: string) => void;
+  onDeleteGroupPress?: (id: string) => void;
+  readonly?: boolean;
 }
 
 const ProgramLogGroupListItem: React.FC<
   ProgramLogGroupListItemProps
 > = props => {
   return (
-    <View style={[defaultStyles.marginVertical, defaultStyles.centerContent]}>
+    <View style={defaultStyles.container}>
       <View style={styles.row}>
         <View style={[defaultStyles.row, defaultStyles.spaceBetween]}>
           <AppText h4>
             {enumToReadableString(props.programLogGroup.type)}
           </AppText>
-          <View style={defaultStyles.row}>
-            <ClickableText text={'Add log'} onPress={props.onCreateLogPress} />
-            <View style={defaultStyles.marginHorizontal} />
-            <TouchableOpacity
-              onPress={() =>
-                props.onDeleteGroupPress(props.programLogGroup.id)
-              }>
-              <Delete />
-            </TouchableOpacity>
-          </View>
+          {!props.readonly && (
+            <View style={defaultStyles.row}>
+              <ClickableText
+                text={'Add log'}
+                onPress={props.onCreateLogPress}
+              />
+              <View style={defaultStyles.marginHorizontal} />
+              <TouchableOpacity
+                onPress={() =>
+                  props.onDeleteGroupPress &&
+                  props.onDeleteGroupPress(props.programLogGroup.id)
+                }>
+                <Delete />
+              </TouchableOpacity>
+            </View>
+          )}
         </View>
         <View style={defaultStyles.marginBottom} />
         <View>
@@ -49,7 +57,7 @@ const ProgramLogGroupListItem: React.FC<
             <TouchableOpacity
               style={defaultStyles.marginBottom}
               key={log.id}
-              onPress={() => props.onEditLogPress(log)}>
+              onPress={() => props.onLogPress && props.onLogPress(log)}>
               <ContextMenu
                 actions={[
                   {
@@ -62,10 +70,10 @@ const ProgramLogGroupListItem: React.FC<
                 ]}
                 onPress={e => {
                   if (e.nativeEvent.name === ContextMenuActions.EDIT) {
-                    props.onEditLogPress(log);
+                    props.onEditLogPress && props.onEditLogPress(log);
                   } else if (e.nativeEvent.name === ContextMenuActions.DELETE) {
                     if (log.id) {
-                      props.onDeleteLogPress(log.id);
+                      props.onDeleteLogPress && props.onDeleteLogPress(log.id);
                     }
                   }
                 }}>
@@ -81,7 +89,7 @@ const ProgramLogGroupListItem: React.FC<
 
 const styles = StyleSheet.create({
   row: {
-    width: 300,
+    width: '100%',
     marginBottom: 10,
   },
 });

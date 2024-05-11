@@ -1,33 +1,73 @@
-import React, {useEffect, useState} from 'react';
-import {ScrollView, StyleSheet, View} from 'react-native';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import React, {useEffect, useRef, useState} from 'react';
 import {ActivityStackParamList} from '../../../stacks/ActivityStack';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import GradientBackground from '../../../components/common/GradientBackground';
 import {
+  ProgramLogGroupType,
+  ProgramLogInput,
   ProgramLongFragment,
+  useMarkLogAsCompletedMutation,
   useProgramByIdLazyQuery,
 } from '../../../graphql/operations';
-import Loader from '../../../components/common/Loader';
-import GradientBackground from '../../../components/common/GradientBackground';
-import AppText from '../../../components/common/AppText';
-import {enumToReadableString} from '../../../utils/String';
-import ProgramLogListItem from '../../../components/program/ProgramLogListItem';
+import {FlashList} from '@shopify/flash-list';
+import {RefreshControl} from 'react-native';
+import ActivityProgramLogGroup from '../../../components/program/ActivityProgramLogGroup';
+import moment from 'moment/moment';
+import {BottomSheetModal, BottomSheetModalProvider} from '@gorhom/bottom-sheet';
+import {CustomBottomSheet} from '../../../components/bottomSheet/CustomBottomSheet';
+import Constants from '../../../utils/Constants';
+import ClickableText from '../../../components/common/ClickableText';
 import {defaultStyles} from '../../../utils/DefaultStyles';
 
 type Props = NativeStackScreenProps<ActivityStackParamList, 'ProgramDetail'>;
 
 const ActivityProgramDetailScreen: React.FC<Props> = props => {
+  const bottomSheetModalRef = useRef<BottomSheetModal>(null);
+
+  // Sort the types in the order we want to display them
+  const sortedTypes = [
+    ProgramLogGroupType.WARMUP,
+    ProgramLogGroupType.MAIN,
+    ProgramLogGroupType.COOLDOWN,
+  ];
+
+  // Fetch the program by id
   const [programById, {loading: programByIdLoading}] = useProgramByIdLazyQuery({
     fetchPolicy: 'no-cache',
     onCompleted: data => {
       if (data.programById) {
-        props.navigation.setOptions({headerTitle: data.programById.name});
         setProgram(data.programById);
+        props.navigation.setOptions({
+          headerRight: () => (
+            <ClickableText
+              text={'End Workout'}
+              styles={[defaultStyles.error, defaultStyles.p14]}
+              onPress={() => {}}
+            />
+          ),
+        });
       }
     },
   });
+  const [markAsComplete, {loading: markAsCompleteLoading}] =
+    useMarkLogAsCompletedMutation({
+      fetchPolicy: 'no-cache',
+      onCompleted: data => {
+        if (data.markLogAsCompleted) {
+          programById({
+            variables: {
+              id: props.route.params.programId,
+            },
+          });
+        }
+      },
+    });
 
+  // State for the program
   const [program, setProgram] = useState<ProgramLongFragment>();
+  const [editProgramLog, setEditProgramLog] = useState<ProgramLogInput>();
 
+  // Fetch on param change
   useEffect(() => {
     if (props.route.params.programId) {
       programById({
@@ -38,36 +78,87 @@ const ActivityProgramDetailScreen: React.FC<Props> = props => {
     }
   }, [props.route.params.programId]);
 
+  useEffect(() => {
+    if (editProgramLog) {
+      bottomSheetModalRef.current?.present();
+    } else {
+      bottomSheetModalRef.current?.dismiss();
+    }
+  }, [editProgramLog]);
+
   return (
     <GradientBackground>
-      {programByIdLoading ? (
-        <Loader isLoading />
-      ) : (
-        <ScrollView style={styles.container} key={program?.id}>
-          {program?.logGroups.map(logGroup => (
-            <View>
-              <AppText h3 centerText>
-                {enumToReadableString(logGroup.type)}
-              </AppText>
-              <View style={defaultStyles.separatorWithHeight} />
-              {logGroup.logs.map(log => (
-                <>
-                  <ProgramLogListItem log={log} />
-                  <View style={defaultStyles.marginTop} />
-                </>
-              ))}
-            </View>
-          ))}
-        </ScrollView>
-      )}
+      <FlashList
+        refreshing={programByIdLoading || markAsCompleteLoading}
+        refreshControl={
+          <RefreshControl
+            colors={['#fff', '#ccc']}
+            tintColor={'#fff'}
+            refreshing={programByIdLoading || markAsCompleteLoading}
+            onRefresh={() => {
+              programById({
+                variables: {
+                  id: props.route.params.programId,
+                },
+              });
+            }}
+          />
+        }
+        renderItem={({item}) => {
+          if (item.logs.length === 0) {
+            return <></>;
+          }
+          return (
+            <ActivityProgramLogGroup
+              group={item}
+              onLogPress={log => {
+                markAsComplete({
+                  variables: {
+                    id: log.id,
+                    workoutId: props.route.params.workoutId,
+                    zonedDateTimeString: moment().toISOString(true),
+                  },
+                });
+              }}
+              onEditLogPress={log =>
+                setEditProgramLog({
+                  effort: log.effort,
+                  logValue: log.logValue,
+                  exerciseId: log.exercise?.id,
+                  subdivisions: log.subdivisions?.map(sub => ({
+                    effort: log.effort,
+                    repetitions: sub.repetitions,
+                    logValue: sub.logValue,
+                    exerciseId: sub.exercise?.id,
+                    programLogGroupId: '',
+                    cooldownSeconds: log.cooldownSeconds,
+                    intervalSeconds: log.intervalSeconds,
+                  })),
+                  repetitions: log.repetitions,
+                  intervalSeconds: log.intervalSeconds,
+                  cooldownSeconds: log.cooldownSeconds,
+                  programLogGroupId: '',
+                })
+              }
+            />
+          );
+        }}
+        data={(program?.logGroups || []).sort(
+          (a, b) => sortedTypes.indexOf(a.type) - sortedTypes.indexOf(b.type),
+        )}
+        estimatedItemSize={3}
+      />
+      <BottomSheetModalProvider>
+        <CustomBottomSheet
+          ref={bottomSheetModalRef}
+          backgroundColor={{backgroundColor: Constants.PRIMARY_GRADIENT[0]}}
+          onDismissClicked={() => setEditProgramLog(undefined)}
+          rightText={'Adjust and mark as saved'}>
+          <></>
+        </CustomBottomSheet>
+      </BottomSheetModalProvider>
     </GradientBackground>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    padding: 20,
-  },
-});
 
 export default ActivityProgramDetailScreen;

@@ -31,6 +31,7 @@ import {
   useUpdateExerciseLogMutation,
   useWorkoutByIdLazyQuery,
   WorkoutLongFragment,
+  WorkoutStatus,
 } from '../../../graphql/operations';
 import {defaultStyles} from '../../../utils/DefaultStyles';
 import MuscleGroupList from '../../../components/workouts/MuscleGroupList';
@@ -238,7 +239,10 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
       props.navigation.setOptions({
         headerTitle: workoutData?.workoutById?.name,
       });
-      if (workoutData?.workoutById?.active && workoutData?.workoutById?.id) {
+      if (
+        workoutData?.workoutById?.status === WorkoutStatus.STARTED &&
+        workoutData?.workoutById?.id
+      ) {
         props.navigation.setOptions({
           headerRight: () => (
             <ClickableText
@@ -441,7 +445,7 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
     ];
     if (
       workout &&
-      workout.active &&
+      workout.status === WorkoutStatus.STARTED &&
       workout.groupedExerciseLogs &&
       workout.groupedExerciseLogs.length > 0
     ) {
@@ -786,7 +790,7 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
       )}
 
       {workout &&
-        workoutData?.workoutById?.active &&
+        workoutData?.workoutById?.status === WorkoutStatus.STARTED &&
         workoutData?.workoutById?.id && (
           <FloatingButton
             actions={getFabActions()}
