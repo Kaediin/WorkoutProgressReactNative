@@ -3,6 +3,7 @@ import {ActivityStackParamList} from '../../../stacks/ActivityStack';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import GradientBackground from '../../../components/common/GradientBackground';
 import {
+  ProgramLogFragment,
   ProgramLogGroupType,
   ProgramLogInput,
   ProgramLongFragment,
@@ -18,6 +19,7 @@ import {CustomBottomSheet} from '../../../components/bottomSheet/CustomBottomShe
 import Constants from '../../../utils/Constants';
 import ClickableText from '../../../components/common/ClickableText';
 import {defaultStyles} from '../../../utils/DefaultStyles';
+import ActivityAdjustProgramBottomSheetContent from '../../../components/bottomSheet/ActivityAdjustProgramBottomSheetContent';
 
 type Props = NativeStackScreenProps<ActivityStackParamList, 'ProgramDetail'>;
 
@@ -65,7 +67,9 @@ const ActivityProgramDetailScreen: React.FC<Props> = props => {
 
   // State for the program
   const [program, setProgram] = useState<ProgramLongFragment>();
-  const [editProgramLog, setEditProgramLog] = useState<ProgramLogInput>();
+  const [editProgramLog, setEditProgramLog] = useState<ProgramLogFragment>();
+  const [editProgramLogInput, setEditProgramLogInput] =
+    useState<ProgramLogInput>();
 
   // Fetch on param change
   useEffect(() => {
@@ -112,34 +116,38 @@ const ActivityProgramDetailScreen: React.FC<Props> = props => {
             <ActivityProgramLogGroup
               group={item}
               onLogPress={log => {
-                markAsComplete({
-                  variables: {
-                    id: log.id,
-                    workoutId: props.route.params.workoutId,
-                    zonedDateTimeString: moment().toISOString(true),
-                  },
-                });
+                if (log && log.id) {
+                  markAsComplete({
+                    variables: {
+                      id: log.id,
+                      workoutId: props.route.params.workoutId,
+                      zonedDateTimeString: moment().toISOString(true),
+                    },
+                  });
+                }
               }}
-              onEditLogPress={log =>
-                setEditProgramLog({
-                  effort: log.effort,
+              onEditLogPress={log => {
+                setEditProgramLog(log);
+                setEditProgramLogInput({
                   logValue: log.logValue,
+                  repetitions: log.repetitions,
+                  effort: log.effort,
+                  cooldownSeconds: log.cooldownSeconds,
+                  intervalSeconds: log.intervalSeconds,
                   exerciseId: log.exercise?.id,
                   subdivisions: log.subdivisions?.map(sub => ({
-                    effort: log.effort,
-                    repetitions: sub.repetitions,
+                    id: '',
                     logValue: sub.logValue,
+                    repetitions: sub.repetitions,
+                    effort: sub.effort,
                     exerciseId: sub.exercise?.id,
+                    cooldownSeconds: sub.cooldownSeconds,
+                    intervalSeconds: sub.intervalSeconds,
                     programLogGroupId: '',
-                    cooldownSeconds: log.cooldownSeconds,
-                    intervalSeconds: log.intervalSeconds,
                   })),
-                  repetitions: log.repetitions,
-                  intervalSeconds: log.intervalSeconds,
-                  cooldownSeconds: log.cooldownSeconds,
                   programLogGroupId: '',
-                })
-              }
+                });
+              }}
             />
           );
         }}
@@ -153,8 +161,33 @@ const ActivityProgramDetailScreen: React.FC<Props> = props => {
           ref={bottomSheetModalRef}
           backgroundColor={{backgroundColor: Constants.PRIMARY_GRADIENT[0]}}
           onDismissClicked={() => setEditProgramLog(undefined)}
-          rightText={'Adjust and mark as saved'}>
-          <></>
+          rightText={'Adjust and mark as saved'}
+          index={
+            editProgramLog?.subdivisions &&
+            editProgramLog.subdivisions.length > 0
+              ? 75
+              : 30
+          }>
+          {editProgramLog?.id && editProgramLogInput && (
+            <ActivityAdjustProgramBottomSheetContent
+              id={editProgramLog.id}
+              log={editProgramLogInput}
+              onLogChange={setEditProgramLogInput}
+              exerciseMap={[
+                editProgramLog.exercise,
+                ...(editProgramLog.subdivisions &&
+                editProgramLog.subdivisions.length > 0
+                  ? editProgramLog.subdivisions?.map(s => s.exercise)
+                  : []),
+              ].reduce((acc, e) => {
+                if (!e) {
+                  return acc;
+                }
+                acc[e.id] = e.name;
+                return acc;
+              }, {} as {[key: string]: string})}
+            />
+          )}
         </CustomBottomSheet>
       </BottomSheetModalProvider>
     </GradientBackground>

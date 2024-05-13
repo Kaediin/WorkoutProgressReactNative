@@ -26,17 +26,19 @@ const ProgramLogListItem: React.FC<ProgramLogListItemProps> = ({log}) => {
               : ''}
           </AppText>
           {!!log.effort && log.effort > 0 && (
-            <View>
+            <View style={defaultStyles.marginTop}>
               <AppSlider value={log.effort} disabled />
               <AppText xSmall T2>
                 Effort: {log.effort}%
               </AppText>
             </View>
           )}
-          {log.subdivisions.map((subdivision, index, array) => (
-            <View key={index}>
+          {log.subdivisions.map((subdivision, index) => (
+            <View
+              key={'programloglistitem' + log.id + 'index' + index}
+              style={styles.subdivisionRow}>
               <View style={[defaultStyles.row, defaultStyles.spaceBetween]}>
-                <View style={[defaultStyles.rotate90, styles.marginLeft]}>
+                <View style={defaultStyles.rotate90}>
                   <ArrowDownRight />
                 </View>
                 <View style={defaultStyles.flex1}>
@@ -49,19 +51,14 @@ const ProgramLogListItem: React.FC<ProgramLogListItemProps> = ({log}) => {
                       ? ' @' + subdivision.intervalSeconds + 'sec'
                       : ''}
                   </AppText>
-                  {!!subdivision.effort && subdivision.effort > 0 && (
-                    <View>
-                      <AppSlider value={subdivision.effort} disabled />
-                      <AppText xSmall T2 rightText>
-                        Effort: {subdivision.effort}%
-                      </AppText>
-                    </View>
-                  )}
                 </View>
               </View>
-              {index !== array.length - 1 && (
-                <View style={styles.separatorStyle}>
-                  <View style={defaultStyles.separator} />
+              {!!subdivision.effort && subdivision.effort > 0 && (
+                <View style={styles.efforSubcontainer}>
+                  <AppText xSmall T2 rightText>
+                    Effort: {subdivision.effort}%
+                  </AppText>
+                  <AppSlider value={subdivision.effort} disabled />
                 </View>
               )}
             </View>
@@ -90,13 +87,17 @@ const styles = StyleSheet.create({
     padding: Constants.CONTAINER_PADDING_MARGIN,
     borderRadius: Constants.BORDER_RADIUS_SMALL,
   },
-  separatorStyle: {
-    width: 100,
-    alignSelf: 'center',
-    marginVertical: 10,
-  },
   marginLeft: {
     marginLeft: 10,
+  },
+  subdivisionRow: {
+    padding: 10,
+    backgroundColor: Constants.PRIMARY_GRADIENT[1],
+    borderRadius: Constants.BORDER_RADIUS_SMALL,
+    marginTop: 10,
+  },
+  efforSubcontainer: {
+    marginTop: 2,
   },
 });
 

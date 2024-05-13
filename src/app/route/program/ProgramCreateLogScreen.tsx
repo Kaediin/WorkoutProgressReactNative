@@ -22,7 +22,7 @@ import {defaultStyles} from '../../utils/DefaultStyles';
 import Loader from '../../components/common/Loader';
 import ProgramLogListItemEditable from '../../components/program/ProgramLogListItemEditable';
 import ClickableText from '../../components/common/ClickableText';
-import {Add, ArrowDownRight, Delete} from '../../icons/svg';
+import {Add, Delete} from '../../icons/svg';
 import AppSegmentedButtons from '../../components/common/AppSegmentedButtons';
 import {enumToReadableString, logValueToString} from '../../utils/String';
 import {ProgramStackParamList} from '../../stacks/ProgramStack';
@@ -508,9 +508,6 @@ const ProgramCreateLogScreen: React.FC<Props> = props => {
                           <Delete />
                         </TouchableOpacity>
                       )}
-                      <View style={[defaultStyles.rotate90, styles.arrowStyle]}>
-                        <ArrowDownRight />
-                      </View>
                     </View>
                     <View style={defaultStyles.flex1}>
                       <ProgramLogListItemEditable
@@ -604,8 +601,7 @@ const styles = StyleSheet.create({
     borderRadius: Constants.BORDER_RADIUS_SMALL,
   },
   arrowStyle: {
-    alignSelf: 'flex-start',
-    marginTop: 5,
+    alignSelf: 'center',
   },
   addAlignment: {
     width: 30,

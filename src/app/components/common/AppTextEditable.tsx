@@ -18,7 +18,6 @@ interface AppTextEditableProps {
   placeholder: string | number;
   onValueChange: (value: string | number) => void;
   inputType?: 'gender' | 'switch' | 'number';
-  number?: boolean;
   disabled?: boolean;
   showAsClickable?: boolean;
 }
@@ -100,9 +99,7 @@ const AppTextEditable: React.FC<AppTextEditableProps> = props => {
                 // Check if text is a number
                 if (!isNaN(parseInt(text, 10)) && props.onValueChange) {
                   const value = Math.round(parseFloat(text) * 100) / 100;
-                  if (value > 0 && value < 1000) {
-                    props.onValueChange(value);
-                  }
+                  props.onValueChange(value);
                 }
               }}
               keyboardType={'numeric'}

@@ -183,6 +183,7 @@ export type Mutation = {
   /** Add external health provider data to workout */
   addExternalHealthProviderData: Workout;
   addOnboardingExercises?: Maybe<Scalars['Boolean']>;
+  adjustLogAndMarkAsCompleted: ProgramLog;
   completeOnboarding: User;
   createExercise?: Maybe<Exercise>;
   createProgram: Program;
@@ -243,6 +244,14 @@ export type MutationAddExternalHealthProviderDataArgs = {
 
 export type MutationAddOnboardingExercisesArgs = {
   ids: Array<Scalars['String']>;
+};
+
+
+export type MutationAdjustLogAndMarkAsCompletedArgs = {
+  id: Scalars['ID'];
+  input: ProgramLogInput;
+  workoutId: Scalars['String'];
+  zonedDateTimeString: Scalars['String'];
 };
 
 
@@ -496,6 +505,7 @@ export type ProgramLogInput = {
   cooldownSeconds?: InputMaybe<Scalars['Int']>;
   effort?: InputMaybe<Scalars['Int']>;
   exerciseId?: InputMaybe<Scalars['ID']>;
+  id?: InputMaybe<Scalars['ID']>;
   intervalSeconds?: InputMaybe<Scalars['Int']>;
   logValue: LogValueInput;
   programLogGroupId: Scalars['ID'];

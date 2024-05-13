@@ -328,6 +328,7 @@ const ProgramLogListItemEditable: React.FC<
             step={5}
             disabled={false}
           />
+          <View style={defaultStyles.marginTop} />
         </View>
       </ExpandableView>
     </View>
@@ -373,8 +374,7 @@ const styles = StyleSheet.create({
     width: 30,
   },
   effortLabel: {
-    marginTop: 5,
-    marginBottom: -10,
+    marginVertical: 10,
   },
   containerEffort: {
     width: 40,

@@ -1,8 +1,8 @@
 import React from 'react';
 import Constants from '../../utils/Constants';
 import {StyleSheet, View} from 'react-native';
+import {Slider} from '@miblanchard/react-native-slider';
 import LinearGradient from 'react-native-linear-gradient';
-import Slider from '@react-native-community/slider';
 
 interface AppSliderProps {
   value: number;
@@ -31,13 +31,22 @@ const AppSlider: React.FC<AppSliderProps> = props => {
         />
         <Slider
           value={props.value}
+          containerStyle={styles.containerEffortSlider}
           minimumValue={props.min ?? 0}
           maximumValue={props.max ?? 100}
           step={props.step ?? 1}
           minimumTrackTintColor={'transparent'}
           maximumTrackTintColor={'transparent'}
-          onSlidingComplete={props.onChange}
-          style={styles.containerEffortSlider}
+          onSlidingComplete={value => {
+            if (props.onChange) {
+              props.onChange(value[0]);
+            }
+          }}
+          thumbStyle={
+            props.disabled
+              ? styles.thumbStylesInactive
+              : styles.thumbStylesActive
+          }
           disabled={props.disabled}
         />
       </View>
@@ -49,10 +58,10 @@ const styles = StyleSheet.create({
   containerEffort: {
     width: '100%',
     position: 'relative',
-    height: 50,
+    height: 5,
   },
   containerEffortContent: {
-    height: 50,
+    height: 5,
     width: '100%',
     position: 'absolute',
     top: 0,
@@ -63,13 +72,23 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   containerEffortLinearGradient: {
-    width: '90%',
+    width: '100%',
     height: 5,
     position: 'absolute',
     borderRadius: Constants.BORDER_RADIUS_SMALL,
   },
   containerEffortSlider: {
     width: '100%',
+  },
+  thumbStylesActive: {
+    width: 15,
+    height: 15,
+    backgroundColor: '#FFFFFF',
+  },
+  thumbStylesInactive: {
+    width: 5,
+    height: 5,
+    backgroundColor: '#FFFFFF',
   },
 });
 

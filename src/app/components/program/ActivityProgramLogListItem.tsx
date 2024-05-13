@@ -35,10 +35,12 @@ const ActivityProgramLogListItem: React.FC<
   const contentHeight = useMemo(() => {
     let height = 0;
     if (props.log.effort && props.log.effort > 0) {
-      height += 50;
+      height += 25;
     }
     if (props.log.subdivisions && props.log.subdivisions.length > 0) {
       height += 55 * props.log.subdivisions.length;
+      height +=
+        20 * [...props.log.subdivisions].filter(sub => !!sub.effort).length;
     }
     return height;
   }, [props.log, props.completed]);
@@ -63,7 +65,7 @@ const ActivityProgramLogListItem: React.FC<
             <AppText xSmall T2 rightText>
               {getRelativeTimeIfToday(
                 props.log.exerciseLog.logDateTime ||
-                  props.log.subdivisions?.[0].exerciseLog.logDateTime,
+                  props.log.subdivisions?.[0].exerciseLog?.logDateTime,
               )}
             </AppText>
           ))}
@@ -93,7 +95,7 @@ const ActivityProgramLogListItem: React.FC<
       <ExpandableView showChildren={expanded} contentHeight={contentHeight}>
         {!!props.log.effort && props.log.effort > 0 && (
           <>
-            <AppText xSmall T2 style={styles.effortLabel}>
+            <AppText xSmall T2>
               Effort: {props.log.effort}%
             </AppText>
             <AppSlider value={props.log.effort} disabled />
@@ -103,23 +105,37 @@ const ActivityProgramLogListItem: React.FC<
           props.log.subdivisions.length > 0 &&
           props.log.subdivisions.map((subdivision, index) => (
             <View
-              key={props.log.id! + index}
-              style={[
-                defaultStyles.row,
-                defaultStyles.spaceBetween,
-                styles.subdivisionRow,
-                defaultStyles.marginTop,
-              ]}>
-              <View style={defaultStyles.rotate90}>
-                <ArrowDownRight />
+              style={[styles.subdivisionRow, defaultStyles.marginTop]}
+              key={
+                'activityprogramloglistitem' + props.log.id + 'index' + index
+              }>
+              <View
+                key={props.log.id! + index}
+                style={[defaultStyles.row, defaultStyles.spaceBetween]}>
+                <View style={defaultStyles.rotate90}>
+                  <ArrowDownRight />
+                </View>
+                <View style={defaultStyles.row}>
+                  <AppText>
+                    {subdivision.repetitions} x{' '}
+                    {logValueToString(subdivision.logValue)}{' '}
+                    {subdivision.exercise?.name}
+                    {subdivision.intervalSeconds
+                      ? `@${subdivision.intervalSeconds}s`
+                      : subdivision.cooldownSeconds
+                      ? `${subdivision.cooldownSeconds}s rest`
+                      : ''}
+                  </AppText>
+                </View>
               </View>
-              <View>
-                <AppText>
-                  {subdivision.repetitions} x{' '}
-                  {logValueToString(subdivision.logValue)}{' '}
-                  {subdivision.exercise?.name}
-                </AppText>
-              </View>
+              {!!subdivision.effort && subdivision.effort > 0 && (
+                <View style={styles.marginTopSmall}>
+                  <AppText xSmall T2 rightText>
+                    Effort: {subdivision.effort}%
+                  </AppText>
+                  <AppSlider value={subdivision.effort} disabled />
+                </View>
+              )}
             </View>
           ))}
       </ExpandableView>
@@ -143,10 +159,10 @@ const ActivityProgramLogListItem: React.FC<
             title: 'Log as completed',
             subtitle: 'Mark this log as completed',
           },
-          {
-            title: 'Adjust log',
-            subtitle: 'Edit log and mark as completed',
-          },
+          // {
+          //   title: 'Adjust log',
+          //   subtitle: 'Edit log and mark as completed',
+          // },
         ]}
         onPress={e => {
           if (e.nativeEvent.name === 'Log as completed') {
@@ -166,9 +182,6 @@ const styles = StyleSheet.create({
   container: {
     padding: Constants.CONTAINER_PADDING_MARGIN,
     backgroundColor: Constants.SECONDARY_GRADIENT[0],
-  },
-  effortLabel: {
-    marginBottom: -10,
   },
   subdivisionRow: {
     padding: Constants.CONTAINER_PADDING_MARGIN,
@@ -194,6 +207,9 @@ const styles = StyleSheet.create({
     position: 'absolute',
     alignSelf: 'center',
     top: 2,
+  },
+  marginTopSmall: {
+    marginTop: 2,
   },
 });
 
