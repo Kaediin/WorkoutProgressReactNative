@@ -30,3 +30,7 @@ mutation deleteScheduledProgram($id: ID!) {
 mutation startScheduledProgram($id: ID! $zonedDateTime: String!) {
     startScheduledProgram(id: $id, zonedDateTimeString: $zonedDateTime)
 }
+
+mutation endScheduledProgram($id: ID! $zonedDateTime: String!) {
+    endScheduledProgram(id: $id, zonedDateTimeString: $zonedDateTime)
+}

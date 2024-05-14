@@ -165,7 +165,6 @@ type Mutation {
   """Add external health provider data to workout"""
   addExternalHealthProviderData(input: ExternalHealthProviderDataInput!, workoutId: ID!): Workout!
   addOnboardingExercises(ids: [String!]!): Boolean
-  adjustLogAndMarkAsCompleted(id: ID!, input: ProgramLogInput!, workoutId: String!, zonedDateTimeString: String!): ProgramLog!
   completeOnboarding: User!
   createExercise(input: ExerciseInput): Exercise
   createProgram(input: ProgramInput): Program!
@@ -180,6 +179,7 @@ type Mutation {
 
   """Delete workout by ID"""
   deleteWorkout(id: ID!): Boolean
+  endScheduledProgram(id: ID!, zonedDateTimeString: String!): Boolean!
 
   """End workout by ID"""
   endWorkout(workoutId: ID!, zonedDateTimeString: String!): Workout
@@ -308,7 +308,6 @@ input ProgramLogInput {
   cooldownSeconds: Int
   effort: Int
   exerciseId: ID
-  id: ID
   intervalSeconds: Int
   logValue: LogValueInput!
   programLogGroupId: ID!
@@ -431,7 +430,7 @@ type Workout {
   program: Program
   remark: String
   startDateTime: LocalDateTime
-  status: WorkoutStatus! @deprecated(reason: "Use status instead")
+  status: WorkoutStatus!
 }
 
 input WorkoutInput {

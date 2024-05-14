@@ -183,7 +183,6 @@ export type Mutation = {
   /** Add external health provider data to workout */
   addExternalHealthProviderData: Workout;
   addOnboardingExercises?: Maybe<Scalars['Boolean']>;
-  adjustLogAndMarkAsCompleted: ProgramLog;
   completeOnboarding: User;
   createExercise?: Maybe<Exercise>;
   createProgram: Program;
@@ -197,6 +196,7 @@ export type Mutation = {
   deleteScheduledProgram: Scalars['Boolean'];
   /** Delete workout by ID */
   deleteWorkout?: Maybe<Scalars['Boolean']>;
+  endScheduledProgram: Scalars['Boolean'];
   /** End workout by ID */
   endWorkout?: Maybe<Workout>;
   logBiometrics: User;
@@ -244,14 +244,6 @@ export type MutationAddExternalHealthProviderDataArgs = {
 
 export type MutationAddOnboardingExercisesArgs = {
   ids: Array<Scalars['String']>;
-};
-
-
-export type MutationAdjustLogAndMarkAsCompletedArgs = {
-  id: Scalars['ID'];
-  input: ProgramLogInput;
-  workoutId: Scalars['String'];
-  zonedDateTimeString: Scalars['String'];
 };
 
 
@@ -307,6 +299,12 @@ export type MutationDeleteScheduledProgramArgs = {
 
 export type MutationDeleteWorkoutArgs = {
   id: Scalars['ID'];
+};
+
+
+export type MutationEndScheduledProgramArgs = {
+  id: Scalars['ID'];
+  zonedDateTimeString: Scalars['String'];
 };
 
 
@@ -505,7 +503,6 @@ export type ProgramLogInput = {
   cooldownSeconds?: InputMaybe<Scalars['Int']>;
   effort?: InputMaybe<Scalars['Int']>;
   exerciseId?: InputMaybe<Scalars['ID']>;
-  id?: InputMaybe<Scalars['ID']>;
   intervalSeconds?: InputMaybe<Scalars['Int']>;
   logValue: LogValueInput;
   programLogGroupId: Scalars['ID'];
@@ -663,7 +660,6 @@ export type Workout = {
   program?: Maybe<Program>;
   remark?: Maybe<Scalars['String']>;
   startDateTime?: Maybe<Scalars['LocalDateTime']>;
-  /** @deprecated Use status instead */
   status: WorkoutStatus;
 };
 

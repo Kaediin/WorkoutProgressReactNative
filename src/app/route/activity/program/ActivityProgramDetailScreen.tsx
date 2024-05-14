@@ -7,6 +7,7 @@ import {
   ProgramLogGroupType,
   ProgramLogInput,
   ProgramLongFragment,
+  useEndScheduledProgramMutation,
   useMarkLogAsCompletedMutation,
   useProgramByIdLazyQuery,
 } from '../../../graphql/operations';
@@ -20,6 +21,8 @@ import Constants from '../../../utils/Constants';
 import ClickableText from '../../../components/common/ClickableText';
 import {defaultStyles} from '../../../utils/DefaultStyles';
 import ActivityAdjustProgramBottomSheetContent from '../../../components/bottomSheet/ActivityAdjustProgramBottomSheetContent';
+import AppText from '../../../components/common/AppText';
+import AppModal from '../../../components/common/AppModal';
 
 type Props = NativeStackScreenProps<ActivityStackParamList, 'ProgramDetail'>;
 
@@ -44,7 +47,7 @@ const ActivityProgramDetailScreen: React.FC<Props> = props => {
             <ClickableText
               text={'End Workout'}
               styles={[defaultStyles.error, defaultStyles.p14]}
-              onPress={() => {}}
+              onPress={() => setShowEndWorkoutModal(true)}
             />
           ),
         });
@@ -64,8 +67,17 @@ const ActivityProgramDetailScreen: React.FC<Props> = props => {
         }
       },
     });
+  const [endScheduledWorkout] = useEndScheduledProgramMutation({
+    fetchPolicy: 'no-cache',
+    onCompleted: data => {
+      if (data.endScheduledProgram) {
+        props.navigation.navigate('ActivityOverview');
+      }
+    },
+  });
 
   // State for the program
+  const [showEndWorkoutModal, setShowEndWorkoutModal] = useState(false);
   const [program, setProgram] = useState<ProgramLongFragment>();
   const [editProgramLog, setEditProgramLog] = useState<ProgramLogFragment>();
   const [editProgramLogInput, setEditProgramLogInput] =
@@ -190,6 +202,11 @@ const ActivityProgramDetailScreen: React.FC<Props> = props => {
           )}
         </CustomBottomSheet>
       </BottomSheetModalProvider>
+      <AppModal
+        isVisible={showEndWorkoutModal}
+        onDismiss={() => setShowEndWorkoutModal(false)}>
+        <AppText>test</AppText>
+      </AppModal>
     </GradientBackground>
   );
 };
