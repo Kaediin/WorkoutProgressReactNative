@@ -37,7 +37,7 @@ const ProgramLogGroupListItem: React.FC<
           {!props.readonly && (
             <View style={defaultStyles.row}>
               <ClickableText
-                text={'Add log'}
+                text={'Create log'}
                 onPress={props.onCreateLogPress}
               />
               <View style={defaultStyles.marginHorizontal} />
@@ -53,34 +53,43 @@ const ProgramLogGroupListItem: React.FC<
         </View>
         <View style={defaultStyles.marginBottom} />
         <View>
-          {props.programLogGroup.logs.filter(nonNullable).map(log => (
-            <TouchableOpacity
-              style={defaultStyles.marginBottom}
-              key={log.id}
-              onPress={() => props.onLogPress && props.onLogPress(log)}>
-              <ContextMenu
-                actions={[
-                  {
-                    title: ContextMenuActions.EDIT,
-                  },
-                  {
-                    title: ContextMenuActions.DELETE,
-                    destructive: true,
-                  },
-                ]}
-                onPress={e => {
-                  if (e.nativeEvent.name === ContextMenuActions.EDIT) {
-                    props.onEditLogPress && props.onEditLogPress(log);
-                  } else if (e.nativeEvent.name === ContextMenuActions.DELETE) {
-                    if (log.id) {
-                      props.onDeleteLogPress && props.onDeleteLogPress(log.id);
+          {props.programLogGroup.logs.length === 0 ? (
+            <AppText style={defaultStyles.container} centerText>
+              Click 'create log' to add a first log to the group
+            </AppText>
+          ) : (
+            props.programLogGroup.logs.filter(nonNullable).map(log => (
+              <TouchableOpacity
+                style={defaultStyles.marginBottom}
+                key={log.id}
+                onPress={() => props.onLogPress && props.onLogPress(log)}>
+                <ContextMenu
+                  actions={[
+                    {
+                      title: ContextMenuActions.EDIT,
+                    },
+                    {
+                      title: ContextMenuActions.DELETE,
+                      destructive: true,
+                    },
+                  ]}
+                  onPress={e => {
+                    if (e.nativeEvent.name === ContextMenuActions.EDIT) {
+                      props.onEditLogPress && props.onEditLogPress(log);
+                    } else if (
+                      e.nativeEvent.name === ContextMenuActions.DELETE
+                    ) {
+                      if (log.id) {
+                        props.onDeleteLogPress &&
+                          props.onDeleteLogPress(log.id);
+                      }
                     }
-                  }
-                }}>
-                <ProgramLogListItem log={log} />
-              </ContextMenu>
-            </TouchableOpacity>
-          ))}
+                  }}>
+                  <ProgramLogListItem log={log} />
+                </ContextMenu>
+              </TouchableOpacity>
+            ))
+          )}
         </View>
       </View>
     </View>

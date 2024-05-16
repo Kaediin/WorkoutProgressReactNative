@@ -1,4 +1,4 @@
-import {ProgramLogFragment} from '../../graphql/operations';
+import {ProgramWorkoutLogFragment} from '../../graphql/operations';
 import React, {useMemo, useState} from 'react';
 import {StyleSheet, TouchableOpacity, View} from 'react-native';
 import AppText from '../common/AppText';
@@ -12,9 +12,9 @@ import ContextMenu from 'react-native-context-menu-view';
 import {getRelativeTimeIfToday} from '../../utils/Date';
 
 interface ActivityProgramLogListItemProps {
-  log: ProgramLogFragment;
-  onLogPress: (log: ProgramLogFragment) => void;
-  onLogEditPress: (log: ProgramLogFragment) => void;
+  log: ProgramWorkoutLogFragment;
+  onLogPress: (log: ProgramWorkoutLogFragment) => void;
+  onLogEditPress: (log: ProgramWorkoutLogFragment) => void;
   focussed: boolean;
   completed: boolean;
 }
@@ -25,22 +25,30 @@ const ActivityProgramLogListItem: React.FC<
   const [expanded, setExpanded] = useState(!props.completed);
 
   const timerLabel = useMemo(() => {
-    return props.log.intervalSeconds
-      ? `${props.log.intervalSeconds}s interval`
-      : props.log.cooldownSeconds
-      ? `${props.log.cooldownSeconds}s rest`
+    return props.log.programLog.intervalSeconds
+      ? `${props.log.programLog.intervalSeconds}s interval`
+      : props.log.programLog.cooldownSeconds
+      ? `${props.log.programLog.cooldownSeconds}s rest`
       : '';
-  }, [props.log.intervalSeconds, props.log.cooldownSeconds]);
+  }, [
+    props.log.programLog.intervalSeconds,
+    props.log.programLog.cooldownSeconds,
+  ]);
 
   const contentHeight = useMemo(() => {
     let height = 0;
-    if (props.log.effort && props.log.effort > 0) {
+    if (props.log.programLog.effort && props.log.programLog.effort > 0) {
       height += 25;
     }
-    if (props.log.subdivisions && props.log.subdivisions.length > 0) {
-      height += 55 * props.log.subdivisions.length;
+    if (
+      props.log.programLog.subdivisions &&
+      props.log.programLog.subdivisions.length > 0
+    ) {
+      height += 55 * props.log.programLog.subdivisions.length;
       height +=
-        20 * [...props.log.subdivisions].filter(sub => !!sub.effort).length;
+        20 *
+        [...props.log.programLog.subdivisions].filter(sub => !!sub.effort)
+          .length;
     }
     return height;
   }, [props.log, props.completed]);
@@ -60,25 +68,30 @@ const ActivityProgramLogListItem: React.FC<
         }
       }}>
       <View>
-        {props.log.subdivisions?.some(sub => !!sub.exerciseLog?.logDateTime) ||
-          (props.log.exerciseLog?.logDateTime && (
+        {props.log.programLog.subdivisions?.some(
+          sub => !!sub.exerciseLog?.logDateTime,
+        ) ||
+          (props.log.programLog.exerciseLog?.logDateTime && (
             <AppText xSmall T2 rightText>
               {getRelativeTimeIfToday(
-                props.log.exerciseLog.logDateTime ||
-                  props.log.subdivisions?.[0].exerciseLog?.logDateTime,
+                props.log.programLog.exerciseLog.logDateTime ||
+                  props.log.programLog.subdivisions?.[0].exerciseLog
+                    ?.logDateTime,
               )}
             </AppText>
           ))}
         <View style={[defaultStyles.row, defaultStyles.spaceBetween]}>
           <AppText>
-            {props.log.repetitions} x {logValueToString(props.log.logValue)}{' '}
-            {props.log.exercise?.name ?? ''}
+            {props.log.programLog.repetitions} x{' '}
+            {logValueToString(props.log.programLog.logValue)}{' '}
+            {props.log.programLog.exercise?.name ?? ''}
           </AppText>
           <View style={defaultStyles.row}>
             <AppText>{timerLabel}</AppText>
             {props.completed &&
-              ((props.log.subdivisions && props.log.subdivisions.length > 0) ||
-                !!props.log.effort) &&
+              ((props.log.programLog.subdivisions &&
+                props.log.programLog.subdivisions.length > 0) ||
+                !!props.log.programLog.effort) &&
               (!expanded ? (
                 <View style={defaultStyles.paddingLeft}>
                   <ChevronDown />
@@ -93,17 +106,17 @@ const ActivityProgramLogListItem: React.FC<
         </View>
       </View>
       <ExpandableView showChildren={expanded} contentHeight={contentHeight}>
-        {!!props.log.effort && props.log.effort > 0 && (
+        {!!props.log.programLog.effort && props.log.programLog.effort > 0 && (
           <>
             <AppText xSmall T2>
-              Effort: {props.log.effort}%
+              Effort: {props.log.programLog.effort}%
             </AppText>
-            <AppSlider value={props.log.effort} disabled />
+            <AppSlider value={props.log.programLog.effort} disabled />
           </>
         )}
-        {props.log.subdivisions &&
-          props.log.subdivisions.length > 0 &&
-          props.log.subdivisions.map((subdivision, index) => (
+        {props.log.programLog.subdivisions &&
+          props.log.programLog.subdivisions.length > 0 &&
+          props.log.programLog.subdivisions.map((subdivision, index) => (
             <View
               style={[styles.subdivisionRow, defaultStyles.marginTop]}
               key={

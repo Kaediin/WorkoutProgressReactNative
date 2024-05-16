@@ -134,10 +134,7 @@ const UserSettingsScreen: React.FC<Props> = props => {
         isOpen={showDeleteAccountModal}
         type={'WARNING'}
         onDismiss={() => setShowDeleteAccountModal(false)}
-        onConfirm={() => {
-          const response = deleteUser();
-          console.log(response);
-        }}
+        onConfirm={() => deleteUser()}
         overrideConfirmGradient={Constants.ERROR_GRADIENT}
       />
     </GradientBackground>

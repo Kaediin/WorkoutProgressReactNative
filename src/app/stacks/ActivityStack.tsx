@@ -9,14 +9,11 @@ export type ActivityStackParamList = {
   ActivityOverview: undefined;
   WorkoutDetail: {workoutId: string};
   ProgramPreview: {
-    programId: string;
     scheduledProgramId: string;
     status: 'scheduled' | 'ready' | '';
   };
   ProgramDetail: {
-    programId: string;
     scheduledProgramId: string;
-    workoutId: string;
   };
 };
 

@@ -1,7 +1,7 @@
 import React, {useMemo} from 'react';
 import {
-  ProgramLogFragment,
-  ProgramLogGroupFragment,
+  ProgramWorkoutGroupFragment,
+  ProgramWorkoutLogFragment,
 } from '../../graphql/operations';
 import ActivityProgramLogListItem from './ActivityProgramLogListItem';
 import AppText from '../common/AppText';
@@ -10,25 +10,25 @@ import {defaultStyles} from '../../utils/DefaultStyles';
 import {enumToReadableString} from '../../utils/String';
 
 interface ActivityProgramLogGroupProps {
-  group: ProgramLogGroupFragment;
-  onLogPress: (log: ProgramLogFragment) => void;
-  onEditLogPress: (log: ProgramLogFragment) => void;
+  group: ProgramWorkoutGroupFragment;
+  onLogPress: (log: ProgramWorkoutLogFragment) => void;
+  onEditLogPress: (log: ProgramWorkoutLogFragment) => void;
 }
 
 const ActivityProgramLogGroup: React.FC<
   ActivityProgramLogGroupProps
 > = props => {
-  const isLogCompleted = (log: ProgramLogFragment) => {
-    return log.subdivisions && log.subdivisions.length > 0
-      ? log.subdivisions.every(sub => !!sub.exerciseLog?.id)
-      : !!log.exerciseLog?.id;
+  const isLogCompleted = (log: ProgramWorkoutLogFragment) => {
+    return log.programLog.subdivisions && log.programLog.subdivisions.length > 0
+      ? log.programLog.subdivisions.every(sub => !!sub.exerciseLog?.id)
+      : !!log.programLog.exerciseLog?.id;
   };
 
   const focussedId = useMemo(() => {
-    const logs = [...props.group.logs];
+    const logs = [...props.group.programWorkoutLogs];
     const focussed = logs.filter(log => !isLogCompleted(log))[0];
     return focussed ? focussed.id : undefined;
-  }, [props.group.logs]);
+  }, [props.group.programWorkoutLogs]);
 
   return (
     <View style={[defaultStyles.container]}>
@@ -36,7 +36,7 @@ const ActivityProgramLogGroup: React.FC<
         {enumToReadableString(props.group.type)}
       </AppText>
       <View style={defaultStyles.marginVertical} />
-      {props.group.logs.map(log => (
+      {props.group.programWorkoutLogs.map(log => (
         <ActivityProgramLogListItem
           key={log.id}
           log={log}

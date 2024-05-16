@@ -64,7 +64,7 @@ type ExerciseLog {
   id: ID!
   logDateTime: LocalDateTime!
   logValue: LogValue!
-  programLog: ProgramLog
+  programWorkoutLog: ProgramWorkoutLog
   remark: String
   repetitions: Float!
   user: User!
@@ -315,6 +315,32 @@ input ProgramLogInput {
   subdivisions: [ProgramLogInput!]
 }
 
+type ProgramWorkout {
+  groups: [ProgramWorkoutGroup!]!
+  id: ID!
+  program: Program!
+  workout: Workout!
+}
+
+type ProgramWorkoutGroup {
+  id: ID!
+  programWorkout: ProgramWorkout!
+  programWorkoutLogs: [ProgramWorkoutLog!]!
+  type: ProgramLogGroupType!
+}
+
+type ProgramWorkoutLog {
+  id: ID!
+
+  """The original program log of the scheduled program."""
+  originalProgramLog: ProgramLog!
+
+  """The program log of the scheduled program. (target log)"""
+  programLog: ProgramLog!
+  programWorkout: ProgramWorkout!
+  programWorkoutGroup: ProgramWorkoutGroup!
+}
+
 type Query {
   """Get all logs by excerice id"""
   allLogsByExerciseId(exerciseId: ID!): [ExerciseLog!]!
@@ -363,6 +389,9 @@ type Query {
 
   """Fetch all program log groups by program ID"""
   programLogGroupsByProgramId(programId: ID!): [ProgramLogGroup!]
+
+  """Fetch scheduled program by ID"""
+  scheduledProgramById(id: ID!): ScheduledProgram
   userById(id: String!): User
   users: [User]
 
@@ -380,7 +409,7 @@ type ScheduledProgram {
   """The date and time when the program is ended."""
   endedDateTime: LocalDateTime
   id: ID!
-  program: Program!
+  programWorkout: ProgramWorkout!
 
   """The date and time when the program is scheduled for."""
   scheduledDateTime: LocalDateTime!
@@ -388,9 +417,6 @@ type ScheduledProgram {
   """The date and time when the program is started."""
   startDateTime: LocalDateTime
   user: User!
-
-  """Workout created by scheduling a program"""
-  workout: Workout!
 }
 
 input ScheduledProgramInput {
@@ -427,7 +453,6 @@ type Workout {
   id: ID!
   muscleGroups: [MuscleGroup!]!
   name: String!
-  program: Program
   remark: String
   startDateTime: LocalDateTime
   status: WorkoutStatus!

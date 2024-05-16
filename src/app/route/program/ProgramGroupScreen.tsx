@@ -27,6 +27,7 @@ import ConfirmModal from '../../components/common/ConfirmModal';
 import {useIsFocused} from '@react-navigation/native';
 import {ProgramStackParamList} from '../../stacks/ProgramStack';
 import {defaultStyles} from '../../utils/DefaultStyles';
+import Loader from '../../components/common/Loader';
 
 type Props = NativeStackScreenProps<
   ProgramStackParamList,
@@ -196,13 +197,17 @@ const ProgramGroupScreen: React.FC<Props> = props => {
         )}
         data={programLogGroups}
         estimatedItemSize={3}
-        ListEmptyComponent={() => (
-          <AppText
-            style={[defaultStyles.container, defaultStyles.marginTopLarge]}
-            centerText>
-            Click on the + to add a group
-          </AppText>
-        )}
+        ListEmptyComponent={() =>
+          loading ? (
+            <Loader isLoading style={defaultStyles.absoluteCenterContent} />
+          ) : (
+            <AppText
+              style={[defaultStyles.container, defaultStyles.marginTopLarge]}
+              centerText>
+              Click on the + to add a group
+            </AppText>
+          )
+        }
       />
       {actions.length > 0 && (
         <FloatingButton

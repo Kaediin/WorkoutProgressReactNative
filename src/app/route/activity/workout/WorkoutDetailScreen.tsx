@@ -394,9 +394,6 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
           });
         }
       },
-      onError: error => {
-        console.log('Error ending workout', error);
-      },
     });
   };
 

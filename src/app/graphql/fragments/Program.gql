@@ -17,13 +17,38 @@ fragment ProgramLong on Program {
     }
 }
 
-fragment ScheduledProgram on ScheduledProgram {
+fragment ProgramWorkoutLog on ProgramWorkoutLog {
+    id
+    programLog {
+        ...ProgramLog
+    }
+}
+
+fragment ProgramWorkoutGroup on ProgramWorkoutGroup {
+    id
+    type
+    programWorkoutLogs {
+        ...ProgramWorkoutLog
+    }
+}
+
+fragment ProgramWorkout on ProgramWorkout {
     id
     program {
-        ...ProgramShort
+        ...ProgramLong
     }
     workout {
         ...WorkoutShort
+    }
+    groups {
+        ...ProgramWorkoutGroup
+    }
+}
+
+fragment ScheduledProgram on ScheduledProgram {
+    id
+    programWorkout {
+        ...ProgramWorkout
     }
     scheduledDateTime
 }

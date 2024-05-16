@@ -3,3 +3,9 @@ query myScheduledProgram {
         ...ScheduledProgram
     }
 }
+
+query scheduledProgramById($id: ID!) {
+    scheduledProgramById(id: $id) {
+        ...ScheduledProgram
+    }
+}

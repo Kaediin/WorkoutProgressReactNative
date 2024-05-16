@@ -186,7 +186,7 @@ const ActivityScreen: React.FC<Props> = ({navigation}) => {
       item.__typename === 'Workout'
         ? item.status === WorkoutStatus.STARTED
         : item.__typename === 'ScheduledProgram'
-        ? item.workout.status === WorkoutStatus.STARTED
+        ? item.programWorkout.workout.status === WorkoutStatus.STARTED
         : false,
     ).length;
 
@@ -195,8 +195,8 @@ const ActivityScreen: React.FC<Props> = ({navigation}) => {
       .filter(
         item =>
           item.__typename === 'ScheduledProgram' &&
-          (item.workout.status === WorkoutStatus.SCHEDULED ||
-            item.workout.status === WorkoutStatus.STARTED),
+          (item.programWorkout.workout.status === WorkoutStatus.SCHEDULED ||
+            item.programWorkout.workout.status === WorkoutStatus.STARTED),
       )
       .filter(item =>
         moment
@@ -209,7 +209,7 @@ const ActivityScreen: React.FC<Props> = ({navigation}) => {
       .filter(
         item =>
           item.__typename === 'ScheduledProgram' &&
-          item.workout.status === WorkoutStatus.STARTED,
+          item.programWorkout.workout.status === WorkoutStatus.STARTED,
       )
       .filter(item =>
         moment
@@ -448,13 +448,14 @@ const ActivityScreen: React.FC<Props> = ({navigation}) => {
                       scheduledProgram={item.item}
                       onPress={id => {
                         if (
-                          item.item.workout.status === WorkoutStatus.STARTED
+                          item.item.programWorkout.workout.status ===
+                          WorkoutStatus.STARTED
                         ) {
                           navigation.navigate('ProgramDetail', {
-                            programId: id,
+                            // programId: id,
                             scheduledProgramId: item.item.id,
-                            workoutId: (item.item as ScheduledProgramFragment)
-                              .workout.id,
+                            // workoutId: (item.item as ScheduledProgramFragment)
+                            //   .programWorkout.workout.id,
                           });
                           return;
                         }
@@ -464,18 +465,18 @@ const ActivityScreen: React.FC<Props> = ({navigation}) => {
                           .local(true);
 
                         const status =
-                          item.item.workout.status ===
+                          item.item.programWorkout.workout.status ===
                             WorkoutStatus.SCHEDULED &&
                           moment.utc().isAfter(scheduledDateTime)
                             ? 'ready'
-                            : item.item.workout.status ===
+                            : item.item.programWorkout.workout.status ===
                                 WorkoutStatus.SCHEDULED &&
                               moment.utc().isBefore(scheduledDateTime)
                             ? 'scheduled'
                             : '';
 
                         navigation.navigate('ProgramPreview', {
-                          programId: id,
+                          // programId: id,
                           scheduledProgramId: item.item.id,
                           status,
                         });
@@ -597,9 +598,11 @@ const ActivityScreen: React.FC<Props> = ({navigation}) => {
                       scheduleZonedDateTime: moment(
                         editScheduledWorkout.scheduledDateTime,
                       ).toISOString(true),
-                      workoutName: editScheduledWorkout.workout.name,
-                      remark: editScheduledWorkout.workout.remark,
-                      programId: editScheduledWorkout.program.id,
+                      workoutName:
+                        editScheduledWorkout.programWorkout.workout.name,
+                      remark:
+                        editScheduledWorkout.programWorkout.workout.remark,
+                      programId: editScheduledWorkout.programWorkout.program.id,
                       zonedDateTime: moment().toISOString(true),
                     },
                   },

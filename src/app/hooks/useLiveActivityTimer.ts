@@ -84,7 +84,6 @@ const useLiveActivityTimer = () => {
   }, []);
 
   const pause = useCallback((durationGoal: number) => {
-    console.log(durationGoal);
     setIsPlaying(false);
     setDuration(durationGoal);
     removeInterval();

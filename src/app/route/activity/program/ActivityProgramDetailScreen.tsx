@@ -1,33 +1,30 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {ActivityStackParamList} from '../../../stacks/ActivityStack';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import GradientBackground from '../../../components/common/GradientBackground';
 import {
-  ProgramLogFragment,
   ProgramLogGroupType,
-  ProgramLogInput,
-  ProgramLongFragment,
-  useEndScheduledProgramMutation,
+  ProgramWorkoutFragment,
   useMarkLogAsCompletedMutation,
-  useProgramByIdLazyQuery,
+  useScheduledProgramByIdLazyQuery,
 } from '../../../graphql/operations';
 import {FlashList} from '@shopify/flash-list';
 import {RefreshControl} from 'react-native';
 import ActivityProgramLogGroup from '../../../components/program/ActivityProgramLogGroup';
 import moment from 'moment/moment';
-import {BottomSheetModal, BottomSheetModalProvider} from '@gorhom/bottom-sheet';
-import {CustomBottomSheet} from '../../../components/bottomSheet/CustomBottomSheet';
-import Constants from '../../../utils/Constants';
 import ClickableText from '../../../components/common/ClickableText';
 import {defaultStyles} from '../../../utils/DefaultStyles';
-import ActivityAdjustProgramBottomSheetContent from '../../../components/bottomSheet/ActivityAdjustProgramBottomSheetContent';
-import AppText from '../../../components/common/AppText';
 import AppModal from '../../../components/common/AppModal';
+import AppText from '../../../components/common/AppText';
 
 type Props = NativeStackScreenProps<ActivityStackParamList, 'ProgramDetail'>;
 
 const ActivityProgramDetailScreen: React.FC<Props> = props => {
-  const bottomSheetModalRef = useRef<BottomSheetModal>(null);
+  // const bottomSheetModalRef = useRef<BottomSheetModal>(null);
+
+  const [showEndWorkoutModal, setShowEndWorkoutModal] = useState(false);
+  const [programWorkout, setProgramWorkout] =
+    useState<ProgramWorkoutFragment>();
 
   // Sort the types in the order we want to display them
   const sortedTypes = [
@@ -36,172 +33,176 @@ const ActivityProgramDetailScreen: React.FC<Props> = props => {
     ProgramLogGroupType.COOLDOWN,
   ];
 
-  // Fetch the program by id
-  const [programById, {loading: programByIdLoading}] = useProgramByIdLazyQuery({
-    fetchPolicy: 'no-cache',
-    onCompleted: data => {
-      if (data.programById) {
-        setProgram(data.programById);
-        props.navigation.setOptions({
-          headerRight: () => (
-            <ClickableText
-              text={'End Workout'}
-              styles={[defaultStyles.error, defaultStyles.p14]}
-              onPress={() => setShowEndWorkoutModal(true)}
-            />
-          ),
-        });
-      }
-    },
-  });
+  const [fetchScheduledProgram, {loading: scheduledProgramLoading}] =
+    useScheduledProgramByIdLazyQuery({
+      fetchPolicy: 'no-cache',
+      onCompleted: data => {
+        if (
+          data.scheduledProgramById &&
+          data.scheduledProgramById?.programWorkout?.program
+        ) {
+          setProgramWorkout(data.scheduledProgramById.programWorkout);
+          props.navigation.setOptions({
+            headerRight: () => (
+              <ClickableText
+                text={'End Workout'}
+                styles={[defaultStyles.error, defaultStyles.p14]}
+                onPress={() => setShowEndWorkoutModal(true)}
+              />
+            ),
+          });
+        }
+      },
+    });
   const [markAsComplete, {loading: markAsCompleteLoading}] =
     useMarkLogAsCompletedMutation({
       fetchPolicy: 'no-cache',
       onCompleted: data => {
         if (data.markLogAsCompleted) {
-          programById({
+          fetchScheduledProgram({
             variables: {
-              id: props.route.params.programId,
+              id: props.route.params.scheduledProgramId,
             },
           });
         }
       },
     });
-  const [endScheduledWorkout] = useEndScheduledProgramMutation({
-    fetchPolicy: 'no-cache',
-    onCompleted: data => {
-      if (data.endScheduledProgram) {
-        props.navigation.navigate('ActivityOverview');
-      }
-    },
-  });
+
+  // const [endScheduledWorkout] = useEndScheduledProgramMutation({
+  //   fetchPolicy: 'no-cache',
+  //   onCompleted: data => {
+  //     if (data.endScheduledProgram) {
+  //       props.navigation.navigate('ActivityOverview');
+  //     }
+  //   },
+  // });
 
   // State for the program
-  const [showEndWorkoutModal, setShowEndWorkoutModal] = useState(false);
-  const [program, setProgram] = useState<ProgramLongFragment>();
-  const [editProgramLog, setEditProgramLog] = useState<ProgramLogFragment>();
-  const [editProgramLogInput, setEditProgramLogInput] =
-    useState<ProgramLogInput>();
+  // const [programWorkout, setProgramWorkout] = useState();
+  // const [program, setProgram] = useState<ProgramLongFragment>();
+  // const [editProgramLog, setEditProgramLog] = useState<ProgramLogFragment>();
+  // const [editProgramLogInput, setEditProgramLogInput] =
+  //   useState<ProgramLogInput>();
 
   // Fetch on param change
   useEffect(() => {
-    if (props.route.params.programId) {
-      programById({
+    if (props.route.params.scheduledProgramId) {
+      fetchScheduledProgram({
         variables: {
-          id: props.route.params.programId,
+          id: props.route.params.scheduledProgramId,
         },
       });
     }
-  }, [props.route.params.programId]);
+  }, [props.route.params.scheduledProgramId]);
 
-  useEffect(() => {
-    if (editProgramLog) {
-      bottomSheetModalRef.current?.present();
-    } else {
-      bottomSheetModalRef.current?.dismiss();
-    }
-  }, [editProgramLog]);
+  // useEffect(() => {
+  //   if (editProgramLog) {
+  //     bottomSheetModalRef.current?.present();
+  //   } else {
+  //     bottomSheetModalRef.current?.dismiss();
+  //   }
+  // }, [editProgramLog]);
 
   return (
     <GradientBackground>
       <FlashList
-        refreshing={programByIdLoading || markAsCompleteLoading}
+        refreshing={scheduledProgramLoading || markAsCompleteLoading}
         refreshControl={
           <RefreshControl
             colors={['#fff', '#ccc']}
             tintColor={'#fff'}
-            refreshing={programByIdLoading || markAsCompleteLoading}
+            refreshing={scheduledProgramLoading || markAsCompleteLoading}
             onRefresh={() => {
-              programById({
+              fetchScheduledProgram({
                 variables: {
-                  id: props.route.params.programId,
+                  id: props.route.params.scheduledProgramId,
                 },
               });
             }}
           />
         }
         renderItem={({item}) => {
-          if (item.logs.length === 0) {
+          if (item.programWorkoutLogs.length === 0) {
             return <></>;
           }
           return (
             <ActivityProgramLogGroup
               group={item}
               onLogPress={log => {
-                if (log && log.id) {
+                if (log && log.programLog?.id && programWorkout?.workout.id) {
                   markAsComplete({
                     variables: {
-                      id: log.id,
-                      workoutId: props.route.params.workoutId,
+                      id: log.programLog.id,
+                      workoutId: programWorkout?.workout.id,
                       zonedDateTimeString: moment().toISOString(true),
                     },
                   });
                 }
               }}
               onEditLogPress={log => {
-                setEditProgramLog(log);
-                setEditProgramLogInput({
-                  logValue: log.logValue,
-                  repetitions: log.repetitions,
-                  effort: log.effort,
-                  cooldownSeconds: log.cooldownSeconds,
-                  intervalSeconds: log.intervalSeconds,
-                  exerciseId: log.exercise?.id,
-                  subdivisions: log.subdivisions?.map(sub => ({
-                    id: '',
-                    logValue: sub.logValue,
-                    repetitions: sub.repetitions,
-                    effort: sub.effort,
-                    exerciseId: sub.exercise?.id,
-                    cooldownSeconds: sub.cooldownSeconds,
-                    intervalSeconds: sub.intervalSeconds,
-                    programLogGroupId: '',
-                  })),
-                  programLogGroupId: '',
-                });
+                //   setEditProgramLog(log);
+                //   setEditProgramLogInput({
+                //     logValue: log.logValue,
+                //     repetitions: log.repetitions,
+                //     effort: log.effort,
+                //     cooldownSeconds: log.cooldownSeconds,
+                //     intervalSeconds: log.intervalSeconds,
+                //     exerciseId: log.exercise?.id,
+                //     subdivisions: log.subdivisions?.map(sub => ({
+                //       id: '',
+                //       logValue: sub.logValue,
+                //       repetitions: sub.repetitions,
+                //       effort: sub.effort,
+                //       exerciseId: sub.exercise?.id,
+                //       cooldownSeconds: sub.cooldownSeconds,
+                //       intervalSeconds: sub.intervalSeconds,
+                //       programLogGroupId: '',
+                //     })),
+                //     programLogGroupId: '',
+                //   });
               }}
             />
           );
         }}
-        data={(program?.logGroups || []).sort(
+        data={(programWorkout?.groups || []).sort(
           (a, b) => sortedTypes.indexOf(a.type) - sortedTypes.indexOf(b.type),
         )}
         estimatedItemSize={3}
       />
-      <BottomSheetModalProvider>
-        <CustomBottomSheet
-          ref={bottomSheetModalRef}
-          backgroundColor={{backgroundColor: Constants.PRIMARY_GRADIENT[0]}}
-          onDismissClicked={() => setEditProgramLog(undefined)}
-          rightText={'Adjust and mark as saved'}
-          index={
-            editProgramLog?.subdivisions &&
-            editProgramLog.subdivisions.length > 0
-              ? 75
-              : 30
-          }>
-          {editProgramLog?.id && editProgramLogInput && (
-            <ActivityAdjustProgramBottomSheetContent
-              id={editProgramLog.id}
-              log={editProgramLogInput}
-              onLogChange={setEditProgramLogInput}
-              exerciseMap={[
-                editProgramLog.exercise,
-                ...(editProgramLog.subdivisions &&
-                editProgramLog.subdivisions.length > 0
-                  ? editProgramLog.subdivisions?.map(s => s.exercise)
-                  : []),
-              ].reduce((acc, e) => {
-                if (!e) {
-                  return acc;
-                }
-                acc[e.id] = e.name;
-                return acc;
-              }, {} as {[key: string]: string})}
-            />
-          )}
-        </CustomBottomSheet>
-      </BottomSheetModalProvider>
+      {/*<BottomSheetModalProvider>*/}
+      {/*  <CustomBottomSheet*/}
+      {/*    ref={bottomSheetModalRef}*/}
+      {/*    backgroundColor={{backgroundColor: Constants.PRIMARY_GRADIENT[0]}}*/}
+      {/*    onDismissClicked={() => setEditProgramLog(undefined)}*/}
+      {/*    rightText={'Adjust and mark as saved'}*/}
+      {/*    index={*/}
+      {/*      editProgramLog?.subdivisions &&*/}
+      {/*      editProgramLog.subdivisions.length > 0*/}
+      {/*        ? 75*/}
+      {/*        : 30*/}
+      {/*    }>*/}
+      {/*    {editProgramLog?.id && editProgramLogInput && (*/}
+      {/*      <ActivityAdjustProgramBottomSheetContent*/}
+      {/*        id={editProgramLog.id}*/}
+      {/*        log={editProgramLogInput}*/}
+      {/*        onLogChange={setEditProgramLogInput}*/}
+      {/*        exerciseMap={[*/}
+      {/*          editProgramLog.exercise,*/}
+      {/*          ...(editProgramLog.subdivisions &&*/}
+      {/*          editProgramLog.subdivisions.length > 0*/}
+      {/*            ? editProgramLog.subdivisions?.map(s => s.exercise)*/}
+      {/*            : []),*/}
+      {/*        ].reduce((acc, e) => {*/}
+      {/*          if (!e) {*/}
+      {/*            return acc;*/}
+      {/*          }*/}
+      {/*          acc[e.id] = e.name;*/}
+      {/*          return acc;*/}
+      {/*        }, {} as {[key: string]: string})}*/}
+      {/*      />*/}
+      {/*    )}*/}
+      {/*  </CustomBottomSheet>*/}
+      {/*</BottomSheetModalProvider>*/}
       <AppModal
         isVisible={showEndWorkoutModal}
         onDismiss={() => setShowEndWorkoutModal(false)}>

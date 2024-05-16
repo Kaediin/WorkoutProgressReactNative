@@ -65,17 +65,27 @@ const ProgramLogListItem: React.FC<ProgramLogListItemProps> = ({log}) => {
           ))}
         </View>
       ) : (
-        <View style={defaultStyles.row}>
-          <AppText>
-            {log.repetitions} x {logValueToString(log.logValue)}{' '}
-            {log.exercise?.name}{' '}
-            {log.cooldownSeconds
-              ? "R'" + log.cooldownSeconds + 'sec'
-              : log.intervalSeconds
-              ? '@' + log.intervalSeconds + 'sec'
-              : ''}
-          </AppText>
-        </View>
+        <>
+          <View style={defaultStyles.row}>
+            <AppText>
+              {log.repetitions} x {logValueToString(log.logValue)}{' '}
+              {log.exercise?.name}{' '}
+              {log.cooldownSeconds
+                ? "R'" + log.cooldownSeconds + 'sec'
+                : log.intervalSeconds
+                ? '@' + log.intervalSeconds + 'sec'
+                : ''}
+            </AppText>
+          </View>
+          {!!log.effort && log.effort > 0 && (
+            <View style={defaultStyles.marginTop}>
+              <AppText xSmall T2>
+                Effort: {log.effort}%
+              </AppText>
+              <AppSlider value={log.effort} disabled />
+            </View>
+          )}
+        </>
       )}
     </View>
   );

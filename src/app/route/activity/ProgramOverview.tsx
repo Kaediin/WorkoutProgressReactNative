@@ -27,6 +27,7 @@ import ConfirmModal from '../../components/common/ConfirmModal';
 import {Fab} from '../../utils/Fab';
 import {Add, Schedule} from '../../icons/svg';
 import ScheduleProgramBottomSheetContent from '../../components/program/ScheduleProgramBottomSheetContent';
+import {IActionProps} from 'react-native-floating-action';
 
 interface ProgramOverviewProps {
   onProgramPressed: (programId: string) => void;
@@ -121,6 +122,26 @@ const ProgramOverview: React.FC<ProgramOverviewProps> = props => {
     }
   };
 
+  const fabActions = useMemo<IActionProps[]>(() => {
+    const data: IActionProps[] = [
+      {
+        text: 'Create program',
+        icon: <Add />,
+        name: Fab.NEWLOG,
+        color: Constants.PRIMARY_GRADIENT[0],
+      },
+    ];
+    if (myPrograms?.myPrograms && myPrograms?.myPrograms.length > 0) {
+      data.push({
+        text: 'Schedule program',
+        icon: <Schedule />,
+        name: Fab.SCHEDULE,
+        color: Constants.PRIMARY_GRADIENT[0],
+      });
+    }
+    return data;
+  }, [myPrograms?.myPrograms]);
+
   return (
     <View style={[defaultStyles.flex1, defaultStyles.marginTop]}>
       <FlatList
@@ -166,11 +187,17 @@ const ProgramOverview: React.FC<ProgramOverviewProps> = props => {
             />
           </ContextMenu>
         )}
-        ListEmptyComponent={() => (
-          <AppText style={defaultStyles.marginTop50} centerText>
-            No programs created yet
-          </AppText>
-        )}
+        ListEmptyComponent={() =>
+          myProgramsLoading ? (
+            <Loader isLoading style={defaultStyles.absoluteCenterContent} />
+          ) : (
+            <AppText
+              style={[defaultStyles.marginTop50, defaultStyles.container]}
+              centerText>
+              No programs created yet. Click on the + to create a program
+            </AppText>
+          )
+        }
       />
       <BottomSheetModalProvider>
         <CustomBottomSheet
@@ -274,20 +301,7 @@ const ProgramOverview: React.FC<ProgramOverviewProps> = props => {
           />
         </CustomBottomSheet>
         <FloatingButton
-          actions={[
-            {
-              text: 'Create program',
-              icon: <Add />,
-              name: Fab.NEWLOG,
-              color: Constants.PRIMARY_GRADIENT[0],
-            },
-            {
-              text: 'Schedule program',
-              icon: <Schedule />,
-              name: Fab.SCHEDULE,
-              color: Constants.PRIMARY_GRADIENT[0],
-            },
-          ]}
+          actions={fabActions}
           onPressAction={name =>
             name === Fab.NEWLOG
               ? onFABClicked()

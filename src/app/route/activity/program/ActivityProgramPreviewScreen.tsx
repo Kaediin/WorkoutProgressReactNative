@@ -1,21 +1,21 @@
 import React, {useEffect, useState} from 'react';
-import {StyleSheet, View} from 'react-native';
+import {View} from 'react-native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {ActivityStackParamList} from '../../../stacks/ActivityStack';
 import {
   ProgramLogGroupType,
-  ProgramLongFragment,
-  useProgramByIdLazyQuery,
+  ProgramWorkoutFragment,
+  useScheduledProgramByIdLazyQuery,
   useStartScheduledProgramMutation,
 } from '../../../graphql/operations';
 import Loader from '../../../components/common/Loader';
 import GradientBackground from '../../../components/common/GradientBackground';
-import ProgramLogGroupListItem from '../../../components/program/ProgramLogGroupListItem';
 import {FlashList} from '@shopify/flash-list';
 import {defaultStyles} from '../../../utils/DefaultStyles';
 import AppText from '../../../components/common/AppText';
 import ClickableText from '../../../components/common/ClickableText';
 import moment from 'moment/moment';
+import ActivityProgramLogGroup from '../../../components/program/ActivityProgramLogGroup';
 
 type Props = NativeStackScreenProps<ActivityStackParamList, 'ProgramPreview'>;
 
@@ -25,64 +25,70 @@ const ActivityProgramPreviewScreen: React.FC<Props> = props => {
     ProgramLogGroupType.MAIN,
     ProgramLogGroupType.COOLDOWN,
   ];
-
-  const [programById, {loading: programByIdLoading}] = useProgramByIdLazyQuery({
-    fetchPolicy: 'no-cache',
-    onCompleted: data => {
-      if (data.programById) {
-        if (props.route.params.status === 'ready') {
-          props.navigation.setOptions({
-            headerTitle: data.programById.name,
-            headerRight: () => (
-              <ClickableText
-                text={'Start as workout'}
-                onPress={() =>
-                  startScheduledProgram({
-                    variables: {
-                      id: props.route.params.scheduledProgramId,
-                      zonedDateTime: moment().toISOString(true),
-                    },
-                  })
-                }
-              />
-            ),
-          });
-        } else {
-          props.navigation.setOptions({
-            headerTitle: data.programById.name,
-            headerRight: () => <></>,
-          });
+  const [programWorkout, setProgramWorkout] =
+    useState<ProgramWorkoutFragment>();
+  const [fetchScheduledProgram, {loading: scheduledProgramLoading}] =
+    useScheduledProgramByIdLazyQuery({
+      fetchPolicy: 'no-cache',
+      onCompleted: data => {
+        if (data.scheduledProgramById) {
+          console.log(data.scheduledProgramById);
+          if (props.route.params.status === 'ready') {
+            props.navigation.setOptions({
+              headerTitle:
+                data.scheduledProgramById.programWorkout.workout.name,
+              headerRight: () => (
+                <ClickableText
+                  text={'Start as workout'}
+                  onPress={() =>
+                    startScheduledProgram({
+                      variables: {
+                        id: props.route.params.scheduledProgramId,
+                        zonedDateTime: moment().toISOString(true),
+                      },
+                    })
+                  }
+                />
+              ),
+            });
+          } else {
+            props.navigation.setOptions({
+              headerTitle:
+                data.scheduledProgramById.programWorkout.workout.name,
+              headerRight: () => <></>,
+            });
+          }
+          setProgramWorkout(data.scheduledProgramById.programWorkout);
         }
-        setProgram(data.programById);
-      }
-    },
-  });
+      },
+    });
+
   const [startScheduledProgram, {loading: startScheduledProgramLoading}] =
     useStartScheduledProgramMutation({
       fetchPolicy: 'no-cache',
       onCompleted: data => {
         if (data.startScheduledProgram) {
-          // props.navigation.replace('');
+          props.navigation.replace('ProgramDetail', {
+            scheduledProgramId: props.route.params.scheduledProgramId,
+          });
         }
       },
     });
 
-  const [program, setProgram] = useState<ProgramLongFragment>();
-
   // Fetch on param change
   useEffect(() => {
-    if (props.route.params.programId) {
-      programById({
+    if (props.route.params.scheduledProgramId) {
+      fetchScheduledProgram({
         variables: {
-          id: props.route.params.programId,
+          id: props.route.params.scheduledProgramId,
         },
       });
     }
-  }, [props.route.params.programId]);
+  }, [props.route.params.scheduledProgramId]);
 
   return (
     <GradientBackground>
-      {programByIdLoading || startScheduledProgramLoading ? (
+      {scheduledProgramLoading || startScheduledProgramLoading ? (
         <Loader isLoading />
       ) : (
         <FlashList
@@ -101,16 +107,14 @@ const ActivityProgramPreviewScreen: React.FC<Props> = props => {
             </View>
           )}
           renderItem={({item}) => (
-            <ProgramLogGroupListItem
-              programLogGroup={item}
-              onCreateLogPress={() => {}}
-              onEditLogPress={_ => {}}
-              onDeleteLogPress={() => {}}
-              onDeleteGroupPress={() => {}}
-              readonly
+            <ActivityProgramLogGroup
+              group={item}
+              onLogPress={() => {}}
+              onEditLogPress={() => {}}
+              completedLogIds={[]}
             />
           )}
-          data={(program?.logGroups || []).sort(
+          data={(programWorkout?.groups || []).sort(
             (a, b) => sortedTypes.indexOf(a.type) - sortedTypes.indexOf(b.type),
           )}
           estimatedItemSize={3}
@@ -119,11 +123,5 @@ const ActivityProgramPreviewScreen: React.FC<Props> = props => {
     </GradientBackground>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    padding: 20,
-  },
-});
 
 export default ActivityProgramPreviewScreen;

@@ -127,7 +127,7 @@ const ProgramLogListItemEditable: React.FC<
             (props.advancedSettings.timerState === 'cooldown' ? (
               <View style={styles.containerTimerSeconds}>
                 <AppText xSmall T2>
-                  Cooldown
+                  Rest
                 </AppText>
               </View>
             ) : props.advancedSettings.timerState === 'interval' ? (
@@ -189,7 +189,9 @@ const ProgramLogListItemEditable: React.FC<
         </View>
         {props.advancedSettings.enableSubdivisions ? (
           <View style={styles.containerUnitDisabled}>
-            <AppText T1>{exerciseLog.logValue?.unit ?? 'Unit'}</AppText>
+            <AppText T1>
+              {exerciseLog.logValue?.unit?.toLowerCase() ?? 'Unit'}
+            </AppText>
           </View>
         ) : (
           <View style={styles.containerUnit}>
@@ -231,23 +233,35 @@ const ProgramLogListItemEditable: React.FC<
             <View style={styles.containerExercise}>
               <TouchableOpacity
                 style={defaultStyles.marginVertical}
-                onPress={() => setShowPickerExercise(!showPickerExercise)}>
+                onPress={() => {
+                  setShowEffort(false);
+                  setShowPickerExercise(!showPickerExercise);
+                }}>
                 <ClickableText
                   text={
                     props.exercises.find(x => x.id === exerciseLog.exerciseId)
-                      ?.name ?? 'Pick exercise'
+                      ?.name ?? 'Pick'
                   }
-                  onPress={() => setShowPickerExercise(!showPickerExercise)}
+                  onPress={() => {
+                    setShowEffort(false);
+                    setShowPickerExercise(!showPickerExercise);
+                  }}
                 />
               </TouchableOpacity>
             </View>
             <View style={styles.containerEffort}>
               <TouchableOpacity
                 style={defaultStyles.marginVertical}
-                onPress={() => setShowEffort(!showEffort)}>
+                onPress={() => {
+                  setShowPickerExercise(false);
+                  setShowEffort(!showEffort);
+                }}>
                 <ClickableText
                   text={props.programLogInput.effort || 'Set'}
-                  onPress={() => setShowEffort(!showEffort)}
+                  onPress={() => {
+                    setShowPickerExercise(false);
+                    setShowEffort(!showEffort);
+                  }}
                 />
               </TouchableOpacity>
             </View>
@@ -359,7 +373,7 @@ const styles = StyleSheet.create({
     width: 60,
   },
   containerExercise: {
-    width: 100,
+    width: 75,
     marginLeft: Constants.CONTAINER_PADDING_MARGIN,
   },
   isSubdivision: {

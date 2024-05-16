@@ -80,14 +80,15 @@ const ProgramCreateLogScreen: React.FC<Props> = props => {
   });
 
   // Mutations
-  const [createProgramLog] = useCreateProgramLogMutation({
-    fetchPolicy: 'no-cache',
-    onCompleted: data => {
-      if (data?.createProgramLog) {
-        props.navigation.goBack();
-      }
-    },
-  });
+  const [createProgramLog, {loading: createLogLoading}] =
+    useCreateProgramLogMutation({
+      fetchPolicy: 'no-cache',
+      onCompleted: data => {
+        if (data?.createProgramLog) {
+          props.navigation.goBack();
+        }
+      },
+    });
 
   const [updateProgramLog, {loading: updateProgramLogLoading}] =
     useUpdateProgramLogMutation({
@@ -183,7 +184,6 @@ const ProgramCreateLogScreen: React.FC<Props> = props => {
         },
       });
     } else {
-      console.log(JSON.stringify(programLogInput));
       createProgramLog({
         variables: {
           input: {
@@ -328,7 +328,8 @@ const ProgramCreateLogScreen: React.FC<Props> = props => {
     }
   }, [props.route.params.log]);
 
-  const loading = myExercisesLoading || updateProgramLogLoading;
+  const loading =
+    myExercisesLoading || updateProgramLogLoading || createLogLoading;
 
   return (
     <GradientBackground>
@@ -405,7 +406,7 @@ const ProgramCreateLogScreen: React.FC<Props> = props => {
                           value: 'interval',
                         },
                         {
-                          label: 'Cooldown',
+                          label: 'Rest',
                           value: 'cooldown',
                         },
                       ]}
