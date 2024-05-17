@@ -1,5 +1,8 @@
 import React, {useEffect, useState} from 'react';
-import {ScheduledProgramFragment} from '../../graphql/operations';
+import {
+  ScheduledProgramFragment,
+  WorkoutStatus,
+} from '../../graphql/operations';
 import DatePicker from 'react-native-date-picker';
 import moment from 'moment/moment';
 import {BottomSheetTextInput} from '@gorhom/bottom-sheet';
@@ -32,13 +35,16 @@ const ActivityEditScheduledProgram: React.FC<
         Workout name
       </AppText>
       <BottomSheetTextInput
-        defaultValue={scheduledProgram.workout.name || ''}
+        defaultValue={scheduledProgram.programWorkout.workout.name || ''}
         onChangeText={name => {
           setScheduledProgram(prevState => ({
             ...prevState,
-            workout: {
-              ...prevState.workout,
-              name,
+            programWorkout: {
+              ...prevState.programWorkout,
+              workout: {
+                ...prevState.programWorkout.workout,
+                name,
+              },
             },
           }));
         }}
@@ -51,13 +57,16 @@ const ActivityEditScheduledProgram: React.FC<
         Workout remark
       </AppText>
       <BottomSheetTextInput
-        defaultValue={scheduledProgram.workout.remark || ''}
+        defaultValue={scheduledProgram.programWorkout.workout.remark || ''}
         onChangeText={remark => {
           setScheduledProgram(prevState => ({
             ...prevState,
-            workout: {
-              ...prevState.workout,
-              remark,
+            programWorkout: {
+              ...prevState.programWorkout,
+              workout: {
+                ...prevState.programWorkout.workout,
+                remark,
+              },
             },
           }));
         }}
@@ -66,20 +75,28 @@ const ActivityEditScheduledProgram: React.FC<
         placeholder={'Remarks for this workout'}
         maxLength={Constants.TEXT_AREA_MAX_LENGTH}
       />
-      <View style={defaultStyles.marginTop} />
-      <AppText style={defaultStyles.blackTextColor} xSmall T2>
-        Scheduled date and time
-      </AppText>
-      <DatePicker
-        date={new Date(scheduledProgram.scheduledDateTime)}
-        mode="datetime"
-        onDateChange={date => {
-          setScheduledProgram(prevState => ({
-            ...prevState,
-            scheduledDateTime: moment(date).toISOString(true),
-          }));
-        }}
-      />
+      {scheduledProgram.programWorkout.workout.status ===
+        WorkoutStatus.SCHEDULED && (
+        <>
+          <View style={defaultStyles.marginTop} />
+          <AppText style={defaultStyles.blackTextColor} xSmall T2>
+            Scheduled date and time
+          </AppText>
+          <DatePicker
+            date={moment
+              .utc(scheduledProgram.scheduledDateTime)
+              .local(true)
+              .toDate()}
+            mode="datetime"
+            onDateChange={date => {
+              setScheduledProgram(prevState => ({
+                ...prevState,
+                scheduledDateTime: moment(date).toISOString(true),
+              }));
+            }}
+          />
+        </>
+      )}
     </View>
   );
 };

@@ -32,7 +32,6 @@ const ActivityProgramPreviewScreen: React.FC<Props> = props => {
       fetchPolicy: 'no-cache',
       onCompleted: data => {
         if (data.scheduledProgramById) {
-          console.log(data.scheduledProgramById);
           if (props.route.params.status === 'ready') {
             props.navigation.setOptions({
               headerTitle:
@@ -111,7 +110,7 @@ const ActivityProgramPreviewScreen: React.FC<Props> = props => {
               group={item}
               onLogPress={() => {}}
               onEditLogPress={() => {}}
-              completedLogIds={[]}
+              readonly
             />
           )}
           data={(programWorkout?.groups || []).sort(

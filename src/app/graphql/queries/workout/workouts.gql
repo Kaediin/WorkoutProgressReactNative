@@ -3,3 +3,12 @@ query workouts {
         ...WorkoutShort
     }
 }
+
+query workoutsAndScheduledWorkouts {
+    myWorkouts {
+        ...WorkoutShort
+    }
+    myScheduledPrograms {
+        ...ScheduledProgram
+    }
+}

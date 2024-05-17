@@ -9,12 +9,11 @@ import {
   useDeleteScheduledProgramMutation,
   useDeleteWorkoutMutation,
   useHasActiveWorkoutQuery,
-  useMyScheduledProgramQuery,
   useRestartWorkoutMutation,
   useStartWorkoutMutation,
   useUpdateScheduledProgramMutation,
   useUpdateWorkoutMutation,
-  useWorkoutsQuery,
+  useWorkoutsAndScheduledWorkoutsQuery,
   WorkoutInput,
   WorkoutShortFragment,
   WorkoutStatus,
@@ -41,6 +40,7 @@ import ScheduledProgramActivityListItem from '../../components/program/Scheduled
 import useActivityStore from '../../stores/activityStore';
 import ActivityEditScheduledProgram from '../../components/bottomSheet/ActivityEditScheduledProgram';
 import {nearestFutureDate, nearestPastDate} from '../../utils/Date';
+import Loader from '../../components/common/Loader';
 
 type Props = NativeStackScreenProps<ActivityStackParamList, 'ActivityOverview'>;
 
@@ -79,17 +79,40 @@ const ActivityScreen: React.FC<Props> = ({navigation}) => {
 
   // GraphQL Mutations and Queries
   const [reactivateWorkout, {loading: reactivateLoading}] =
-    useRestartWorkoutMutation();
+    useRestartWorkoutMutation({
+      fetchPolicy: 'no-cache',
+      onCompleted: data => {
+        if (data.restartWorkout) {
+          refetchActiveWorkout();
+          refetchWorkoutsAndScheduledWorkouts();
+          navigateToWorkout(data.restartWorkout.id);
+        }
+      },
+    });
   const [updateWorkout, {loading: updateWorkoutLoading}] =
-    useUpdateWorkoutMutation({fetchPolicy: 'no-cache'});
-  const [deleteWorkout] = useDeleteWorkoutMutation({fetchPolicy: 'no-cache'});
-  const {
-    data: getWorkoutsData,
-    loading: getWorkoutsLoading,
-    refetch: refetchWorkouts,
-  } = useWorkoutsQuery({
+    useUpdateWorkoutMutation({
+      fetchPolicy: 'no-cache',
+      onCompleted: data => {
+        if (data?.updateWorkout) {
+          refetchWorkoutsAndScheduledWorkouts();
+        }
+      },
+    });
+  const [deleteWorkout] = useDeleteWorkoutMutation({
     fetchPolicy: 'no-cache',
+    onCompleted: data => {
+      if (data.deleteWorkout) {
+        setDeleteWorkoutId('');
+        refetchActiveWorkout();
+        refetchWorkoutsAndScheduledWorkouts();
+      }
+    },
   });
+  const {
+    data: workoutAndSceduledWorkoutsData,
+    loading: workoutAndScheduledWorkoutsLoading,
+    refetch: refetchWorkoutsAndScheduledWorkouts,
+  } = useWorkoutsAndScheduledWorkoutsQuery({fetchPolicy: 'no-cache'});
   const [startWorkout, {data: startWorkoutData, loading: startWorkoutLoading}] =
     useStartWorkoutMutation({
       fetchPolicy: 'no-cache',
@@ -101,19 +124,12 @@ const ActivityScreen: React.FC<Props> = ({navigation}) => {
   } = useHasActiveWorkoutQuery({
     fetchPolicy: 'no-cache',
   });
-  const {
-    data: myScheduledProgramsData,
-    loading: myScheduledProgramsLoading,
-    refetch: refetchPrograms,
-  } = useMyScheduledProgramQuery({
-    fetchPolicy: 'no-cache',
-  });
   const [deleteScheduledProgram, {loading: deleteScheduledProgramLoading}] =
     useDeleteScheduledProgramMutation({
       fetchPolicy: 'no-cache',
       onCompleted: () => {
         setDeleteScheduledProgramId('');
-        refetchPrograms();
+        refetchWorkoutsAndScheduledWorkouts();
       },
     });
   const [updateScheduledProgram, {loading: updateScheduledProgramLoading}] =
@@ -121,7 +137,7 @@ const ActivityScreen: React.FC<Props> = ({navigation}) => {
       fetchPolicy: 'no-cache',
       onCompleted: () => {
         setEditScheduledWorkout(undefined);
-        refetchPrograms();
+        refetchWorkoutsAndScheduledWorkouts();
       },
     });
 
@@ -149,14 +165,26 @@ const ActivityScreen: React.FC<Props> = ({navigation}) => {
 
   // Get existing workouts
   const workoutAndScheduledProgramsSorted = useMemo(() => {
+    // Get all scheduled programs
     const scheduledPrograms =
-      myScheduledProgramsData?.myScheduledPrograms || [];
-    const workouts = getWorkoutsData?.myWorkouts || [];
+      workoutAndSceduledWorkoutsData?.myScheduledPrograms || [];
 
+    // Get all workouts that are not part of a scheduled program
+    const workouts = (workoutAndSceduledWorkoutsData?.myWorkouts || [])
+      .filter(nonNullable)
+      .filter(workout =>
+        scheduledPrograms.every(
+          (value: ScheduledProgramFragment) =>
+            value.programWorkout.workout.id !== workout.id,
+        ),
+      );
+
+    // If there are no scheduled programs or workouts, return an empty array
     if (scheduledPrograms.length === 0 && workouts.length === 0) {
       return [];
     }
 
+    // Sort the scheduled programs and workouts by date
     return [...scheduledPrograms, ...workouts]
       .sort(
         (a, b) =>
@@ -167,8 +195,8 @@ const ActivityScreen: React.FC<Props> = ({navigation}) => {
       )
       .filter(nonNullable);
   }, [
-    getWorkoutsData?.myWorkouts,
-    myScheduledProgramsData?.myScheduledPrograms,
+    workoutAndSceduledWorkoutsData?.myWorkouts,
+    workoutAndSceduledWorkoutsData?.myScheduledPrograms,
   ]);
 
   const timelineLabels: {
@@ -244,7 +272,6 @@ const ActivityScreen: React.FC<Props> = ({navigation}) => {
       },
     });
     bottomSheetModalRef.current?.dismiss();
-    refetchWorkouts();
   };
 
   // handle floating button click
@@ -271,10 +298,6 @@ const ActivityScreen: React.FC<Props> = ({navigation}) => {
       variables: {
         id,
       },
-    }).finally(() => {
-      setDeleteWorkoutId('');
-      refetchActiveWorkout();
-      refetchWorkouts();
     });
   };
 
@@ -305,25 +328,21 @@ const ActivityScreen: React.FC<Props> = ({navigation}) => {
 
   // Get FAB actions for Scheduled Programs
   const getScheduledProgramActions = (): Array<ContextMenuAction> => {
-    const actions: Array<ContextMenuAction> = [
+    return [
       {title: ContextMenuActions.EDIT},
+      {destructive: true, title: ContextMenuActions.DELETE},
     ];
-    actions.push({destructive: true, title: ContextMenuActions.DELETE});
-    return actions;
   };
 
   // Loading
   const anyLoading =
     startWorkoutLoading ||
-    getWorkoutsLoading ||
+    workoutAndScheduledWorkoutsLoading ||
     reactivateLoading ||
     updateWorkoutLoading ||
     hasActiveWorkoutLoading ||
-    myScheduledProgramsLoading ||
     deleteScheduledProgramLoading ||
     updateScheduledProgramLoading;
-
-  const showLoaderFlatlist = getWorkoutsLoading || myScheduledProgramsLoading;
 
   // Reactivate workout
   const doReactivateWorkout = (workout: WorkoutShortFragment): void => {
@@ -332,18 +351,17 @@ const ActivityScreen: React.FC<Props> = ({navigation}) => {
       variables: {
         workoutId: workout.id,
       },
-      onCompleted: () => {
-        refetchActiveWorkout();
-        refetchWorkouts();
-        navigateToWorkout(workout.id);
-      },
     });
   };
 
   // Refetch if the screen is focussed
   useEffect(() => {
-    if (isFocussed && getWorkoutsData?.myWorkouts) {
-      refetchWorkouts();
+    if (
+      isFocussed &&
+      (workoutAndSceduledWorkoutsData?.myWorkouts ||
+        workoutAndSceduledWorkoutsData?.myScheduledPrograms)
+    ) {
+      refetchWorkoutsAndScheduledWorkouts();
       refetchActiveWorkout();
     }
   }, [isFocussed, navigation.getState()]);
@@ -360,9 +378,8 @@ const ActivityScreen: React.FC<Props> = ({navigation}) => {
   useFocusEffect(
     useCallback(() => {
       if (shouldRefetch) {
-        refetchWorkouts();
+        refetchWorkoutsAndScheduledWorkouts();
         refetchActiveWorkout();
-        refetchPrograms();
         setRefetchActivity(false);
       }
     }, [shouldRefetch]),
@@ -396,22 +413,27 @@ const ActivityScreen: React.FC<Props> = ({navigation}) => {
         <FlatList
           ref={flatlistRef}
           data={workoutAndScheduledProgramsSorted}
-          ListEmptyComponent={() => (
-            <AppText style={defaultStyles.marginTop50} centerText>
-              Click on the + to start your first workout!
-            </AppText>
-          )}
-          onRefresh={refetchWorkouts}
-          refreshing={showLoaderFlatlist}
+          ListEmptyComponent={() =>
+            workoutAndScheduledWorkoutsLoading ? (
+              <View style={defaultStyles.marginTop50}>
+                <Loader isLoading />
+              </View>
+            ) : (
+              <AppText style={defaultStyles.marginTop50} centerText>
+                Click on the + to start your first workout!
+              </AppText>
+            )
+          }
+          onRefresh={refetchWorkoutsAndScheduledWorkouts}
+          refreshing={workoutAndScheduledWorkoutsLoading}
           refreshControl={
             <RefreshControl
               colors={['#fff', '#ccc']}
               tintColor={'#fff'}
-              refreshing={showLoaderFlatlist}
+              refreshing={workoutAndScheduledWorkoutsLoading}
               onRefresh={() => {
-                refetchWorkouts();
+                refetchWorkoutsAndScheduledWorkouts();
                 refetchActiveWorkout();
-                refetchPrograms();
               }}
             />
           }
@@ -452,10 +474,7 @@ const ActivityScreen: React.FC<Props> = ({navigation}) => {
                           WorkoutStatus.STARTED
                         ) {
                           navigation.navigate('ProgramDetail', {
-                            // programId: id,
-                            scheduledProgramId: item.item.id,
-                            // workoutId: (item.item as ScheduledProgramFragment)
-                            //   .programWorkout.workout.id,
+                            scheduledProgramId: id,
                           });
                           return;
                         }
@@ -609,7 +628,10 @@ const ActivityScreen: React.FC<Props> = ({navigation}) => {
                 });
               }
             }}>
-            {editScheduledWorkout && (
+            {updateScheduledProgramLoading && (
+              <Loader style={defaultStyles.marginTop50} isLoading dark />
+            )}
+            {!updateScheduledProgramLoading && editScheduledWorkout && (
               <ActivityEditScheduledProgram
                 scheduledProgram={editScheduledWorkout}
                 onChangeScheduledProgram={setEditScheduledWorkout}

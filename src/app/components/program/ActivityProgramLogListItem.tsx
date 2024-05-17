@@ -17,6 +17,7 @@ interface ActivityProgramLogListItemProps {
   onLogEditPress: (log: ProgramWorkoutLogFragment) => void;
   focussed: boolean;
   completed: boolean;
+  readonly: boolean;
 }
 
 const ActivityProgramLogListItem: React.FC<
@@ -59,7 +60,11 @@ const ActivityProgramLogListItem: React.FC<
         styles.container,
         defaultStyles.marginBottom,
         defaultStyles.shadow,
-        props.focussed ? styles.focussed : styles.unfocussed,
+        !props.readonly
+          ? props.focussed
+            ? styles.focussed
+            : styles.unfocussed
+          : {},
         props.completed && styles.completed,
       ]}
       onPress={() => {
@@ -155,7 +160,9 @@ const ActivityProgramLogListItem: React.FC<
     </TouchableOpacity>
   );
 
-  if (props.completed) {
+  if (props.readonly) {
+    return item;
+  } else if (props.completed) {
     return (
       <View style={styles.completedContainer}>
         <View>{item}</View>

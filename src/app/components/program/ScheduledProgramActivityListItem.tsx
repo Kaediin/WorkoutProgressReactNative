@@ -45,9 +45,7 @@ const ScheduledProgramActivityListItem: React.FC<
             opacity: 0.4,
           },
       ]}
-      onPress={() =>
-        props.onPress(props.scheduledProgram.programWorkout.program.id)
-      }>
+      onPress={() => props.onPress(props.scheduledProgram.id)}>
       <View>
         {isReadyToStart && (
           <AppText style={[defaultStyles.textAlignRight, styles.colorGreen]}>
