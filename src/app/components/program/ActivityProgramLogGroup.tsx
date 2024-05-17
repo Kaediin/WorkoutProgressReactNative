@@ -13,7 +13,8 @@ interface ActivityProgramLogGroupProps {
   group: ProgramWorkoutGroupFragment;
   onLogPress: (log: ProgramWorkoutLogFragment) => void;
   onEditLogPress: (log: ProgramWorkoutLogFragment) => void;
-  readonly: boolean;
+  readonly?: boolean;
+  status?: 'scheduled' | 'ready' | '';
 }
 
 const ActivityProgramLogGroup: React.FC<
@@ -46,6 +47,7 @@ const ActivityProgramLogGroup: React.FC<
           completed={isLogCompleted(log)}
           focussed={log.id === focussedId}
           readonly={props.readonly}
+          status={props.status}
         />
       ))}
     </View>

@@ -110,6 +110,7 @@ const ActivityProgramPreviewScreen: React.FC<Props> = props => {
               group={item}
               onLogPress={() => {}}
               onEditLogPress={() => {}}
+              status={props.route.params.status}
               readonly
             />
           )}

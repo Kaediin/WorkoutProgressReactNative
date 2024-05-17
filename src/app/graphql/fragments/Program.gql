@@ -38,7 +38,7 @@ fragment ProgramWorkout on ProgramWorkout {
         ...ProgramLong
     }
     workout {
-        ...WorkoutShort
+        ...WorkoutLong
     }
     groups {
         ...ProgramWorkoutGroup

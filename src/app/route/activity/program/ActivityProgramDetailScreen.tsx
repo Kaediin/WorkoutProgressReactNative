@@ -5,6 +5,7 @@ import GradientBackground from '../../../components/common/GradientBackground';
 import {
   ProgramLogGroupType,
   ProgramWorkoutFragment,
+  useEndScheduledProgramMutation,
   useMarkLogAsCompletedMutation,
   useScheduledProgramByIdLazyQuery,
 } from '../../../graphql/operations';
@@ -14,8 +15,8 @@ import ActivityProgramLogGroup from '../../../components/program/ActivityProgram
 import moment from 'moment/moment';
 import ClickableText from '../../../components/common/ClickableText';
 import {defaultStyles} from '../../../utils/DefaultStyles';
-import AppModal from '../../../components/common/AppModal';
-import AppText from '../../../components/common/AppText';
+import EndWorkoutModal from '../../../components/workouts/EndWorkoutModal';
+import Loader from '../../../components/common/Loader';
 
 type Props = NativeStackScreenProps<ActivityStackParamList, 'ProgramDetail'>;
 
@@ -68,14 +69,15 @@ const ActivityProgramDetailScreen: React.FC<Props> = props => {
       },
     });
 
-  // const [endScheduledWorkout] = useEndScheduledProgramMutation({
-  //   fetchPolicy: 'no-cache',
-  //   onCompleted: data => {
-  //     if (data.endScheduledProgram) {
-  //       props.navigation.navigate('ActivityOverview');
-  //     }
-  //   },
-  // });
+  const [endScheduledWorkout, {loading: endScheduledWorkoutLoading}] =
+    useEndScheduledProgramMutation({
+      fetchPolicy: 'no-cache',
+      onCompleted: data => {
+        if (data.endScheduledProgram) {
+          props.navigation.navigate('ActivityOverview');
+        }
+      },
+    });
 
   // State for the program
   // const [programWorkout, setProgramWorkout] = useState();
@@ -105,70 +107,75 @@ const ActivityProgramDetailScreen: React.FC<Props> = props => {
 
   return (
     <GradientBackground>
-      <FlashList
-        refreshing={scheduledProgramLoading || markAsCompleteLoading}
-        refreshControl={
-          <RefreshControl
-            colors={['#fff', '#ccc']}
-            tintColor={'#fff'}
-            refreshing={scheduledProgramLoading || markAsCompleteLoading}
-            onRefresh={() => {
-              fetchScheduledProgram({
-                variables: {
-                  id: props.route.params.scheduledProgramId,
-                },
-              });
-            }}
-          />
-        }
-        renderItem={({item}) => {
-          if (item.programWorkoutLogs.length === 0) {
-            return <></>;
-          }
-          return (
-            <ActivityProgramLogGroup
-              group={item}
-              onLogPress={log => {
-                if (log && log.programLog?.id && programWorkout?.workout.id) {
-                  markAsComplete({
-                    variables: {
-                      id: log.programLog.id,
-                      workoutId: programWorkout?.workout.id,
-                      zonedDateTimeString: moment().toISOString(true),
-                    },
-                  });
-                }
-              }}
-              onEditLogPress={log => {
-                //   setEditProgramLog(log);
-                //   setEditProgramLogInput({
-                //     logValue: log.logValue,
-                //     repetitions: log.repetitions,
-                //     effort: log.effort,
-                //     cooldownSeconds: log.cooldownSeconds,
-                //     intervalSeconds: log.intervalSeconds,
-                //     exerciseId: log.exercise?.id,
-                //     subdivisions: log.subdivisions?.map(sub => ({
-                //       id: '',
-                //       logValue: sub.logValue,
-                //       repetitions: sub.repetitions,
-                //       effort: sub.effort,
-                //       exerciseId: sub.exercise?.id,
-                //       cooldownSeconds: sub.cooldownSeconds,
-                //       intervalSeconds: sub.intervalSeconds,
-                //       programLogGroupId: '',
-                //     })),
-                //     programLogGroupId: '',
-                //   });
+      {endScheduledWorkoutLoading ? (
+        <Loader isLoading />
+      ) : (
+        <FlashList
+          refreshing={scheduledProgramLoading || markAsCompleteLoading}
+          refreshControl={
+            <RefreshControl
+              colors={['#fff', '#ccc']}
+              tintColor={'#fff'}
+              refreshing={scheduledProgramLoading || markAsCompleteLoading}
+              onRefresh={() => {
+                fetchScheduledProgram({
+                  variables: {
+                    id: props.route.params.scheduledProgramId,
+                  },
+                });
               }}
             />
-          );
-        }}
-        data={(programWorkout?.groups || []).sort(
-          (a, b) => sortedTypes.indexOf(a.type) - sortedTypes.indexOf(b.type),
-        )}
-        estimatedItemSize={3}
-      />
+          }
+          renderItem={({item}) => {
+            if (item.programWorkoutLogs.length === 0) {
+              return <></>;
+            }
+            return (
+              <ActivityProgramLogGroup
+                group={item}
+                onLogPress={log => {
+                  if (log && log.programLog?.id && programWorkout?.workout.id) {
+                    markAsComplete({
+                      variables: {
+                        id: log.programLog.id,
+                        workoutId: programWorkout?.workout.id,
+                        zonedDateTimeString: moment().toISOString(true),
+                      },
+                    });
+                  }
+                }}
+                onEditLogPress={_ => {
+                  //   setEditProgramLog(log);
+                  //   setEditProgramLogInput({
+                  //     logValue: log.logValue,
+                  //     repetitions: log.repetitions,
+                  //     effort: log.effort,
+                  //     cooldownSeconds: log.cooldownSeconds,
+                  //     intervalSeconds: log.intervalSeconds,
+                  //     exerciseId: log.exercise?.id,
+                  //     subdivisions: log.subdivisions?.map(sub => ({
+                  //       id: '',
+                  //       logValue: sub.logValue,
+                  //       repetitions: sub.repetitions,
+                  //       effort: sub.effort,
+                  //       exerciseId: sub.exercise?.id,
+                  //       cooldownSeconds: sub.cooldownSeconds,
+                  //       intervalSeconds: sub.intervalSeconds,
+                  //       programLogGroupId: '',
+                  //     })),
+                  //     programLogGroupId: '',
+                  //   });
+                }}
+              />
+            );
+          }}
+          data={(programWorkout?.groups || []).sort(
+            (a, b) => sortedTypes.indexOf(a.type) - sortedTypes.indexOf(b.type),
+          )}
+          estimatedItemSize={3}
+        />
+      )}
+
       {/*<BottomSheetModalProvider>*/}
       {/*  <CustomBottomSheet*/}
       {/*    ref={bottomSheetModalRef}*/}
@@ -203,11 +210,22 @@ const ActivityProgramDetailScreen: React.FC<Props> = props => {
       {/*    )}*/}
       {/*  </CustomBottomSheet>*/}
       {/*</BottomSheetModalProvider>*/}
-      <AppModal
-        isVisible={showEndWorkoutModal}
-        onDismiss={() => setShowEndWorkoutModal(false)}>
-        <AppText>test</AppText>
-      </AppModal>
+      {programWorkout?.workout && (
+        <EndWorkoutModal
+          visible={showEndWorkoutModal}
+          onDismiss={() => setShowEndWorkoutModal(false)}
+          workout={programWorkout.workout}
+          onWorkoutEnded={() => {
+            setShowEndWorkoutModal(false);
+            endScheduledWorkout({
+              variables: {
+                id: props.route.params.scheduledProgramId,
+                zonedDateTime: moment().toISOString(true),
+              },
+            });
+          }}
+        />
+      )}
     </GradientBackground>
   );
 };

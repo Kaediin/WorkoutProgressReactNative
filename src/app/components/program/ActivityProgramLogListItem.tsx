@@ -17,7 +17,8 @@ interface ActivityProgramLogListItemProps {
   onLogEditPress: (log: ProgramWorkoutLogFragment) => void;
   focussed: boolean;
   completed: boolean;
-  readonly: boolean;
+  readonly?: boolean;
+  status?: 'scheduled' | 'ready' | '';
 }
 
 const ActivityProgramLogListItem: React.FC<
@@ -65,7 +66,9 @@ const ActivityProgramLogListItem: React.FC<
             ? styles.focussed
             : styles.unfocussed
           : {},
-        props.completed && styles.completed,
+        props.completed && !props.status && props.status !== ''
+          ? styles.completed
+          : {},
       ]}
       onPress={() => {
         if (props.completed) {
