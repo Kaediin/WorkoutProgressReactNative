@@ -13,6 +13,7 @@ import {
 } from '../../utils/Date';
 import {defaultStyles} from '../../utils/DefaultStyles';
 import MuscleGroupList from '../workouts/MuscleGroupList';
+import {Fire} from '../../icons/svg';
 
 interface ScheduledProgramActivityListItemProps {
   scheduledProgram: ScheduledProgramFragment;
@@ -22,6 +23,8 @@ interface ScheduledProgramActivityListItemProps {
 const ScheduledProgramActivityListItem: React.FC<
   ScheduledProgramActivityListItemProps
 > = props => {
+  const workout = props.scheduledProgram.programWorkout.workout;
+
   const isReadyToStart = useMemo(() => {
     // Get now in local time
     const now = moment.utc();
@@ -30,8 +33,8 @@ const ScheduledProgramActivityListItem: React.FC<
       .local(true);
 
     return (
-      props.scheduledProgram.programWorkout.workout.status ===
-        WorkoutStatus.SCHEDULED && now.isAfter(scheduledDateTime)
+      workout.status === WorkoutStatus.SCHEDULED &&
+      now.isAfter(scheduledDateTime)
     );
   }, [props.scheduledProgram]);
 
@@ -40,8 +43,7 @@ const ScheduledProgramActivityListItem: React.FC<
       style={[
         styles.container,
         !isReadyToStart &&
-          props.scheduledProgram.programWorkout.workout.status ===
-            WorkoutStatus.SCHEDULED && {
+          workout.status === WorkoutStatus.SCHEDULED && {
             opacity: 0.4,
           },
       ]}
@@ -52,20 +54,11 @@ const ScheduledProgramActivityListItem: React.FC<
             • Ready to start
           </AppText>
         )}
-        {props.scheduledProgram.programWorkout.workout.status ===
-          WorkoutStatus.STARTED && (
+        {workout.status === WorkoutStatus.STARTED && (
           <AppText style={styles.colorRed}>• Active</AppText>
         )}
-        <AppText h3>
-          {props.scheduledProgram.programWorkout.workout.name}
-        </AppText>
+        <AppText h3>{workout.name}</AppText>
         <View style={defaultStyles.marginTop} />
-        <View style={[defaultStyles.row, defaultStyles.spaceBetween]}>
-          <AppText T1>Program</AppText>
-          <AppText T1>
-            {props.scheduledProgram.programWorkout.program.name}
-          </AppText>
-        </View>
         <View style={[defaultStyles.row, defaultStyles.spaceBetween]}>
           <AppText T1>Scheduled for</AppText>
           <AppText T1>
@@ -74,40 +67,40 @@ const ScheduledProgramActivityListItem: React.FC<
               .format(DATE_TIME_FORMAT)}
           </AppText>
         </View>
-        {props.scheduledProgram.programWorkout.workout.startDateTime && (
+        {workout.startDateTime && (
           <View style={[defaultStyles.row, defaultStyles.spaceBetween]}>
             <AppText T1>Started</AppText>
             <AppText T1>
-              {moment
-                .utc(
-                  props.scheduledProgram.programWorkout.workout.startDateTime,
-                )
-                .format(DATE_TIME_FORMAT)}
+              {moment.utc(workout.startDateTime).format(DATE_TIME_FORMAT)}
             </AppText>
           </View>
         )}
-        {props.scheduledProgram.programWorkout.workout.endDateTime && (
+        {workout.endDateTime && (
           <View style={[defaultStyles.row, defaultStyles.spaceBetween]}>
             <AppText T1>Duration</AppText>
             <AppText T1>
               {getFormattedHoursMinutesString(
-                props.scheduledProgram.programWorkout.workout.startDateTime,
-                props.scheduledProgram.programWorkout.workout.endDateTime,
+                workout.startDateTime,
+                workout.endDateTime,
               )}
             </AppText>
           </View>
         )}
+        {workout.estimatedCaloriesBurned && (
+          <View
+            style={[
+              defaultStyles.row,
+              defaultStyles.centerInRow,
+              defaultStyles.marginBottom,
+            ]}>
+            <Fire />
+            <AppText>{workout.estimatedCaloriesBurned} kcal</AppText>
+          </View>
+        )}
         <View style={defaultStyles.marginTop} />
-        <MuscleGroupList
-          muscleGroups={
-            props.scheduledProgram.programWorkout.workout.muscleGroups
-          }
-          alignCenter
-        />
+        <MuscleGroupList muscleGroups={workout.muscleGroups} alignCenter />
         <View style={defaultStyles.marginTop} />
-        <AppText T2>
-          {props.scheduledProgram.programWorkout.workout.remark}
-        </AppText>
+        <AppText T2>{workout.remark}</AppText>
       </View>
     </TouchableOpacity>
   );

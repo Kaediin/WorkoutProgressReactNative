@@ -4,7 +4,7 @@ import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {ActivityStackParamList} from '../../../stacks/ActivityStack';
 import {
   ProgramLogGroupType,
-  ProgramWorkoutFragment,
+  ProgramWorkoutLongFragment,
   useScheduledProgramByIdLazyQuery,
   useStartScheduledProgramMutation,
 } from '../../../graphql/operations';
@@ -26,7 +26,7 @@ const ActivityProgramPreviewScreen: React.FC<Props> = props => {
     ProgramLogGroupType.COOLDOWN,
   ];
   const [programWorkout, setProgramWorkout] =
-    useState<ProgramWorkoutFragment>();
+    useState<ProgramWorkoutLongFragment>();
   const [fetchScheduledProgram, {loading: scheduledProgramLoading}] =
     useScheduledProgramByIdLazyQuery({
       fetchPolicy: 'no-cache',

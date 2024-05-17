@@ -34,9 +34,19 @@ fragment ProgramWorkoutGroup on ProgramWorkoutGroup {
 
 fragment ProgramWorkout on ProgramWorkout {
     id
-    program {
-        ...ProgramLong
+    #    program {
+    #        ...ProgramLong
+    #    }
+    workout {
+        ...WorkoutShort
     }
+    groups {
+        ...ProgramWorkoutGroup
+    }
+}
+
+fragment ProgramWorkoutLong on ProgramWorkout {
+    id
     workout {
         ...WorkoutLong
     }
@@ -49,6 +59,14 @@ fragment ScheduledProgram on ScheduledProgram {
     id
     programWorkout {
         ...ProgramWorkout
+    }
+    scheduledDateTime
+}
+
+fragment ScheduledProgramLong on ScheduledProgram {
+    id
+    programWorkout {
+        ...ProgramWorkoutLong
     }
     scheduledDateTime
 }

@@ -247,7 +247,7 @@ type Program {
   id: ID!
 
   """The groups of the program."""
-  logGroups: [ProgramLogGroup!]!
+  logGroups: [ProgramLogGroup!]
   name: String!
   remark: String
 }
@@ -318,7 +318,7 @@ input ProgramLogInput {
 type ProgramWorkout {
   groups: [ProgramWorkoutGroup!]!
   id: ID!
-  program: Program!
+  program: Program
   workout: Workout!
 }
 

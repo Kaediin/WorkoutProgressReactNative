@@ -41,6 +41,7 @@ import useActivityStore from '../../stores/activityStore';
 import ActivityEditScheduledProgram from '../../components/bottomSheet/ActivityEditScheduledProgram';
 import {nearestFutureDate, nearestPastDate} from '../../utils/Date';
 import Loader from '../../components/common/Loader';
+import * as Sentry from '@sentry/react-native';
 
 type Props = NativeStackScreenProps<ActivityStackParamList, 'ActivityOverview'>;
 
@@ -112,7 +113,14 @@ const ActivityScreen: React.FC<Props> = ({navigation}) => {
     data: workoutAndSceduledWorkoutsData,
     loading: workoutAndScheduledWorkoutsLoading,
     refetch: refetchWorkoutsAndScheduledWorkouts,
-  } = useWorkoutsAndScheduledWorkoutsQuery({fetchPolicy: 'no-cache'});
+  } = useWorkoutsAndScheduledWorkoutsQuery({
+    notifyOnNetworkStatusChange: true,
+    fetchPolicy: 'no-cache',
+    onError: error => {
+      console.error('Error fetching workouts and scheduled workouts', error);
+      Sentry.captureException(error);
+    },
+  });
   const [startWorkout, {data: startWorkoutData, loading: startWorkoutLoading}] =
     useStartWorkoutMutation({
       fetchPolicy: 'no-cache',
@@ -495,7 +503,6 @@ const ActivityScreen: React.FC<Props> = ({navigation}) => {
                             : '';
 
                         navigation.navigate('ProgramPreview', {
-                          // programId: id,
                           scheduledProgramId: item.item.id,
                           status,
                         });
@@ -621,7 +628,7 @@ const ActivityScreen: React.FC<Props> = ({navigation}) => {
                         editScheduledWorkout.programWorkout.workout.name,
                       remark:
                         editScheduledWorkout.programWorkout.workout.remark,
-                      programId: editScheduledWorkout.programWorkout.program.id,
+                      programId: '',
                       zonedDateTime: moment().toISOString(true),
                     },
                   },

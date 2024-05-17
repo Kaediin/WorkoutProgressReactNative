@@ -4,7 +4,7 @@ import {
   WorkoutStatus,
 } from '../../graphql/operations';
 import DatePicker from 'react-native-date-picker';
-import moment from 'moment/moment';
+import moment, {Moment} from 'moment/moment';
 import {BottomSheetTextInput} from '@gorhom/bottom-sheet';
 import {defaultStyles} from '../../utils/DefaultStyles';
 import {View} from 'react-native';
@@ -21,6 +21,9 @@ interface ActivityEditScheduledProgramProps {
 const ActivityEditScheduledProgram: React.FC<
   ActivityEditScheduledProgramProps
 > = props => {
+  const [scheduledDateTime, _] = useState<Moment>(
+    moment.utc(props.scheduledProgram.scheduledDateTime).local(true),
+  );
   const [scheduledProgram, setScheduledProgram] = useState(
     props.scheduledProgram,
   );
@@ -83,10 +86,7 @@ const ActivityEditScheduledProgram: React.FC<
             Scheduled date and time
           </AppText>
           <DatePicker
-            date={moment
-              .utc(scheduledProgram.scheduledDateTime)
-              .local(true)
-              .toDate()}
+            date={scheduledDateTime.toDate()}
             mode="datetime"
             onDateChange={date => {
               setScheduledProgram(prevState => ({

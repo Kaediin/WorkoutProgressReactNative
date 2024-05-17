@@ -9,11 +9,11 @@ export const calculateCalories = (
   return Math.round(
     // Male
     gender.toLowerCase() === 'male'
-      ? durationMinutes * weightKg * 0.0923
+      ? durationMinutes * weightKg * 0.1009 // 0.0923
       : // Female
       gender.toLowerCase() === 'female'
-      ? durationMinutes * weightKg * 0.0748
+      ? durationMinutes * weightKg * 0.0814
       : // Other
-        durationMinutes * weightKg * 0.0804,
+        durationMinutes * weightKg * 0.0874,
   );
 };

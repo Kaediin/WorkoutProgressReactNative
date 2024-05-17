@@ -6,6 +6,6 @@ query myScheduledProgram {
 
 query scheduledProgramById($id: ID!) {
     scheduledProgramById(id: $id) {
-        ...ScheduledProgram
+        ...ScheduledProgramLong
     }
 }

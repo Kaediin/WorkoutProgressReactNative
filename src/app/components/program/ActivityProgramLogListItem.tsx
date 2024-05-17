@@ -55,6 +55,22 @@ const ActivityProgramLogListItem: React.FC<
     return height;
   }, [props.log, props.completed]);
 
+  const logDateTime = useMemo(() => {
+    if (!props.completed) {
+      return;
+    }
+
+    if (props.log.programLog.exerciseLog?.logDateTime) {
+      return props.log.programLog.exerciseLog.logDateTime;
+    }
+
+    if (props.log.programLog.subdivisions) {
+      return props.log.programLog.subdivisions.map(
+        sub => sub.exerciseLog?.logDateTime,
+      )[0];
+    }
+  }, [props.log, props.completed]);
+
   const item = (
     <TouchableOpacity
       style={[
@@ -76,18 +92,11 @@ const ActivityProgramLogListItem: React.FC<
         }
       }}>
       <View>
-        {props.log.programLog.subdivisions?.some(
-          sub => !!sub.exerciseLog?.logDateTime,
-        ) ||
-          (props.log.programLog.exerciseLog?.logDateTime && (
-            <AppText xSmall T2 rightText>
-              {getRelativeTimeIfToday(
-                props.log.programLog.exerciseLog.logDateTime ||
-                  props.log.programLog.subdivisions?.[0].exerciseLog
-                    ?.logDateTime,
-              )}
-            </AppText>
-          ))}
+        {logDateTime && (
+          <AppText xSmall T2 rightText>
+            {getRelativeTimeIfToday(logDateTime)}
+          </AppText>
+        )}
         <View style={[defaultStyles.row, defaultStyles.spaceBetween]}>
           <AppText>
             {props.log.programLog.repetitions} x{' '}

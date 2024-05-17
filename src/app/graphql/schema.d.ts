@@ -446,7 +446,7 @@ export type Program = {
   externalHealthProviderData?: Maybe<ExternalHealthProviderData>;
   id: Scalars['ID'];
   /** The groups of the program. */
-  logGroups: Array<ProgramLogGroup>;
+  logGroups?: Maybe<Array<ProgramLogGroup>>;
   name: Scalars['String'];
   remark?: Maybe<Scalars['String']>;
 };
@@ -514,7 +514,7 @@ export type ProgramWorkout = {
   __typename?: 'ProgramWorkout';
   groups: Array<ProgramWorkoutGroup>;
   id: Scalars['ID'];
-  program: Program;
+  program?: Maybe<Program>;
   workout: Workout;
 };
 

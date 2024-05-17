@@ -4,7 +4,7 @@ import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import GradientBackground from '../../../components/common/GradientBackground';
 import {
   ProgramLogGroupType,
-  ProgramWorkoutFragment,
+  ProgramWorkoutLongFragment,
   useEndScheduledProgramMutation,
   useMarkLogAsCompletedMutation,
   useScheduledProgramByIdLazyQuery,
@@ -25,7 +25,7 @@ const ActivityProgramDetailScreen: React.FC<Props> = props => {
 
   const [showEndWorkoutModal, setShowEndWorkoutModal] = useState(false);
   const [programWorkout, setProgramWorkout] =
-    useState<ProgramWorkoutFragment>();
+    useState<ProgramWorkoutLongFragment>();
 
   // Sort the types in the order we want to display them
   const sortedTypes = [
@@ -38,10 +38,7 @@ const ActivityProgramDetailScreen: React.FC<Props> = props => {
     useScheduledProgramByIdLazyQuery({
       fetchPolicy: 'no-cache',
       onCompleted: data => {
-        if (
-          data.scheduledProgramById &&
-          data.scheduledProgramById?.programWorkout?.program
-        ) {
+        if (data?.scheduledProgramById) {
           setProgramWorkout(data.scheduledProgramById.programWorkout);
           props.navigation.setOptions({
             headerRight: () => (
