@@ -1,3 +1,14 @@
+## [0.4.0]
+
+### Added
+
+- #100: Programs can be made by categorising them into different types: Warmup, Main, Cooldown
+- #100: More units
+- #100: Program Stack
+- #100: Program scheduling
+- #100: Workout created when scheduling a program
+- #100: Effort slider
+
 ## [0.3.1]
 
 ### Added
