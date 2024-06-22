@@ -77,7 +77,8 @@ const AppleHealthConfigScreen: React.FC<Props> = () => {
               Due to Apple's privacy model if you have previously denied a
               specific permission then you can not be prompted again for that
               same permission. You would have to go into the Apple Health app
-              and grant the permission to this app under sources tab.
+              and grant the permission to this app under sources tab. Or you can
+              reinstall the app to get prompted again.
             </AppText>
           </View>
           {notPromptedPermission && notPromptedPermission.length > 0 && (

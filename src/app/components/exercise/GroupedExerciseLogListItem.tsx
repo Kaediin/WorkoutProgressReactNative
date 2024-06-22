@@ -157,11 +157,10 @@ const styles = StyleSheet.create({
     opacity: 0.8,
   },
   containerEffort: {
-    marginTop: -10,
-    height: 50,
+    marginTop: Constants.CONTAINER_PADDING_MARGIN / 2,
   },
   effortText: {
-    marginTop: -10,
+    marginTop: Constants.CONTAINER_PADDING_MARGIN / 2,
   },
 });
 

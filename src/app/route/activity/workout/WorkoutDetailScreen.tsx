@@ -725,15 +725,17 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
                                 exerciseId: log.exercise.id,
                                 warmup: log.warmup ?? false,
                                 zonedDateTimeString: moment().toISOString(true),
-                                remark: log.remark,
+                                remark: '',
                                 logValue: log.logValue,
                                 repetitions: log.repetitions,
                                 effort: log.effort,
                               });
                             }}>
                             <AppText style={styles.lastLoggedButtons}>
+                              {log.warmup ? '• ' : ''}
                               {log.repetitions} x{' '}
                               {logValueToString(log.logValue)}
+                              {!!log.effort && ` (${log.effort}%)`}
                             </AppText>
                           </TouchableOpacity>
                         ))}
@@ -745,20 +747,22 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
                 )}
                 {exerciseLog?.exerciseId && (
                   <>
-                    <AppText style={defaultStyles.blackTextColor}>
-                      Effort: {exerciseLog.effort ?? 0}%
-                    </AppText>
-                    <AppSlider
-                      value={exerciseLog.effort ?? 0}
-                      disabled={false}
-                      onChange={value => {
-                        setExerciseLog(prevState => ({
-                          ...prevState,
-                          effort: value,
-                        }));
-                      }}
-                      step={5}
-                    />
+                    <View style={styles.containerEffort}>
+                      <AppText style={defaultStyles.marginBottom}>
+                        Effort: {exerciseLog.effort ?? 0}%
+                      </AppText>
+                      <AppSlider
+                        value={exerciseLog.effort ?? 0}
+                        disabled={false}
+                        onChange={value => {
+                          setExerciseLog(prevState => ({
+                            ...prevState,
+                            effort: value,
+                          }));
+                        }}
+                        step={5}
+                      />
+                    </View>
                     <View style={styles.border}>
                       <TouchableOpacity
                         style={[
@@ -916,7 +920,7 @@ const styles = StyleSheet.create({
   },
   lastLoggedButtonsView: {
     borderRadius: Constants.BORDER_RADIUS_SMALL,
-    width: 105,
+    width: '100%',
     padding: 5,
     backgroundColor: Constants.QUATERNARY_GRADIENT[1],
     marginRight: 5,
@@ -928,7 +932,12 @@ const styles = StyleSheet.create({
   buttonWidth: {
     width: 200,
   },
-  calorieBurnedInput: {},
+  containerEffort: {
+    padding: Constants.CONTAINER_PADDING_MARGIN,
+    backgroundColor: Constants.QUATERNARY_GRADIENT[1],
+    borderRadius: Constants.BORDER_RADIUS_SMALL,
+    marginBottom: 10,
+  },
 });
 
 export default WorkoutDetailScreen;
