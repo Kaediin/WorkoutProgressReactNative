@@ -55,6 +55,7 @@ const LoginScreen: React.FC<Props> = props => {
                 autoCapitalize="none"
                 autoCorrect={false}
                 onChangeText={setEmail}
+                maxLength={Constants.TEXT_AREA_MAX_LENGTH}
               />
               <TextInput
                 style={styles.input}
@@ -66,6 +67,7 @@ const LoginScreen: React.FC<Props> = props => {
                 autoCorrect={false}
                 inputMode="text"
                 secureTextEntry
+                maxLength={256}
               />
               <AppText style={defaultStyles.error}>{error}</AppText>
               <View style={styles.loginButton}>

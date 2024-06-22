@@ -12,6 +12,7 @@ import {Dropdown} from 'react-native-element-dropdown';
 import {upperCaseFirstLetter} from '../../utils/String';
 import {Gender} from '../../types/Type';
 import {InputMaybe} from '../../graphql/operations';
+import Constants from '../../utils/Constants';
 
 interface AppTextEditableProps {
   value: InputMaybe<number> | string | number | undefined;
@@ -38,6 +39,7 @@ const AppTextEditable: React.FC<AppTextEditableProps> = props => {
               style={defaultStyles.whiteTextColor}
               onChangeText={props.onValueChange}
               autoFocus
+              maxLength={Constants.TEXT_AREA_MAX_LENGTH}
             />
           </View>
         ) : (
@@ -104,6 +106,7 @@ const AppTextEditable: React.FC<AppTextEditableProps> = props => {
               }}
               keyboardType={'numeric'}
               autoFocus
+              maxLength={Constants.TEXT_AREA_MAX_LENGTH}
             />
           </View>
         ) : (

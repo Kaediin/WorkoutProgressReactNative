@@ -72,6 +72,7 @@ const ConfirmUserScreen: React.FC<Props> = props => {
               placeholder="Confirmation code"
               inputMode="text"
               placeholderTextColor="darkgrey"
+              maxLength={Constants.TEXT_AREA_MAX_LENGTH}
             />
             <View>
               {timerCount > 0 && (

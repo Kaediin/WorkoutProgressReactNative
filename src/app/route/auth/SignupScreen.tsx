@@ -100,7 +100,7 @@ const SignupScreen: React.FC<Props> = props => {
               placeholderTextColor="darkgrey"
               keyboardType="email-address"
               inputMode="email"
-              maxLength={60}
+              maxLength={Constants.TEXT_AREA_MAX_LENGTH}
             />
           </View>
           <View style={[styles.signupInputContainer, styles.zIndex]}>

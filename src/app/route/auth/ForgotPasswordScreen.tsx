@@ -94,6 +94,7 @@ const ForgotPasswordScreen: React.FC<Props> = ({navigation}) => {
                 placeholderTextColor="darkgrey"
                 keyboardType="email-address"
                 inputMode="email"
+                maxLength={Constants.TEXT_AREA_MAX_LENGTH}
               />
             </>
           ) : (
@@ -105,6 +106,7 @@ const ForgotPasswordScreen: React.FC<Props> = ({navigation}) => {
                 placeholder="Confirmation code"
                 inputMode="text"
                 placeholderTextColor="darkgrey"
+                maxLength={Constants.TEXT_AREA_MAX_LENGTH}
               />
               <TextInput
                 style={styles.input}

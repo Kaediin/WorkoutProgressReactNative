@@ -13,6 +13,7 @@ import {ViewStyle} from 'react-native/Libraries/StyleSheet/StyleSheetTypes';
 import {Dropdown} from 'react-native-element-dropdown';
 import {Gender} from '../../types/Type';
 import {upperCaseFirstLetter} from '../../utils/String';
+import Constants from '../../utils/Constants';
 
 interface SettingsRowProps {
   label: string;
@@ -53,6 +54,7 @@ const SettingsRowEditable: React.FC<SettingsRowProps> = props => {
               style={defaultStyles.whiteTextColor}
               onChangeText={props.onValueChange}
               autoFocus
+              maxLength={Constants.TEXT_AREA_MAX_LENGTH}
             />
           </View>
         ) : (
@@ -113,6 +115,7 @@ const SettingsRowEditable: React.FC<SettingsRowProps> = props => {
               }}
               keyboardType={'numeric'}
               autoFocus
+              maxLength={Constants.TEXT_AREA_MAX_LENGTH}
             />
           </View>
         ) : (
