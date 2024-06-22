@@ -19,7 +19,7 @@ import moment from 'moment/moment';
 import {nonNullable} from '../../utils/List';
 import ContextMenu, {ContextMenuAction} from 'react-native-context-menu-view';
 import {ContextMenuActions} from '../../types/ContextMenuActions';
-import {FlatList, RefreshControl, StyleSheet, View} from 'react-native';
+import {RefreshControl, StyleSheet, View} from 'react-native';
 import {defaultStyles} from '../../utils/DefaultStyles';
 import AppText from '../../components/common/AppText';
 import WorkoutListItem from '../../components/workouts/WorkoutListItem';
@@ -29,6 +29,7 @@ import Constants from '../../utils/Constants';
 import SelectMuscleGroups from '../../components/workouts/SelectMuscleGroups';
 import FloatingButton from '../../components/common/FloatingButton';
 import ConfirmModal from '../../components/common/ConfirmModal';
+import {FlashList} from '@shopify/flash-list';
 
 interface WorkoutOverviewProps {
   onNavigateToWorkout: (workoutId: string) => void;
@@ -208,7 +209,8 @@ const WorkoutOverview: React.FC<WorkoutOverviewProps> = props => {
 
   return (
     <View style={defaultStyles.flex1}>
-      <FlatList
+      <FlashList
+        estimatedItemSize={10}
         data={existingWorkouts}
         ListEmptyComponent={() => (
           <AppText style={defaultStyles.marginTop50} centerText>

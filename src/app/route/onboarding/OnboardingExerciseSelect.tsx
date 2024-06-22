@@ -2,13 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {OnboardingStackParamList} from '../../stacks/OnboardingStack';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import GradientBackground from '../../components/common/GradientBackground';
-import {
-  FlatList,
-  Platform,
-  StyleSheet,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import {Platform, StyleSheet, TouchableOpacity, View} from 'react-native';
 import GradientButton from '../../components/common/GradientButton';
 import useUserStore from '../../stores/userStore';
 import {
@@ -32,6 +26,7 @@ import AppText from '../../components/common/AppText';
 import Modal from 'react-native-modal';
 import ClickableText from '../../components/common/ClickableText';
 import {Selected, Unselected} from '../../icons/svg';
+import {FlashList} from '@shopify/flash-list';
 
 type Props = NativeStackScreenProps<
   OnboardingStackParamList,
@@ -159,7 +154,8 @@ const OnboardingExerciseSelect: React.FC<Props> = props => {
         <Loader isLoading />
       ) : (
         <>
-          <FlatList
+          <FlashList
+            estimatedItemSize={47}
             data={exercisesData?.myExercises || []}
             stickyHeaderIndices={[0]}
             ListHeaderComponent={() => (
@@ -287,7 +283,8 @@ const OnboardingExerciseSelect: React.FC<Props> = props => {
             {fetchOnboardingExercisesLoading ? (
               <Loader isLoading />
             ) : (
-              <FlatList
+              <FlashList
+                estimatedItemSize={20}
                 data={onboardingExercises}
                 renderItem={({item}) => (
                   <TouchableOpacity

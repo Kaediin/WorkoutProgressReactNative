@@ -3,7 +3,7 @@ import {
   ExerciseLogFragment,
   GroupedExerciseLogFragment,
 } from '../../graphql/operations';
-import {FlatList, StyleSheet, TouchableOpacity, View} from 'react-native';
+import {StyleSheet, TouchableOpacity, View} from 'react-native';
 import Constants from '../../utils/Constants';
 import moment from 'moment';
 import {defaultStyles} from '../../utils/DefaultStyles';
@@ -13,6 +13,7 @@ import {ContextMenuActions} from '../../types/ContextMenuActions';
 import {logValueToString} from '../../utils/String';
 import AppText from '../common/AppText';
 import AppSlider from '../common/AppSlider';
+import {FlashList} from '@shopify/flash-list';
 
 interface ExerciseLogListItemProps {
   groupedExercise: GroupedExerciseLogFragment;
@@ -57,7 +58,8 @@ const GroupedExerciseLogListItem: React.FC<ExerciseLogListItemProps> = ({
         )}
       </View>
 
-      <FlatList
+      <FlashList
+        estimatedItemSize={3}
         data={groupedExercise.logs.sort(
           (a, b) =>
             new Date(a.logDateTime).getTime() -

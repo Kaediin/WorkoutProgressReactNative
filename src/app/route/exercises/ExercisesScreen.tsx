@@ -1,6 +1,6 @@
 import React, {useEffect, useRef, useState} from 'react';
 import GradientBackground from '../../components/common/GradientBackground';
-import {FlatList, View} from 'react-native';
+import {View} from 'react-native';
 import {
   ExerciseFragment,
   MuscleGroup,
@@ -24,6 +24,7 @@ import {ExercisesStackParamList} from '../../stacks/ExercisesStack';
 import useRouteStore from '../../stores/routeStore';
 import AppText from '../../components/common/AppText';
 import ClickableText from '../../components/common/ClickableText';
+import {FlashList} from '@shopify/flash-list';
 
 type Props = NativeStackScreenProps<ExercisesStackParamList, 'ExercisesScreen'>;
 
@@ -126,7 +127,8 @@ const ExercisesScreen: React.FC<Props> = props => {
           <AppText>Click on the + to add your first exercise!</AppText>
         </View>
       ) : (
-        <FlatList
+        <FlashList
+          estimatedItemSize={30}
           data={filteredList.sort((a, b) => a.name.localeCompare(b.name))}
           renderItem={({item}) => {
             return (

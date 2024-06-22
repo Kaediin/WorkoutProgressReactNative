@@ -1,5 +1,5 @@
 import React, {useMemo, useRef, useState} from 'react';
-import {FlatList, RefreshControl, StyleSheet, View} from 'react-native';
+import {RefreshControl, StyleSheet, View} from 'react-native';
 import {defaultStyles} from '../../utils/DefaultStyles';
 import FloatingButton from '../../components/common/FloatingButton';
 import {
@@ -28,6 +28,7 @@ import {Fab} from '../../utils/Fab';
 import {Add, Schedule} from '../../icons/svg';
 import ScheduleProgramBottomSheetContent from '../../components/program/ScheduleProgramBottomSheetContent';
 import {IActionProps} from 'react-native-floating-action';
+import {FlashList} from '@shopify/flash-list';
 
 interface ProgramOverviewProps {
   onProgramPressed: (programId: string) => void;
@@ -144,7 +145,8 @@ const ProgramOverview: React.FC<ProgramOverviewProps> = props => {
 
   return (
     <View style={[defaultStyles.flex1, defaultStyles.marginTop]}>
-      <FlatList
+      <FlashList
+        estimatedItemSize={3}
         data={myPrograms?.myPrograms}
         refreshControl={
           <RefreshControl

@@ -8,7 +8,7 @@ import {
   useAllLogsByExerciseIdLazyQuery,
   useChartDataOfXMonthsByExerciseIdLazyQuery,
 } from '../../../graphql/operations';
-import {Dimensions, FlatList, StyleSheet, View} from 'react-native';
+import {Dimensions, StyleSheet, View} from 'react-native';
 import {
   combineLogValueBaseFraction,
   logValueToString,
@@ -24,6 +24,7 @@ import Loader from '../../../components/common/Loader';
 import ContextMenu from 'react-native-context-menu-view';
 import ClickableText from '../../../components/common/ClickableText';
 import {SegmentedButtons} from 'react-native-paper';
+import {FlashList} from '@shopify/flash-list';
 
 type Props = NativeStackScreenProps<
   ExercisesStackParamList,
@@ -212,7 +213,8 @@ const ExercisesDetailScreen: React.FC<Props> = props => {
   return (
     <GradientBackground>
       <View style={defaultStyles.container}>
-        <FlatList
+        <FlashList
+          estimatedItemSize={100}
           data={filteredLogs}
           style={styles.flatlistHeight}
           ListHeaderComponent={

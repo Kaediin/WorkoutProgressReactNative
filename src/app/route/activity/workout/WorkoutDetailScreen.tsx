@@ -2,7 +2,6 @@ import React, {useContext, useEffect, useRef, useState} from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {
   Dimensions,
-  FlatList,
   Platform,
   RefreshControl,
   ScrollView,
@@ -64,6 +63,7 @@ import ClickableText from '../../../components/common/ClickableText';
 import {TimerContext} from '../../../providers/WorkoutTimerProvider';
 import AppSlider from '../../../components/common/AppSlider';
 import EndWorkoutModal from '../../../components/workouts/EndWorkoutModal';
+import {FlashList} from '@shopify/flash-list';
 
 type Props = NativeStackScreenProps<ActivityStackParamList, 'WorkoutDetail'>;
 
@@ -84,7 +84,7 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
   const autoAdjust = preference?.autoAdjustWorkoutMuscleGroups || false;
 
   // Refs
-  const flatListRef = useRef<FlatList>(null);
+  const flatListRef = useRef<FlashList<any>>(null);
   const bottomSheetRef = useRef<BottomSheetModal>(null);
 
   // State
@@ -472,7 +472,8 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
               Click to + to log your exercises
             </AppText>
           ) : (
-            <FlatList
+            <FlashList
+              estimatedItemSize={3}
               ref={flatListRef}
               refreshControl={
                 <RefreshControl

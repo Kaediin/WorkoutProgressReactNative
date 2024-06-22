@@ -2,7 +2,7 @@ import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import GradientBackground from '../../components/common/GradientBackground';
 import {ActivityStackParamList} from '../../stacks/ActivityStack';
-import {FlatList, RefreshControl, StyleSheet, View} from 'react-native';
+import {RefreshControl, StyleSheet, View} from 'react-native';
 import {useFocusEffect, useIsFocused} from '@react-navigation/native';
 import {
   ScheduledProgramFragment,
@@ -42,6 +42,7 @@ import ActivityEditScheduledProgram from '../../components/bottomSheet/ActivityE
 import {nearestFutureDate, nearestPastDate} from '../../utils/Date';
 import Loader from '../../components/common/Loader';
 import * as Sentry from '@sentry/react-native';
+import {FlashList} from '@shopify/flash-list';
 
 type Props = NativeStackScreenProps<ActivityStackParamList, 'ActivityOverview'>;
 
@@ -60,7 +61,7 @@ const ActivityScreen: React.FC<Props> = ({navigation}) => {
   };
 
   // Refs
-  const flatlistRef = useRef<FlatList>(null);
+  const flatlistRef = useRef<FlashList<any>>(null);
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
   const bottomSheetModalRefMuscleSelect = useRef<BottomSheetModal>(null);
   const bottomSheetModalRefEditScheduledWorkout =
@@ -418,8 +419,9 @@ const ActivityScreen: React.FC<Props> = ({navigation}) => {
   return (
     <GradientBackground>
       <View style={defaultStyles.flex1}>
-        <FlatList
+        <FlashList
           ref={flatlistRef}
+          estimatedItemSize={50}
           data={workoutAndScheduledProgramsSorted}
           ListEmptyComponent={() =>
             workoutAndScheduledWorkoutsLoading ? (
@@ -542,7 +544,7 @@ const ActivityScreen: React.FC<Props> = ({navigation}) => {
               </>
             );
           }}
-          style={defaultStyles.container}
+          contentContainerStyle={defaultStyles.padding}
         />
 
         <BottomSheetModalProvider>
