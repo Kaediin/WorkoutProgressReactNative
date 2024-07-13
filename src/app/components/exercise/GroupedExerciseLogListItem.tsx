@@ -12,8 +12,8 @@ import {getRelativeTimeIfToday} from '../../utils/Date';
 import {ContextMenuActions} from '../../types/ContextMenuActions';
 import {logValueToString} from '../../utils/String';
 import AppText from '../common/AppText';
-import AppSlider from '../common/AppSlider';
 import {FlashList} from '@shopify/flash-list';
+import AppSlider from '../common/AppSlider';
 
 interface ExerciseLogListItemProps {
   groupedExercise: GroupedExerciseLogFragment;
@@ -81,11 +81,7 @@ const GroupedExerciseLogListItem: React.FC<ExerciseLogListItemProps> = ({
                     ? onRemoveLog(item.id)
                     : onRepeatLog(item as ExerciseLogFragment)
                 }>
-                <View
-                  style={[
-                    styles.containerLinearGradient,
-                    defaultStyles.shadow,
-                  ]}>
+                <View style={[styles.containerLinearGradient]}>
                   <View style={styles.containerExerciseLogRow}>
                     <View>
                       <AppText style={styles.textExerciseLogRow}>
@@ -108,9 +104,6 @@ const GroupedExerciseLogListItem: React.FC<ExerciseLogListItemProps> = ({
                   {!!item.effort && (
                     <View style={styles.containerEffort}>
                       <AppSlider value={item.effort} disabled />
-                      <AppText xSmall T2 style={styles.effortText}>
-                        Effort: {item.effort}%
-                      </AppText>
                     </View>
                   )}
                 </View>
@@ -160,6 +153,7 @@ const styles = StyleSheet.create({
   },
   containerEffort: {
     marginTop: Constants.CONTAINER_PADDING_MARGIN / 2,
+    zIndex: -1,
   },
   effortText: {
     marginTop: Constants.CONTAINER_PADDING_MARGIN / 2,

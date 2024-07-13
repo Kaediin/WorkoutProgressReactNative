@@ -466,14 +466,14 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
       {loading ? (
         <Loader />
       ) : workout ? (
-        <View style={defaultStyles.container}>
+        <View style={[defaultStyles.flex1]}>
           {workout.groupedExerciseLogs.length === 0 ? (
             <AppText style={styles.noExercisesText}>
               Click to + to log your exercises
             </AppText>
           ) : (
             <FlashList
-              estimatedItemSize={3}
+              estimatedItemSize={5}
               ref={flatListRef}
               refreshControl={
                 <RefreshControl
@@ -489,10 +489,11 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
                   }}
                 />
               }
-              onContentSizeChange={() =>
-                flatListRef?.current?.scrollToEnd({animated: true})
-              }
-              style={styles.flatlist}
+              onLoad={() => {
+                if (workout.groupedExerciseLogs && flatListRef?.current) {
+                  flatListRef?.current?.scrollToEnd({animated: true});
+                }
+              }}
               data={workout.groupedExerciseLogs}
               ListHeaderComponent={
                 <View style={styles.containerMuscleGroups}>
@@ -921,7 +922,6 @@ const styles = StyleSheet.create({
   },
   lastLoggedButtonsView: {
     borderRadius: Constants.BORDER_RADIUS_SMALL,
-    width: '100%',
     padding: 5,
     backgroundColor: Constants.QUATERNARY_GRADIENT[1],
     marginRight: 5,

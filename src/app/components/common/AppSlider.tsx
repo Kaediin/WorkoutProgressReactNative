@@ -47,6 +47,7 @@ const AppSlider: React.FC<AppSliderProps> = props => {
               ? styles.thumbStylesInactive
               : styles.thumbStylesActive
           }
+          trackClickable={!props.disabled}
           disabled={props.disabled}
         />
       </View>
