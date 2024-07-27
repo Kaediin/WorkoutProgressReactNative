@@ -461,6 +461,16 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
     reLogLatestLogLoading ||
     reLogLogLoading;
 
+  useEffect(() => {
+    if (workout?.groupedExerciseLogs && flatListRef.current && !loading) {
+      setTimeout(() => {
+        flatListRef.current?.scrollToEnd({
+          animated: true,
+        });
+      }, 500);
+    }
+  }, [workout?.groupedExerciseLogs, flatListRef, loading]);
+
   return (
     <GradientBackground>
       {loading ? (
@@ -489,11 +499,6 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
                   }}
                 />
               }
-              onLoad={() => {
-                if (workout.groupedExerciseLogs && flatListRef?.current) {
-                  flatListRef?.current?.scrollToEnd({animated: true});
-                }
-              }}
               data={workout.groupedExerciseLogs}
               ListHeaderComponent={
                 <View style={styles.containerMuscleGroups}>
