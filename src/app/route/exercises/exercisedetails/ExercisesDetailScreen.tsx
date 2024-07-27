@@ -212,104 +212,102 @@ const ExercisesDetailScreen: React.FC<Props> = props => {
 
   return (
     <GradientBackground>
-      <View style={defaultStyles.container}>
-        <FlashList
-          estimatedItemSize={100}
-          data={filteredLogs}
-          style={styles.flatlistHeight}
-          ListHeaderComponent={
-            loadinChartData ? (
-              <Loader isLoading style={defaultStyles.container} />
-            ) : (
-              <View style={[defaultStyles.marginBottom, styles.containerChart]}>
-                <SegmentedButtons
-                  buttons={[
+      <FlashList
+        estimatedItemSize={100}
+        data={filteredLogs}
+        contentContainerStyle={defaultStyles.padding}
+        ListHeaderComponent={
+          loadinChartData ? (
+            <Loader isLoading style={defaultStyles.container} />
+          ) : (
+            <View style={[defaultStyles.marginBottom, styles.containerChart]}>
+              <SegmentedButtons
+                buttons={[
+                  {
+                    value: '3',
+                    label: '3 Months',
+                    labelStyle: defaultStyles.whiteTextColor,
+                    style: {
+                      backgroundColor:
+                        monthRange === '3'
+                          ? Constants.PRIMARY_GRADIENT[0]
+                          : Constants.SECONDARY_GRADIENT[0],
+                    },
+                  },
+                  {
+                    value: '6',
+                    label: '6 Months',
+                    labelStyle: defaultStyles.whiteTextColor,
+                    style: {
+                      backgroundColor:
+                        monthRange === '6'
+                          ? Constants.PRIMARY_GRADIENT[0]
+                          : Constants.SECONDARY_GRADIENT[0],
+                    },
+                  },
+                  {
+                    value: '12',
+                    label: '12 Months',
+                    labelStyle: defaultStyles.whiteTextColor,
+                    style: {
+                      backgroundColor:
+                        monthRange === '12'
+                          ? Constants.PRIMARY_GRADIENT[0]
+                          : Constants.SECONDARY_GRADIENT[0],
+                    },
+                  },
+                ]}
+                value={monthRange}
+                onValueChange={setMonthRange}
+                style={styles.segmentedButtons}
+                theme={{colors: {primary: Constants.PRIMARY_GRADIENT[0]}}}
+              />
+              <LineChart
+                data={{
+                  labels: [],
+                  datasets: [
                     {
-                      value: '3',
-                      label: '3 Months',
-                      labelStyle: defaultStyles.whiteTextColor,
-                      style: {
-                        backgroundColor:
-                          monthRange === '3'
-                            ? Constants.PRIMARY_GRADIENT[0]
-                            : Constants.SECONDARY_GRADIENT[0],
-                      },
+                      data: sortedLogValues,
                     },
-                    {
-                      value: '6',
-                      label: '6 Months',
-                      labelStyle: defaultStyles.whiteTextColor,
-                      style: {
-                        backgroundColor:
-                          monthRange === '6'
-                            ? Constants.PRIMARY_GRADIENT[0]
-                            : Constants.SECONDARY_GRADIENT[0],
-                      },
-                    },
-                    {
-                      value: '12',
-                      label: '12 Months',
-                      labelStyle: defaultStyles.whiteTextColor,
-                      style: {
-                        backgroundColor:
-                          monthRange === '12'
-                            ? Constants.PRIMARY_GRADIENT[0]
-                            : Constants.SECONDARY_GRADIENT[0],
-                      },
-                    },
-                  ]}
-                  value={monthRange}
-                  onValueChange={setMonthRange}
-                  style={styles.segmentedButtons}
-                  theme={{colors: {primary: Constants.PRIMARY_GRADIENT[0]}}}
-                />
-                <LineChart
-                  data={{
-                    labels: [],
-                    datasets: [
-                      {
-                        data: sortedLogValues,
-                      },
-                    ],
-                  }}
-                  yAxisSuffix={preferences?.weightUnit || LogUnit.KG}
-                  width={
-                    Dimensions.get('window').width -
-                    Constants.CONTAINER_PADDING_MARGIN * 2
-                  }
-                  height={280}
-                  chartConfig={{
-                    backgroundGradientFrom: Constants.SECONDARY_GRADIENT[0],
-                    backgroundGradientTo: Constants.SECONDARY_GRADIENT[0],
-                    decimalPlaces: 0, // optional, defaults to 2dp
-                    color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-                    propsForDots: {
-                      r: '3',
-                      strokeWidth: '1',
-                      stroke: Constants.PRIMARY_GRADIENT[1],
-                    },
-                  }}
-                  fromZero
-                  bezier
-                />
-                <View>
-                  <View style={styles.footerChart}>
-                    <AppText
-                      style={[
-                        defaultStyles.footnote,
-                        defaultStyles.textAlignCenter,
-                      ]}>
-                      Logs plotted of past {monthRange} months
-                    </AppText>
-                  </View>
+                  ],
+                }}
+                yAxisSuffix={preferences?.weightUnit || LogUnit.KG}
+                width={
+                  Dimensions.get('window').width -
+                  Constants.CONTAINER_PADDING_MARGIN * 2
+                }
+                height={280}
+                chartConfig={{
+                  backgroundGradientFrom: Constants.SECONDARY_GRADIENT[0],
+                  backgroundGradientTo: Constants.SECONDARY_GRADIENT[0],
+                  decimalPlaces: 0, // optional, defaults to 2dp
+                  color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+                  propsForDots: {
+                    r: '3',
+                    strokeWidth: '1',
+                    stroke: Constants.PRIMARY_GRADIENT[1],
+                  },
+                }}
+                fromZero
+                bezier
+              />
+              <View>
+                <View style={styles.footerChart}>
+                  <AppText
+                    style={[
+                      defaultStyles.footnote,
+                      defaultStyles.textAlignCenter,
+                    ]}>
+                    Logs plotted of past {monthRange} months
+                  </AppText>
                 </View>
               </View>
-            )
-          }
-          stickyHeaderIndices={[0]}
-          renderItem={renderItem}
-        />
-      </View>
+            </View>
+          )
+        }
+        stickyHeaderIndices={[0]}
+        renderItem={renderItem}
+      />
     </GradientBackground>
   );
 };

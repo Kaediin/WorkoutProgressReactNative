@@ -29,6 +29,7 @@ import {Add, Schedule} from '../../icons/svg';
 import ScheduleProgramBottomSheetContent from '../../components/program/ScheduleProgramBottomSheetContent';
 import {IActionProps} from 'react-native-floating-action';
 import {FlashList} from '@shopify/flash-list';
+import useTimerStore from '../../stores/timerStore';
 
 interface ProgramOverviewProps {
   onProgramPressed: (programId: string) => void;
@@ -36,6 +37,9 @@ interface ProgramOverviewProps {
 }
 
 const ProgramOverview: React.FC<ProgramOverviewProps> = props => {
+  // Hooks
+  const toggleTimerVisibility = useTimerStore(state => state.toggleVisibility);
+
   // Constants
   const initialProgram: ProgramInput = {
     name: '',
@@ -304,6 +308,12 @@ const ProgramOverview: React.FC<ProgramOverviewProps> = props => {
         </CustomBottomSheet>
         <FloatingButton
           actions={fabActions}
+          onClose={() => {
+            toggleTimerVisibility(false);
+          }}
+          onOpen={() => {
+            toggleTimerVisibility(true);
+          }}
           onPressAction={name =>
             name === Fab.NEWLOG
               ? onFABClicked()
