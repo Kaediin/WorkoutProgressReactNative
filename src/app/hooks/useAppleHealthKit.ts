@@ -87,7 +87,10 @@ const useAppleHealthKit = (): {
     AppleHealthKit.initHealthKit(permissions, (error: string, result) => {
       /* Called after we receive a response from the system */
       if (error) {
-        console.log('error initializing Healthkit: ', error);
+        console.log(
+          '[useAppleHealthKit] error initializing Healthkit: ',
+          error,
+        );
         Sentry.captureException(error);
       }
       if (result) {
@@ -119,7 +122,10 @@ const useAppleHealthKit = (): {
     AppleHealthKit.saveWorkout(options, (error, result) => {
       // Error
       if (error) {
-        console.log('error saving workout to HealthKit: ', error);
+        console.log(
+          '[useAppleHealthKit] error saving workout to HealthKit: ',
+          error,
+        );
         return;
       }
       // Workout successfully saved
@@ -158,7 +164,7 @@ const useAppleHealthKit = (): {
           return;
         }
 
-        console.log('weight saved to HealthKit: ', result);
+        console.log('[useAppleHealthKit] weight saved to HealthKit: ', result);
         resolve(result.value);
         // weight successfully saved
       });
@@ -190,7 +196,9 @@ const useAppleHealthKit = (): {
         {unit: (unit === LogUnit.KG ? 'gram' : 'pound') as HealthUnit},
         (error, results) => {
           if (error) {
-            console.log('Perhaps user has no logged weight in Apple HealthKit');
+            console.log(
+              '[useAppleHealthKit] Perhaps user has no logged weight in Apple HealthKit',
+            );
             resolve(undefined);
           }
           if (results) {
@@ -244,10 +252,13 @@ const useAppleHealthKit = (): {
     return new Promise((resolve, reject) => {
       AppleHealthKit.isAvailable((err: Object, available: boolean) => {
         if (err) {
-          console.log('error initializing Healthkit: ', err);
+          console.log(
+            '[useAppleHealthKit] error initializing Healthkit: ',
+            err,
+          );
           reject(err);
         }
-        console.log('HealthKit is available: ', available);
+        console.log('[useAppleHealthKit] HealthKit is available: ', available);
         resolve(available);
       });
     });
@@ -257,10 +268,10 @@ const useAppleHealthKit = (): {
     return new Promise((resolve, reject) => {
       AppleHealthKit.getAuthStatus(permissions, (err, results) => {
         if (err) {
-          console.log('error getting auth status: ', err);
+          console.log('[useAppleHealthKit] error getting auth status: ', err);
           reject(err);
         }
-        console.log('auth status: ', results);
+        console.log('[useAppleHealthKit] auth status: ', results);
         resolve(results);
       });
     });
