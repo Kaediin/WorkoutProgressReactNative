@@ -64,6 +64,7 @@ import {TimerContext} from '../../../providers/WorkoutTimerProvider';
 import AppSlider from '../../../components/common/AppSlider';
 import EndWorkoutModal from '../../../components/workouts/EndWorkoutModal';
 import {FlashList} from '@shopify/flash-list';
+import DatePicker from 'react-native-date-picker';
 
 type Props = NativeStackScreenProps<ActivityStackParamList, 'WorkoutDetail'>;
 
@@ -99,6 +100,7 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
   const [editExistingExercise, setEditExistingExercise] =
     useState<ExerciseLogFragment>();
   const [myExercises, setMyExercises] = useState<ExerciseFragment[]>([]);
+  const [modalDatePickerActive, setModalDatePickerActive] = useState(false);
 
   // Get my exercises
   const {loading: myExercisesLoading, refetch: refetchMyExercises} =
@@ -272,7 +274,7 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
       fraction: 0,
       unit: preference?.weightUnit || LogUnit.KG,
     },
-    zonedDateTimeString: '',
+    zonedDateTimeString: moment().toISOString(true),
     warmup: false,
     effort: 0,
   };
@@ -315,7 +317,7 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
           input: {
             exerciseId: exerciseLog.exerciseId,
             repetitions: exerciseLog.repetitions,
-            zonedDateTimeString: moment().toISOString(true),
+            zonedDateTimeString: exerciseLog.zonedDateTimeString,
             logValue: stripTypenames(exerciseLog.logValue),
             warmup: exerciseLog.warmup,
             remark: exerciseLog.remark,
@@ -416,7 +418,7 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
       setExerciseLog({
         exerciseId: latestCurrentLogById.exercise.id,
         warmup: latestCurrentLogById.warmup ?? false,
-        zonedDateTimeString: moment().toISOString(true),
+        zonedDateTimeString: exerciseLog.zonedDateTimeString,
         remark: latestCurrentLogById.remark,
         logValue: latestCurrentLogById.logValue,
         repetitions: latestCurrentLogById.repetitions,
@@ -636,7 +638,7 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
                   const lastLogged = getLatestCurrentLog();
                   if (lastLogged) {
                     setExerciseLog({
-                      zonedDateTimeString: lastLogged.logDateTime,
+                      zonedDateTimeString: moment().toISOString(true),
                       exerciseId: lastLogged.exercise.id,
                       repetitions: lastLogged.repetitions,
                       logValue: lastLogged.logValue,
@@ -645,6 +647,12 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
                       effort: lastLogged.effort,
                     });
                   }
+
+                  // Reset the log time
+                  setExerciseLog(prevState => ({
+                    ...prevState,
+                    zonedDateTimeString: moment().toISOString(true),
+                  }));
 
                   if (lastLogged?.exercise?.id) {
                     // Get latest logs from previous workout
@@ -854,6 +862,11 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
                   </>
                 )}
               </View>
+              <View style={styles.containerLogDateTime}>
+                <AppText style={defaultStyles.blackTextColor} footNote T2>
+                  Remarks
+                </AppText>
+              </View>
               <BottomSheetTextInput
                 defaultValue={exerciseLog?.remark || ''}
                 onChangeText={text =>
@@ -864,8 +877,49 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
                 }
                 style={defaultStyles.textInputWithHeight}
                 placeholderTextColor={'darkgrey'}
-                placeholder={'Remarks for this log'}
+                placeholder={'Ex: bad liftoff'}
               />
+              {!editExistingExercise && (
+                <View style={styles.containerLogDateTime}>
+                  <AppText
+                    style={[
+                      defaultStyles.blackTextColor,
+                      defaultStyles.marginBottom,
+                    ]}
+                    footNote
+                    T2>
+                    Log date & time
+                  </AppText>
+                  <ClickableText
+                    text={moment(exerciseLog?.zonedDateTimeString)
+                      .local(true)
+                      .format(DATE_TIME_FORMAT)}
+                    onPress={() =>
+                      setModalDatePickerActive(!modalDatePickerActive)
+                    }
+                  />
+                  {/*// TODO: fix timezones and add minimum date*/}
+                  <DatePicker
+                    date={moment(exerciseLog?.zonedDateTimeString)
+                      .local(true)
+                      .toDate()}
+                    // minimumDate={moment(workout?.startDateTime).subtract(2, 'hours').toDate()}
+                    maximumDate={new Date()}
+                    open={modalDatePickerActive}
+                    onCancel={() => {
+                      setModalDatePickerActive(false);
+                    }}
+                    onConfirm={date => {
+                      setExerciseLog(prevState => ({
+                        ...prevState,
+                        zonedDateTimeString: moment(date).toISOString(true),
+                      }));
+                      setModalDatePickerActive(false);
+                    }}
+                    modal
+                  />
+                </View>
+              )}
             </>
           )}
         </CustomBottomSheet>
@@ -943,6 +997,10 @@ const styles = StyleSheet.create({
     backgroundColor: Constants.QUATERNARY_GRADIENT[1],
     borderRadius: Constants.BORDER_RADIUS_SMALL,
     marginBottom: 10,
+  },
+  containerLogDateTime: {
+    padding: 2,
+    marginTop: Constants.CONTAINER_PADDING_MARGIN,
   },
 });
 
