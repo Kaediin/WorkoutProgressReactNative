@@ -446,7 +446,7 @@ export type Program = {
   externalHealthProviderData?: Maybe<ExternalHealthProviderData>;
   id: Scalars['ID'];
   /** The groups of the program. */
-  logGroups?: Maybe<Array<ProgramLogGroup>>;
+  logGroups: Array<ProgramLogGroup>;
   name: Scalars['String'];
   remark?: Maybe<Scalars['String']>;
 };
@@ -550,6 +550,7 @@ export type Query = {
   countMyWorkouts: Scalars['Int'];
   /** Get total time of all workouts */
   countTotalTimeAllMyWorkoutsInMinutes: Scalars['Float'];
+  enablePrograms: Scalars['Boolean'];
   /** Get all of the latest logs by exercise id from the same workout */
   latestLogsByExerciseId?: Maybe<Array<Maybe<ExerciseLog>>>;
   /** Get all of the latest logs by exercise id from the same workout except given workout Id */

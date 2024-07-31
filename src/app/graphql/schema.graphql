@@ -247,7 +247,7 @@ type Program {
   id: ID!
 
   """The groups of the program."""
-  logGroups: [ProgramLogGroup!]
+  logGroups: [ProgramLogGroup!]!
   name: String!
   remark: String
 }
@@ -359,6 +359,7 @@ type Query {
 
   """Get total time of all workouts"""
   countTotalTimeAllMyWorkoutsInMinutes: Float!
+  enablePrograms: Boolean!
 
   """Get all of the latest logs by exercise id from the same workout"""
   latestLogsByExerciseId(exerciseId: ID!): [ExerciseLog]
