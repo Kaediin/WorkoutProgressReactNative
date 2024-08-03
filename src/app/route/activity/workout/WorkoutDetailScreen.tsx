@@ -464,7 +464,12 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
     reLogLogLoading;
 
   useEffect(() => {
-    if (workout?.groupedExerciseLogs && flatListRef.current && !loading) {
+    if (
+      workout?.groupedExerciseLogs &&
+      workout?.groupedExerciseLogs.length > 0 &&
+      flatListRef.current &&
+      !loading
+    ) {
       setTimeout(() => {
         flatListRef.current?.scrollToEnd({
           animated: true,
@@ -475,103 +480,113 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
 
   return (
     <GradientBackground>
-      {loading ? (
-        <Loader />
-      ) : workout ? (
+      {workout ? (
         <View style={[defaultStyles.flex1]}>
-          {workout.groupedExerciseLogs.length === 0 ? (
-            <AppText style={styles.noExercisesText}>
-              Click to + to log your exercises
-            </AppText>
-          ) : (
-            <FlashList
-              estimatedItemSize={5}
-              ref={flatListRef}
-              refreshControl={
-                <RefreshControl
-                  colors={['#fff', '#ccc']}
-                  tintColor={'#fff'}
-                  refreshing={workoutLoading}
-                  onRefresh={() => {
-                    workoutById({
+          <FlashList
+            ListEmptyComponent={() =>
+              loading ? (
+                <Loader style={defaultStyles.container} isLoading />
+              ) : (
+                <AppText style={styles.noExercisesText}>
+                  Click on the + button to log your first exercise
+                </AppText>
+              )
+            }
+            estimatedItemSize={5}
+            ref={flatListRef}
+            onRefresh={() => {
+              workoutById({
+                variables: {
+                  id: props.route.params.workoutId,
+                },
+              });
+            }}
+            refreshing={loading}
+            refreshControl={
+              <RefreshControl
+                colors={['#fff', '#ccc']}
+                tintColor={'#fff'}
+                refreshing={workoutLoading}
+                onRefresh={() => {
+                  workoutById({
+                    variables: {
+                      id: props.route.params.workoutId,
+                    },
+                  });
+                }}
+              />
+            }
+            data={workout.groupedExerciseLogs}
+            ListHeaderComponent={
+              <View style={styles.containerMuscleGroups}>
+                <MuscleGroupList
+                  muscleGroups={workout.muscleGroups}
+                  alignCenter
+                />
+              </View>
+            }
+            key={dimensions.screen.width}
+            keyExtractor={item => dimensions.screen.width + item.exercise.id}
+            renderItem={({item}) => (
+              <GroupedExerciseLogListItem
+                groupedExercise={item}
+                key={dimensions.screen.width + item.exercise.id}
+                onEditLog={log => {
+                  presetExerciseLogWithThisWorkoutAndUpdateLastLogged(
+                    item.exercise.id,
+                  );
+                  setEditExistingExercise(log);
+                  setExerciseLog({
+                    zonedDateTimeString: log.logDateTime,
+                    exerciseId: log.exercise.id,
+                    repetitions: log.repetitions,
+                    logValue: log.logValue,
+                    warmup: log.warmup || false,
+                    remark: log.remark,
+                    effort: log.effort,
+                  });
+                  toggleBottomSheetRef(true);
+                }}
+                onRepeatLog={log => {
+                  if (workout?.id) {
+                    reLogLog({
                       variables: {
-                        id: props.route.params.workoutId,
+                        workoutId: workout?.id,
+                        input: {
+                          exerciseId: log.exercise.id,
+                          logValue: stripTypenames(log.logValue),
+                          warmup: log.warmup || false,
+                          remark: log.remark,
+                          repetitions: log.repetitions,
+                          zonedDateTimeString: moment().toISOString(true),
+                          effort: log.effort,
+                        },
                       },
                     });
-                  }}
-                />
-              }
-              data={workout.groupedExerciseLogs}
-              ListHeaderComponent={
-                <View style={styles.containerMuscleGroups}>
-                  <MuscleGroupList
-                    muscleGroups={workout.muscleGroups}
-                    alignCenter
-                  />
-                </View>
-              }
-              key={dimensions.screen.width}
-              keyExtractor={item => dimensions.screen.width + item.exercise.id}
-              renderItem={({item}) => (
-                <GroupedExerciseLogListItem
-                  groupedExercise={item}
-                  key={dimensions.screen.width + item.exercise.id}
-                  onEditLog={log => {
-                    presetExerciseLogWithThisWorkoutAndUpdateLastLogged(
-                      item.exercise.id,
-                    );
-                    setEditExistingExercise(log);
-                    setExerciseLog({
-                      zonedDateTimeString: log.logDateTime,
-                      exerciseId: log.exercise.id,
-                      repetitions: log.repetitions,
-                      logValue: log.logValue,
-                      warmup: log.warmup || false,
-                      remark: log.remark,
-                      effort: log.effort,
-                    });
-                    toggleBottomSheetRef(true);
-                  }}
-                  onRepeatLog={log => {
-                    if (workout?.id) {
-                      reLogLog({
-                        variables: {
-                          workoutId: workout?.id,
-                          input: {
-                            exerciseId: log.exercise.id,
-                            logValue: stripTypenames(log.logValue),
-                            warmup: log.warmup || false,
-                            remark: log.remark,
-                            repetitions: log.repetitions,
-                            zonedDateTimeString: moment().toISOString(true),
-                            effort: log.effort,
-                          },
-                        },
-                      });
-                      if (preference?.autoStartTimer) {
-                        toggleTimer(true);
-                      }
+                    if (preference?.autoStartTimer) {
+                      toggleTimer(true);
                     }
-                  }}
-                  onRemoveLog={setDeleteLogId}
-                  onLogPress={log => {
-                    setEditExistingExercise(log);
-                    setExerciseLog({
-                      zonedDateTimeString: log.logDateTime,
-                      exerciseId: log.exercise.id,
-                      repetitions: log.repetitions,
-                      logValue: log.logValue,
-                      warmup: log.warmup || false,
-                      remark: log.remark,
-                      effort: log.effort,
-                    });
-                    toggleBottomSheetRef(true);
-                  }}
-                />
-              )}
-              numColumns={dimensions.screen.width > 500 ? 2 : 1}
-            />
-          )}
+                  }
+                }}
+                onRemoveLog={setDeleteLogId}
+                onLogPress={log => {
+                  setEditExistingExercise(log);
+                  setExerciseLog({
+                    zonedDateTimeString: log.logDateTime,
+                    exerciseId: log.exercise.id,
+                    repetitions: log.repetitions,
+                    logValue: log.logValue,
+                    warmup: log.warmup || false,
+                    remark: log.remark,
+                    effort: log.effort,
+                  });
+                  toggleBottomSheetRef(true);
+                }}
+              />
+            )}
+            numColumns={dimensions.screen.width > 500 ? 2 : 1}
+          />
+
           <ConfirmModal
             message={'Are you sure you want to remove this log?'}
             isOpen={Boolean(deleteLogId)}
@@ -687,7 +702,7 @@ const WorkoutDetailScreen: React.FC<Props> = props => {
             disableLogButton
           }
           onRightTextClicked={doLogExercise}
-          leftText={'Create exercise'}>
+          leftText={!editExistingExercise ? 'Create exercise' : undefined}>
           {myExercisesLoading || logExeciseLoading || updateExeciseLoading ? (
             <Loader style={defaultStyles.container} dark />
           ) : (
